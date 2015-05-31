@@ -9,12 +9,20 @@
   "dependencies": {
     "express": "~4.9.x"
   },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+	"grunt-contrib-concat": "0.1.2",
+    "grunt-contrib-uglify": "~0.5.0"
+  }
   "engines": {
     "node": "0.12.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/giovannipessiva/l4w"
+  },
+  "bugs": {
+    "url": "https://github.com/giovannipessiva/l4w/issues"
   },
   "keywords": [
     "game"
