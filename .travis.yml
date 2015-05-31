@@ -5,5 +5,5 @@ node_js:
 install:
    - "npm install grunt-cli -g"
    
-#script: 
-#   - "grunt travis"  
+script: 
+   - "grunt travis"  
