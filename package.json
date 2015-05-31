@@ -1,6 +1,6 @@
 {
   "name": "law",
-  "version": "0.1",
+  "version": "2.1.0",
   "description": "It's not ready yet",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,5 @@
   "keywords": [
     "game"
   ],
-  "license": "GNU GPL 2"
+  "license": "GPL-2.0"
 }
