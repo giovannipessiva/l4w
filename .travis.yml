@@ -6,8 +6,30 @@ install:
 - npm install
 script:
 - grunt travis
-deploy:
-  provider: heroku
-  api_key:
-    secure: "SopVUm/2uBhw9/y6nHZu/ku5qygM9ppsNgdUEEC48lEo/ucQVozUCHcUlnA9VRXw50thldi2ESvzoOfBowpJuz7elKR1qlVN79hXv0sX6lVqfgvejR0RlbOOJHt15qxj8P9i6hPCyVA7MQwQkq5AnPefg/ViS8yS6JVHYvygP8v4lmEpLE8tgfKUcx7PUtT9uaW9JbydF4jmXsZ7TKBvFqbJltfS2vQj4ZbHR/OHBjQTGtG9q5eq3631AVtOhUMYw5eYn+acGAPSkW+gL3K7U1P+CtNyisoGMyZxFwXusSSIc937IngU7uPVOF84HCCVm3tdB3bWnFJ9I4W3YTbGx+LPtXbtLruDuw24BsV5hfP6NkeT/H9sF+kMUhPPxl/noyXNW6lXtooz/lsAjjBvpEF6ufi3Oqx7gyGr9BJgxvoLIjhnBzIh/o0MioIXShEdJac2Uo3e6EZ2SEDTC8DF6yU7kgM7J6Qt1ilcHNxt9ZLAMHXJ6KNXmcOOmebN333fb69XDJ2v+vL1245c5ANkZKVGjo1g0RgZu/6AE3InRd7a2RP0NNZbhR0ud0br9SdCMqK5XPwhWiUwdedhpOB8xKY1wSUUhzOLvgMtFiQuL8jc7qDVKXZFVVl0ld8b1mXOS8Axt8VD9oSGdsnlgm9fpv0TjL+QGKI1Qcw7i033RYI="
-  skip_cleanup: true
+
+env:
+  global:
+    - secure: SopVUm/2uBhw9/y6nHZu/ku5qygM9ppsNgdUEEC48lEo/ucQVozUCHcUlnA9VRXw50thldi2ESvzoOfBowpJuz7elKR1qlVN79hXv0sX6lVqfgvejR0RlbOOJHt15qxj8P9i6hPCyVA7MQwQkq5AnPefg/ViS8yS6JVHYvygP8v4lmEpLE8tgfKUcx7PUtT9uaW9JbydF4jmXsZ7TKBvFqbJltfS2vQj4ZbHR/OHBjQTGtG9q5eq3631AVtOhUMYw5eYn+acGAPSkW+gL3K7U1P+CtNyisoGMyZxFwXusSSIc937IngU7uPVOF84HCCVm3tdB3bWnFJ9I4W3YTbGx+LPtXbtLruDuw24BsV5hfP6NkeT/H9sF+kMUhPPxl/noyXNW6lXtooz/lsAjjBvpEF6ufi3Oqx7gyGr9BJgxvoLIjhnBzIh/o0MioIXShEdJac2Uo3e6EZ2SEDTC8DF6yU7kgM7J6Qt1ilcHNxt9ZLAMHXJ6KNXmcOOmebN333fb69XDJ2v+vL1245c5ANkZKVGjo1g0RgZu/6AE3InRd7a2RP0NNZbhR0ud0br9SdCMqK5XPwhWiUwdedhpOB8xKY1wSUUhzOLvgMtFiQuL8jc7qDVKXZFVVl0ld8b1mXOS8Axt8VD9oSGdsnlgm9fpv0TjL+QGKI1Qcw7i033RYI=
+
+after_script:
+  # Install the Heroku gem (or the Heroku toolbelt)
+  - gem install heroku
+  # Add your Heroku git repo:
+  - git remote add heroku git@heroku.com:l4w.git
+  # Turn off warnings about SSH keys:
+  - echo "Host heroku.com" >> ~/.ssh/config
+  - echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+  - echo "   CheckHostIP no" >> ~/.ssh/config
+  - echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+  # Clear your current Heroku SSH keys:
+  - heroku keys:clear
+  # Add a new SSH key to Heroku
+  - yes | heroku keys:add
+  # Push to Heroku!
+  - yes | git push heroku master
+  
+#deploy:
+#  provider: heroku
+#  api_key:
+#    secure: SopVUm/2uBhw9/y6nHZu/ku5qygM9ppsNgdUEEC48lEo/ucQVozUCHcUlnA9VRXw50thldi2ESvzoOfBowpJuz7elKR1qlVN79hXv0sX6lVqfgvejR0RlbOOJHt15qxj8P9i6hPCyVA7MQwQkq5AnPefg/ViS8yS6JVHYvygP8v4lmEpLE8tgfKUcx7PUtT9uaW9JbydF4jmXsZ7TKBvFqbJltfS2vQj4ZbHR/OHBjQTGtG9q5eq3631AVtOhUMYw5eYn+acGAPSkW+gL3K7U1P+CtNyisoGMyZxFwXusSSIc937IngU7uPVOF84HCCVm3tdB3bWnFJ9I4W3YTbGx+LPtXbtLruDuw24BsV5hfP6NkeT/H9sF+kMUhPPxl/noyXNW6lXtooz/lsAjjBvpEF6ufi3Oqx7gyGr9BJgxvoLIjhnBzIh/o0MioIXShEdJac2Uo3e6EZ2SEDTC8DF6yU7kgM7J6Qt1ilcHNxt9ZLAMHXJ6KNXmcOOmebN333fb69XDJ2v+vL1245c5ANkZKVGjo1g0RgZu/6AE3InRd7a2RP0NNZbhR0ud0br9SdCMqK5XPwhWiUwdedhpOB8xKY1wSUUhzOLvgMtFiQuL8jc7qDVKXZFVVl0ld8b1mXOS8Axt8VD9oSGdsnlgm9fpv0TjL+QGKI1Qcw7i033RYI=
+#  skip_cleanup: true
