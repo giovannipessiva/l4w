@@ -10,9 +10,9 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				// the files to concatenate
-				src: ['client/*/js/*.js'],
+				src: ['client/js/*.js'],
 				// the location of the resulting JS file
-				dest: 'client/l4w.js'
+				dest: 'client/<%= pkg.name %>.js'
 			}
 		},
 
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-				'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+				'client/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
 				}
 			}
 		}
@@ -33,4 +33,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 
 	grunt.registerTask('default', ['concat', 'uglify']);
+	
+	grunt.registerTask('travis', 'default');
 };
