@@ -15,3 +15,6 @@ deploy:
   - "client/l4w.js"
   - "client/l4w.min.js"
   skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
