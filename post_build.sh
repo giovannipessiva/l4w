@@ -6,6 +6,9 @@ git status
 git commit -m "Travis build"
 git status
 
+git branch temp
+git checkout temp
+
 #git clone -b publish https://${GH_TOKEN}@github.com/thingsinjars/hardy.io $HOME/temp
 
-git push https://${GH_TOKEN}@github.com/giovannipessiva/l4w
+git push https://${GH_TOKEN}@github.com/giovannipessiva/l4w temp
