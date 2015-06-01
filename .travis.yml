@@ -6,6 +6,8 @@ install:
 - npm install
 script:
 - grunt travis
+after_success:
+- gem install heroku
 deploy:
   provider: heroku
   api_key:
