@@ -8,6 +8,7 @@ script:
 - grunt travis
 after_success:
 - gem install heroku
+- cat /home/travis/build.sh
 deploy:
   provider: heroku
   api_key:
