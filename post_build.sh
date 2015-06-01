@@ -12,4 +12,4 @@ rm post_build.sh
 
 git add . --all
 git commit -m "Travis build"
-git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy | sed -i 's/${GH_TOKEN}/<hidden>/g' | echo
+git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy | sed 's/${GH_TOKEN}/<hidden>/g' | echo
