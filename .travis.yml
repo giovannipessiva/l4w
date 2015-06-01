@@ -9,6 +9,7 @@ script:
 
 after_success:
   - gem install heroku
+  - gem install dpl
   
 deploy:
   provider: heroku
