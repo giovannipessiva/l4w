@@ -6,19 +6,14 @@ install:
 - npm install
 script:
 - grunt travis
-<<<<<<< Updated upstream
-after_success:
-- gem install heroku
-- cat /home/travis/build.sh
-#- gem install dpl
+after_success: 
 deploy:
-  provider: heroku
-  app: l4w
-=======
-
-#deploy:
-  provider: heroku
->>>>>>> Stashed changes
+  provider: releases
   api_key:
-    secure: SopVUm/2uBhw9/y6nHZu/ku5qygM9ppsNgdUEEC48lEo/ucQVozUCHcUlnA9VRXw50thldi2ESvzoOfBowpJuz7elKR1qlVN79hXv0sX6lVqfgvejR0RlbOOJHt15qxj8P9i6hPCyVA7MQwQkq5AnPefg/ViS8yS6JVHYvygP8v4lmEpLE8tgfKUcx7PUtT9uaW9JbydF4jmXsZ7TKBvFqbJltfS2vQj4ZbHR/OHBjQTGtG9q5eq3631AVtOhUMYw5eYn+acGAPSkW+gL3K7U1P+CtNyisoGMyZxFwXusSSIc937IngU7uPVOF84HCCVm3tdB3bWnFJ9I4W3YTbGx+LPtXbtLruDuw24BsV5hfP6NkeT/H9sF+kMUhPPxl/noyXNW6lXtooz/lsAjjBvpEF6ufi3Oqx7gyGr9BJgxvoLIjhnBzIh/o0MioIXShEdJac2Uo3e6EZ2SEDTC8DF6yU7kgM7J6Qt1ilcHNxt9ZLAMHXJ6KNXmcOOmebN333fb69XDJ2v+vL1245c5ANkZKVGjo1g0RgZu/6AE3InRd7a2RP0NNZbhR0ud0br9SdCMqK5XPwhWiUwdedhpOB8xKY1wSUUhzOLvgMtFiQuL8jc7qDVKXZFVVl0ld8b1mXOS8Axt8VD9oSGdsnlgm9fpv0TjL+QGKI1Qcw7i033RYI=
+    secure: TldI9PhDi4gw/oHgqrs/1NwNRY0aTsEFdux9Yl/D1p+81gxt5anQR7Ohd0AeQ2rxwxpXrw2hmLjLrcXn5iBqBxj1BY4J75KOpdvHqLON2yFRAvbQgbnpoe6vokACZp0mLxKz6yb09cH7k+8XJvZZualrkA+ipfD6Xt41O9HbMdUCbjwo54sCGzucDUc75j2Gl/59upHSXoSdCRCrXhS1+ZXl+54HM7WifZ/nH/RFo3xTuRMziFni3W02HwyRGZusUYvx3Taf1tUe7pZ400DM5eiEB6ZVzIfSUxA3y1B572DcvB2MCFdsY6bylgcc/57B49iwUR2tRySvZp99YHYkShIhaLForBCp4jiWAsTS5cY56bVCIs413B5XUfR6acYo3j1c/AlQLTbhi1Qu2Seh3Qg1HymAzUFPQKuAs+9sj1xJgjIlFXPmo7HnYKJvOXrlYCIbz1F7JVnHYoOe+otwXKBlH/BNx4tWTZkKlpHF6hG/HTrIBXJgx61bMX+odkfW5+w6C+/pmAxM+FKeuKLCpGO04ZgMGxIBKCzl14Qj9dIQVZwrERrCViVKR1d/hU921X5miUj/siFg0gz5yLEIs6w6KYDp12i6T9bu2TIt4clLFJW0PNK9MUwOvHLLN6Z3rfK7ySW0Job5klM7fTGobfkN+9jojWZ4Z9ttQX0uwKs=
+  file:
+  - client/l4w.js
+  - client/l4w.min.js
   skip_cleanup: true
+  on:
+    tags: true
