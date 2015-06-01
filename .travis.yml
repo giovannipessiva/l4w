@@ -6,15 +6,9 @@ install:
 - npm install
 script:
 - grunt travis
-after_success: 
 deploy:
-  provider: releases
+  provider: heroku
   api_key:
-    secure: TldI9PhDi4gw/oHgqrs/1NwNRY0aTsEFdux9Yl/D1p+81gxt5anQR7Ohd0AeQ2rxwxpXrw2hmLjLrcXn5iBqBxj1BY4J75KOpdvHqLON2yFRAvbQgbnpoe6vokACZp0mLxKz6yb09cH7k+8XJvZZualrkA+ipfD6Xt41O9HbMdUCbjwo54sCGzucDUc75j2Gl/59upHSXoSdCRCrXhS1+ZXl+54HM7WifZ/nH/RFo3xTuRMziFni3W02HwyRGZusUYvx3Taf1tUe7pZ400DM5eiEB6ZVzIfSUxA3y1B572DcvB2MCFdsY6bylgcc/57B49iwUR2tRySvZp99YHYkShIhaLForBCp4jiWAsTS5cY56bVCIs413B5XUfR6acYo3j1c/AlQLTbhi1Qu2Seh3Qg1HymAzUFPQKuAs+9sj1xJgjIlFXPmo7HnYKJvOXrlYCIbz1F7JVnHYoOe+otwXKBlH/BNx4tWTZkKlpHF6hG/HTrIBXJgx61bMX+odkfW5+w6C+/pmAxM+FKeuKLCpGO04ZgMGxIBKCzl14Qj9dIQVZwrERrCViVKR1d/hU921X5miUj/siFg0gz5yLEIs6w6KYDp12i6T9bu2TIt4clLFJW0PNK9MUwOvHLLN6Z3rfK7ySW0Job5klM7fTGobfkN+9jojWZ4Z9ttQX0uwKs=
-  file:
-  - "client/l4w.js"
-  - "client/l4w.min.js"
+    secure: ERCv7f8EuQ91T0g0I3FhOWF1EzcHqDm8b2Ivi9W6jyQeW7F9Pdv5++377mv1F+l/yVBZMk7cTfIkRE0gFpy5VCdtpV9VHItVY37bprB+JHb3RLqCe3m2DUEHXoDgYlAKQP4Tsd7QYvK3DwgqX4oOjmGQ+SFlcPRL8EGUwV5zFdNzVMZBVuSgUwlX0YajxH+I/dAggU7Z2P/L14+5frCQEoa3u6Id1fbiGD0WCEabz0bxISvadgYAh6lLW77Kvij9M84c511xDzBMuO90REOwLFHQjov4/Ui+Wh+uNzeL7vdQ/spgm4zP1vUrg5fP4qVFxjHOYw7gJxretbPD1Z4S+0/up0DXnZ32tHq6DGFLKLDys/j3sSxfxUFuj+GhpSQCu4cdXEWhUTM47H5nSvx8CCXMDvm9RVlH1a6lNbgpbNVN59FiR7x26+NrKQOubDbDvAFEVPSwnt3Ky5k5miSGGhU8Y6PlTDUHMlT5en2hdjEg+0qHiuMpY62JATpp9CcbK48SYuqj3DnALAfEfKbIttH3qiJiOjITh3sRcDD8P3xsyEMXy93NniWty0BOa8Bpg+OFMo4cqdG6fOYs0cT9UqNawbRNt8Yk4KZNXA94/19iHHog7ZB4pH2vw5BezzdoWnME3t59fxszZIzdFrWplRX4d7tiCq58FU+sEBVLPbQ=
   skip_cleanup: true
-  on:
-    tags: true
-    all_branches: true
+  strategy: git
