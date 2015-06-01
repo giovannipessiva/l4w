@@ -1,3 +1,6 @@
+git config --global user.email "giovannipessiva@users.noreply.github.com"
+git config --global user.name "Travis CI"
+
 git add . "client/*.js"
 git status
 git commit -m "Travis build"
