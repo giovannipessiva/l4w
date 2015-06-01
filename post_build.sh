@@ -5,7 +5,6 @@ git checkout deploy
 
 rm -rf client/js
 rm -rf client/ts
-rm .gitignore
 rm .travis.yml
 rm GruntFile.js
 rm README.md
