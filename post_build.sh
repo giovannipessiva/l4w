@@ -1,14 +1,16 @@
 git config --global user.email "giovannipessiva@users.noreply.github.com"
 git config --global user.name "Travis CI"
 
-git add . "client/*.js"
-git status
+git checkout deploy
+
+rm -rf client/js
+rm -rf client/ts
+rm .gitignore
+rm .travis.yml
+rm GruntFile.js
+rm README.md
+rm post_build.sh
+
+git add . --all
 git commit -m "Travis build"
-git status
-
-git branch temp
-git checkout temp
-
-#git clone -b publish https://${GH_TOKEN}@github.com/thingsinjars/hardy.io $HOME/temp
-
-git push https://${GH_TOKEN}@github.com/giovannipessiva/l4w temp
+git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w temp
