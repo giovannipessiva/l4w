@@ -7,7 +7,7 @@ install:
 script:
 - grunt travis
 after_success:
-- gem install heroku-api
+- npm install heroku
 #- gem install dpl
 deploy:
   provider: heroku
