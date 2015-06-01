@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>L4W</title>
+<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+</head>
+<body>
+<div style="position:relative;width:672px;height:512px;margin-left:auto;margin-right:auto;">
+<canvas id="canvas1" class="l4wCanvas" width="672" height="512" style="border:1px solid black">
+Your browser does not support HTML5 Canvas!</canvas>
+<canvas id="canvas2" class="l4wCanvas" width="672" height="512" style="z-index:2">
+</canvas>
+<script type='text/javascript'>	
+	var canvas = document.getElementById('canvas1');
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle='#000000';
+	ctx.font='bold 18px Arial';
+	ctx.fillText("it's not ready yet",10,20);
+</script> 
+</div>
+</body>
+</html>
