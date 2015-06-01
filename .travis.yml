@@ -8,7 +8,7 @@ script:
 - grunt travis
 after_success:
 - gem install heroku
-- gem install dpl
+#- gem install dpl
 deploy:
   provider: heroku
   app: l4w
