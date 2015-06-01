@@ -1,6 +1,7 @@
 git config --global user.email "giovannipessiva@users.noreply.github.com"
 git config --global user.name "Travis CI"
 
+git branch deploy
 git checkout deploy
 
 rm -rf client/js
