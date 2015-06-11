@@ -4,8 +4,9 @@ git config --global user.name "Travis CI"
 git branch deploy
 git checkout deploy
 
-rm -rf client/js
-rm -rf client/ts
+rm -rf client/modules
+rm -rf .settings
+rm .project
 rm .travis.yml
 rm GruntFile.js
 rm README.md
