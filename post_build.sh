@@ -8,7 +8,7 @@ rm -rf client/modules
 rm -rf .settings
 rm .project
 rm .travis.yml
-rm GruntFile.js
+rm Gruntfile.js
 rm README.md
 rm post_build.sh
 
