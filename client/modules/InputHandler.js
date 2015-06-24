@@ -22,26 +22,38 @@ var Keys = (function () {
 ;
 ;
 function initInputHandler(canvas, inputCallbacks, resetCallback, pauseCallback, unpauseCallback) {
-    var tasto;
+    var lastKey;
+    var flagPause = false;
+    inputCallbacks[Keys.SPACE] = function () {
+        if (flagPause) {
+            unpauseCallback();
+            flagPause = false;
+        }
+        else {
+            pauseCallback();
+            flagPause = true;
+        }
+    };
     document.addEventListener("keydown", function (e) {
         var callback = inputCallbacks[String(e.keyCode)];
         if (callback !== undefined) {
             callback();
         }
-        tasto = e.keyCode;
-        console.log(tasto);
+        lastKey = e.keyCode;
     });
     document.addEventListener("keyup", function (e) {
-        if (e.keyCode === tasto) {
+        if (e.keyCode === lastKey) {
             resetCallback();
         }
     });
     document.addEventListener("visibilitychange", function onVisibilityChange() {
         if (document.hidden) {
             pauseCallback();
+            flagPause = true;
         }
         else {
             unpauseCallback();
+            flagPause = false;
         }
     }, false);
 }
