@@ -1,65 +1,73 @@
+/*
+Input handling (keysboard, mouse, touch, visibility events)
 
-//______CHIAMATA A QUESTO MODULO_____
-var UP = 3;
-var DOWN = 0;
-var LEFT = 1;
-var RIGHT = 2;
-var NONE = -1;
+Usage example:
 
-enum INPUT {
-    UP = 87,
-    DOWN = 83,
-    LEFT = 65,
-    RIGHT = 68,
-    CTRL = 17,
-    ENTER = 13,
-    W = 87,
-    A = 65,
-    D = 68,
-    S = 83,
-    J = 74,
-    K = 75,
-    CAPS = 20
+    var inputCallbackMap = {};
+    inputCallbackMap[Keys.UP] = function(key){ alert("Up"); };
+    inputCallbackMap[Keys.DOWN] = function(key){ alert("Down"); };
+    inputCallbackMap[Keys.LEFT] = function(key){ alert("Left"); };
+    inputCallbackMap[Keys.RIGHT] = function(key){ alert("Right"); };
+    
+    initInputHandler(
+        inputCallbackMap,
+        function() { console.log("Reset"); },
+        function() { console.log("Paused"); },
+        function() { console.log("Unpaused"); }
+    );
+*/
+
+class Keys {
+    static UP : string = "38";
+    static DOWN : string = "40";
+    static LEFT : string = "37";
+    static RIGHT : string = "39";
+    static CTRL : string = "17";
+    static ALT : string = "18";
+    static ENTER : string = "13";
+    static SPACE : string = "32";
+    static CAPS : string = "20";
+    static SHIFT : string = "16";
+    static W : string = "87";
+    static A : string = "65";
+    static D : string = "68";
+    static S : string = "83";
+    static J : string = "74";
+    static K : string = "75";
 }
 
-// Chiamata di test
-interface inputCallback { (key: number) : void };
-var inputCallbackMap: { [key: number ] : inputCallback; } = <any>{};
-inputCallbackMap[INPUT.UP] = function(key){ alert("UP") };
-inputCallbackMap[INPUT.DOWN] = function(key){ alert("DOWN") };
-inputCallbackMap[INPUT.LEFT] = function(key){ alert("LEFT") };
-inputCallbackMap[INPUT.RIGHT] = function(key){ alert("RIGHT") };
+interface IKeyCallback { (key: number) : void };
+interface IEventCallback { () : void };
 
-interface resetCallback { () : void };
-
-initInputHandler(
-	inputCallbackMap,
-	function(){ }
-);
-
-
-//Flag per stoppare il loop di rendering
-var paused = false;
-
-function initInputHandler(inputCallbacks, resetCallback) {
+function initInputHandler(
+    canvas : HTMLCanvasElement,
+    inputCallbacks : {Keys : IKeyCallback},
+    resetCallback : IEventCallback,
+    pauseCallback : IEventCallback,
+    unpauseCallback : IEventCallback) {
 	
 	//Ultimo tasto premuto
 	var tasto;
 	
-	document.onkeydown = function(e) {
-		inputCallbacks[e.keyCode];
-		tasto = e.keyCode;
-	};
-	document.onkeyup = function(e){
-		if(e.keyCode == tasto)
-			resetCallback;
-	};
-	
-	document.addEventListener( 'visibilitychange', function onVisibilityChange(){
+    document.addEventListener("keydown", function(e) {
+        var callback = inputCallbacks[String(e.keyCode)];
+        if(callback !== undefined) {
+            callback();
+        }
+        tasto = e.keyCode;
+        console.log(tasto);
+    });
+    document.addEventListener("keyup", function(e){
+        if(e.keyCode === tasto) {
+            resetCallback();
+        }
+    });
+    
+	document.addEventListener("visibilitychange", function onVisibilityChange(){
 		if(document.hidden){ 
-			paused = true; 
+            pauseCallback();
 		}else{
-			paused = false; 
+            unpauseCallback();
 		} 
 	}, false);
 	

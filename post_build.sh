@@ -5,6 +5,7 @@ git branch deploy
 git checkout deploy
 
 rm -rf client/modules
+rm -rf client/test*
 rm -rf .settings
 rm .project
 rm .travis.yml
