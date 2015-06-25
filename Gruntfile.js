@@ -27,12 +27,10 @@ module.exports = function(grunt) {
 					booleans: true,
 					loops: true,
 					if_return: true,
-					join_vars: true,
-					options: {
-						mangle: false
-					}
+					join_vars: true
 				},
-				screwIE8: {}
+				screwIE8: true,
+				mangle: false
 			},
 			dist: {
 				files: {
