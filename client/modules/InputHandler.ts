@@ -17,7 +17,7 @@ Usage example:
     );
 */
 
-class Keys {
+export class Keys {
     static UP : string = "38";
     static DOWN : string = "40";
     static LEFT : string = "37";
@@ -39,7 +39,7 @@ class Keys {
 interface IKeyCallback { (key: number) : void };
 interface IEventCallback { () : void };
 
-function initInputHandler(
+export function initInputHandler(
     canvas : HTMLCanvasElement,
     inputCallbacks : {Keys : IKeyCallback},
     resetCallback : IEventCallback,
