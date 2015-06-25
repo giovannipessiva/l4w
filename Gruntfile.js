@@ -20,7 +20,14 @@ module.exports = function(grunt) {
 			options: {
 				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 				compress: {
-					unsafe : true
+					properties,
+					unsafe: true,
+					comparisons,
+					evaluate,
+					booleans,
+					loops,
+					if_return,
+					join_vars
 				},
 				wrap: true,
 				screwIE8: true
