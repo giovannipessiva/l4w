@@ -24,7 +24,8 @@ var Input;
     Input.Keys = Keys;
     ;
     ;
-    function initInputHandler(canvas, inputCallbacks, resetCallback, pauseCallback, unpauseCallback) {
+    ;
+    function handleInput(canvas, actionCallback, swipeCallback, hoverCallback, inputCallbacks, resetCallback, pauseCallback, unpauseCallback) {
         var lastKey;
         var flagPause = false;
         inputCallbacks[Keys.SPACE] = function () {
@@ -37,6 +38,18 @@ var Input;
                 flagPause = true;
             }
         };
+        canvas.addEventListener("click", function (evt) {
+            var rect = canvas.getBoundingClientRect();
+            var mouse_x = evt.clientX - rect.left;
+            var mouse_y = evt.clientY - rect.top;
+            action(mouse_x, mouse_y);
+        }, false);
+        canvas.addEventListener("mousemove", function (evt) {
+            var rect = canvas.getBoundingClientRect();
+            var mouse_x = evt.clientX - rect.left;
+            var mouse_y = evt.clientY - rect.top;
+            hover(mouse_x, mouse_y);
+        }, false);
         document.addEventListener("keydown", function (e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
@@ -59,7 +72,19 @@ var Input;
                 flagPause = false;
             }
         }, false);
+        function action(x, y) {
+            actionCallback(x, y);
+        }
+        ;
+        function hover(x, y) {
+            hoverCallback(x, y);
+        }
+        ;
+        function swipe(x, y) {
+            swipeCallback(x, y);
+        }
+        ;
     }
-    Input.initInputHandler = initInputHandler;
+    Input.handleInput = handleInput;
     ;
 })(Input || (Input = {}));

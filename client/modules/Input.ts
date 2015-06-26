@@ -1,5 +1,5 @@
 /*
-Input handling (keysboard, mouse, touch, visibility events)
+Input handling (keyboard, mouse, touch, visibility events)
 
 Usage example:
 
@@ -37,15 +37,19 @@ module Input {
         static K : string = "75";
     }
     
+    interface IPositionCallback { (x: number, y:number) : void };
     interface IKeyCallback { (key: number) : void };
     interface IEventCallback { () : void };
     
-    export function initInputHandler(
-        canvas : HTMLCanvasElement,
-        inputCallbacks : {Keys : IKeyCallback},
-        resetCallback : IEventCallback,
-        pauseCallback : IEventCallback,
-        unpauseCallback : IEventCallback) {
+    export function handleInput(
+        canvas: HTMLCanvasElement,
+        actionCallback: IPositionCallback,
+        swipeCallback: IPositionCallback,
+        hoverCallback: IPositionCallback,
+        inputCallbacks: {Keys : IKeyCallback},
+        resetCallback: IEventCallback,
+        pauseCallback: IEventCallback,
+        unpauseCallback: IEventCallback) {
     	
     	var lastKey : number;
         var flagPause : boolean = false;
@@ -61,7 +65,25 @@ module Input {
            }
         };
         
-    	
+        canvas.addEventListener("click", function(evt){
+          var rect = canvas.getBoundingClientRect();
+          var mouse_x = evt.clientX - rect.left;
+          var mouse_y = evt.clientY - rect.top;
+          action(mouse_x, mouse_y);
+        }, false);
+    	canvas.addEventListener("mousemove", function(evt){
+          var rect = canvas.getBoundingClientRect();
+          var mouse_x = evt.clientX - rect.left;
+          var mouse_y = evt.clientY - rect.top;
+          hover(mouse_x, mouse_y);
+        }, false);
+        //contextmenu -> tasto destro del mouse
+        //dblclick -> doppio click
+        //mousedown
+        //mouseup
+        
+        //wheel
+        
         document.addEventListener("keydown", function(e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if(callback !== undefined) {
@@ -74,6 +96,12 @@ module Input {
                 resetCallback();
             }
         });
+        //keypress, input: da testare
+        
+        //touchstart
+        //touchcancel
+        //touchend
+        //touchmove
         
     	document.addEventListener("visibilitychange", function onVisibilityChange(){
     		if(document.hidden){
@@ -84,19 +112,10 @@ module Input {
                 flagPause = false;
     		} 
     	}, false);
+        
+        //orientationchange
+        //resize
     	
-    //	S.c2.addEventListener("mousemove", function(evt){
-    //		var rect = S.c2.getBoundingClientRect();
-    //        mouse_x = evt.clientX - rect.left;
-    //        mouse_y = evt.clientY - rect.top;
-    //    }, false);
-    //	S.c2.addEventListener("click", function(ect){
-    //		usingMouse = true;
-    //		var mouse_i = Math.floor((mouse_x - S.abs_x) / CELL_W);
-    //		var mouse_j = Math.floor((mouse_y - S.abs_y) / CELL_H);
-    //		clickOrTouch(mouse_i,mouse_j);
-    //	}, false);
-    //
     //	S.c2.addEventListener("touchstart", function(evt){
     //		usingMouse = false;
     //		evt.preventDefault();
@@ -116,36 +135,15 @@ module Input {
     //		var touch_j = Math.floor((touch_y - S.abs_y) / CELL_H);
     //		clickOrTouch(touch_i,touch_j);
     //	}, false);
-    //	
-    //	
-    //	
-    //	function clickOrTouch(i,j){
-    //		var eventSelected = false;
-    //		for(var id in E){
-    //			var active_page = E[id][ACTIVE];
-    //			var e = E[id][active_page];
-    //			
-    //			var e_i = Math.floor(e.current_x/CELL_W);
-    //			var e_j = Math.floor(e.current_y/CELL_H);
-    //			
-    //			if(e_i==i && e_j==j){
-    //				eventSelected = true;
-    //				if(e == H){
-    //					//TODO apri l'inventario
-    //					console.log("open inventory");
-    //				
-    //				}else{
-    //					//TODO valuta evento
-    //					H.moveTo(i,j,true,function(){});
-    //				}
-    //			}
-    //		}
-    //		if(eventSelected == false){
-    //			//Move hero to this coordinates
-    //			H.moveTo(i,j,true,function(){});
-    //		}
-    //	}
-    	
-    	
+        
+    	function action(x,y) {
+            actionCallback(x,y);  
+        };
+        function hover(x,y) {
+            hoverCallback(x,y);
+        };
+        function swipe(x,y) {
+            swipeCallback(x,y);
+        };
     };
 }
