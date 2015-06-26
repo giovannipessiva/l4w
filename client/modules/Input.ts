@@ -197,9 +197,8 @@ module Input {
             var rect = canvas.getBoundingClientRect();
             var x = e.clientX - rect.left;
             var y = e.clientY - rect.top;
-            return {x, y};
+            return {x:x, y:y};
         }
-        
         
     };
 }

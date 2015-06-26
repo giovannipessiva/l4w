@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 					join_vars: true
 				},
 				screwIE8: true,
-				mangle: false
+				mangle: true
 			},
 			dist: {
 				files: {
