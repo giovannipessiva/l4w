@@ -1,8 +1,5 @@
 /// <reference path="Input.ts" />
 
-var canvas: HTMLCanvasElement = <HTMLCanvasElement> document.getElementById('canvas1');
-Main.start(canvas);
-
 module Main {
    
     export function start(canvas) {

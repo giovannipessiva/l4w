@@ -1,5 +1,3 @@
-var canvas = document.getElementById('canvas1');
-Main.start(canvas);
 var Main;
 (function (Main) {
     function start(canvas) {
