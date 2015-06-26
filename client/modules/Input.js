@@ -25,7 +25,7 @@ var Input;
     ;
     ;
     ;
-    function handleInput(canvas, actionCallback, swipeCallback, hoverCallback, inputCallbacks, resetCallback, pauseCallback, unpauseCallback) {
+    function handleInput(canvas, actionCallback, startActionCallback, ongoingActionCallback, endActionCallback, hoverCallback, inputCallbacks, resetCallback, pauseCallback, unpauseCallback, resizeCallback) {
         var lastKey;
         var flagPause = false;
         inputCallbacks[Keys.SPACE] = function () {
@@ -38,17 +38,53 @@ var Input;
                 flagPause = true;
             }
         };
-        canvas.addEventListener("click", function (evt) {
+        canvas.addEventListener("click", function (e) {
             var rect = canvas.getBoundingClientRect();
-            var mouse_x = evt.clientX - rect.left;
-            var mouse_y = evt.clientY - rect.top;
+            var mouse_x = e.clientX - rect.left;
+            var mouse_y = e.clientY - rect.top;
             action(mouse_x, mouse_y);
         }, false);
-        canvas.addEventListener("mousemove", function (evt) {
+        canvas.addEventListener("mousemove", function (e) {
             var rect = canvas.getBoundingClientRect();
-            var mouse_x = evt.clientX - rect.left;
-            var mouse_y = evt.clientY - rect.top;
+            var mouse_x = e.clientX - rect.left;
+            var mouse_y = e.clientY - rect.top;
             hover(mouse_x, mouse_y);
+        }, false);
+        var actionOngoing = false;
+        canvas.addEventListener("mousedown", function (e) {
+            actionOngoing = true;
+            var position = mapEvent(e);
+            startActionCallback(position.x, position.y);
+        }, false);
+        canvas.addEventListener("mouseup", function (e) {
+            actionOngoing = false;
+            var position = mapEvent(e);
+            endActionCallback(position.x, position.y);
+        }, false);
+        canvas.addEventListener("mouseover", function (e) {
+            var position = mapEvent(e);
+            if (actionOngoing) {
+                ongoingActionCallback(position.x, position.y);
+            }
+            else {
+                hoverCallback(position.x, position.y);
+            }
+        }, false);
+        canvas.addEventListener("touchstart", function (e) {
+            var position = mapEvent(e);
+            startActionCallback(position.x, position.y);
+        }, false);
+        canvas.addEventListener("touchend", function (e) {
+            var position = mapEvent(e);
+            endActionCallback(position.x, position.y);
+        }, false);
+        canvas.addEventListener("touchcancel", function (e) {
+            var position = mapEvent(e);
+            endActionCallback(position.x, position.y);
+        }, false);
+        canvas.addEventListener("touchmove", function (e) {
+            var position = mapEvent(e);
+            ongoingActionCallback(position.x, position.y);
         }, false);
         document.addEventListener("keydown", function (e) {
             var callback = inputCallbacks[String(e.keyCode)];
@@ -62,7 +98,7 @@ var Input;
                 resetCallback();
             }
         });
-        document.addEventListener("visibilitychange", function onVisibilityChange() {
+        document.addEventListener("visibilitychange", function () {
             if (document.hidden) {
                 pauseCallback();
                 flagPause = true;
@@ -72,18 +108,38 @@ var Input;
                 flagPause = false;
             }
         }, false);
+        document.addEventListener("orientationchange", function () {
+            resizeCallback();
+        }, false);
+        document.addEventListener("resize", function () {
+            resizeCallback();
+        }, false);
         function action(x, y) {
             actionCallback(x, y);
+        }
+        ;
+        function startAction(x, y) {
+            startActionCallback(x, y);
+        }
+        ;
+        function ongoingAction(x, y) {
+            ongoingActionCallback(x, y);
+        }
+        ;
+        function endAction(x, y) {
+            endActionCallback(x, y);
         }
         ;
         function hover(x, y) {
             hoverCallback(x, y);
         }
         ;
-        function swipe(x, y) {
-            swipeCallback(x, y);
+        function mapEvent(e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            return { x, y };
         }
-        ;
     }
     Input.handleInput = handleInput;
     ;

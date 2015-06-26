@@ -44,12 +44,15 @@ module Input {
     export function handleInput(
         canvas: HTMLCanvasElement,
         actionCallback: IPositionCallback,
-        swipeCallback: IPositionCallback,
+        startActionCallback: IPositionCallback,
+        ongoingActionCallback: IPositionCallback,
+        endActionCallback: IPositionCallback,
         hoverCallback: IPositionCallback,
         inputCallbacks: {Keys : IKeyCallback},
         resetCallback: IEventCallback,
         pauseCallback: IEventCallback,
-        unpauseCallback: IEventCallback) {
+        unpauseCallback: IEventCallback,
+        resizeCallback: IEventCallback) {
     	
     	var lastKey : number;
         var flagPause : boolean = false;
@@ -65,25 +68,61 @@ module Input {
            }
         };
         
-        canvas.addEventListener("click", function(evt){
+        // Mouse events 
+        canvas.addEventListener("click", function(e){
           var rect = canvas.getBoundingClientRect();
-          var mouse_x = evt.clientX - rect.left;
-          var mouse_y = evt.clientY - rect.top;
+          var mouse_x = e.clientX - rect.left;
+          var mouse_y = e.clientY - rect.top;
           action(mouse_x, mouse_y);
         }, false);
-    	canvas.addEventListener("mousemove", function(evt){
+    	canvas.addEventListener("mousemove", function(e){
           var rect = canvas.getBoundingClientRect();
-          var mouse_x = evt.clientX - rect.left;
-          var mouse_y = evt.clientY - rect.top;
+          var mouse_x = e.clientX - rect.left;
+          var mouse_y = e.clientY - rect.top;
           hover(mouse_x, mouse_y);
         }, false);
-        //contextmenu -> tasto destro del mouse
-        //dblclick -> doppio click
-        //mousedown
-        //mouseup
+        var actionOngoing : boolean = false;
+        canvas.addEventListener("mousedown", function(e){
+            actionOngoing = true;
+            var position = mapEvent(e);
+            startActionCallback(position.x,position.y);
+        }, false);
+        canvas.addEventListener("mouseup", function(e){
+            actionOngoing = false;
+            var position = mapEvent(e);
+            endActionCallback(position.x,position.y);
+        }, false);
+        canvas.addEventListener("mouseover", function(e){
+            var position = mapEvent(e);
+            if(actionOngoing) {
+                ongoingActionCallback(position.x,position.y);
+            } else {
+                hoverCallback(position.x,position.y);
+            }
+        }, false);
+        //contextmenu -> tasto destro mouse
+        //dblclick -> doppio click mouse
+        //wheel -> rotella mouse
         
-        //wheel
+        // Touch events
+        canvas.addEventListener("touchstart", function(e){
+            var position = mapEvent(e);
+            startActionCallback(position.x,position.y);
+        }, false);
+        canvas.addEventListener("touchend", function(e){
+            var position = mapEvent(e);
+            endActionCallback(position.x,position.y);
+        }, false);
+        canvas.addEventListener("touchcancel", function(e){
+            var position = mapEvent(e);
+            endActionCallback(position.x,position.y);
+        }, false);
+        canvas.addEventListener("touchmove", function(e){
+            var position = mapEvent(e);
+            ongoingActionCallback(position.x,position.y);
+        }, false);
         
+        // Keyboard events
         document.addEventListener("keydown", function(e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if(callback !== undefined) {
@@ -96,14 +135,10 @@ module Input {
                 resetCallback();
             }
         });
-        //keypress, input: da testare
+        //keypress, input -> tasto premuto
         
-        //touchstart
-        //touchcancel
-        //touchend
-        //touchmove
-        
-    	document.addEventListener("visibilitychange", function onVisibilityChange(){
+        // Visibility events
+    	document.addEventListener("visibilitychange", function(){
     		if(document.hidden){
                 pauseCallback();
                 flagPause = true;
@@ -113,8 +148,14 @@ module Input {
     		} 
     	}, false);
         
-        //orientationchange
-        //resize
+        // Screen change events
+        document.addEventListener("orientationchange", function(){
+            resizeCallback();
+        }, false);
+        document.addEventListener("resize", function(){
+            resizeCallback();
+        }, false);
+        
     	
     //	S.c2.addEventListener("touchstart", function(evt){
     //		usingMouse = false;
@@ -139,11 +180,26 @@ module Input {
     	function action(x,y) {
             actionCallback(x,y);  
         };
+        function startAction(x,y) {
+            startActionCallback(x,y);  
+        };
+        function ongoingAction(x,y) {
+            ongoingActionCallback(x,y);  
+        };
+        function endAction(x,y) {
+            endActionCallback(x,y);  
+        };
         function hover(x,y) {
             hoverCallback(x,y);
         };
-        function swipe(x,y) {
-            swipeCallback(x,y);
-        };
+        
+        function mapEvent(e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            return {x, y};
+        }
+        
+        
     };
 }
