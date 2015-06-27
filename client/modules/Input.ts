@@ -37,9 +37,9 @@ module Input {
         static K : string = "75";
     }
     
-    interface IPositionCallback { (x: number, y:number) : void };
-    interface IKeyCallback { (key: number) : void };
-    interface IEventCallback { () : void };
+    export interface IPositionCallback { (x: number, y:number) : void };
+    export interface IKeyCallback { (key: number) : void };
+    export interface IEventCallback { () : void };
     
     export function handleInput(
         canvas: HTMLCanvasElement,
