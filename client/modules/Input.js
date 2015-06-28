@@ -24,8 +24,8 @@ var Input;
     Input.Keys = Keys;
     ;
     ;
-    ;
-    function handleInput(canvas, actionCallback, startActionCallback, ongoingActionCallback, endActionCallback, hoverCallback, inputCallbacks, resetCallback, pauseCallback, unpauseCallback, resizeCallback) {
+    function init(canvas, inputCallbacks, resetCallback, actionCallback, startActionCallback, ongoingActionCallback, endActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
+        var actionOngoing = false;
         var lastKey;
         var flagPause = false;
         inputCallbacks[Keys.SPACE] = function () {
@@ -42,50 +42,69 @@ var Input;
             var rect = canvas.getBoundingClientRect();
             var mouse_x = e.clientX - rect.left;
             var mouse_y = e.clientY - rect.top;
-            action(mouse_x, mouse_y);
-        }, false);
+            actionCallback(mouse_x, mouse_y);
+        });
         canvas.addEventListener("mousemove", function (e) {
             var rect = canvas.getBoundingClientRect();
             var mouse_x = e.clientX - rect.left;
             var mouse_y = e.clientY - rect.top;
-            hover(mouse_x, mouse_y);
-        }, false);
-        var actionOngoing = false;
+            hoverCallback(mouse_x, mouse_y);
+        });
         canvas.addEventListener("mousedown", function (e) {
-            actionOngoing = true;
+            canvas.removeEventListener("mouseover", hover);
             var position = mapEvent(e);
             startActionCallback(position.x, position.y);
-        }, false);
+            canvas.addEventListener("mouseover", ongoingAction);
+        });
         canvas.addEventListener("mouseup", function (e) {
-            actionOngoing = false;
+            canvas.removeEventListener("mouseover", ongoingAction);
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
-        }, false);
-        canvas.addEventListener("mouseover", function (e) {
+            canvas.addEventListener("mouseover", hover);
+        });
+        function ongoingAction(e) {
             var position = mapEvent(e);
-            if (actionOngoing) {
-                ongoingActionCallback(position.x, position.y);
-            }
-            else {
-                hoverCallback(position.x, position.y);
-            }
-        }, false);
+            ongoingActionCallback(position.x, position.y);
+        }
+        function hover(e) {
+            console.log(e.which);
+            var position = mapEvent(e);
+            hoverCallback(position.x, position.y);
+        }
+        canvas.addEventListener("mouseover", hover);
+        canvas.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+            var position = mapEvent(e);
+            rightClickCallback(position.x, position.y);
+        });
+        canvas.addEventListener("dblclick", function (e) {
+            e.preventDefault();
+            var position = mapEvent(e);
+            doubleClickCallback(position.x, position.y);
+        });
+        canvas.addEventListener("wheel", function (e) {
+            e.preventDefault();
+            var position = mapEvent(e);
+            wheelCallback(position.x, position.y);
+        });
         canvas.addEventListener("touchstart", function (e) {
+            e.preventDefault();
             var position = mapEvent(e);
             startActionCallback(position.x, position.y);
-        }, false);
+        });
         canvas.addEventListener("touchend", function (e) {
+            e.preventDefault();
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
-        }, false);
+        });
         canvas.addEventListener("touchcancel", function (e) {
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
-        }, false);
+        });
         canvas.addEventListener("touchmove", function (e) {
             var position = mapEvent(e);
             ongoingActionCallback(position.x, position.y);
-        }, false);
+        });
         document.addEventListener("keydown", function (e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
@@ -107,40 +126,19 @@ var Input;
                 unpauseCallback();
                 flagPause = false;
             }
-        }, false);
+        });
+        window.addEventListener('resize', function (event) {
+            pauseCallback();
+            flagPause = true;
+            resizeCallback();
+        });
         document.addEventListener("orientationchange", function () {
             resizeCallback();
-        }, false);
-        document.addEventListener("resize", function () {
-            resizeCallback();
-        }, false);
-        function action(x, y) {
-            actionCallback(x, y);
-        }
-        ;
-        function startAction(x, y) {
-            startActionCallback(x, y);
-        }
-        ;
-        function ongoingAction(x, y) {
-            ongoingActionCallback(x, y);
-        }
-        ;
-        function endAction(x, y) {
-            endActionCallback(x, y);
-        }
-        ;
-        function hover(x, y) {
-            hoverCallback(x, y);
-        }
-        ;
+        });
         function mapEvent(e) {
-            var rect = canvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            return { x: x, y: y };
+            return Display.mapPosition(e.clientX, e.clientY);
         }
     }
-    Input.handleInput = handleInput;
+    Input.init = init;
     ;
 })(Input || (Input = {}));
