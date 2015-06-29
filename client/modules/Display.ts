@@ -1,6 +1,6 @@
 /**
-Module for canvas abstraction
-*/
+ * Module for canvas abstraction
+ */
 module Display {
     
     var canvas: HTMLCanvasElement;
@@ -16,11 +16,14 @@ module Display {
         canvas=cnvs;
         canvasH=canvas.height;
         canvasW=canvas.width;
-        cellH=32; //TODO load from properties
-        cellW=32; //TODO load from properties
+    };
+    
+    var deferredInit: Resource.IPropertiesCallback;
+    deferredInit = function(props) {
+        cellH=props['cellHeight'];
+        cellW=props['cellWidth'];
         rows=Math.floor(canvasH/cellH);
-        columns=Math.floor(canvasW/cellW);
-            
+        columns=Math.floor(canvasW/cellW); 
     };
     
     export function mapPosition(

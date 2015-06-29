@@ -1,28 +1,13 @@
 /// <reference path="Display.ts" />
 
 /**
-Module for input handling:
-- keyboard
-- mouse
-- touch
-- visibility change
-- screen resize and rotation change
-
-Usage example:
-
-    var inputCallbackMap = {};
-    inputCallbackMap[Keys.UP] = function(key){ alert("Up"); };
-    inputCallbackMap[Keys.DOWN] = function(key){ alert("Down"); };
-    inputCallbackMap[Keys.LEFT] = function(key){ alert("Left"); };
-    inputCallbackMap[Keys.RIGHT] = function(key){ alert("Right"); };
-    
-    initInputHandler(
-        inputCallbackMap,
-        function() { console.log("Reset"); },
-        function() { console.log("Paused"); },
-        function() { console.log("Unpaused"); }
-    );
-*/
+ * Module for input handling:
+ * - keyboard
+ * - mouse
+ * - touch
+ * - visibility change
+ * - screen resize and rotation change
+ */
 module Input {
 
     export class Keys {

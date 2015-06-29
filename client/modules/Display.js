@@ -11,13 +11,16 @@ var Display;
         canvas = cnvs;
         canvasH = canvas.height;
         canvasW = canvas.width;
-        cellH = 32;
-        cellW = 32;
-        rows = Math.floor(canvasH / cellH);
-        columns = Math.floor(canvasW / cellW);
     }
     Display.init = init;
     ;
+    var deferredInit;
+    deferredInit = function (props) {
+        cellH = props['cellHeight'];
+        cellW = props['cellWidth'];
+        rows = Math.floor(canvasH / cellH);
+        columns = Math.floor(canvasW / cellW);
+    };
     function mapPosition(x, y) {
         var rect = canvas.getBoundingClientRect();
         var i = Math.floor((x - rect.left) / cellH);
