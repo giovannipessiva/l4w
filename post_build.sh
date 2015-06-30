@@ -7,7 +7,7 @@ git checkout deploy
 rm -rf client/modules
 rm -rf client/test*
 rm -rf .settings
-rm .externalToolBuilders
+rm -rf .externalToolBuilders
 rm .project
 rm .travis.yml
 rm Gruntfile.js
