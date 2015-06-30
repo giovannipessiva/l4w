@@ -1,13 +1,15 @@
-git config --global user.email "giovannipessiva@users.noreply.github.com"
+git config --global user.email "rpt@altervista.org"
 git config --global user.name "Travis CI"
 
 git branch deploy
 git checkout deploy
 
+mv client/modules/core/asm/*.js client/
+
 rm -rf client/modules
 rm -rf client/test*
 rm -rf .settings
-rm .externalToolBuilders
+rm -rf .externalToolBuilders
 rm .project
 rm .travis.yml
 rm Gruntfile.js
