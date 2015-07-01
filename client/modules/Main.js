@@ -9,7 +9,7 @@ var Main;
         Display.init(canvas);
     }
     function initInput(canvas) {
-        var inputCallbackMap = {};
+        var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.UP] = function () {
             console.log("Up");
         };

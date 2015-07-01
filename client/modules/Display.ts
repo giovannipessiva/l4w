@@ -1,3 +1,5 @@
+/// <reference path="Resource.ts" />
+ 
 /**
  * Module for canvas abstraction
  */
@@ -16,12 +18,13 @@ module Display {
         canvas=cnvs;
         canvasH=canvas.height;
         canvasW=canvas.width;
+        Resource.loadPropertes("l4w",deferredInit);
     };
     
     var deferredInit: Resource.IPropertiesCallback;
     deferredInit = function(props) {
-        cellH=props['cellHeight'];
-        cellW=props['cellWidth'];
+        cellH=props["cellHeight"];
+        cellW=props["cellWidth"];
         rows=Math.floor(canvasH/cellH);
         columns=Math.floor(canvasW/cellW); 
     };

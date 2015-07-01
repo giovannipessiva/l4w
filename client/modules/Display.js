@@ -11,13 +11,14 @@ var Display;
         canvas = cnvs;
         canvasH = canvas.height;
         canvasW = canvas.width;
+        Resource.loadPropertes("l4w", deferredInit);
     }
     Display.init = init;
     ;
     var deferredInit;
     deferredInit = function (props) {
-        cellH = props['cellHeight'];
-        cellW = props['cellWidth'];
+        cellH = props["cellHeight"];
+        cellW = props["cellWidth"];
         rows = Math.floor(canvasH / cellH);
         columns = Math.floor(canvasW / cellW);
     };

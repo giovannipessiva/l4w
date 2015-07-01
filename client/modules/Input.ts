@@ -34,7 +34,7 @@ module Input {
     
     export function init(
         canvas: HTMLCanvasElement,
-        inputCallbacks: {[key: string] : IEventCallback},
+        inputCallbacks: Map<string,Input.IEventCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
         startActionCallback: IPositionCallback,

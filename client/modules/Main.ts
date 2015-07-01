@@ -13,7 +13,7 @@ module Main {
     }
 
     function initInput(canvas: HTMLCanvasElement) {
-        var inputCallbackMap: { [key: string] : Input.IEventCallback; } = {};
+        var inputCallbackMap: Map<string,Input.IEventCallback> = new Map<string,Input.IEventCallback>();
         inputCallbackMap[Input.Keys.UP] = function() { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function() { console.log("Down"); };
         inputCallbackMap[Input.Keys.LEFT] = function() { console.log("Left"); };
