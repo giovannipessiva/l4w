@@ -3,12 +3,14 @@
  */
 module Resource {
     
-    var properties: { string : { string : string }  };
+    var properties: Map<string,string> = new Map<string,string>();
     
-    export interface IPropertiesCallback { ( props : { string : string } ) : void };
+    export interface IPropertiesCallback { ( props : Map<string,string> ) : void };
     
     export function loadPropertes(file: string, onLoadCallback: IPropertiesCallback) {
         if(file in properties) {
+            return properties[file];
+        } else {
             var parsePropertiesCallback = function(){
                 var props=parseProperties(this.responseText);
                 properties[file]=props;
@@ -20,13 +22,11 @@ module Resource {
             request.ontimeout = function() { console.log("timeout getting "+file); }; //TODO
             request.open("get", "data/" + file + ".properties", true);
             request.send();
-        } else {
-            return properties[file];
         }
     };
     
-    function parseProperties(content: string): { string: string } {
-        var props: { string: string };
+    function parseProperties(content: string): Map<string,string> {
+        var props: Map<string,string> = new Map<string,string>();
         var lines = content.split("\n");
         for (var i=0; i<lines.length; i++) {
             var line = lines[i].trim();

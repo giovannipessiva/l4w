@@ -1,9 +1,12 @@
 var Resource;
 (function (Resource) {
-    var properties;
+    var properties = new Map();
     ;
     function loadPropertes(file, onLoadCallback) {
         if (file in properties) {
+            return properties[file];
+        }
+        else {
             var parsePropertiesCallback = function () {
                 var props = parseProperties(this.responseText);
                 properties[file] = props;
@@ -20,14 +23,11 @@ var Resource;
             request.open("get", "data/" + file + ".properties", true);
             request.send();
         }
-        else {
-            return properties[file];
-        }
     }
     Resource.loadPropertes = loadPropertes;
     ;
     function parseProperties(content) {
-        var props;
+        var props = new Map();
         var lines = content.split("\n");
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
