@@ -3,32 +3,28 @@
  */
 module Resource {
     
-    var properties: Map<string,string> = new Map<string,string>();
-    
-    export interface IPropertiesCallback { ( props : Map<string,string> ) : void };
-    
+    var rootFolder = "data/";
+    var properties: Map<string, string> = new Map<string, string>();
+
+    export interface IPropertiesCallback { (props: Map<string, string>): void };
+
     export function loadPropertes(file: string, onLoadCallback: IPropertiesCallback) {
-        if(file in properties) {
+        if (file in properties) {
             return properties[file];
         } else {
-            var parsePropertiesCallback = function(){
-                var props=parseProperties(this.responseText);
-                properties[file]=props;
+            function parsePropertiesCallback() {
+                var props = parseProperties(this.responseText);
+                properties[file] = props;
                 onLoadCallback(props);
             }
-            var request = new XMLHttpRequest();
-            request.onload = parsePropertiesCallback;
-            request.onerror = function() { console.log("error getting "+file); }; //TODO
-            request.ontimeout = function() { console.log("timeout getting "+file); }; //TODO
-            request.open("get", "data/" + file + ".properties", true);
-            request.send();
+            sendRequest(rootFolder + file + ".properties", parsePropertiesCallback);
         }
     };
-    
-    function parseProperties(content: string): Map<string,string> {
-        var props: Map<string,string> = new Map<string,string>();
+
+    function parseProperties(content: string): Map<string, string> {
+        var props: Map<string, string> = new Map<string, string>();
         var lines = content.split("\n");
-        for (var i=0; i<lines.length; i++) {
+        for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();
             if (line !== "" && line.indexOf("#") !== 0) {
                 var lineTokens = line.split("=");
@@ -37,4 +33,21 @@ module Resource {
         }
         return props;
     };
+
+    function sendRequest(uri: string, callback: { (): void }) {
+        var request = new XMLHttpRequest();
+        request.onload = callback;
+        request.onerror = handleRequestError;
+        request.ontimeout = handleRequestTimeout;
+        request.open("get", uri, true);
+        request.send();
+
+        function handleRequestError() {
+            console.log("error getting " + uri);
+        };
+
+        function handleRequestTimeout() {
+            console.log("timeout getting " + uri);
+        };
+    }
 }

@@ -1,5 +1,6 @@
 var Resource;
 (function (Resource) {
+    var rootFolder = "data/";
     var properties = new Map();
     ;
     function loadPropertes(file, onLoadCallback) {
@@ -7,21 +8,12 @@ var Resource;
             return properties[file];
         }
         else {
-            var parsePropertiesCallback = function () {
+            function parsePropertiesCallback() {
                 var props = parseProperties(this.responseText);
                 properties[file] = props;
                 onLoadCallback(props);
-            };
-            var request = new XMLHttpRequest();
-            request.onload = parsePropertiesCallback;
-            request.onerror = function () {
-                console.log("error getting " + file);
-            };
-            request.ontimeout = function () {
-                console.log("timeout getting " + file);
-            };
-            request.open("get", "data/" + file + ".properties", true);
-            request.send();
+            }
+            sendRequest(rootFolder + file + ".properties", parsePropertiesCallback);
         }
     }
     Resource.loadPropertes = loadPropertes;
@@ -39,4 +31,20 @@ var Resource;
         return props;
     }
     ;
+    function sendRequest(uri, callback) {
+        var request = new XMLHttpRequest();
+        request.onload = callback;
+        request.onerror = handleRequestError;
+        request.ontimeout = handleRequestTimeout;
+        request.open("get", uri, true);
+        request.send();
+        function handleRequestError() {
+            console.log("error getting " + uri);
+        }
+        ;
+        function handleRequestTimeout() {
+            console.log("timeout getting " + uri);
+        }
+        ;
+    }
 })(Resource || (Resource = {}));
