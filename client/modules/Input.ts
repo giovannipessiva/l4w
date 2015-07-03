@@ -11,30 +11,30 @@
 module Input {
 
     export class Keys {
-        static UP : string = "38";
-        static DOWN : string = "40";
-        static LEFT : string = "37";
-        static RIGHT : string = "39";
-        static CTRL : string = "17";
-        static ALT : string = "18";
-        static ENTER : string = "13";
-        static SPACE : string = "32";
-        static CAPS : string = "20";
-        static SHIFT : string = "16";
-        static W : string = "87";
-        static A : string = "65";
-        static D : string = "68";
-        static S : string = "83";
-        static J : string = "74";
-        static K : string = "75";
+        static UP: string = "38";
+        static DOWN: string = "40";
+        static LEFT: string = "37";
+        static RIGHT: string = "39";
+        static CTRL: string = "17";
+        static ALT: string = "18";
+        static ENTER: string = "13";
+        static SPACE: string = "32";
+        static CAPS: string = "20";
+        static SHIFT: string = "16";
+        static W: string = "87";
+        static A: string = "65";
+        static D: string = "68";
+        static S: string = "83";
+        static J: string = "74";
+        static K: string = "75";
     }
-    
-    export interface IPositionCallback { (x: number, y:number) : void };
-    export interface IEventCallback { () : void };
-    
+
+    export interface IPositionCallback { (x: number, y: number): void };
+    export interface IEventCallback { (): void };
+
     export function init(
         canvas: HTMLCanvasElement,
-        inputCallbacks: Map<string,Input.IEventCallback>,
+        inputCallbacks: Map<string, Input.IEventCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
         startActionCallback: IPositionCallback,
@@ -47,132 +47,124 @@ module Input {
         rightClickCallback: IPositionCallback,
         doubleClickCallback: IPositionCallback,
         wheelCallback: IPositionCallback) {
-    	
-    	var actionOngoing : boolean = false;
-        var lastKey : number;
-        var flagPause : boolean = false;
+
+        var actionOngoing: boolean = false;
+        var lastKey: number;
+        var flagPause: boolean = false;
         
         // Always use SPACE for pause
         inputCallbacks[Keys.SPACE] = function() {
-           if(flagPause) {
-               unpauseCallback();
-               flagPause = false;
-           } else {
-               pauseCallback();
-               flagPause = true;
-           }
+            if (flagPause) {
+                unpauseCallback();
+                flagPause = false;
+            } else {
+                pauseCallback();
+                flagPause = true;
+            }
         };
         
         // Mouse events 
-        canvas.addEventListener("click", function(e){
-          var rect = canvas.getBoundingClientRect();
-          var mouse_x = e.clientX - rect.left;
-          var mouse_y = e.clientY - rect.top;
-          actionCallback(mouse_x, mouse_y);
+        var flagMouseDown: boolean = false;
+        canvas.addEventListener("click", function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var mouse_x = e.clientX - rect.left;
+            var mouse_y = e.clientY - rect.top;
+            actionCallback(mouse_x, mouse_y);
         });
-    	canvas.addEventListener("mousemove", function(e){
-          var rect = canvas.getBoundingClientRect();
-          var mouse_x = e.clientX - rect.left;
-          var mouse_y = e.clientY - rect.top;
-          hoverCallback(mouse_x, mouse_y);
+        canvas.addEventListener("mousemove", function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var position = mapEvent(e);
+            if(flagMouseDown) {
+                ongoingActionCallback(position.x, position.y);
+            } else {
+                hoverCallback(position.x, position.y);
+            }
         });
-        canvas.addEventListener("mousedown", function(e){
-            canvas.removeEventListener("mouseover", hover);
+        canvas.addEventListener("mousedown", function(e: PointerEvent) {
+            flagMouseDown = true;
             var position = mapEvent(e);
-            startActionCallback(position.x,position.y);
-            canvas.addEventListener("mouseover", ongoingAction);
+            startActionCallback(position.x, position.y);
         });
-        canvas.addEventListener("mouseup", function(e){
-            canvas.removeEventListener("mouseover", ongoingAction); 
+        canvas.addEventListener("mouseup", function(e: PointerEvent) {
+            flagMouseDown = false;
             var position = mapEvent(e);
-            endActionCallback(position.x,position.y);
-            canvas.addEventListener("mouseover", hover);
+            endActionCallback(position.x, position.y);
         });
-        function ongoingAction(e: PointerEvent){
-            var position = mapEvent(e);
-            ongoingActionCallback(position.x,position.y);
-        }
-        function hover(e: PointerEvent){
-            console.log(e.which);
-            var position = mapEvent(e);
-            hoverCallback(position.x,position.y);
-        }
-        canvas.addEventListener("mouseover", hover);
-        canvas.addEventListener("contextmenu", function(e){
+        canvas.addEventListener("contextmenu", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            rightClickCallback(position.x,position.y);
+            rightClickCallback(position.x, position.y);
         });
-        canvas.addEventListener("dblclick", function(e){
+        canvas.addEventListener("dblclick", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            doubleClickCallback(position.x,position.y);
+            doubleClickCallback(position.x, position.y);
         });
-        canvas.addEventListener("wheel", function(e){
+        canvas.addEventListener("wheel", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            wheelCallback(position.x,position.y);
+            wheelCallback(position.x, position.y);
         });
         
         // Touch events
-        canvas.addEventListener("touchstart", function(e){
+        canvas.addEventListener("touchstart", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            startActionCallback(position.x,position.y);
+            startActionCallback(position.x, position.y);
         });
-        canvas.addEventListener("touchend", function(e){
+        canvas.addEventListener("touchend", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            endActionCallback(position.x,position.y);
+            endActionCallback(position.x, position.y);
         });
-        canvas.addEventListener("touchcancel", function(e){
+        canvas.addEventListener("touchcancel", function(e) {
             var position = mapEvent(e);
-            endActionCallback(position.x,position.y);
+            endActionCallback(position.x, position.y);
         });
-        canvas.addEventListener("touchmove", function(e){
+        canvas.addEventListener("touchmove", function(e) {
             var position = mapEvent(e);
-            ongoingActionCallback(position.x,position.y);
+            ongoingActionCallback(position.x, position.y);
         });
         
         // Keyboard events
         document.addEventListener("keydown", function(e) {
             var callback = inputCallbacks[String(e.keyCode)];
-            if(callback !== undefined) {
+            if (callback !== undefined) {
                 callback();
             }
             lastKey = e.keyCode;
         });
-        document.addEventListener("keyup", function(e){
-            if(e.keyCode === lastKey) {
+        document.addEventListener("keyup", function(e) {
+            if (e.keyCode === lastKey) {
                 resetCallback();
             }
         });
         //keypress, input -> tasto premuto
         
         // Visibility events
-    	document.addEventListener("visibilitychange", function(){
-    		if(document.hidden){
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
                 pauseCallback();
                 flagPause = true;
-    		}else{
+            } else {
                 unpauseCallback();
                 flagPause = false;
-    		} 
-    	});
+            }
+        });
         
         // Screen change events
-        window.addEventListener('resize', function(event){
+        window.addEventListener('resize', function(event) {
             pauseCallback();
             flagPause = true;
             resizeCallback();
         });
-        document.addEventListener("orientationchange", function(){
+        document.addEventListener("orientationchange", function() {
             resizeCallback();
         });
- 
+
         function mapEvent(e) {
-            return Display.mapPosition(e.clientX,e.clientY);
+            return Display.mapPosition(e.clientX, e.clientY);
         }
-        
+
     };
 }

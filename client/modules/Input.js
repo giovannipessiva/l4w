@@ -38,6 +38,7 @@ var Input;
                 flagPause = true;
             }
         };
+        var flagMouseDown = false;
         canvas.addEventListener("click", function (e) {
             var rect = canvas.getBoundingClientRect();
             var mouse_x = e.clientX - rect.left;
@@ -46,32 +47,24 @@ var Input;
         });
         canvas.addEventListener("mousemove", function (e) {
             var rect = canvas.getBoundingClientRect();
-            var mouse_x = e.clientX - rect.left;
-            var mouse_y = e.clientY - rect.top;
-            hoverCallback(mouse_x, mouse_y);
+            var position = mapEvent(e);
+            if (flagMouseDown) {
+                ongoingActionCallback(position.x, position.y);
+            }
+            else {
+                hoverCallback(position.x, position.y);
+            }
         });
         canvas.addEventListener("mousedown", function (e) {
-            canvas.removeEventListener("mouseover", hover);
+            flagMouseDown = true;
             var position = mapEvent(e);
             startActionCallback(position.x, position.y);
-            canvas.addEventListener("mouseover", ongoingAction);
         });
         canvas.addEventListener("mouseup", function (e) {
-            canvas.removeEventListener("mouseover", ongoingAction);
+            flagMouseDown = false;
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
-            canvas.addEventListener("mouseover", hover);
         });
-        function ongoingAction(e) {
-            var position = mapEvent(e);
-            ongoingActionCallback(position.x, position.y);
-        }
-        function hover(e) {
-            console.log(e.which);
-            var position = mapEvent(e);
-            hoverCallback(position.x, position.y);
-        }
-        canvas.addEventListener("mouseover", hover);
         canvas.addEventListener("contextmenu", function (e) {
             e.preventDefault();
             var position = mapEvent(e);
