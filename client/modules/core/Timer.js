@@ -8,6 +8,7 @@ var Time;
     ;
     var Timer = (function () {
         function Timer() {
+            this.startTime = 0;
         }
         Timer.prototype.start = function () {
             this.startTime = getTime();
@@ -22,10 +23,7 @@ var Time;
             return diff;
         };
         Timer.prototype.isActive = function () {
-            if (this.startTime != 0)
-                return true;
-            else
-                return false;
+            return this.startTime != 0;
         };
         Timer.prototype.stop = function () {
             this.startTime = 0;

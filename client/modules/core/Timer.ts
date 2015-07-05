@@ -9,13 +9,13 @@ module Time {
 
     export class Timer {
 
-        startTime;
+        private startTime: number = 0;
 
         start() {
             this.startTime = getTime();
         }
 
-        getDiff(currentTime) {
+        getDiff(currentTime: number) {
             return currentTime - this.startTime;
         }
 
@@ -27,10 +27,7 @@ module Time {
         }
 
         isActive() {
-            if (this.startTime != 0)
-                return true;
-            else
-                return false;
+            return this.startTime != 0;
         }
 
         stop() {
