@@ -12,6 +12,8 @@ module Display {
     var columns: number;
     var cellH: number;
     var cellW: number;
+    var halfRows: number;
+    var halfColumns: number;
 
     export function init(
         cnvs: HTMLCanvasElement) {
@@ -39,5 +41,49 @@ module Display {
         canvasW = canvas.width;
         rows = Math.floor(canvasH / cellH);
         columns = Math.floor(canvasW / cellW);
+        halfRows = rows/2;
+        halfColumns = columns/2;
     };
+    
+    export function getMinX(focusX: number) {
+        var val = Math.floor((focusX/cellW - halfColumns));
+        if(val < 0) {
+           val = 0; 
+        }
+        return val;
+    };
+    export function getMinY(focusY: number) {
+        var val = Math.floor((focusY/cellH - halfRows));
+        if(val < 0) {
+           val = 0; 
+        }
+        return val;
+    };
+    export function getMaxX(focusX: number,limit?: number) {
+        var val = Math.ceil((focusX/cellW + halfColumns));
+        if(val > limit) {
+           val = limit; 
+        }
+        return val;
+    };
+    export function getMaxY(focusY: number,limit?: number) {
+        var val = Math.ceil((focusY/cellH + halfRows));
+        if(val > limit) {
+           val = limit; 
+        }
+        return val;
+    };
+    export function getOffsetX(focusX: number) {
+       return focusX % cellW;
+    }
+    export function getOffsetY(focusY: number) {
+       return focusY % cellH;
+    }
+    
+    export function getPointerX(pointerX: number) {
+        return (pointerX-0.5)*cellW;
+    }
+    export function getPointerY(pointerY: number) {
+        return (pointerY-0.5)*cellH;
+    }
 }

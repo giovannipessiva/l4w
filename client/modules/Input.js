@@ -66,12 +66,10 @@ var Input;
             endActionCallback(position.x, position.y);
         });
         canvas.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
             var position = mapEvent(e);
             rightClickCallback(position.x, position.y);
         });
         canvas.addEventListener("dblclick", function (e) {
-            e.preventDefault();
             var position = mapEvent(e);
             doubleClickCallback(position.x, position.y);
         });

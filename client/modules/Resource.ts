@@ -3,7 +3,14 @@
  */
 module Resource {
     
-    var rootFolder = "data/";
+    var dataFolder = "data/";
+    var assetsFolder = "assets/";
+    
+    var charFolder = assetsFolder + "charset/";
+    var faceFolder = assetsFolder + "faceset/";
+    var skinFolder = assetsFolder + "skin/";
+    var tileFolder = assetsFolder + "tileset/";
+    
     var properties: Map<string, string> = new Map<string, string>();
 
     export interface IPropertiesCallback { (props: Map<string, string>): void };
@@ -17,7 +24,7 @@ module Resource {
                 properties[file] = props;
                 onLoadCallback(props);
             }
-            sendRequest(rootFolder + file + ".properties", parsePropertiesCallback);
+            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
         }
     };
 
