@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 
 		uglify: {
 			options: {
-				banner: '/* <%= pkg.name %> <%= grunt.template.date((new Date()).getTime() + 36000*2,"yyyy-mm-dd HH:MM") %> */\n',
+				banner: '/* <%= pkg.name %> <%= grunt.template.date((new Date()).getTime() + 3600000*2,"yyyy-mm-dd HH:MM") %> */\n',
 				compress: {
 					properties: true,
 					unsafe: true,
