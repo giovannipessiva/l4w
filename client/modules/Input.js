@@ -24,7 +24,7 @@ var Input;
     Input.Keys = Keys;
     ;
     ;
-    function init(canvas, inputCallbacks, resetCallback, actionCallback, startActionCallback, ongoingActionCallback, endActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
+    function init(canvas, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
         var actionOngoing = false;
         var lastKey;
         var flagPause = false;

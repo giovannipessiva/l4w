@@ -4,6 +4,7 @@ var World;
         function Map() {
             this.rows = 30;
             this.columns = 30;
+            this.layers = [];
         }
         Map.prototype.render = function (events, xFocus, yFocus) {
             for (var layer in this.layers) {

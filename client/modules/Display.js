@@ -1,8 +1,8 @@
 var Display;
 (function (Display) {
     var canvas;
-    var canvasH;
-    var canvasW;
+    Display.canvasH;
+    Display.canvasW;
     var rows;
     var columns;
     var cellH;
@@ -30,10 +30,10 @@ var Display;
     Display.mapPosition = mapPosition;
     ;
     function refresh() {
-        canvasH = canvas.height;
-        canvasW = canvas.width;
-        rows = Math.floor(canvasH / cellH);
-        columns = Math.floor(canvasW / cellW);
+        Display.canvasH = canvas.height;
+        Display.canvasW = canvas.width;
+        rows = Math.floor(Display.canvasH / cellH);
+        columns = Math.floor(Display.canvasW / cellW);
         halfRows = rows / 2;
         halfColumns = columns / 2;
     }

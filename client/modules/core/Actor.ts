@@ -1,40 +1,46 @@
 /// <reference path="World.ts" />
   
- /**
- * Module to handle an event
- */
+/**
+* Module to handle an event
+*/
 module Actor {
 
     export class Event {
-        
-        private state: number = 0;
+
+        private state: number;
         private x: number;
         private y: number;
-        
-        private states: [EventState];
-        
-        update(events: [Event],map: World.Map,time: number) {
-            this.states[this.state].update(events,map,time);
+
+        private states: EventState[];
+
+        constructor() {
+            this.states = [];
+            this.states.push(new EventState(this));
+            this.state = 0
         }
-        
+
+        update(events: Event[], map: World.Map, time: number) {
+            this.states[this.state].update(events, map, time);
+        }
+
         render(x: number, y: number) {
-            this.states[this.state].render(x,y);
+            this.states[this.state].render(x, y);
         }
 
     };
 
     class EventState {
-        
+
         private event: Event;
-        
+
         constructor(event: Event) {
-           this.event=event; 
+            this.event = event;
         }
-        
-        update(events: [Event],map: World.Map,time: number) {
+
+        update(events: Event[], map: World.Map, time: number) {
             //TODO update EventState
-        } 
-        
+        }
+
         render(x: number, y: number) {
             //TODO render EventState
         }

@@ -9,46 +9,58 @@ var Scene;
     var map;
     var focus;
     var pointer;
-    var renderingOtions = new World.Options();
-    function start(canvas) {
-        mainGameLoop();
-        var nextAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || function (callback, canvas) {
-            window.setTimeout(mainGameLoop, refreshInterval);
+    var renderingOtions;
+    var context;
+    var nextAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+        window.setTimeout(mainGameLoop, refreshInterval);
+    };
+    function start(ctx) {
+        hero = new Actor.Event();
+        map = new World.Map();
+        focus = {
+            x: 0,
+            y: 0
         };
-        function mainGameLoop() {
-            nextAnimationFrame(mainGameLoop, canvas);
-            if (paused) {
-                return;
-            }
-            var context = canvas.getContext("2d");
-            var time = Time.getTime();
-            hero.update(events, map, time);
-            for (var event in events) {
-                event.update(events, map, time);
-            }
-            translate();
-            var layers = map.getLayers();
-            var minRow = Display.getMinY(focus.y);
-            var maxRow = Display.getMaxY(focus.y, map.columns);
-            for (var y = minRow; y <= maxRow; y++) {
-                for (var layer = 0; layer < layers; layer++) {
-                    renderRow(y, layer);
-                }
-                renderEventRow(y);
-            }
-            renderPointer(context);
-        }
+        pointer = {
+            x: 0,
+            y: 0
+        };
+        context = ctx;
+        mainGameLoop();
     }
     Scene.start = start;
+    function mainGameLoop() {
+        nextAnimationFrame(mainGameLoop);
+        if (paused) {
+            return;
+        }
+        context.clearRect(0, 0, Display.canvasW, Display.canvasH);
+        var time = Time.getTime();
+        hero.update(events, map, time);
+        for (var event in events) {
+            event.update(events, map, time);
+        }
+        translate();
+        var layers = map.getLayers();
+        var minRow = Display.getMinY(focus.y);
+        var maxRow = Display.getMaxY(focus.y, map.columns);
+        for (var y = minRow; y <= maxRow; y++) {
+            for (var layer = 0; layer < layers; layer++) {
+                renderRow(y, layer);
+            }
+            renderEventRow(y);
+        }
+        renderPointer();
+    }
     function renderRow(row, layer) {
     }
     function renderEventRow(row) {
     }
-    function renderPointer(context) {
+    function renderPointer() {
         context.save();
         context.beginPath();
-        context.fillStyle = 'yellow';
-        context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Math.PI * 2, true);
+        context.fillStyle = Constant.Color.yellow;
+        context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
         context.closePath();
         context.globalAlpha = 0.4;
         context.fill();

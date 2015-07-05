@@ -8,12 +8,13 @@ module World {
         rows: number;
         columns: number;
         
-        private layers: [MapLayer];
+        private layers: MapLayer[];
 
         constructor() {
             //TODO
             this.rows=30;
             this.columns=30;
+            this.layers = [];
         }
         
         render(events: Event, xFocus: number, yFocus: number) {

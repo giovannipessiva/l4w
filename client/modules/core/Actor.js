@@ -2,6 +2,8 @@ var Actor;
 (function (Actor) {
     var Event = (function () {
         function Event() {
+            this.states = [];
+            this.states.push(new EventState(this));
             this.state = 0;
         }
         Event.prototype.update = function (events, map, time) {

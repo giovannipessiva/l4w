@@ -3,6 +3,7 @@ var Main;
     function start(canvas) {
         initDisplay(canvas);
         initInput(canvas);
+        Scene.start(canvas.getContext("2d"));
     }
     Main.start = start;
     function initDisplay(canvas) {
@@ -29,15 +30,19 @@ var Main;
         }, function () {
             console.log("start");
         }, function () {
-            console.log("ongoing");
-        }, function () {
             console.log("end");
-        }, function () {
+        }, function (x, y) {
+            console.log("ongoing");
+            Scene.updatePointer(x, y);
+        }, function (x, y) {
             console.log("hover");
+            Scene.updatePointer(x, y);
         }, function () {
             console.log("pause");
+            Scene.togglePause(true);
         }, function () {
             console.log("unpause");
+            Scene.togglePause(false);
         }, function () {
             console.log("resize");
         }, function () {

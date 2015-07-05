@@ -6,8 +6,8 @@
 module Display {
 
     var canvas: HTMLCanvasElement;
-    var canvasH: number;
-    var canvasW: number;
+    export var canvasH: number; //TODO rimuovere export
+    export var canvasW: number; //TODO rimuovere export
     var rows: number;
     var columns: number;
     var cellH: number;

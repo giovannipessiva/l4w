@@ -3,24 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <title>L4W</title>
+<script src="modules/Display.js"></script>
 <script src="modules/Input.js"></script>
 <script src="modules/Main.js"></script>
-<script src="modules/Display.js"></script>
 <script src="modules/Resource.js"></script>
+<script src="modules/core/Actor.js"></script>
+<script src="modules/core/Scene.js"></script>
+<script src="modules/core/World.js"></script>
+<script src="modules/core/util/Constant.js"></script>
+<script src="modules/core/util/Timer.js"></script>
 </head>
-<body onload="test()">
+<body>
 <div style="position:relative;width:672px;height:512px;margin-left:auto;margin-right:auto;">
 <canvas id="canvas1" class="l4wCanvas" width="672" height="512" style="border:1px solid black">
 Your browser does not support HTML5 Canvas!</canvas>
 	
 <script type='text/javascript'>
-function test() {
+document.addEventListener("DOMContentLoaded", test);
 
+function test() {
 	var canvas = document.getElementById('canvas1');
 	var ctx = canvas.getContext('2d');
 	ctx.fillStyle='#000000';
 	ctx.font='bold 18px Arial';
 	ctx.fillText("loaded",10,20);
+	if (typeof World === 'undefined') {
+		console.log("World non definito");
+	}
+	if (typeof Scene === 'undefined') {
+		console.log("Scene non definito");
+	}
 	Main.start(canvas);
 	
 }
