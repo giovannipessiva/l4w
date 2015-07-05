@@ -84,11 +84,11 @@ var Display;
     }
     Display.getOffsetY = getOffsetY;
     function getPointerX(pointerX) {
-        return (pointerX - 0.5) * cellW;
+        return (pointerX + 0.5) * cellW;
     }
     Display.getPointerX = getPointerX;
     function getPointerY(pointerY) {
-        return (pointerY - 0.5) * cellH;
+        return (pointerY + 0.5) * cellH;
     }
     Display.getPointerY = getPointerY;
 })(Display || (Display = {}));

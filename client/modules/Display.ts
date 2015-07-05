@@ -81,9 +81,9 @@ module Display {
     }
     
     export function getPointerX(pointerX: number) {
-        return (pointerX-0.5)*cellW;
+        return (pointerX+0.5)*cellW;
     }
     export function getPointerY(pointerY: number) {
-        return (pointerY-0.5)*cellH;
+        return (pointerY+0.5)*cellH;
     }
 }
