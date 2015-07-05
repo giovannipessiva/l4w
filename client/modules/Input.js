@@ -97,10 +97,12 @@ var Input;
         });
         canvas.addEventListener("touchend", function (e) {
             var position = mapEvent(e);
+            ongoingActionCallback(null, null);
             endActionCallback(position.x, position.y);
         });
         canvas.addEventListener("touchcancel", function (e) {
             var position = mapEvent(e);
+            ongoingActionCallback(null, null);
             endActionCallback(position.x, position.y);
         });
         canvas.addEventListener("touchmove", function (e) {

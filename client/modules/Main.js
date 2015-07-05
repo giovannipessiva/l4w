@@ -33,13 +33,9 @@ var Main;
             Scene.toggleCellNumbering();
         };
         Input.init(canvas, inputCallbackMap, function () {
-            console.log("reset");
         }, function () {
-            console.log("action");
         }, function () {
-            console.log("start");
         }, function () {
-            Scene.updatePointer(null, null);
         }, function (x, y) {
             Scene.updatePointer(x, y);
         }, function (x, y) {

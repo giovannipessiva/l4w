@@ -34,13 +34,10 @@ module Main {
         Input.init(
             canvas,
             inputCallbackMap,
-            function() { console.log("reset"); },
-            function() { console.log("action"); },
-            function() { console.log("start"); },
-            function() {
-                //End
-                Scene.updatePointer(null, null);
-            },
+            function() { },
+            function() { },
+            function() { },
+            function() { },
             function(x, y) {
                 //Ongoing
                 Scene.updatePointer(x, y);
