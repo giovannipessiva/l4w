@@ -1,6 +1,7 @@
 /// <reference path="Actor.ts" />
 /// <reference path="World.ts" />
 /// <reference path="util/Constant.ts" />
+/// <reference path="util/Time.ts" />
 
 /**
  * Module to handle rendering operations
