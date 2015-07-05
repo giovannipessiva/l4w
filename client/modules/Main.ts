@@ -7,7 +7,7 @@ module Main {
     export function start(canvas: HTMLCanvasElement) {
         initDisplay(canvas);
         initInput(canvas);
-        
+
         Scene.start(canvas.getContext("2d"));
     }
 
@@ -21,6 +21,15 @@ module Main {
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
         inputCallbackMap[Input.Keys.LEFT] = function(e) { console.log("Left"); };
         inputCallbackMap[Input.Keys.RIGHT] = function(e) { console.log("Right"); };
+        inputCallbackMap[Input.Keys.F1] = function(e) {
+            Scene.toggleFPS();
+        };
+        inputCallbackMap[Input.Keys.F2] = function(e) {
+            Scene.toggleGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function(e) {
+            Scene.toggleCellNumbering();
+        };
 
         Input.init(
             canvas,
@@ -30,14 +39,14 @@ module Main {
             function() { console.log("start"); },
             function() {
                 //End
-                Scene.updatePointer(null,null);
+                Scene.updatePointer(null, null);
             },
             function(x, y) {
                 //Ongoing
                 Scene.updatePointer(x, y);
             },
             function(x, y) {
-            	//Hover
+                //Hover
                 Scene.updatePointer(x, y);
             },
             function() {

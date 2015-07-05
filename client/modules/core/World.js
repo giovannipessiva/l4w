@@ -2,13 +2,24 @@ var World;
 (function (World) {
     var Map = (function () {
         function Map() {
-            this.rows = 30;
-            this.columns = 30;
+            this.rows = 21;
+            this.columns = 16;
             this.layers = [];
         }
-        Map.prototype.render = function (events, xFocus, yFocus) {
+        Map.prototype.render = function (context, x, y, renderingOptions) {
             for (var layer in this.layers) {
-                layer.render(events, xFocus, yFocus);
+                layer.render(context, x, y);
+            }
+            if (renderingOptions != null) {
+                if (renderingOptions.showGrid) {
+                    context.strokeStyle = Constant.Color.RED;
+                    context.strokeRect(x * Display.cellW, y * Display.cellH, Display.cellW, Display.cellH);
+                }
+                if (renderingOptions.showCellNumbers) {
+                    context.fillStyle = Constant.Color.RED;
+                    context.font = "bold 10px Arial";
+                    context.fillText(x + "," + y, x * Display.cellW + 1, y * Display.cellH + 10);
+                }
             }
         };
         Map.prototype.getLayers = function () {
@@ -21,7 +32,7 @@ var World;
     var MapLayer = (function () {
         function MapLayer() {
         }
-        MapLayer.prototype.render = function (events, xFocus, yFocus) {
+        MapLayer.prototype.render = function (context, x, y) {
         };
         return MapLayer;
     })();

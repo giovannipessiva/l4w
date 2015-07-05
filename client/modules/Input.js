@@ -19,6 +19,10 @@ var Input;
         Keys.S = "83";
         Keys.J = "74";
         Keys.K = "75";
+        Keys.F1 = "112";
+        Keys.F2 = "113";
+        Keys.F3 = "114";
+        Keys.F4 = "115";
         return Keys;
     })();
     Input.Keys = Keys;
@@ -108,6 +112,8 @@ var Input;
             if (callback !== undefined) {
                 e.preventDefault();
                 callback(e);
+            }
+            else {
             }
             lastKey = e.keyCode;
         });

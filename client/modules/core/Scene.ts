@@ -16,6 +16,12 @@ module Scene {
     var FPS = 20;
     var refreshInterval = 1000 / FPS;
 
+    var autoFPS = true;
+    var secondFPS = 0;
+    var countFPS = 0;
+    var lastFPS = 0;
+    var FPSPerformance = [22, 21, 20];
+
     var paused = false;
 
     var hero: Actor.Event;
@@ -25,7 +31,8 @@ module Scene {
     var focus: Point;
     var pointer: Point;
 
-    var renderingOtions: World.Options;
+    var renderingOptions: World.Options;
+    var layers: number;
 
     var context: CanvasRenderingContext2D;
 
@@ -47,6 +54,8 @@ module Scene {
         pointer = {
             x: 0, y: 0
         };
+        renderingOptions = new World.Options();
+        layers = map.getLayers();
         context = ctx;
 
         mainGameLoop();
@@ -61,7 +70,7 @@ module Scene {
         context.clearRect(0, 0, Display.canvasW, Display.canvasH); //TODO rimuovere a regime
         context.fillStyle = '#000000';
         context.font = 'bold 40px Arial';
-        context.fillText("(it's not ready yet)", 150, 260);
+        context.fillText("(it's not ready yet)", 160, 260);
 
         var time = Time.getTime();
         hero.update(events, map, time);
@@ -71,23 +80,24 @@ module Scene {
 
         translate();
 
-        var layers = map.getLayers();
         var minRow = Display.getMinY(focus.y);
-        var maxRow = Display.getMaxY(focus.y, map.columns);
+        var maxRow = Display.getMaxY(focus.y, map.rows);
         for (var y = minRow; y <= maxRow; y++) {
 
-            for (var layer = 0; layer < layers; layer++) {
-                renderRow(y, layer);
-            }
-
+            renderRow(y);
             renderEventRow(y);
         }
 
         renderPointer();
+        renderFPS();
     }
 
-    function renderRow(row: number, layer: number) {
-
+    function renderRow(y: number) {
+        var minColumn = Display.getMinX(focus.x);
+        var maxColumn = Display.getMaxX(focus.x, map.columns);
+        for (var x = minColumn; x <= maxColumn; x++) {
+            map.render(context, x, y, renderingOptions);
+        }
     }
 
     function renderEventRow(row: number) {
@@ -97,13 +107,37 @@ module Scene {
     function renderPointer() {
         if (pointer.x != null && pointer.y != null) {
             context.save();
+            context.scale(1, 0.9);
             context.beginPath();
-            context.fillStyle = Constant.Color.yellow;
-            context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
+            context.fillStyle = Constant.Color.YELLOW;
+            context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 18, 0, Constant.DOUBLE_PI);
             context.closePath();
             context.globalAlpha = 0.4;
             context.fill();
             context.restore();
+        }
+    }
+
+    function renderFPS() {
+        var seconds = Math.floor(Time.getTime() / 1000);
+        if (seconds == secondFPS) {
+            countFPS++;
+        } else {
+            lastFPS = countFPS;
+            countFPS = 1;
+            secondFPS = seconds;
+            if (autoFPS == true) {
+                FPSPerformance.shift();
+                FPSPerformance[2] = lastFPS;
+                var avg: number = (FPSPerformance[0] + FPSPerformance[1] + FPSPerformance[2]) / 3;
+                FPS = Math.ceil(avg) + 2;
+            }
+        }
+
+        if (renderingOptions.showFPS) {
+            context.fillStyle = Constant.Color.RED;
+            context.font = "bold 18px Arial";
+            context.fillText("" + lastFPS, 10, 20);
         }
     }
 
@@ -113,27 +147,27 @@ module Scene {
 
     export function toggleGrid(enable?: boolean) {
         if (enable != null) {
-            renderingOtions.showGrid = enable;
+            renderingOptions.showGrid = enable;
         } else {
-            renderingOtions.showGrid = !renderingOtions.showGrid;
+            renderingOptions.showGrid = !renderingOptions.showGrid;
         }
 
     }
 
     export function toggleFPS(enable?: boolean) {
         if (enable != null) {
-            renderingOtions.showFPS = enable;
+            renderingOptions.showFPS = enable;
         } else {
-            renderingOtions.showFPS = !renderingOtions.showFPS;
+            renderingOptions.showFPS = !renderingOptions.showFPS;
         }
 
     }
 
     export function toggleCellNumbering(enable?: boolean) {
         if (enable != null) {
-            renderingOtions.showCellNumbers = enable;
+            renderingOptions.showCellNumbers = enable;
         } else {
-            renderingOtions.showCellNumbers = !renderingOtions.showCellNumbers;
+            renderingOptions.showCellNumbers = !renderingOptions.showCellNumbers;
         }
 
     }

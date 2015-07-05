@@ -6,12 +6,12 @@
 module Display {
 
     var canvas: HTMLCanvasElement;
-    export var canvasH: number; //TODO rimuovere export
-    export var canvasW: number; //TODO rimuovere export
+    export var canvasH: number;
+    export var canvasW: number;
     var rows: number;
     var columns: number;
-    var cellH: number;
-    var cellW: number;
+    export var cellH: number;
+    export var cellW: number;
     var halfRows: number;
     var halfColumns: number;
 

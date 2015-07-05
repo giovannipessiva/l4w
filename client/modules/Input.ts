@@ -11,22 +11,26 @@
 module Input {
 
     export class Keys {
-        static UP: string = "38";
-        static DOWN: string = "40";
-        static LEFT: string = "37";
-        static RIGHT: string = "39";
-        static CTRL: string = "17";
-        static ALT: string = "18";
-        static ENTER: string = "13";
-        static SPACE: string = "32";
-        static CAPS: string = "20";
-        static SHIFT: string = "16";
-        static W: string = "87";
-        static A: string = "65";
-        static D: string = "68";
-        static S: string = "83";
-        static J: string = "74";
-        static K: string = "75";
+        static UP = "38";
+        static DOWN = "40";
+        static LEFT = "37";
+        static RIGHT = "39";
+        static CTRL = "17";
+        static ALT = "18";
+        static ENTER = "13";
+        static SPACE = "32";
+        static CAPS = "20";
+        static SHIFT = "16";
+        static W = "87";
+        static A = "65";
+        static D = "68";
+        static S = "83";
+        static J = "74";
+        static K = "75";
+        static F1 = "112";
+        static F2 = "113";
+        static F3 = "114";
+        static F4 = "115";
     }
 
     export interface IPositionCallback { (x: number, y: number): void };
@@ -136,6 +140,8 @@ module Input {
             if (callback !== undefined) {
                 e.preventDefault();
                 callback(e);
+            } else {
+                //console.log("Tasto non registrato:" + e.keyCode); //TODO remove
             }
             lastKey = e.keyCode;
         });

@@ -23,6 +23,15 @@ var Main;
         inputCallbackMap[Input.Keys.RIGHT] = function (e) {
             console.log("Right");
         };
+        inputCallbackMap[Input.Keys.F1] = function (e) {
+            Scene.toggleFPS();
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            Scene.toggleGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            Scene.toggleCellNumbering();
+        };
         Input.init(canvas, inputCallbackMap, function () {
             console.log("reset");
         }, function () {
