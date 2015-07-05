@@ -31,10 +31,11 @@ module Input {
 
     export interface IPositionCallback { (x: number, y: number): void };
     export interface IEventCallback { (): void };
+    export interface IKeyboardCallback { (e: KeyboardEvent): void };
 
     export function init(
         canvas: HTMLCanvasElement,
-        inputCallbacks: Map<string, Input.IEventCallback>,
+        inputCallbacks: Map<string, Input.IKeyboardCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
         startActionCallback: IPositionCallback,
@@ -53,7 +54,7 @@ module Input {
         var flagPause: boolean = false;
         
         // Always use SPACE for pause
-        inputCallbacks[Keys.SPACE] = function() {
+        inputCallbacks[Keys.SPACE] = function(e: KeyboardEvent) {
             if (flagPause) {
                 unpauseCallback();
                 flagPause = false;
@@ -74,7 +75,7 @@ module Input {
         canvas.addEventListener("mousemove", function(e) {
             var rect = canvas.getBoundingClientRect();
             var position = mapEvent(e);
-            if(flagMouseDown) {
+            if (flagMouseDown) {
                 ongoingActionCallback(position.x, position.y);
             } else {
                 hoverCallback(position.x, position.y);
@@ -89,6 +90,13 @@ module Input {
             flagMouseDown = false;
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("mouseout", function(e: PointerEvent) {
+            if (flagMouseDown) {
+                ongoingActionCallback(null, null);
+            } else {
+                hoverCallback(null, null);
+            }
         });
         canvas.addEventListener("contextmenu", function(e) {
             var position = mapEvent(e);
@@ -106,12 +114,10 @@ module Input {
         
         // Touch events
         canvas.addEventListener("touchstart", function(e) {
-            e.preventDefault();
             var position = mapEvent(e);
             startActionCallback(position.x, position.y);
         });
         canvas.addEventListener("touchend", function(e) {
-            e.preventDefault();
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
         });
@@ -128,7 +134,8 @@ module Input {
         document.addEventListener("keydown", function(e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
-                callback();
+                e.preventDefault();
+                callback(e);
             }
             lastKey = e.keyCode;
         });
@@ -151,7 +158,7 @@ module Input {
         });
         
         // Screen change events
-        window.addEventListener('resize', function(event) {
+        window.addEventListener("resize", function(event) {
             pauseCallback();
             flagPause = true;
             resizeCallback();

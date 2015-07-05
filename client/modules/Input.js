@@ -24,11 +24,12 @@ var Input;
     Input.Keys = Keys;
     ;
     ;
+    ;
     function init(canvas, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
         var actionOngoing = false;
         var lastKey;
         var flagPause = false;
-        inputCallbacks[Keys.SPACE] = function () {
+        inputCallbacks[Keys.SPACE] = function (e) {
             if (flagPause) {
                 unpauseCallback();
                 flagPause = false;
@@ -65,6 +66,14 @@ var Input;
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
         });
+        canvas.addEventListener("mouseout", function (e) {
+            if (flagMouseDown) {
+                ongoingActionCallback(null, null);
+            }
+            else {
+                hoverCallback(null, null);
+            }
+        });
         canvas.addEventListener("contextmenu", function (e) {
             var position = mapEvent(e);
             rightClickCallback(position.x, position.y);
@@ -79,12 +88,10 @@ var Input;
             wheelCallback(position.x, position.y);
         });
         canvas.addEventListener("touchstart", function (e) {
-            e.preventDefault();
             var position = mapEvent(e);
             startActionCallback(position.x, position.y);
         });
         canvas.addEventListener("touchend", function (e) {
-            e.preventDefault();
             var position = mapEvent(e);
             endActionCallback(position.x, position.y);
         });
@@ -99,7 +106,8 @@ var Input;
         document.addEventListener("keydown", function (e) {
             var callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
-                callback();
+                e.preventDefault();
+                callback(e);
             }
             lastKey = e.keyCode;
         });
@@ -118,7 +126,7 @@ var Input;
                 flagPause = false;
             }
         });
-        window.addEventListener('resize', function (event) {
+        window.addEventListener("resize", function (event) {
             pauseCallback();
             flagPause = true;
             resizeCallback();

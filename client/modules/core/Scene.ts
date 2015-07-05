@@ -41,13 +41,13 @@ module Scene {
         hero = new Actor.Event();
         map = new World.Map();
         focus = {
-           x:0, y:0 
+            x: 0, y: 0
         };
         pointer = {
-           x:0, y:0 
+            x: 0, y: 0
         };
         context = ctx;
-        
+
         mainGameLoop();
     }
 
@@ -56,8 +56,11 @@ module Scene {
         if (paused) {
             return;
         }
-        
+
         context.clearRect(0, 0, Display.canvasW, Display.canvasH); //TODO rimuovere a regime
+        context.fillStyle = '#000000';
+        context.font = 'bold 40px Arial';
+        context.fillText("(it's not ready yet)", 150, 260);
 
         var time = Time.getTime();
         hero.update(events, map, time);
@@ -91,14 +94,16 @@ module Scene {
     }
 
     function renderPointer() {
-        context.save();
-        context.beginPath();
-        context.fillStyle = Constant.Color.yellow;
-        context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
-        context.closePath();
-        context.globalAlpha = 0.4;
-        context.fill();
-        context.restore();
+        if (pointer.x != null && pointer.y != null) {
+            context.save();
+            context.beginPath();
+            context.fillStyle = Constant.Color.yellow;
+            context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
+            context.closePath();
+            context.globalAlpha = 0.4;
+            context.fill();
+            context.restore();
+        }
     }
 
     function translate() {

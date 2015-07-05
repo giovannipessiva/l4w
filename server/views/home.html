@@ -13,8 +13,14 @@ Your browser does not support HTML5 Canvas!</canvas>
 	var canvas = document.getElementById('canvas1');
 	var ctx = canvas.getContext('2d');
 	ctx.fillStyle='#000000';
-	ctx.font='bold 18px Arial';
-	ctx.fillText("it's not ready yet",10,20);
+	ctx.font='bold 38px Arial';
+	ctx.fillText("loading...",10,20);
+	
+	document.addEventListener("DOMContentLoaded", start);
+	
+	function start() {
+	
+	}
 </script> 
 </div>
 </body>

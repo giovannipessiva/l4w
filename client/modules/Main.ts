@@ -16,11 +16,11 @@ module Main {
     }
 
     function initInput(canvas: HTMLCanvasElement) {
-        var inputCallbackMap: Map<string, Input.IEventCallback> = new Map<string, Input.IEventCallback>();
-        inputCallbackMap[Input.Keys.UP] = function() { console.log("Up"); };
-        inputCallbackMap[Input.Keys.DOWN] = function() { console.log("Down"); };
-        inputCallbackMap[Input.Keys.LEFT] = function() { console.log("Left"); };
-        inputCallbackMap[Input.Keys.RIGHT] = function() { console.log("Right"); };
+        var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
+        inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
+        inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
+        inputCallbackMap[Input.Keys.LEFT] = function(e) { console.log("Left"); };
+        inputCallbackMap[Input.Keys.RIGHT] = function(e) { console.log("Right"); };
 
         Input.init(
             canvas,
@@ -28,13 +28,16 @@ module Main {
             function() { console.log("reset"); },
             function() { console.log("action"); },
             function() { console.log("start"); },
-            function() { console.log("end"); },
+            function() {
+                //End
+                Scene.updatePointer(null,null);
+            },
             function(x, y) {
-                console.log("ongoing");
+                //Ongoing
                 Scene.updatePointer(x, y);
             },
             function(x, y) {
-                console.log("hover");
+            	//Hover
                 Scene.updatePointer(x, y);
             },
             function() {

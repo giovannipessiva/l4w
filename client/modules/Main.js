@@ -11,16 +11,16 @@ var Main;
     }
     function initInput(canvas) {
         var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.UP] = function () {
+        inputCallbackMap[Input.Keys.UP] = function (e) {
             console.log("Up");
         };
-        inputCallbackMap[Input.Keys.DOWN] = function () {
+        inputCallbackMap[Input.Keys.DOWN] = function (e) {
             console.log("Down");
         };
-        inputCallbackMap[Input.Keys.LEFT] = function () {
+        inputCallbackMap[Input.Keys.LEFT] = function (e) {
             console.log("Left");
         };
-        inputCallbackMap[Input.Keys.RIGHT] = function () {
+        inputCallbackMap[Input.Keys.RIGHT] = function (e) {
             console.log("Right");
         };
         Input.init(canvas, inputCallbackMap, function () {
@@ -30,12 +30,10 @@ var Main;
         }, function () {
             console.log("start");
         }, function () {
-            console.log("end");
+            Scene.updatePointer(null, null);
         }, function (x, y) {
-            console.log("ongoing");
             Scene.updatePointer(x, y);
         }, function (x, y) {
-            console.log("hover");
             Scene.updatePointer(x, y);
         }, function () {
             console.log("pause");

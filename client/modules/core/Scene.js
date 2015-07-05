@@ -35,6 +35,9 @@ var Scene;
             return;
         }
         context.clearRect(0, 0, Display.canvasW, Display.canvasH);
+        context.fillStyle = '#000000';
+        context.font = 'bold 40px Arial';
+        context.fillText("(it's not ready yet)", 150, 260);
         var time = Time.getTime();
         hero.update(events, map, time);
         for (var event in events) {
@@ -57,14 +60,16 @@ var Scene;
     function renderEventRow(row) {
     }
     function renderPointer() {
-        context.save();
-        context.beginPath();
-        context.fillStyle = Constant.Color.yellow;
-        context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
-        context.closePath();
-        context.globalAlpha = 0.4;
-        context.fill();
-        context.restore();
+        if (pointer.x != null && pointer.y != null) {
+            context.save();
+            context.beginPath();
+            context.fillStyle = Constant.Color.yellow;
+            context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 12, 0, Constant.DOUBLE_PI, true);
+            context.closePath();
+            context.globalAlpha = 0.4;
+            context.fill();
+            context.restore();
+        }
     }
     function translate() {
     }
