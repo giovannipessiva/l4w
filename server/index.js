@@ -10,7 +10,7 @@ app.get('/', function(request, response) {
 
 app.get('/js/:script', function(request, response) {
 	var script = request.params.script;
-	var filePath = path.resolve(__dirname + '/../client/modules');
+	var filePath = path.resolve(__dirname + '/../client');
 	response.sendFile(filePath + "/" + script);
 });
 
