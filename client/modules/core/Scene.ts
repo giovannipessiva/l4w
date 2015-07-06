@@ -67,7 +67,7 @@ module Scene {
             return;
         }
 
-        context.clearRect(0, 0, Display.canvasW, Display.canvasH); //TODO rimuovere a regime
+        Display.clear(); //TODO rimuovere a regime
         context.fillStyle = '#000000';
         context.font = 'bold 40px Arial';
         context.fillText("(it's not ready yet)", 160, 260);
@@ -107,7 +107,7 @@ module Scene {
     function renderPointer() {
         if (pointer.x != null && pointer.y != null) {
             context.save();
-            context.scale(1, 0.9);
+            //context.scale(1, 0.9);
             context.beginPath();
             context.fillStyle = Constant.Color.YELLOW;
             context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 18, 0, Constant.DOUBLE_PI);

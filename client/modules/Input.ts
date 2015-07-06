@@ -168,8 +168,6 @@ module Input {
         
         // Screen change events
         window.addEventListener("resize", function(event) {
-            pauseCallback();
-            flagPause = true;
             resizeCallback();
         });
         document.addEventListener("orientationchange", function() {

@@ -54,7 +54,9 @@ module Main {
                 console.log("unpause");
                 Scene.togglePause(false);
             },
-            function() { console.log("resize"); },
+            function() {
+                Display.refresh();    
+            },
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }

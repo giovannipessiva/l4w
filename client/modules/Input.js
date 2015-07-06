@@ -135,8 +135,6 @@ var Input;
             }
         });
         window.addEventListener("resize", function (event) {
-            pauseCallback();
-            flagPause = true;
             resizeCallback();
         });
         document.addEventListener("orientationchange", function () {

@@ -47,7 +47,7 @@ var Main;
             console.log("unpause");
             Scene.togglePause(false);
         }, function () {
-            console.log("resize");
+            Display.refresh();
         }, function () {
             console.log("rightClick");
         }, function () {
