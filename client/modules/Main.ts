@@ -8,7 +8,7 @@ module Main {
         initDisplay(canvas);
         initInput(canvas);
 
-        Scene.start(canvas.getContext("2d"));
+        Scene.start(canvas);
     }
 
     function initDisplay(canvas: HTMLCanvasElement) {
@@ -55,7 +55,8 @@ module Main {
                 Scene.togglePause(false);
             },
             function() {
-                Display.refresh();    
+                Display.refresh();
+                Scene.updateContext(canvas);   
             },
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },

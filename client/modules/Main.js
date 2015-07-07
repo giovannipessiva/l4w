@@ -3,7 +3,7 @@ var Main;
     function start(canvas) {
         initDisplay(canvas);
         initInput(canvas);
-        Scene.start(canvas.getContext("2d"));
+        Scene.start(canvas);
     }
     Main.start = start;
     function initDisplay(canvas) {
@@ -48,6 +48,7 @@ var Main;
             Scene.togglePause(false);
         }, function () {
             Display.refresh();
+            Scene.updateContext(canvas);
         }, function () {
             console.log("rightClick");
         }, function () {

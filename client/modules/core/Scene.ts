@@ -45,7 +45,7 @@ module Scene {
             window.setTimeout(mainGameLoop, refreshInterval);
         };
 
-    export function start(ctx: CanvasRenderingContext2D) {
+    export function start(canvas: HTMLCanvasElement) {
         hero = new Actor.Event();
         map = new World.Map();
         focus = {
@@ -56,7 +56,8 @@ module Scene {
         };
         renderingOptions = new World.Options();
         layers = map.getLayers();
-        context = ctx;
+        
+        updateContext(canvas);
 
         mainGameLoop();
     }
@@ -183,5 +184,10 @@ module Scene {
     export function updatePointer(x: number, y: number) {
         pointer.x = x;
         pointer.y = y;
+    }
+    
+    export function updateContext(canvas: HTMLCanvasElement) {
+        context = canvas.getContext("2d");
+        context.scale(Display.scale,Display.scale); 
     }
 }

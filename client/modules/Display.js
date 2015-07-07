@@ -10,6 +10,7 @@ var Display;
     var halfRows;
     var halfColumns;
     var canvasRatio;
+    Display.scale;
     function init(cnvs) {
         canvas = cnvs;
         Resource.loadPropertes("l4w", deferredInit);
@@ -32,10 +33,9 @@ var Display;
     function refresh() {
         var ratioH = baseH / height();
         var ratioW = baseW / width();
-        var bestRatio = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        canvas.getContext("2d").scale(bestRatio, bestRatio);
-        canvas.height = baseH * bestRatio;
-        canvas.width = baseW * bestRatio;
+        Display.scale = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        canvas.height = baseH * Display.scale;
+        canvas.width = baseW * Display.scale;
     }
     Display.refresh = refresh;
     ;
@@ -51,8 +51,8 @@ var Display;
     }
     function mapPosition(x, y) {
         var rect = canvas.getBoundingClientRect();
-        var i = Math.floor((x - rect.left) / Display.cellH);
-        var j = Math.floor((y - rect.top) / Display.cellW);
+        var i = Math.floor((x - rect.left) / (Display.cellW * Display.scale));
+        var j = Math.floor((y - rect.top) / (Display.cellH * Display.scale));
         return { x: i, y: j };
     }
     Display.mapPosition = mapPosition;

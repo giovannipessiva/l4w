@@ -20,7 +20,7 @@ var Scene;
     var nextAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
         window.setTimeout(mainGameLoop, refreshInterval);
     };
-    function start(ctx) {
+    function start(canvas) {
         hero = new Actor.Event();
         map = new World.Map();
         focus = {
@@ -33,7 +33,7 @@ var Scene;
         };
         renderingOptions = new World.Options();
         layers = map.getLayers();
-        context = ctx;
+        updateContext(canvas);
         mainGameLoop();
     }
     Scene.start = start;
@@ -147,4 +147,9 @@ var Scene;
         pointer.y = y;
     }
     Scene.updatePointer = updatePointer;
+    function updateContext(canvas) {
+        context = canvas.getContext("2d");
+        context.scale(Display.scale, Display.scale);
+    }
+    Scene.updateContext = updateContext;
 })(Scene || (Scene = {}));

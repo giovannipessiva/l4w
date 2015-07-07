@@ -1,7 +1,7 @@
 /// <reference path="Resource.ts" />
  
 /**
- * Module for canvas abstraction
+ * Module for managing canvas autosizing
  */
 module Display {
 
@@ -15,6 +15,7 @@ module Display {
     var halfRows: number;
     var halfColumns: number;
     var canvasRatio: number;
+    export var scale: number;
 
     export function init(
         cnvs: HTMLCanvasElement) {
@@ -38,10 +39,9 @@ module Display {
     export function refresh() {
         var ratioH = baseH / height();
         var ratioW = baseW / width();
-        var bestRatio = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        canvas.getContext("2d").scale(bestRatio, bestRatio);
-        canvas.height = baseH * bestRatio;
-        canvas.width = baseW * bestRatio;   
+        scale = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        canvas.height = baseH * scale;
+        canvas.width = baseW * scale; 
     };
 
     export function clear() {
@@ -60,8 +60,8 @@ module Display {
         x: number,
         y: number) {
         var rect = canvas.getBoundingClientRect();
-        var i = Math.floor((x - rect.left) / cellH);
-        var j = Math.floor((y - rect.top) / cellW);
+        var i = Math.floor((x - rect.left) / (cellW  * scale));
+        var j = Math.floor((y - rect.top) / (cellH * scale));
         return { x: i, y: j };
     };
 
