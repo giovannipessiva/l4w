@@ -33,9 +33,9 @@ var Display;
         var ratioH = baseH / height();
         var ratioW = baseW / width();
         var bestRatio = canvasRatio / (ratioH < ratioW ? ratioH : ratioW);
-        canvas.height = baseH * bestRatio;
-        canvas.width = baseW * bestRatio;
         canvas.getContext("2d").scale(bestRatio, bestRatio);
+        canvas.height = baseH;
+        canvas.width = baseW;
         console.log(canvas.height + " x " + canvas.width + ", scale=" + bestRatio);
     }
     Display.refresh = refresh;
