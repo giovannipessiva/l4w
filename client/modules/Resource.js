@@ -41,14 +41,21 @@ var Resource;
         request.onload = callback;
         request.onerror = handleRequestError;
         request.ontimeout = handleRequestTimeout;
-        request.open("get", uri, true);
-        request.send();
-        function handleRequestError() {
-            console.log("error getting " + uri);
+        request.open("GET", uri, true);
+        try {
+            request.send();
+        }
+        catch (exception) {
+            if (exception.name == "NetworkError") {
+                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
+            }
+        }
+        function handleRequestError(event) {
+            console.error("Error while getting " + uri);
         }
         ;
         function handleRequestTimeout() {
-            console.log("timeout getting " + uri);
+            console.error("Timeout while etting " + uri);
         }
         ;
     }
