@@ -38,11 +38,10 @@ module Display {
     export function refresh() {
         var ratioH = baseH / height();
         var ratioW = baseW / width();
-        var bestRatio = canvasRatio / (ratioH < ratioW ? ratioH : ratioW);
+        var bestRatio = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         canvas.getContext("2d").scale(bestRatio, bestRatio);
-        canvas.height = baseH;
-        canvas.width = baseW;   
-        console.log(canvas.height + " x " + canvas.width + ", scale=" + bestRatio);
+        canvas.height = baseH * bestRatio;
+        canvas.width = baseW * bestRatio;   
     };
 
     export function clear() {
@@ -50,11 +49,11 @@ module Display {
     }
 
     function width() {
-        return document.body.clientWidth;
+        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
     }
 
     function height() {
-        return document.body.clientHeight;
+        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
     }
 
     export function mapPosition(
