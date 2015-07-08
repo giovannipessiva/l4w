@@ -39,8 +39,8 @@ var Display;
     }
     Display.refresh = refresh;
     ;
-    function clear() {
-        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    function clear(context) {
+        context.clearRect(0, 0, baseW, baseH);
     }
     Display.clear = clear;
     function width() {
@@ -58,27 +58,29 @@ var Display;
     Display.mapPosition = mapPosition;
     ;
     function getBoundariesX(focusX, limit) {
-        var min = Math.floor(focusX / Display.cellW) - halfColumns;
-        var max = Math.ceil(focusX / Display.cellW) + halfColumns;
+        var focusCell = Math.round(focusX / Display.cellW);
+        var min = focusCell - halfColumns;
+        var max = focusCell + halfColumns;
         return checkBoundariesLimit(min, max, limit);
     }
     Display.getBoundariesX = getBoundariesX;
     ;
     function getBoundariesY(focusY, limit) {
-        var min = Math.floor(focusY / Display.cellH) - halfRows;
-        var max = Math.ceil(focusY / Display.cellH) + halfRows;
-        return checkBoundariesLimit(min, max, limit);
+        var focusCell = Math.round(focusY / Display.cellH);
+        var min = focusCell - halfRows;
+        var max = focusCell + halfRows;
+        return checkBoundariesLimit(min, max, limit - 1);
     }
     Display.getBoundariesY = getBoundariesY;
     ;
-    function checkBoundariesLimit(min, max, limit) {
+    function checkBoundariesLimit(min, max, maxLimit) {
         if (min < 0) {
             max -= min;
             min = 0;
         }
-        if (max > limit) {
-            min -= (max - limit);
-            max = limit;
+        if (max > maxLimit) {
+            min -= (max - maxLimit);
+            max = maxLimit;
         }
         return {
             min: min,

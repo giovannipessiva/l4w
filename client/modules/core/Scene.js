@@ -42,7 +42,7 @@ var Scene;
         if (paused) {
             return;
         }
-        Display.clear();
+        Display.clear(context);
         context.fillStyle = '#000000';
         context.font = 'bold 40px Arial';
         context.fillText("(it's not ready yet)", 160, 260);

@@ -56,7 +56,7 @@ module Scene {
         };
         renderingOptions = new World.Options();
         layers = map.getLayers();
-        
+
         updateContext(canvas);
 
         mainGameLoop();
@@ -68,7 +68,7 @@ module Scene {
             return;
         }
 
-        Display.clear(); //TODO rimuovere a regime
+        Display.clear(context); //TODO rimuovere a regime
         context.fillStyle = '#000000';
         context.font = 'bold 40px Arial';
         context.fillText("(it's not ready yet)", 160, 260);
@@ -95,7 +95,6 @@ module Scene {
 
     function renderRow(y: number) {
         var boundaries = Display.getBoundariesX(focus.x, map.columns);
-//        console.log(boundaries);
         var minColumn = boundaries.min;
         var maxColumn = boundaries.max;
         for (var x = minColumn; x <= maxColumn; x++) {
@@ -110,7 +109,6 @@ module Scene {
     function renderPointer() {
         if (pointer.x != null && pointer.y != null) {
             context.save();
-            //context.scale(1, 0.9);
             context.beginPath();
             context.fillStyle = Constant.Color.YELLOW;
             context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 18, 0, Constant.DOUBLE_PI);
@@ -187,9 +185,9 @@ module Scene {
         pointer.x = x;
         pointer.y = y;
     }
-    
+
     export function updateContext(canvas: HTMLCanvasElement) {
         context = canvas.getContext("2d");
-        context.scale(Display.scale,Display.scale); 
+        context.scale(Display.scale, Display.scale);
     }
 }

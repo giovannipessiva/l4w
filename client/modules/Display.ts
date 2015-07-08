@@ -41,11 +41,11 @@ module Display {
         var ratioW = baseW / width();
         scale = canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         canvas.height = baseH * scale;
-        canvas.width = baseW * scale; 
+        canvas.width = baseW * scale;
     };
 
-    export function clear() {
-        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    export function clear(context: CanvasRenderingContext2D) {
+        context.clearRect(0, 0, baseW, baseH);
     }
 
     function width() {
@@ -60,35 +60,37 @@ module Display {
         x: number,
         y: number) {
         var rect = canvas.getBoundingClientRect();
-        var i = Math.floor((x - rect.left) / (cellW  * scale));
+        var i = Math.floor((x - rect.left) / (cellW * scale));
         var j = Math.floor((y - rect.top) / (cellH * scale));
         return { x: i, y: j };
     };
-    
-    export function getBoundariesX(focusX: number, limit: number) : { min: number; max: number }  {
-        var min = Math.floor(focusX / cellW) - halfColumns;
-        var max = Math.ceil(focusX / cellW) + halfColumns;
-        return checkBoundariesLimit(min,max,limit);
+
+    export function getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
+        var focusCell = Math.round(focusX / cellW);
+        var min = focusCell - halfColumns;
+        var max = focusCell + halfColumns;
+        return checkBoundariesLimit(min, max, limit);
     };
-    
-    export function getBoundariesY(focusY: number, limit: number) : { min: number; max: number }  {
-        var min = Math.floor(focusY / cellH) - halfRows;
-        var max = Math.ceil(focusY / cellH) + halfRows;
-        return checkBoundariesLimit(min,max,limit);
+
+    export function getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
+        var focusCell = Math.round(focusY / cellH);
+        var min = focusCell - halfRows;
+        var max = focusCell + halfRows;
+        return checkBoundariesLimit(min, max, limit - 1);
     };
-    
-    function checkBoundariesLimit(min: number, max: number, limit: number)  : { min: number; max: number } {
+
+    function checkBoundariesLimit(min: number, max: number, maxLimit: number): { min: number; max: number } {
         if (min < 0) {
             max -= min;
             min = 0;
         }
-        if (max > limit) {
-            min -= (max - limit);
-            max = limit;
+        if (max > maxLimit) {
+            min -= (max - maxLimit);
+            max = maxLimit;
         }
         return {
-            min:min,
-            max:max
+            min: min,
+            max: max
         };
     }
 

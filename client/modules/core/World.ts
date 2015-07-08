@@ -11,9 +11,9 @@ module World {
         private layers: MapLayer[];
 
         constructor() {
-            //TODO
-            this.rows = 21;
-            this.columns = 16;
+            //TODO load map
+            this.rows = 32;
+            this.columns = 42;
             this.layers = [];
         }
 

@@ -2,8 +2,8 @@ var World;
 (function (World) {
     var Map = (function () {
         function Map() {
-            this.rows = 21;
-            this.columns = 16;
+            this.rows = 32;
+            this.columns = 42;
             this.layers = [];
         }
         Map.prototype.render = function (context, x, y, renderingOptions) {
