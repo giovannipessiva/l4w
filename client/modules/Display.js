@@ -11,9 +11,12 @@ var Display;
     var halfColumns;
     var canvasRatio;
     Display.scale;
-    function init(cnvs) {
+    function init(cnvs, onCompleted) {
         canvas = cnvs;
-        Resource.loadPropertes("l4w", deferredInit);
+        Resource.loadPropertes("l4w", function (props) {
+            deferredInit(props);
+            onCompleted();
+        });
     }
     Display.init = init;
     ;

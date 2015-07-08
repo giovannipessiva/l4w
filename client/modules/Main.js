@@ -1,13 +1,14 @@
 var Main;
 (function (Main) {
     function start(canvas) {
-        initDisplay(canvas);
         initInput(canvas);
-        Scene.start(canvas);
+        initDisplay(canvas, function () {
+            Scene.start(canvas);
+        });
     }
     Main.start = start;
-    function initDisplay(canvas) {
-        Display.init(canvas);
+    function initDisplay(canvas, onCompleted) {
+        Display.init(canvas, onCompleted);
     }
     function initInput(canvas) {
         var inputCallbackMap = new Map();

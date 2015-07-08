@@ -5,14 +5,15 @@
 module Main {
 
     export function start(canvas: HTMLCanvasElement) {
-        initDisplay(canvas);
         initInput(canvas);
-
-        Scene.start(canvas);
+        initDisplay(canvas, function() {
+            Scene.start(canvas);
+        });
+        
     }
 
-    function initDisplay(canvas: HTMLCanvasElement) {
-        Display.init(canvas);
+    function initDisplay(canvas: HTMLCanvasElement, onCompleted: { (): void }) {
+        Display.init(canvas, onCompleted);
     }
 
     function initInput(canvas: HTMLCanvasElement) {
@@ -56,7 +57,7 @@ module Main {
             },
             function() {
                 Display.refresh();
-                Scene.updateContext(canvas);   
+                Scene.updateContext(canvas);
             },
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },

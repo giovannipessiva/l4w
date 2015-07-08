@@ -18,9 +18,14 @@ module Display {
     export var scale: number;
 
     export function init(
-        cnvs: HTMLCanvasElement) {
+        cnvs: HTMLCanvasElement,
+        onCompleted: { (): void }) {
         canvas = cnvs;
-        Resource.loadPropertes("l4w", deferredInit);
+
+        Resource.loadPropertes("l4w", function(props) {
+            deferredInit(props);
+            onCompleted();
+        });
     };
 
     function deferredInit(props) {
