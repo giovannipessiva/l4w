@@ -25,8 +25,8 @@ var Display;
         canvasRatio = props["canvasRatio"];
         baseH = Display.cellH * rows;
         baseW = Display.cellW * columns;
-        halfRows = rows / 2;
-        halfColumns = columns / 2;
+        halfRows = Math.floor(rows / 2);
+        halfColumns = Math.floor(columns / 2);
         refresh();
     }
     ;
@@ -57,42 +57,34 @@ var Display;
     }
     Display.mapPosition = mapPosition;
     ;
-    function getMinX(focusX) {
-        var val = Math.floor((focusX / Display.cellW - halfColumns));
-        if (val < 0) {
-            val = 0;
-        }
-        return val;
+    function getBoundariesX(focusX, limit) {
+        var min = Math.floor(focusX / Display.cellW) - halfColumns;
+        var max = Math.ceil(focusX / Display.cellW) + halfColumns;
+        return checkBoundariesLimit(min, max, limit);
     }
-    Display.getMinX = getMinX;
+    Display.getBoundariesX = getBoundariesX;
     ;
-    function getMinY(focusY) {
-        var val = Math.floor((focusY / Display.cellH - halfRows));
-        if (val < 0) {
-            val = 0;
-        }
-        return val;
+    function getBoundariesY(focusY, limit) {
+        var min = Math.floor(focusY / Display.cellH) - halfRows;
+        var max = Math.ceil(focusY / Display.cellH) + halfRows;
+        return checkBoundariesLimit(min, max, limit);
     }
-    Display.getMinY = getMinY;
+    Display.getBoundariesY = getBoundariesY;
     ;
-    function getMaxX(focusX, limit) {
-        var val = Math.ceil((focusX / Display.cellW + halfColumns));
-        if (val > limit) {
-            val = limit;
+    function checkBoundariesLimit(min, max, limit) {
+        if (min < 0) {
+            max -= min;
+            min = 0;
         }
-        return val;
-    }
-    Display.getMaxX = getMaxX;
-    ;
-    function getMaxY(focusY, limit) {
-        var val = Math.ceil((focusY / Display.cellH + halfRows));
-        if (val > limit) {
-            val = limit;
+        if (max > limit) {
+            min -= (max - limit);
+            max = limit;
         }
-        return val;
+        return {
+            min: min,
+            max: max
+        };
     }
-    Display.getMaxY = getMaxY;
-    ;
     function getOffsetX(focusX) {
         return focusX % Display.cellW;
     }

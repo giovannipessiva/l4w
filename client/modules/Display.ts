@@ -31,8 +31,8 @@ module Display {
         canvasRatio = props["canvasRatio"];
         baseH = cellH * rows;
         baseW = cellW * columns;
-        halfRows = rows / 2;
-        halfColumns = columns / 2;
+        halfRows = Math.floor(rows / 2);
+        halfColumns = Math.floor(columns / 2);
         refresh();
     };
 
@@ -64,35 +64,34 @@ module Display {
         var j = Math.floor((y - rect.top) / (cellH * scale));
         return { x: i, y: j };
     };
+    
+    export function getBoundariesX(focusX: number, limit: number) : { min: number; max: number }  {
+        var min = Math.floor(focusX / cellW) - halfColumns;
+        var max = Math.ceil(focusX / cellW) + halfColumns;
+        return checkBoundariesLimit(min,max,limit);
+    };
+    
+    export function getBoundariesY(focusY: number, limit: number) : { min: number; max: number }  {
+        var min = Math.floor(focusY / cellH) - halfRows;
+        var max = Math.ceil(focusY / cellH) + halfRows;
+        return checkBoundariesLimit(min,max,limit);
+    };
+    
+    function checkBoundariesLimit(min: number, max: number, limit: number)  : { min: number; max: number } {
+        if (min < 0) {
+            max -= min;
+            min = 0;
+        }
+        if (max > limit) {
+            min -= (max - limit);
+            max = limit;
+        }
+        return {
+            min:min,
+            max:max
+        };
+    }
 
-    export function getMinX(focusX: number) {
-        var val = Math.floor((focusX / cellW - halfColumns));
-        if (val < 0) {
-            val = 0;
-        }
-        return val;
-    };
-    export function getMinY(focusY: number) {
-        var val = Math.floor((focusY / cellH - halfRows));
-        if (val < 0) {
-            val = 0;
-        }
-        return val;
-    };
-    export function getMaxX(focusX: number, limit?: number) {
-        var val = Math.ceil((focusX / cellW + halfColumns));
-        if (val > limit) {
-            val = limit;
-        }
-        return val;
-    };
-    export function getMaxY(focusY: number, limit?: number) {
-        var val = Math.ceil((focusY / cellH + halfRows));
-        if (val > limit) {
-            val = limit;
-        }
-        return val;
-    };
     export function getOffsetX(focusX: number) {
         return focusX % cellW;
     }

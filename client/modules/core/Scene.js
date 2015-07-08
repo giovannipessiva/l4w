@@ -52,8 +52,9 @@ var Scene;
             event.update(events, map, time);
         }
         translate();
-        var minRow = Display.getMinY(focus.y);
-        var maxRow = Display.getMaxY(focus.y, map.rows);
+        var boundaries = Display.getBoundariesY(focus.y, map.rows);
+        var minRow = boundaries.min;
+        var maxRow = boundaries.max;
         for (var y = minRow; y <= maxRow; y++) {
             renderRow(y);
             renderEventRow(y);
@@ -62,8 +63,9 @@ var Scene;
         renderFPS();
     }
     function renderRow(y) {
-        var minColumn = Display.getMinX(focus.x);
-        var maxColumn = Display.getMaxX(focus.x, map.columns);
+        var boundaries = Display.getBoundariesX(focus.x, map.columns);
+        var minColumn = boundaries.min;
+        var maxColumn = boundaries.max;
         for (var x = minColumn; x <= maxColumn; x++) {
             map.render(context, x, y, renderingOptions);
         }
