@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>testTree</title>
+<script src="lib/jquery.js"></script>
+<script src="lib/tree.jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="style/jqtree.css">
+<style type="text/css">
+body {
+    overflow:hidden;
+}
+</style>
+</head>
+<body onload="start()">
+<div style="position:relative;margin-left:auto;margin-right:auto;">
+
+<h1>tree1</h1>
+<div id="tree1" style="border:1px solid black"></div>
+<h1>tree2</h1>
+<div id="tree2" style="border:1px solid black"></div>
+
+<script type='text/javascript'>
+
+function start(){
+	var data = [
+	    {
+	        label: 'node1', id: 1,
+	        children: [
+	            { label: 'child1', id: 2 },
+	            { label: 'child2', id: 3 }
+	        ]
+	    },
+	    {
+	        label: 'node2', id: 4,
+	        children: [
+	            { label: 'child3', id: 5 }
+	        ]
+	    }
+	];
+	$('#tree1').tree({
+	    data: data,
+	    autoOpen: true,
+	    dragAndDrop: true
+	});
+	
+	$.getJSON(
+	    'data/map/test.json',
+	    function(dat) {
+	    	console.log("tree2");
+	        $('#tree2').tree({
+	            data: dat
+	        });
+	    }
+	);
+}
+
+
+</script> 
+
+</div>
+</body>
+</html>
