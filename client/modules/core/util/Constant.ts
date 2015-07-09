@@ -9,6 +9,7 @@ module Constant {
         static YELLOW = "yellow";
         static RED = "red";
         static WHITE = "white";
+        static GREY = "grey";
     }
 
 }

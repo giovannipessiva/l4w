@@ -20,6 +20,14 @@ var Scene;
         StaticScene.prototype.mainGameLoop_post = function () {
             _super.prototype.mainGameLoop_post.call(this);
         };
+        StaticScene.prototype.toggleEditorGrid = function (enable) {
+            if (enable != null) {
+                this.renderingOptions.showEditorGrid = enable;
+            }
+            else {
+                this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+            }
+        };
         return StaticScene;
     })(Scene.AbstractScene);
     Scene.StaticScene = StaticScene;

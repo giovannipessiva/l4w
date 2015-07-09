@@ -7,6 +7,7 @@ var Constant;
         Color.YELLOW = "yellow";
         Color.RED = "red";
         Color.WHITE = "white";
+        Color.GREY = "grey";
         return Color;
     })();
     Constant.Color = Color;

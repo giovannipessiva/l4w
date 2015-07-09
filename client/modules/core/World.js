@@ -15,6 +15,13 @@ var World;
                     context.strokeStyle = Constant.Color.RED;
                     context.strokeRect(x * Display.cellW, y * Display.cellH, Display.cellW, Display.cellH);
                 }
+                if (renderingOptions.showEditorGrid) {
+                    context.save();
+                    context.globalAlpha = 0.4;
+                    context.strokeStyle = Constant.Color.GREY;
+                    context.strokeRect(x * Display.cellW, y * Display.cellH, Display.cellW, Display.cellH);
+                    context.restore();
+                }
                 if (renderingOptions.showCellNumbers) {
                     context.fillStyle = Constant.Color.RED;
                     context.font = "bold 10px Arial";
@@ -39,6 +46,7 @@ var World;
     var Options = (function () {
         function Options() {
             this.showGrid = false;
+            this.showEditorGrid = false;
             this.showFPS = false;
             this.showCellNumbers = false;
             this.fps = 0;

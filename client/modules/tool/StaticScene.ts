@@ -22,6 +22,14 @@ module Scene {
         protected mainGameLoop_post() {
             super.mainGameLoop_post();
         }
+        
+        toggleEditorGrid(enable?: boolean) {
+            if (enable != null) {
+                this.renderingOptions.showEditorGrid = enable;
+            } else {
+                this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+            }
+        }
 
     }
 }

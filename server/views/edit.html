@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>L4W Mapper</title>
+<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+
+<!-- Disable cache (only for developement stage) -->
+<meta http-equiv='cache-control' content='no-cache'>
+<meta http-equiv='expires' content='0'>
+<meta http-equiv='pragma' content='no-cache'>
+
+<script type="text/javascript" src="js/l4w.min.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="lib/tree.jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="style/jqtree.css">
+
+</head>
+<body>
+<div style="position:relative;margin-left:auto;margin-right:auto;">
+<canvas id="canvas1" class="l4wCanvas" width="672" height="512" style="border:1px solid black">
+Your browser does not support HTML5 Canvas!</canvas>
+</div>
+
+<div style="float:right;position:relative;margin-right:0;">
+<h1>tree1</h1>
+<div id="tree1" style="border:1px solid black"></div>
+<h1>tree2</h1>
+<div id="tree2" style="border:1px solid black"></div>
+<br>
+<table>
+<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
+<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
+<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
+<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
+</table>
+</div>
+
+<script type='text/javascript'>	
+	
+	document.addEventListener("DOMContentLoaded", start);
+	
+	function start() {
+		Mapper.start(canvas);
+	}
+	
+	var data = [
+	    {
+	        label: 'node1', id: 1,
+	        children: [
+	            { label: 'child1', id: 2 },
+	            { label: 'child2', id: 3 }
+	        ]
+	    },
+	    {
+	        label: 'node2', id: 4,
+	        children: [
+	            { label: 'child3', id: 5 }
+	        ]
+	    }
+	];
+	$('#tree1').tree({
+	    data: data,
+	    autoOpen: true,
+	    dragAndDrop: true
+	});
+	
+	$.getJSON(
+	    'data/map/test.json',
+	    function(dat) {
+	    	console.log("tree2");
+	        $('#tree2').tree({
+	            data: dat
+	        });
+	    }
+	);
+</script> 
+</body>
+</html>

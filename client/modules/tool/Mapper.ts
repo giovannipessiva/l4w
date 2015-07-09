@@ -10,7 +10,7 @@ module Mapper {
     }
 
     function initDisplay(canvas: HTMLCanvasElement, onCompleted: { (): void }) {
-        Display.init(canvas, onCompleted);
+        Display.init(canvas, onCompleted, false);
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: Scene.StaticScene) {
@@ -19,8 +19,9 @@ module Mapper {
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
         inputCallbackMap[Input.Keys.LEFT] = function(e) { console.log("Left"); };
         inputCallbackMap[Input.Keys.RIGHT] = function(e) { console.log("Right"); };
+        
         inputCallbackMap[Input.Keys.F2] = function(e) {
-            scene.toggleGrid();
+            scene.toggleEditorGrid();
         };
         inputCallbackMap[Input.Keys.F3] = function(e) {
             scene.toggleCellNumbering();
@@ -43,10 +44,7 @@ module Mapper {
             },
             function() { },
             function() { },
-            function() {
-                Display.refresh();
-                scene.updateContext(canvas);
-            },
+            function() { },
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }

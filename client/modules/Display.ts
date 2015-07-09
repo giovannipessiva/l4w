@@ -19,26 +19,35 @@ module Display {
 
     export function init(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (): void }) {
+        onCompleted: { (): void },
+        dynamic?: boolean) {
         canvas = cnvs;
 
         Resource.loadPropertes("l4w", function(props) {
-            deferredInit(props);
+            deferredInit(props,dynamic);
+            baseH = cellH * rows;
+            baseW = cellW * columns;
+            halfRows = Math.floor(rows / 2);
+            halfColumns = Math.floor(columns / 2);
+            refresh();
             onCompleted();
         });
     };
 
-    function deferredInit(props) {
-        cellH = props["cellHeight"];
-        cellW = props["cellWidth"];
-        rows = props["rows"];
-        columns = props["columns"];
-        canvasRatio = props["canvasRatio"];
-        baseH = cellH * rows;
-        baseW = cellW * columns;
-        halfRows = Math.floor(rows / 2);
-        halfColumns = Math.floor(columns / 2);
-        refresh();
+    function deferredInit(props,dynamic?: boolean) {
+        if(dynamic == null || dynamic) {
+            cellH = props["cellHeight"];
+            cellW = props["cellWidth"];
+            rows = props["rows"];
+            columns = props["columns"];
+            canvasRatio = props["canvasRatio"];
+        } else {
+            cellH = props["cellHeightEditor"];
+            cellW = props["cellWidthEditor"];
+            rows = props["rowsEditor"];
+            columns = props["columnsEditor"];
+            canvasRatio = props["canvasRatioEditor"];
+        }     
     };
 
     export function refresh() {

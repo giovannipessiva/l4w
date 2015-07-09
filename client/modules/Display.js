@@ -11,26 +11,35 @@ var Display;
     var halfColumns;
     var canvasRatio;
     Display.scale;
-    function init(cnvs, onCompleted) {
+    function init(cnvs, onCompleted, dynamic) {
         canvas = cnvs;
         Resource.loadPropertes("l4w", function (props) {
-            deferredInit(props);
+            deferredInit(props, dynamic);
+            baseH = Display.cellH * rows;
+            baseW = Display.cellW * columns;
+            halfRows = Math.floor(rows / 2);
+            halfColumns = Math.floor(columns / 2);
+            refresh();
             onCompleted();
         });
     }
     Display.init = init;
     ;
-    function deferredInit(props) {
-        Display.cellH = props["cellHeight"];
-        Display.cellW = props["cellWidth"];
-        rows = props["rows"];
-        columns = props["columns"];
-        canvasRatio = props["canvasRatio"];
-        baseH = Display.cellH * rows;
-        baseW = Display.cellW * columns;
-        halfRows = Math.floor(rows / 2);
-        halfColumns = Math.floor(columns / 2);
-        refresh();
+    function deferredInit(props, dynamic) {
+        if (dynamic == null || dynamic) {
+            Display.cellH = props["cellHeight"];
+            Display.cellW = props["cellWidth"];
+            rows = props["rows"];
+            columns = props["columns"];
+            canvasRatio = props["canvasRatio"];
+        }
+        else {
+            Display.cellH = props["cellHeightEditor"];
+            Display.cellW = props["cellWidthEditor"];
+            rows = props["rowsEditor"];
+            columns = props["columnsEditor"];
+            canvasRatio = props["canvasRatioEditor"];
+        }
     }
     ;
     function refresh() {

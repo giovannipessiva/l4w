@@ -9,7 +9,7 @@ var Mapper;
     }
     Mapper.start = start;
     function initDisplay(canvas, onCompleted) {
-        Display.init(canvas, onCompleted);
+        Display.init(canvas, onCompleted, false);
     }
     function initInput(canvas, scene) {
         var inputCallbackMap = new Map();
@@ -26,7 +26,7 @@ var Mapper;
             console.log("Right");
         };
         inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleGrid();
+            scene.toggleEditorGrid();
         };
         inputCallbackMap[Input.Keys.F3] = function (e) {
             scene.toggleCellNumbering();
@@ -42,8 +42,6 @@ var Mapper;
         }, function () {
         }, function () {
         }, function () {
-            Display.refresh();
-            scene.updateContext(canvas);
         }, function () {
             console.log("rightClick");
         }, function () {
