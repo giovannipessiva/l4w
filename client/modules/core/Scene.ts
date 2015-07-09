@@ -13,181 +13,137 @@ module Scene {
         y: number;
     };
 
-    var FPS = 20;
-    var refreshInterval = 1000 / FPS;
-
-    var autoFPS = true;
-    var secondFPS = 0;
-    var countFPS = 0;
-    var lastFPS = 0;
-    var FPSPerformance = [22, 21, 20];
-
-    var paused = false;
-
-    var hero: Actor.Event;
-    var events: Actor.Event[];
-    var map: World.Map;
-
-    var focus: Point;
-    var pointer: Point;
-
-    var renderingOptions: World.Options;
-    var layers: number;
-
-    var context: CanvasRenderingContext2D;
-
     var nextAnimationFrame =
         window.requestAnimationFrame ||
         //window.mozRequestAnimationFrame ||
         //window.webkitRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
         function(callback) {
-            window.setTimeout(mainGameLoop, refreshInterval);
+            window.setTimeout(this.mainGameLoop, this.refreshInterval);
         };
 
-    export function start(canvas: HTMLCanvasElement) {
-        hero = new Actor.Event();
-        map = new World.Map();
-        focus = {
-            x: 0, y: 0
-        };
-        pointer = {
-            x: 0, y: 0
-        };
-        renderingOptions = new World.Options();
-        layers = map.getLayers();
+    export class AbstractScene {
 
-        updateContext(canvas);
+        map: World.Map;
 
-        mainGameLoop();
-    }
+        focus: Point;
+        pointer: Point;
 
-    function mainGameLoop() {
-        nextAnimationFrame(mainGameLoop);
-        if (paused) {
-            return;
+        renderingOptions: World.Options;
+        layers: number;
+
+        context: CanvasRenderingContext2D;
+
+        constructor() {
+            this.map = new World.Map();
+            this.focus = {
+                x: 0, y: 0
+            };
+            this.pointer = {
+                x: 0, y: 0
+            };
+            this.renderingOptions = new World.Options();
+            this.layers = this.map.getLayers();
         }
 
-        Display.clear(context); //TODO rimuovere a regime
-        context.fillStyle = '#000000';
-        context.font = 'bold 40px Arial';
-        context.fillText("(it's not ready yet)", 160, 260);
-
-        var time = Time.getTime();
-        hero.update(events, map, time);
-        for (var event in events) {
-            event.update(events, map, time);
+        start(canvas: HTMLCanvasElement) {
+            this.updateContext(canvas);
+            this.mainGameLoop();
         }
 
-        translate();
+        mainGameLoop() {
+            var scene = this;
+            nextAnimationFrame(function() {
+                scene.mainGameLoop();
+            });
 
-        var boundaries = Display.getBoundariesY(focus.y, map.rows);
-        var minRow = boundaries.min;
-        var maxRow = boundaries.max;
-        for (var y = minRow; y <= maxRow; y++) {
-            renderRow(y);
-            renderEventRow(y);
+            if (this.mainGameLoop_pre() == false) {
+                return;
+            }
+
+            this.translate();
+
+            var boundaries = Display.getBoundariesY(this.focus.y, this.map.rows);
+            var minRow = boundaries.min;
+            var maxRow = boundaries.max;
+            for (var y = minRow; y <= maxRow; y++) {
+                this.renderRow(y);
+                this.renderEventRow(y);
+            }
+
+            this.renderPointer();
+            this.mainGameLoop_post();
         }
 
-        renderPointer();
-        renderFPS();
-    }
-
-    function renderRow(y: number) {
-        var boundaries = Display.getBoundariesX(focus.x, map.columns);
-        var minColumn = boundaries.min;
-        var maxColumn = boundaries.max;
-        for (var x = minColumn; x <= maxColumn; x++) {
-            map.render(context, x, y, renderingOptions);
+        protected mainGameLoop_pre(): boolean {
+            Display.clear(this.context); //TODO rimuovere a regime
+            return true;
         }
-    }
 
-    function renderEventRow(row: number) {
-
-    }
-
-    function renderPointer() {
-        if (pointer.x != null && pointer.y != null) {
-            context.save();
-            context.beginPath();
-            context.fillStyle = Constant.Color.YELLOW;
-            context.arc(Display.getPointerX(pointer.x), Display.getPointerY(pointer.y), 18, 0, Constant.DOUBLE_PI);
-            context.closePath();
-            context.globalAlpha = 0.4;
-            context.fill();
-            context.restore();
+        protected mainGameLoop_post() {
         }
-    }
 
-    function renderFPS() {
-        var seconds = Math.floor(Time.getTime() / 1000);
-        if (seconds == secondFPS) {
-            countFPS++;
-        } else {
-            lastFPS = countFPS;
-            countFPS = 1;
-            secondFPS = seconds;
-            if (autoFPS == true) {
-                FPSPerformance.shift();
-                FPSPerformance[2] = lastFPS;
-                var avg: number = (FPSPerformance[0] + FPSPerformance[1] + FPSPerformance[2]) / 3;
-                FPS = Math.ceil(avg) + 2;
+        private renderRow(y: number) {
+            var boundaries = Display.getBoundariesX(this.focus.x, this.map.columns);
+            var minColumn = boundaries.min;
+            var maxColumn = boundaries.max;
+            for (var x = minColumn; x <= maxColumn; x++) {
+                this.map.render(this.context, x, y, this.renderingOptions);
             }
         }
 
-        if (renderingOptions.showFPS) {
-            context.fillStyle = Constant.Color.RED;
-            context.font = "bold 18px Arial";
-            context.fillText("" + lastFPS, 10, 20);
-        }
-    }
+        private renderEventRow(row: number) {
 
-    function translate() {
-        //TODO calculate display offset by focus coordinates
-    }
-
-    export function toggleGrid(enable?: boolean) {
-        if (enable != null) {
-            renderingOptions.showGrid = enable;
-        } else {
-            renderingOptions.showGrid = !renderingOptions.showGrid;
         }
 
-    }
-
-    export function toggleFPS(enable?: boolean) {
-        if (enable != null) {
-            renderingOptions.showFPS = enable;
-        } else {
-            renderingOptions.showFPS = !renderingOptions.showFPS;
+        private renderPointer() {
+            if (this.pointer.x != null && this.pointer.y != null) {
+                this.context.save();
+                this.context.beginPath();
+                this.context.fillStyle = Constant.Color.YELLOW;
+                this.context.arc(
+                    Display.getPointerX(this.pointer.x),
+                    Display.getPointerY(this.pointer.y),
+                    18,
+                    0,
+                    Constant.DOUBLE_PI);
+                this.context.closePath();
+                this.context.globalAlpha = 0.4;
+                this.context.fill();
+                this.context.restore();
+            }
         }
 
-    }
-
-    export function toggleCellNumbering(enable?: boolean) {
-        if (enable != null) {
-            renderingOptions.showCellNumbers = enable;
-        } else {
-            renderingOptions.showCellNumbers = !renderingOptions.showCellNumbers;
+        private translate() {
+            //TODO calculate display offset by focus coordinates
         }
 
-    }
+        toggleGrid(enable?: boolean) {
+            if (enable != null) {
+                this.renderingOptions.showGrid = enable;
+            } else {
+                this.renderingOptions.showGrid = !this.renderingOptions.showGrid;
+            }
 
-    export function togglePause(pause?: boolean) {
-        if (pause != null) {
-            paused = pause;
-        } else {
-            paused = !paused;
         }
-    }
 
-    export function updatePointer(x: number, y: number) {
-        pointer.x = x;
-        pointer.y = y;
-    }
+        toggleCellNumbering(enable?: boolean) {
+            if (enable != null) {
+                this.renderingOptions.showCellNumbers = enable;
+            } else {
+                this.renderingOptions.showCellNumbers = !this.renderingOptions.showCellNumbers;
+            }
 
-    export function updateContext(canvas: HTMLCanvasElement) {
-        context = canvas.getContext("2d");
-        context.scale(Display.scale, Display.scale);
+        }
+
+        updatePointer(x: number, y: number) {
+            this.pointer.x = x;
+            this.pointer.y = y;
+        }
+
+        updateContext(canvas: HTMLCanvasElement) {
+            this.context = canvas.getContext("2d");
+            this.context.scale(Display.scale, Display.scale);
+        }
     }
 }

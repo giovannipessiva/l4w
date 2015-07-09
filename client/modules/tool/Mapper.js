@@ -1,13 +1,13 @@
-var Main;
-(function (Main) {
+var Mapper;
+(function (Mapper) {
     function start(canvas) {
-        var scene = new Scene.DynamicScene();
+        var scene = new Scene.StaticScene();
         initInput(canvas, scene);
         initDisplay(canvas, function () {
             scene.start(canvas);
         });
     }
-    Main.start = start;
+    Mapper.start = start;
     function initDisplay(canvas, onCompleted) {
         Display.init(canvas, onCompleted);
     }
@@ -25,9 +25,6 @@ var Main;
         inputCallbackMap[Input.Keys.RIGHT] = function (e) {
             console.log("Right");
         };
-        inputCallbackMap[Input.Keys.F1] = function (e) {
-            scene.toggleFPS();
-        };
         inputCallbackMap[Input.Keys.F2] = function (e) {
             scene.toggleGrid();
         };
@@ -43,11 +40,7 @@ var Main;
         }, function (x, y) {
             scene.updatePointer(x, y);
         }, function () {
-            console.log("pause");
-            scene.togglePause(true);
         }, function () {
-            console.log("unpause");
-            scene.togglePause(false);
         }, function () {
             Display.refresh();
             scene.updateContext(canvas);
@@ -60,4 +53,4 @@ var Main;
         });
     }
     ;
-})(Main || (Main = {}));
+})(Mapper || (Mapper = {}));

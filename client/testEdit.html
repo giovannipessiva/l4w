@@ -5,12 +5,12 @@
 <title>L4W</title>
 <script src="modules/Display.js"></script>
 <script src="modules/Input.js"></script>
-<script src="modules/Main.js"></script>
 <script src="modules/Resource.js"></script>
 <script src="modules/core/Actor.js"></script>
 <script src="modules/core/Scene.js"></script>
-<script src="modules/core/DynamicScene.js"></script>
 <script src="modules/core/World.js"></script>
+<script src="modules/tool/Mapper.js"></script>
+<script src="modules/tool/StaticScene.js"></script>
 <script src="modules/core/util/Constant.js"></script>
 <script src="modules/core/util/Time.js"></script>
 <style type="text/css">
@@ -20,7 +20,7 @@ body {
 </style>
 </head>
 <body>
-<div style="position:relative;margin-left:auto;margin-right:auto;">
+<div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
 <canvas id="canvas1" width="672" height="512" style="border:1px solid black">
 Your browser does not support HTML5 Canvas!</canvas>
 	
@@ -34,9 +34,17 @@ ctx.fillText("loading...",10,20);
 document.addEventListener("DOMContentLoaded", start);
 
 function start() {
-	Main.start(canvas);
+	Mapper.start(canvas);
 }
 </script> 
+</div>
+<div style="float:right;position:relative;margin-right:0;">
+<table>
+<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
+<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
+<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
+<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
+</table>
 </div>
 </body>
 </html>

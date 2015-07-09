@@ -1,31 +1,24 @@
-/// <reference path="Display.ts" />
-/// <reference path="Input.ts" />
-/// <reference path="core/Scene.ts" />
-/// <reference path="core/DynamicScene.ts" />
-
-module Main {
+module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var scene = new Scene.DynamicScene();
+        var scene = new Scene.StaticScene();
         initInput(canvas,scene);
-        initDisplay(canvas, function() { 
+        initDisplay(canvas, function() {
             scene.start(canvas);
-        }); 
+        });
+        
     }
 
     function initDisplay(canvas: HTMLCanvasElement, onCompleted: { (): void }) {
         Display.init(canvas, onCompleted);
     }
 
-    function initInput(canvas: HTMLCanvasElement,scene: Scene.DynamicScene) {
+    function initInput(canvas: HTMLCanvasElement, scene: Scene.StaticScene) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
         inputCallbackMap[Input.Keys.LEFT] = function(e) { console.log("Left"); };
         inputCallbackMap[Input.Keys.RIGHT] = function(e) { console.log("Right"); };
-        inputCallbackMap[Input.Keys.F1] = function(e) {
-            scene.toggleFPS();
-        };
         inputCallbackMap[Input.Keys.F2] = function(e) {
             scene.toggleGrid();
         };
@@ -48,14 +41,8 @@ module Main {
                 //Hover
                 scene.updatePointer(x, y);
             },
-            function() {
-                console.log("pause");
-                scene.togglePause(true);
-            },
-            function() {
-                console.log("unpause");
-                scene.togglePause(false);
-            },
+            function() { },
+            function() { },
             function() {
                 Display.refresh();
                 scene.updateContext(canvas);
