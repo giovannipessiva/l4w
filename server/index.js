@@ -30,6 +30,12 @@ app.get('/data/:file', function(request, response) {
 	response.sendFile(filePath + "/" + file);
 });
 
+app.get('/data/map/:file', function(request, response) {
+	var file = request.params.file;
+	var filePath = path.resolve(__dirname + '/../client/data/map');
+	response.sendFile(filePath + "/" + file);
+});
+
 app.get('/assets/:file', function(request, response) {
 	var file = request.params.file;
 	var filePath = path.resolve(__dirname + '/../client/assets');
