@@ -22,58 +22,54 @@
 Your browser does not support HTML5 Canvas!</canvas>
 </div>
 
-<div style="float:right;position:relative;margin-right:0;">
-<h1>tree1</h1>
-<div id="tree1" style="border:1px solid black"></div>
-<h1>tree2</h1>
-<div id="tree2" style="border:1px solid black"></div>
-<br>
-<table>
-<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
-<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
-<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
-<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
-</table>
-</div>
-
-<script type='text/javascript'>	
-	
+<script type='text/javascript'>
+	var canvas = document.getElementById('canvas1');
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle='#000000';
+	ctx.font='bold 38px Arial';
+	ctx.fillText("loading...",10,20);
+		
 	document.addEventListener("DOMContentLoaded", start);
 	
 	function start() {
 		Mapper.start(canvas);
 	}
-	
-	var data = [
-	    {
-	        label: 'node1', id: 1,
-	        children: [
-	            { label: 'child1', id: 2 },
-	            { label: 'child2', id: 3 }
-	        ]
-	    },
-	    {
-	        label: 'node2', id: 4,
-	        children: [
-	            { label: 'child3', id: 5 }
-	        ]
-	    }
-	];
-	$('#tree1').tree({
-	    data: data,
-	    autoOpen: true,
-	    dragAndDrop: true
-	});
-	
-	$.getJSON(
-	    'data/map/test.json',
-	    function(dat) {
-	    	console.log("tree2");
-	        $('#tree2').tree({
-	            data: dat
-	        });
-	    }
-	);
-</script> 
+</script>
+
+
+<div style="float:right;position:relative;margin-right:0;width:20%">
+	<div style="border:1px solid black">
+	-<input type="range" min="0" max="4" step="1" value="4">+
+	</div>
+	<div style="border:1px solid black">
+		<table>
+		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
+		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
+		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
+		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
+		</table>
+	</div>
+	<div style="border:1px solid black">
+		<div id="mapPanel"></div>
+		
+		<script type='text/javascript'>
+		function start(){
+			$.getJSON(
+			    'data/map/test.json',
+			    function(dat) {
+			    	console.log(dat);
+			        $('#mapPanel').tree({
+			            data: dat,
+			            autoOpen: true,
+			    		dragAndDrop: true
+			        });
+			    }
+			);
+		
+		}
+		</script>
+	</div>
+</div>
+
 </body>
 </html>

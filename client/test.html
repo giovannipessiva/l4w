@@ -3,16 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Test</title>
-<script src="modules/Display.js"></script>
-<script src="modules/Input.js"></script>
-<script src="modules/Main.js"></script>
-<script src="modules/Resource.js"></script>
-<script src="modules/core/Actor.js"></script>
-<script src="modules/core/AbstractScene.js"></script>
-<script src="modules/core/DynamicScene.js"></script>
-<script src="modules/core/World.js"></script>
+
 <script src="modules/core/util/Constant.js"></script>
+<script src="modules/core/util/Input.js"></script>
+<script src="modules/core/util/Resource.js"></script>
 <script src="modules/core/util/Time.js"></script>
+<script src="modules/core/AbstractScene.js"></script>
+<script src="modules/core/Actor.js"></script>
+<script src="modules/core/Display.js"></script>
+<script src="modules/core/World.js"></script>
+<script src="modules/game/DynamicScene.js"></script>
+<script src="modules/game/Game.js"></script>
+
 <style type="text/css">
 body {
     overflow:hidden;
@@ -34,7 +36,7 @@ ctx.fillText("loading...",10,20);
 document.addEventListener("DOMContentLoaded", start);
 
 function start() {
-	Main.start(canvas);
+	Game.start(canvas);
 }
 </script> 
 </div>

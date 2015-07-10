@@ -3,16 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Test Edit</title>
-<script src="modules/Display.js"></script>
-<script src="modules/Input.js"></script>
-<script src="modules/Resource.js"></script>
-<script src="modules/core/Actor.js"></script>
-<script src="modules/core/AbstractScene.js"></script>
-<script src="modules/core/World.js"></script>
-<script src="modules/tool/Mapper.js"></script>
-<script src="modules/tool/StaticScene.js"></script>
+
 <script src="modules/core/util/Constant.js"></script>
+<script src="modules/core/util/Input.js"></script>
+<script src="modules/core/util/Resource.js"></script>
 <script src="modules/core/util/Time.js"></script>
+<script src="modules/core/AbstractScene.js"></script>
+<script src="modules/core/Actor.js"></script>
+<script src="modules/core/Display.js"></script>
+<script src="modules/core/World.js"></script>
+<script src="modules/tool/StaticScene.js"></script>
+<script src="modules/tool/Mapper.js"></script>
+
 <script src="lib/jquery.js"></script>
 <script src="lib/tree.jquery.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jqtree.css">
@@ -60,10 +62,9 @@
 			$.getJSON(
 			    'data/map/test.json',
 			    function(dat) {
-			    	console.log(dat);
 			        $('#mapPanel').tree({
 			            data: dat,
-			            autoOpen: true,
+			            autoOpen: 1,
 			    		dragAndDrop: true
 			        });
 			    }

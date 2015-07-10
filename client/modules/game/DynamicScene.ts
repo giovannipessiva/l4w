@@ -1,4 +1,4 @@
-/// <reference path="AbstractScene.ts" />
+/// <reference path="../core/AbstractScene.ts" />
 
 /*
  * Scene implementation for managing dynamic rendering

@@ -1,5 +1,5 @@
-var Main;
-(function (Main) {
+var Game;
+(function (Game) {
     function start(canvas) {
         var scene = new DynamicScene();
         initInput(canvas, scene);
@@ -7,7 +7,7 @@ var Main;
             scene.start(canvas);
         });
     }
-    Main.start = start;
+    Game.start = start;
     function initDisplay(canvas, onCompleted) {
         Display.init(canvas, onCompleted);
     }
@@ -60,4 +60,4 @@ var Main;
         });
     }
     ;
-})(Main || (Main = {}));
+})(Game || (Game = {}));

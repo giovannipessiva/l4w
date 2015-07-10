@@ -13,8 +13,10 @@ module.exports = function(grunt) {
 				src: [
 					'client/modules/*.js',
 					'client/modules/core/*.js',
-					'client/modules/core/ui/*.js',
-					'client/modules/core/util/*.js'
+					'client/modules/core/gui/*.js',
+					'client/modules/core/util/*.js',
+					'client/modules/game/*.js',
+					'client/modules/tool/*.js'
 				],
 				// the location of the resulting JS file
 				dest: 'client/<%= pkg.name %>.js'

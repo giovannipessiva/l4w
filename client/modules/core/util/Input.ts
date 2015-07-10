@@ -1,4 +1,4 @@
-/// <reference path="Display.ts" />
+/// <reference path="../Display.ts" />
 
 /**
  * Module for input handling:

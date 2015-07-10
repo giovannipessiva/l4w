@@ -1,4 +1,4 @@
-/// <reference path="Resource.ts" />
+/// <reference path="util/Resource.ts" />
  
 /**
  * Module for managing canvas autosizing

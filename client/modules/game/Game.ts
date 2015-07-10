@@ -1,9 +1,12 @@
-/// <reference path="Display.ts" />
-/// <reference path="Input.ts" />
-/// <reference path="core/AbstractScene.ts" />
-/// <reference path="core/DynamicScene.ts" />
+/// <reference path="../core/Display.ts" />
+/// <reference path="../core/util/Input.ts" />
+/// <reference path="../core/AbstractScene.ts" />
+/// <reference path="DynamicScene.ts" />
 
-module Main {
+/**
+ * Module for initializing and launching a game
+ */
+module Game {
 
     export function start(canvas: HTMLCanvasElement) {
         var scene = new DynamicScene();
