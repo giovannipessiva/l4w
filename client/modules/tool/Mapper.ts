@@ -1,7 +1,7 @@
 module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var scene = new Scene.StaticScene();
+        var scene = new StaticScene();
         initInput(canvas,scene);
         initDisplay(canvas, function() {
             scene.start(canvas);
@@ -13,7 +13,7 @@ module Mapper {
         Display.init(canvas, onCompleted, false);
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: Scene.StaticScene) {
+    function initInput(canvas: HTMLCanvasElement, scene: StaticScene) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };

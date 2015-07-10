@@ -1,7 +1,7 @@
 var Mapper;
 (function (Mapper) {
     function start(canvas) {
-        var scene = new Scene.StaticScene();
+        var scene = new StaticScene();
         initInput(canvas, scene);
         initDisplay(canvas, function () {
             scene.start(canvas);

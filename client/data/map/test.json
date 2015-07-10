@@ -1,12 +1,26 @@
 [
     {
-        "label": "Saurischia",
+        "label": "Città",
         "id": 1,
-        "load_on_demand": true
+        "children": [
+            {
+            	"label": "Casa",
+            	"id": 11
+            },
+            {
+            	"label": "Locanda",
+            	"id": 12
+            }
+        ]
     },
     {
-        "label": "Ornithischians",
-        "id": 23,
-        "load_on_demand": true
+        "label": "Foresta",
+        "id": 2,
+        "children": [
+            {
+            	"label": "Grotta",
+            	"id": 21
+            }
+        ]
     }
 ]

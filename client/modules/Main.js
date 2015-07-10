@@ -1,7 +1,7 @@
 var Main;
 (function (Main) {
     function start(canvas) {
-        var scene = new Scene.DynamicScene();
+        var scene = new DynamicScene();
         initInput(canvas, scene);
         initDisplay(canvas, function () {
             scene.start(canvas);

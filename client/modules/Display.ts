@@ -22,7 +22,7 @@ module Display {
         onCompleted: { (): void },
         dynamic?: boolean) {
         canvas = cnvs;
-
+        
         Resource.loadPropertes("l4w", function(props) {
             deferredInit(props,dynamic);
             baseH = cellH * rows;

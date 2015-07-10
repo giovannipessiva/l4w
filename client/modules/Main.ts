@@ -1,12 +1,12 @@
 /// <reference path="Display.ts" />
 /// <reference path="Input.ts" />
-/// <reference path="core/Scene.ts" />
+/// <reference path="core/AbstractScene.ts" />
 /// <reference path="core/DynamicScene.ts" />
 
 module Main {
 
     export function start(canvas: HTMLCanvasElement) {
-        var scene = new Scene.DynamicScene();
+        var scene = new DynamicScene();
         initInput(canvas,scene);
         initDisplay(canvas, function() { 
             scene.start(canvas);
@@ -17,7 +17,7 @@ module Main {
         Display.init(canvas, onCompleted);
     }
 
-    function initInput(canvas: HTMLCanvasElement,scene: Scene.DynamicScene) {
+    function initInput(canvas: HTMLCanvasElement,scene: DynamicScene) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };

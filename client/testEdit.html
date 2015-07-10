@@ -2,49 +2,76 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>L4W</title>
+<title>Test Edit</title>
 <script src="modules/Display.js"></script>
 <script src="modules/Input.js"></script>
 <script src="modules/Resource.js"></script>
 <script src="modules/core/Actor.js"></script>
-<script src="modules/core/Scene.js"></script>
+<script src="modules/core/AbstractScene.js"></script>
 <script src="modules/core/World.js"></script>
 <script src="modules/tool/Mapper.js"></script>
 <script src="modules/tool/StaticScene.js"></script>
 <script src="modules/core/util/Constant.js"></script>
 <script src="modules/core/util/Time.js"></script>
-<style type="text/css">
-body {
-    overflow:hidden;
-}
-</style>
+<script src="lib/jquery.js"></script>
+<script src="lib/tree.jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="style/jqtree.css">
 </head>
-<body>
+<body onload="start()">
 <div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
-<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
-Your browser does not support HTML5 Canvas!</canvas>
+	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
+	Your browser does not support HTML5 Canvas!</canvas>
+		
+	<script type='text/javascript'>
+	var canvas = document.getElementById('canvas1');
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle='#000000';
+	ctx.font='bold 38px Arial';
+	ctx.fillText("loading...",10,20);
+		
+	document.addEventListener("DOMContentLoaded", start);
 	
-<script type='text/javascript'>
-var canvas = document.getElementById('canvas1');
-var ctx = canvas.getContext('2d');
-ctx.fillStyle='#000000';
-ctx.font='bold 38px Arial';
-ctx.fillText("loading...",10,20);
+	function start() {
+		Mapper.start(canvas);
+	}
+	</script>
 	
-document.addEventListener("DOMContentLoaded", start);
-
-function start() {
-	Mapper.start(canvas);
-}
-</script> 
+	
 </div>
-<div style="float:right;position:relative;margin-right:0;">
-<table>
-<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
-<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
-<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
-<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
-</table>
+<div style="float:right;position:relative;margin-right:0;width:20%">
+	<div style="border:1px solid black">
+	-<input type="range" min="0" max="4" step="1" value="4">+
+	</div>
+	<div style="border:1px solid black">
+		<table>
+		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
+		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
+		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
+		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
+		</table>
+	</div>
+	<div style="border:1px solid black">
+		<div id="mapPanel"></div>
+		
+		<script type='text/javascript'>
+		function start(){
+			
+
+			$.getJSON(
+			    'data/map/test.json',
+			    function(dat) {
+			    	console.log(dat);
+			        $('#mapPanel').tree({
+			            data: dat,
+			            autoOpen: true,
+			    		dragAndDrop: true
+			        });
+			    }
+			);
+		
+		}
+		</script>
+	</div>
 </div>
 </body>
 </html>
