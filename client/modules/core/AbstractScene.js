@@ -6,8 +6,8 @@ var AbstractScene = (function () {
     function AbstractScene(display) {
         this.map = new World.Map(display);
         this.focus = {
-            x: 0,
-            y: 0
+            x: 6 * 32,
+            y: 6 * 32
         };
         this.pointer = {
             x: 0,
@@ -73,7 +73,7 @@ var AbstractScene = (function () {
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.BLACK;
-            this.context.arc(this.display.mapCoordinateX(this.focus.x), this.display.mapCoordinateY(this.focus.y), 15, 0, Constant.DOUBLE_PI);
+            this.context.arc(this.focus.x, this.focus.y, 15, 0, Constant.DOUBLE_PI);
             this.context.closePath();
             this.context.fill();
             this.context.restore();
@@ -110,22 +110,20 @@ var AbstractScene = (function () {
     AbstractScene.prototype.moveFocus = function (direction) {
         switch (direction) {
             case Constant.Direction.UP:
-                this.focus.y--;
-                console.log(1);
+                this.focus.y -= +this.display.cellH;
                 break;
             case Constant.Direction.DOWN:
-                this.focus.y++;
-                console.log(2);
+                this.focus.y += +this.display.cellH;
                 break;
             case Constant.Direction.LEFT:
-                this.focus.x--;
-                console.log(3);
+                this.focus.x -= +this.display.cellW;
                 break;
             case Constant.Direction.RIGHT:
-                this.focus.x++;
-                console.log(4);
+                this.focus.x += +this.display.cellW;
                 break;
         }
+        var translationPoint = this.display.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
+        this.context.translate(translationPoint.x, translationPoint.y);
     };
     AbstractScene.prototype.updateContext = function (canvas) {
         this.context = canvas.getContext("2d");

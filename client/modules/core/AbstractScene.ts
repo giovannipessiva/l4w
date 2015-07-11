@@ -36,7 +36,7 @@ class AbstractScene {
     constructor(display: AbstractDisplay) {
         this.map = new World.Map(display);
         this.focus = {
-            x: 0, y: 0
+            x: 6 * 32, y: 6 * 32
         };
         this.pointer = {
             x: 0, y: 0
@@ -112,15 +112,15 @@ class AbstractScene {
             this.context.restore();
         }
     }
-    
+
     protected renderFocus() {
         if (this.focus.x != null && this.focus.y != null && this.renderingOptions.showFocus) {
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.BLACK;
             this.context.arc(
-                this.display.mapCoordinateX(this.focus.x),
-                this.display.mapCoordinateY(this.focus.y),
+                this.focus.x,
+                this.focus.y,
                 15,
                 0,
                 Constant.DOUBLE_PI);
@@ -146,7 +146,7 @@ class AbstractScene {
             this.renderingOptions.showCellNumbers = !this.renderingOptions.showCellNumbers;
         }
     }
-    
+
     toggleFocus(enable?: boolean) {
         if (enable != null) {
             this.renderingOptions.showFocus = enable;
@@ -163,11 +163,13 @@ class AbstractScene {
     moveFocus(direction: Constant.Direction) {
         //TODO class Movable
         switch (direction) {
-            case Constant.Direction.UP: this.focus.y--; console.log(1); break;
-            case Constant.Direction.DOWN: this.focus.y++; console.log(2); break;
-            case Constant.Direction.LEFT: this.focus.x--; console.log(3); break;
-            case Constant.Direction.RIGHT: this.focus.x++; console.log(4); break;
+            case Constant.Direction.UP: this.focus.y -= +this.display.cellH; break;
+            case Constant.Direction.DOWN: this.focus.y += +this.display.cellH; break;
+            case Constant.Direction.LEFT: this.focus.x -= +this.display.cellW; break;
+            case Constant.Direction.RIGHT: this.focus.x += +this.display.cellW; break;
         }
+        var translationPoint: Point = this.display.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
+        this.context.translate(translationPoint.x, translationPoint.y);
     }
 
     updateContext(canvas: HTMLCanvasElement) {

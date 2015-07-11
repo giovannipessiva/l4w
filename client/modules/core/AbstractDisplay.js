@@ -1,6 +1,7 @@
 var AbstractDisplay = (function () {
     function AbstractDisplay(cnvs, onCompleted) {
         this.canvas = cnvs;
+        this.currentTranslation = { x: 0, y: 0 };
         (function (display) {
             Resource.loadPropertes("l4w", function (props) {
                 display.deferredInit(props);
@@ -30,6 +31,33 @@ var AbstractDisplay = (function () {
         var i = Math.floor((x - rect.left) / (this.cellW * this.scale));
         var j = Math.floor((y - rect.top) / (this.cellH * this.scale));
         return { x: i, y: j };
+    };
+    AbstractDisplay.prototype.getTranslation = function (focusX, focusY, maxColumns, maxRows) {
+        var x = focusX - (this.halfColumns * this.cellW);
+        var y = focusY - (this.halfRows * this.cellH);
+        if (x < 0) {
+            x = 0;
+        }
+        else {
+            var maxTranslationX = (maxColumns - this.halfColumns) * this.cellW;
+            if (x > maxTranslationX) {
+                x = maxTranslationX;
+            }
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        else {
+            var maxTranslationY = (maxRows - this.halfRows) * this.cellH;
+            if (y > maxTranslationY) {
+                y = maxTranslationY;
+            }
+        }
+        var newTranslation = { x: x, y: y };
+        x = this.currentTranslation.x - x;
+        y = this.currentTranslation.y - y;
+        this.currentTranslation = newTranslation;
+        return { x: x, y: y };
     };
     AbstractDisplay.prototype.getBoundariesX = function (focusX, limit) {
         var focusCell = Math.round(focusX / this.cellW);

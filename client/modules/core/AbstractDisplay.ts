@@ -14,30 +14,32 @@ class AbstractDisplay {
     cellW: number;
     protected halfRows: number;
     protected halfColumns: number;
-    
+    private currentTranslation: Point;
+
     scale: number;
 
     constructor(
         cnvs: HTMLCanvasElement,
         onCompleted: { (): void }) {
         this.canvas = cnvs;
-        
+        this.currentTranslation = { x: 0, y: 0 };
+
         (function(display) {
-            Resource.loadPropertes("l4w", function(props: Map<string,string>) {
+            Resource.loadPropertes("l4w", function(props: Map<string, string>) {
                 display.deferredInit(props);
                 onCompleted();
             });
         })(this);
     }
 
-    deferredInit(props: Map<string,string>) {
+    deferredInit(props: Map<string, string>) {
         this.updateSizingDerivates();
         this.refresh();
     }
-    
-    updateSizingDerivates(){
+
+    updateSizingDerivates() {
         this.baseH = this.cellH * this.rows;
-        this.baseW = this.cellW * this.columns; 
+        this.baseW = this.cellW * this.columns;
         this.halfRows = Math.floor(this.rows / 2);
         this.halfColumns = Math.floor(this.columns / 2);
     }
@@ -60,10 +62,37 @@ class AbstractDisplay {
         return { x: i, y: j };
     }
 
+    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number) {
+        var x = focusX - (this.halfColumns * this.cellW);
+        var y = focusY - (this.halfRows * this.cellH);
+        if (x < 0) {
+            x = 0;
+        } else {
+            var maxTranslationX = (maxColumns - this.halfColumns) * this.cellW;
+            if (x > maxTranslationX) {
+                x = maxTranslationX;
+            }
+        }
+        if (y < 0) {
+            y = 0;
+        } else {
+            var maxTranslationY = (maxRows - this.halfRows) * this.cellH;
+            if (y > maxTranslationY) {
+                y = maxTranslationY;
+            }
+        }
+        var newTranslation = { x: x, y: y };
+        x = this.currentTranslation.x - x;
+        y = this.currentTranslation.y - y;
+        this.currentTranslation = newTranslation;
+        return { x: x, y: y };
+    }
+
     getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
         var focusCell = Math.round(focusX / this.cellW);
         var min = focusCell - this.halfColumns;
         var max = focusCell + this.halfColumns;
+        //console.log(min + " " + max);
         return this.checkBoundariesLimit(min, max, limit);
     }
 

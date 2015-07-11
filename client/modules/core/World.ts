@@ -8,13 +8,13 @@ module World {
         rows: number;
         columns: number;
         display: AbstractDisplay;
-        
+
         private layers: MapLayer[];
 
         constructor(display: AbstractDisplay) {
             //TODO load map
-            this.rows = 300;
-            this.columns = 400;
+            this.rows = 30;
+            this.columns = 50;
             this.layers = [];
             this.display = display;
         }
@@ -32,7 +32,7 @@ module World {
                         this.display.cellW,
                         this.display.cellH);
                 }
-                if (renderingOptions.showEditorGrid) {                
+                if (renderingOptions.showEditorGrid) {
                     context.save();
                     context.globalAlpha = 0.4;
                     context.strokeStyle = Constant.Color.GREY;
