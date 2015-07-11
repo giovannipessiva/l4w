@@ -13,15 +13,15 @@ app.get('/edit', function(request, response) {
 });
 
 app.get('/js/:script', function(request, response) {
-	var script = request.params.script;
+	var file = request.params.script;
 	var filePath = path.resolve(__dirname + '/../client');
-	response.sendFile(filePath + "/" + script);
+	response.sendFile(filePath + "/" + file);
 });
 
 app.get('/lib/:script', function(request, response) {
-	var script = request.params.script;
+	var file = request.params.script;
 	var filePath = path.resolve(__dirname + '/../client/lib');
-	response.sendFile(filePath + "/" + script);
+	response.sendFile(filePath + "/" + file);
 });
 
 app.get('/data/:file', function(request, response) {

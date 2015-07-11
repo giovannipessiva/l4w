@@ -32,9 +32,19 @@
 	ctx.font='bold 38px Arial';
 	ctx.fillText("loading...",10,20);
 		
-	document.addEventListener("DOMContentLoaded", start);
-	
-	function start() {
+
+	function start() {	
+		$.getJSON(
+		    'data/map/test.json',
+		    function(dat) {
+		        $('#mapPanel').tree({
+		            data: dat,
+		            autoOpen: 1,
+		    		dragAndDrop: true
+		        });
+		    }
+		);
+
 		Mapper.start(canvas);
 	}
 	</script>
@@ -55,24 +65,6 @@
 	</div>
 	<div style="border:1px solid black">
 		<div id="mapPanel"></div>
-		
-		<script type='text/javascript'>
-		function start(){
-			
-
-			$.getJSON(
-			    'data/map/test.json',
-			    function(dat) {
-			        $('#mapPanel').tree({
-			            data: dat,
-			            autoOpen: 1,
-			    		dragAndDrop: true
-			        });
-			    }
-			);
-		
-		}
-		</script>
 	</div>
 </div>
 </body>
