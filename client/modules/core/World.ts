@@ -73,6 +73,7 @@ module World {
         showEditorGrid: boolean = false;
         showFPS: boolean = false;
         showCellNumbers: boolean = false;
+        showFocus: boolean = false;
 
         fps: number = 0;
     }

@@ -10,17 +10,17 @@ var Game;
     Game.start = start;
     function initInput(canvas, scene, display) {
         var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.UP] = function (e) {
-            console.log("Up");
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(Constant.Direction.UP);
         };
-        inputCallbackMap[Input.Keys.DOWN] = function (e) {
-            console.log("Down");
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(Constant.Direction.DOWN);
         };
-        inputCallbackMap[Input.Keys.LEFT] = function (e) {
-            console.log("Left");
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(Constant.Direction.LEFT);
         };
-        inputCallbackMap[Input.Keys.RIGHT] = function (e) {
-            console.log("Right");
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(Constant.Direction.RIGHT);
         };
         inputCallbackMap[Input.Keys.F1] = function (e) {
             scene.toggleFPS();
@@ -30,6 +30,9 @@ var Game;
         };
         inputCallbackMap[Input.Keys.F3] = function (e) {
             scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
         };
         Input.init(canvas, display, inputCallbackMap, function () {
         }, function () {

@@ -96,10 +96,10 @@ class AbstractDisplay {
         return focusY % this.cellH;
     }
 
-    getPointerX(pointerX: number) {
+    mapCoordinateX(pointerX: number) {
         return (pointerX + 0.5) * this.cellW;
     }
-    getPointerY(pointerY: number) {
+    mapCoordinateY(pointerY: number) {
         return (pointerY + 0.5) * this.cellH;
     }
 }

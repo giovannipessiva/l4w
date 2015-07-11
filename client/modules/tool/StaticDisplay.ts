@@ -46,4 +46,14 @@ class StaticDisplay extends AbstractDisplay {
         this.updateSizingDerivates();
         this.scale = +this.canvasScales[scaleId];
     }
+    
+    getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
+        //TODO seleziona solo il range che può essere cambiato
+        return super.getBoundariesX(focusX,limit);
+    }
+
+    getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
+        //TODO seleziona solo il range che può essere cambiato
+        return super.getBoundariesY(focusY,limit);
+    }
 }

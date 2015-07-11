@@ -50,6 +50,7 @@ var World;
             this.showEditorGrid = false;
             this.showFPS = false;
             this.showCellNumbers = false;
+            this.showFocus = false;
             this.fps = 0;
         }
         return Options;

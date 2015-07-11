@@ -10,6 +10,13 @@ module Constant {
         static RED = "red";
         static WHITE = "white";
         static GREY = "grey";
+        static BLACK = "black";
     }
 
+    export enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
 }

@@ -69,6 +69,7 @@ class AbstractScene {
             this.renderEventRow(y);
         }
 
+        this.renderFocus();
         this.renderPointer();
         this.mainGameLoop_post();
     }
@@ -100,13 +101,30 @@ class AbstractScene {
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.arc(
-                this.display.getPointerX(this.pointer.x),
-                this.display.getPointerY(this.pointer.y),
+                this.display.mapCoordinateX(this.pointer.x),
+                this.display.mapCoordinateY(this.pointer.y),
                 18,
                 0,
                 Constant.DOUBLE_PI);
             this.context.closePath();
             this.context.globalAlpha = 0.4;
+            this.context.fill();
+            this.context.restore();
+        }
+    }
+    
+    protected renderFocus() {
+        if (this.focus.x != null && this.focus.y != null && this.renderingOptions.showFocus) {
+            this.context.save();
+            this.context.beginPath();
+            this.context.fillStyle = Constant.Color.BLACK;
+            this.context.arc(
+                this.display.mapCoordinateX(this.focus.x),
+                this.display.mapCoordinateY(this.focus.y),
+                15,
+                0,
+                Constant.DOUBLE_PI);
+            this.context.closePath();
             this.context.fill();
             this.context.restore();
         }
@@ -127,12 +145,29 @@ class AbstractScene {
         } else {
             this.renderingOptions.showCellNumbers = !this.renderingOptions.showCellNumbers;
         }
-
+    }
+    
+    toggleFocus(enable?: boolean) {
+        if (enable != null) {
+            this.renderingOptions.showFocus = enable;
+        } else {
+            this.renderingOptions.showFocus = !this.renderingOptions.showFocus;
+        }
     }
 
     updatePointer(x: number, y: number) {
         this.pointer.x = x;
         this.pointer.y = y;
+    }
+
+    moveFocus(direction: Constant.Direction) {
+        //TODO class Movable
+        switch (direction) {
+            case Constant.Direction.UP: this.focus.y--; console.log(1); break;
+            case Constant.Direction.DOWN: this.focus.y++; console.log(2); break;
+            case Constant.Direction.LEFT: this.focus.x--; console.log(3); break;
+            case Constant.Direction.RIGHT: this.focus.x++; console.log(4); break;
+        }
     }
 
     updateContext(canvas: HTMLCanvasElement) {

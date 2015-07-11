@@ -36,6 +36,7 @@ var AbstractScene = (function () {
             this.renderRow(y);
             this.renderEventRow(y);
         }
+        this.renderFocus();
         this.renderPointer();
         this.mainGameLoop_post();
     };
@@ -60,9 +61,20 @@ var AbstractScene = (function () {
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.arc(this.display.getPointerX(this.pointer.x), this.display.getPointerY(this.pointer.y), 18, 0, Constant.DOUBLE_PI);
+            this.context.arc(this.display.mapCoordinateX(this.pointer.x), this.display.mapCoordinateY(this.pointer.y), 18, 0, Constant.DOUBLE_PI);
             this.context.closePath();
             this.context.globalAlpha = 0.4;
+            this.context.fill();
+            this.context.restore();
+        }
+    };
+    AbstractScene.prototype.renderFocus = function () {
+        if (this.focus.x != null && this.focus.y != null && this.renderingOptions.showFocus) {
+            this.context.save();
+            this.context.beginPath();
+            this.context.fillStyle = Constant.Color.BLACK;
+            this.context.arc(this.display.mapCoordinateX(this.focus.x), this.display.mapCoordinateY(this.focus.y), 15, 0, Constant.DOUBLE_PI);
+            this.context.closePath();
             this.context.fill();
             this.context.restore();
         }
@@ -83,9 +95,37 @@ var AbstractScene = (function () {
             this.renderingOptions.showCellNumbers = !this.renderingOptions.showCellNumbers;
         }
     };
+    AbstractScene.prototype.toggleFocus = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showFocus = enable;
+        }
+        else {
+            this.renderingOptions.showFocus = !this.renderingOptions.showFocus;
+        }
+    };
     AbstractScene.prototype.updatePointer = function (x, y) {
         this.pointer.x = x;
         this.pointer.y = y;
+    };
+    AbstractScene.prototype.moveFocus = function (direction) {
+        switch (direction) {
+            case Constant.Direction.UP:
+                this.focus.y--;
+                console.log(1);
+                break;
+            case Constant.Direction.DOWN:
+                this.focus.y++;
+                console.log(2);
+                break;
+            case Constant.Direction.LEFT:
+                this.focus.x--;
+                console.log(3);
+                break;
+            case Constant.Direction.RIGHT:
+                this.focus.x++;
+                console.log(4);
+                break;
+        }
     };
     AbstractScene.prototype.updateContext = function (canvas) {
         this.context = canvas.getContext("2d");

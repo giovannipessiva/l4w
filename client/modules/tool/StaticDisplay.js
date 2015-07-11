@@ -35,5 +35,11 @@ var StaticDisplay = (function (_super) {
         this.updateSizingDerivates();
         this.scale = +this.canvasScales[scaleId];
     };
+    StaticDisplay.prototype.getBoundariesX = function (focusX, limit) {
+        return _super.prototype.getBoundariesX.call(this, focusX, limit);
+    };
+    StaticDisplay.prototype.getBoundariesY = function (focusY, limit) {
+        return _super.prototype.getBoundariesY.call(this, focusY, limit);
+    };
     return StaticDisplay;
 })(AbstractDisplay);

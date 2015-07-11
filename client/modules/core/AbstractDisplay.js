@@ -63,10 +63,10 @@ var AbstractDisplay = (function () {
     AbstractDisplay.prototype.getOffsetY = function (focusY) {
         return focusY % this.cellH;
     };
-    AbstractDisplay.prototype.getPointerX = function (pointerX) {
+    AbstractDisplay.prototype.mapCoordinateX = function (pointerX) {
         return (pointerX + 0.5) * this.cellW;
     };
-    AbstractDisplay.prototype.getPointerY = function (pointerY) {
+    AbstractDisplay.prototype.mapCoordinateY = function (pointerY) {
         return (pointerY + 0.5) * this.cellH;
     };
     return AbstractDisplay;
