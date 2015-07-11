@@ -1,17 +1,14 @@
 var Mapper;
 (function (Mapper) {
     function start(canvas) {
-        var scene = new StaticScene();
-        initInput(canvas, scene);
-        initDisplay(canvas, function () {
+        var display = new StaticDisplay(canvas, function () {
+            var scene = new StaticScene(display);
+            initInput(canvas, scene, display);
             scene.start(canvas);
         });
     }
     Mapper.start = start;
-    function initDisplay(canvas, onCompleted) {
-        Display.init(canvas, onCompleted, false);
-    }
-    function initInput(canvas, scene) {
+    function initInput(canvas, scene, display) {
         var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.UP] = function (e) {
             console.log("Up");
@@ -31,7 +28,7 @@ var Mapper;
         inputCallbackMap[Input.Keys.F3] = function (e) {
             scene.toggleCellNumbering();
         };
-        Input.init(canvas, inputCallbackMap, function () {
+        Input.init(canvas, display, inputCallbackMap, function () {
         }, function () {
         }, function () {
         }, function () {

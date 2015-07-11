@@ -31,9 +31,10 @@ class AbstractScene {
     layers: number;
 
     context: CanvasRenderingContext2D;
+    display: AbstractDisplay;
 
-    constructor() {
-        this.map = new World.Map();
+    constructor(display: AbstractDisplay) {
+        this.map = new World.Map(display);
         this.focus = {
             x: 0, y: 0
         };
@@ -42,6 +43,7 @@ class AbstractScene {
         };
         this.renderingOptions = new World.Options();
         this.layers = this.map.getLayers();
+        this.display = display;
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -59,7 +61,7 @@ class AbstractScene {
             return;
         }
 
-        var boundaries = Display.getBoundariesY(this.focus.y, this.map.rows);
+        var boundaries = this.display.getBoundariesY(this.focus.y, this.map.rows);
         var minRow = boundaries.min;
         var maxRow = boundaries.max;
         for (var y = minRow; y <= maxRow; y++) {
@@ -72,7 +74,7 @@ class AbstractScene {
     }
 
     protected mainGameLoop_pre(): boolean {
-        Display.clear(this.context); //TODO rimuovere a regime
+        this.display.clear(this.context); //TODO rimuovere a regime
         return true;
     }
 
@@ -80,7 +82,7 @@ class AbstractScene {
     }
 
     private renderRow(y: number) {
-        var boundaries = Display.getBoundariesX(this.focus.x, this.map.columns);
+        var boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
         var minColumn = boundaries.min;
         var maxColumn = boundaries.max;
         for (var x = minColumn; x <= maxColumn; x++) {
@@ -98,8 +100,8 @@ class AbstractScene {
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.arc(
-                Display.getPointerX(this.pointer.x),
-                Display.getPointerY(this.pointer.y),
+                this.display.getPointerX(this.pointer.x),
+                this.display.getPointerY(this.pointer.y),
                 18,
                 0,
                 Constant.DOUBLE_PI);
@@ -135,6 +137,6 @@ class AbstractScene {
 
     updateContext(canvas: HTMLCanvasElement) {
         this.context = canvas.getContext("2d");
-        this.context.scale(Display.scale, Display.scale);
+        this.context.scale(this.display.scale, this.display.scale);
     }
 }

@@ -1,25 +1,20 @@
 module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var scene = new StaticScene();
-        initInput(canvas,scene);
-        initDisplay(canvas, function() {
+        var display = new StaticDisplay(canvas, function() {
+            var scene = new StaticScene(display);
+            initInput(canvas, scene, display);
             scene.start(canvas);
         });
-        
     }
 
-    function initDisplay(canvas: HTMLCanvasElement, onCompleted: { (): void }) {
-        Display.init(canvas, onCompleted, false);
-    }
-
-    function initInput(canvas: HTMLCanvasElement, scene: StaticScene) {
+    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticDisplay) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
         inputCallbackMap[Input.Keys.LEFT] = function(e) { console.log("Left"); };
         inputCallbackMap[Input.Keys.RIGHT] = function(e) { console.log("Right"); };
-        
+
         inputCallbackMap[Input.Keys.F2] = function(e) {
             scene.toggleEditorGrid();
         };
@@ -29,6 +24,7 @@ module Mapper {
 
         Input.init(
             canvas,
+            display,
             inputCallbackMap,
             function() { },
             function() { },

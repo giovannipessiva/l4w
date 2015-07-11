@@ -29,7 +29,7 @@ var Input;
     ;
     ;
     ;
-    function init(canvas, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
+    function init(canvas, display, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
         var actionOngoing = false;
         var lastKey;
         var flagPause = false;
@@ -141,7 +141,7 @@ var Input;
             resizeCallback();
         });
         function mapEvent(e) {
-            return Display.mapPosition(e.clientX, e.clientY);
+            return display.mapPosition(e.clientX, e.clientY);
         }
     }
     Input.init = init;

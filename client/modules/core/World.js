@@ -1,10 +1,11 @@
 var World;
 (function (World) {
     var Map = (function () {
-        function Map() {
+        function Map(display) {
             this.rows = 32;
             this.columns = 42;
             this.layers = [];
+            this.display = display;
         }
         Map.prototype.render = function (context, x, y, renderingOptions) {
             for (var layer in this.layers) {
@@ -13,19 +14,19 @@ var World;
             if (renderingOptions != null) {
                 if (renderingOptions.showGrid) {
                     context.strokeStyle = Constant.Color.RED;
-                    context.strokeRect(x * Display.cellW, y * Display.cellH, Display.cellW, Display.cellH);
+                    context.strokeRect(x * this.display.cellW, y * this.display.cellH, this.display.cellW, this.display.cellH);
                 }
                 if (renderingOptions.showEditorGrid) {
                     context.save();
                     context.globalAlpha = 0.4;
                     context.strokeStyle = Constant.Color.GREY;
-                    context.strokeRect(x * Display.cellW, y * Display.cellH, Display.cellW, Display.cellH);
+                    context.strokeRect(x * this.display.cellW, y * this.display.cellH, this.display.cellW, this.display.cellH);
                     context.restore();
                 }
                 if (renderingOptions.showCellNumbers) {
                     context.fillStyle = Constant.Color.RED;
                     context.font = "bold 10px Arial";
-                    context.fillText(x + "," + y, x * Display.cellW + 1, y * Display.cellH + 10);
+                    context.fillText(x + "," + y, x * this.display.cellW + 1, y * this.display.cellH + 10);
                 }
             }
         };

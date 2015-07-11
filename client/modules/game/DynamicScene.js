@@ -6,8 +6,8 @@ var __extends = this.__extends || function (d, b) {
 };
 var DynamicScene = (function (_super) {
     __extends(DynamicScene, _super);
-    function DynamicScene() {
-        _super.call(this);
+    function DynamicScene(display) {
+        _super.call(this, display);
         this.FPS = 20;
         this.refreshInterval = 1000 / this.FPS;
         this.autoFPS = true;

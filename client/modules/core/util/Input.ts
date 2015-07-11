@@ -1,4 +1,4 @@
-/// <reference path="../Display.ts" />
+/// <reference path="../AbstractDisplay.ts" />
 
 /**
  * Module for input handling:
@@ -39,6 +39,7 @@ module Input {
 
     export function init(
         canvas: HTMLCanvasElement,
+        display: AbstractDisplay,
         inputCallbacks: Map<string, Input.IKeyboardCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
@@ -175,7 +176,7 @@ module Input {
         });
 
         function mapEvent(e) {
-            return Display.mapPosition(e.clientX, e.clientY);
+            return display.mapPosition(e.clientX, e.clientY);
         }
 
     };

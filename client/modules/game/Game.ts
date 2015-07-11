@@ -1,7 +1,8 @@
-/// <reference path="../core/Display.ts" />
+/// <reference path="../core/AbstractDisplay.ts" />
 /// <reference path="../core/util/Input.ts" />
 /// <reference path="../core/AbstractScene.ts" />
 /// <reference path="DynamicScene.ts" />
+/// <reference path="DynamicDisplay.ts" />
 
 /**
  * Module for initializing and launching a game
@@ -9,18 +10,14 @@
 module Game {
 
     export function start(canvas: HTMLCanvasElement) {
-        var scene = new DynamicScene();
-        initInput(canvas,scene);
-        initDisplay(canvas, function() { 
+        var display = new DynamicDisplay(canvas, function() {
+            var scene = new DynamicScene(display);
+            initInput(canvas, scene, display);
             scene.start(canvas);
-        }); 
+        });
     }
 
-    function initDisplay(canvas: HTMLCanvasElement, onCompleted: { (): void }) {
-        Display.init(canvas, onCompleted);
-    }
-
-    function initInput(canvas: HTMLCanvasElement,scene: DynamicScene) {
+    function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, display: DynamicDisplay) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e) { console.log("Up"); };
         inputCallbackMap[Input.Keys.DOWN] = function(e) { console.log("Down"); };
@@ -38,6 +35,7 @@ module Game {
 
         Input.init(
             canvas,
+            display,
             inputCallbackMap,
             function() { },
             function() { },
@@ -60,7 +58,7 @@ module Game {
                 scene.togglePause(false);
             },
             function() {
-                Display.refresh();
+                display.refresh();
                 scene.updateContext(canvas);
             },
             function() { console.log("rightClick"); },

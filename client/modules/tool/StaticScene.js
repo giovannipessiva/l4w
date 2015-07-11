@@ -6,8 +6,8 @@ var __extends = this.__extends || function (d, b) {
 };
 var StaticScene = (function (_super) {
     __extends(StaticScene, _super);
-    function StaticScene() {
-        _super.call(this);
+    function StaticScene(display) {
+        _super.call(this, display);
         this.renderingOptions.showEditorGrid = true;
     }
     StaticScene.prototype.mainGameLoop_pre = function () {
@@ -32,7 +32,7 @@ var StaticScene = (function (_super) {
             this.context.save();
             this.context.globalAlpha = 0.4;
             this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.fillRect(this.pointer.x * Display.cellW, this.pointer.y * Display.cellH, Display.cellW, Display.cellH);
+            this.context.fillRect(this.pointer.x * this.display.cellW, this.pointer.y * this.display.cellH, this.display.cellW, this.display.cellH);
             this.context.restore();
         }
     };

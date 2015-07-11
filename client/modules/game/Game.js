@@ -1,17 +1,14 @@
 var Game;
 (function (Game) {
     function start(canvas) {
-        var scene = new DynamicScene();
-        initInput(canvas, scene);
-        initDisplay(canvas, function () {
+        var display = new DynamicDisplay(canvas, function () {
+            var scene = new DynamicScene(display);
+            initInput(canvas, scene, display);
             scene.start(canvas);
         });
     }
     Game.start = start;
-    function initDisplay(canvas, onCompleted) {
-        Display.init(canvas, onCompleted);
-    }
-    function initInput(canvas, scene) {
+    function initInput(canvas, scene, display) {
         var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.UP] = function (e) {
             console.log("Up");
@@ -34,7 +31,7 @@ var Game;
         inputCallbackMap[Input.Keys.F3] = function (e) {
             scene.toggleCellNumbering();
         };
-        Input.init(canvas, inputCallbackMap, function () {
+        Input.init(canvas, display, inputCallbackMap, function () {
         }, function () {
         }, function () {
         }, function () {
@@ -49,7 +46,7 @@ var Game;
             console.log("unpause");
             scene.togglePause(false);
         }, function () {
-            Display.refresh();
+            display.refresh();
             scene.updateContext(canvas);
         }, function () {
             console.log("rightClick");
