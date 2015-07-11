@@ -57,8 +57,8 @@ class AbstractDisplay {
         x: number,
         y: number) {
         var rect = this.canvas.getBoundingClientRect();
-        var i = Math.floor((x - rect.left) / (this.cellW * this.scale));
-        var j = Math.floor((y - rect.top) / (this.cellH * this.scale));
+        var i = Math.floor((x - rect.left + this.currentTranslation.x) / (this.cellW * this.scale));
+        var j = Math.floor((y - rect.top + this.currentTranslation.y) / (this.cellH * this.scale));
         return { x: i, y: j };
     }
 
