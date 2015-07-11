@@ -24,7 +24,7 @@ var AbstractDisplay = (function () {
         this.canvas.width = this.baseW * this.scale;
     };
     AbstractDisplay.prototype.clear = function (context) {
-        context.clearRect(0, 0, this.baseW, this.baseH);
+        context.clearRect(this.currentTranslation.x, this.currentTranslation.y, this.baseW + this.currentTranslation.x, this.baseH + this.currentTranslation.y);
     };
     AbstractDisplay.prototype.mapPosition = function (x, y) {
         var rect = this.canvas.getBoundingClientRect();

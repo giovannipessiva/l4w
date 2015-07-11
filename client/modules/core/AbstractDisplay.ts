@@ -50,7 +50,11 @@ class AbstractDisplay {
     }
 
     clear(context: CanvasRenderingContext2D) {
-        context.clearRect(0, 0, this.baseW, this.baseH);
+        context.clearRect(
+            this.currentTranslation.x,
+            this.currentTranslation.y,
+            this.baseW + this.currentTranslation.x,
+            this.baseH + this.currentTranslation.y);
     }
 
     mapPosition(
