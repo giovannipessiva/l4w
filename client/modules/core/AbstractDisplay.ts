@@ -14,7 +14,7 @@ class AbstractDisplay {
     cellW: number;
     protected halfRows: number;
     protected halfColumns: number;
-    protected canvasRatio: number;
+    
     scale: number;
 
     constructor(
@@ -23,39 +23,32 @@ class AbstractDisplay {
         this.canvas = cnvs;
         
         (function(display) {
-            Resource.loadPropertes("l4w", function(props) {
+            Resource.loadPropertes("l4w", function(props: Map<string,string>) {
                 display.deferredInit(props);
                 onCompleted();
             });
         })(this);
     }
 
-    deferredInit(props) {
+    deferredInit(props: Map<string,string>) {
+        this.updateSizingDerivates();
+        this.refresh();
+    }
+    
+    updateSizingDerivates(){
         this.baseH = this.cellH * this.rows;
         this.baseW = this.cellW * this.columns; 
         this.halfRows = Math.floor(this.rows / 2);
         this.halfColumns = Math.floor(this.columns / 2);
-        this.refresh();
     }
 
     refresh() {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         this.canvas.height = this.baseH * this.scale;
         this.canvas.width = this.baseW * this.scale;
     }
 
     clear(context: CanvasRenderingContext2D) {
         context.clearRect(0, 0, this.baseW, this.baseH);
-    }
-
-    private width() {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
-    }
-
-    private height() {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
     }
 
     mapPosition(

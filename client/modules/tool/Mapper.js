@@ -4,6 +4,7 @@ var Mapper;
         var display = new StaticDisplay(canvas, function () {
             var scene = new StaticScene(display);
             initInput(canvas, scene, display);
+            initWidgets(canvas, scene, display);
             scene.start(canvas);
         });
     }
@@ -46,6 +47,15 @@ var Mapper;
         }, function () {
             console.log("wheel");
         });
+    }
+    ;
+    function initWidgets(canvas, scene, display) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            display.selectScale(+inputRange.value);
+            display.refresh();
+            scene.updateContext(canvas);
+        };
     }
     ;
 })(Mapper || (Mapper = {}));

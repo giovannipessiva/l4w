@@ -4,6 +4,7 @@ module Mapper {
         var display = new StaticDisplay(canvas, function() {
             var scene = new StaticScene(display);
             initInput(canvas, scene, display);
+            initWidgets(canvas, scene, display);
             scene.start(canvas);
         });
     }
@@ -45,6 +46,15 @@ module Mapper {
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
             );
+    };
+    
+    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticDisplay) {
+        var inputRange: HTMLInputElement = <HTMLInputElement> document.getElementById("zoom");
+        inputRange.onchange = function(e: Event){
+            display.selectScale(+inputRange.value);
+            display.refresh();
+            scene.updateContext(canvas);
+        };
     };
 
 }

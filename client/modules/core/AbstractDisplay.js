@@ -9,27 +9,21 @@ var AbstractDisplay = (function () {
         })(this);
     }
     AbstractDisplay.prototype.deferredInit = function (props) {
+        this.updateSizingDerivates();
+        this.refresh();
+    };
+    AbstractDisplay.prototype.updateSizingDerivates = function () {
         this.baseH = this.cellH * this.rows;
         this.baseW = this.cellW * this.columns;
         this.halfRows = Math.floor(this.rows / 2);
         this.halfColumns = Math.floor(this.columns / 2);
-        this.refresh();
     };
     AbstractDisplay.prototype.refresh = function () {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         this.canvas.height = this.baseH * this.scale;
         this.canvas.width = this.baseW * this.scale;
     };
     AbstractDisplay.prototype.clear = function (context) {
         context.clearRect(0, 0, this.baseW, this.baseH);
-    };
-    AbstractDisplay.prototype.width = function () {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
-    };
-    AbstractDisplay.prototype.height = function () {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
     };
     AbstractDisplay.prototype.mapPosition = function (x, y) {
         var rect = this.canvas.getBoundingClientRect();

@@ -2,8 +2,8 @@ var World;
 (function (World) {
     var Map = (function () {
         function Map(display) {
-            this.rows = 32;
-            this.columns = 42;
+            this.rows = 300;
+            this.columns = 400;
             this.layers = [];
             this.display = display;
         }

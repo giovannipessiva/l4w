@@ -20,7 +20,7 @@ module Resource {
             return properties[file];
         } else {
             function parsePropertiesCallback() {
-                var props = parseProperties(this.responseText);
+                var props: Map<string,string> = parseProperties(this.responseText);
                 properties[file] = props;
                 onLoadCallback(props);
             }

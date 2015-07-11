@@ -14,8 +14,26 @@ var StaticDisplay = (function (_super) {
         this.cellW = props["cellWidthEditor"];
         this.rows = props["rowsEditor"];
         this.columns = props["columnsEditor"];
-        this.canvasRatio = props["canvasRatioEditor"];
+        this.canvasScales = props["canvasScale"].split(",");
+        var totCanvasScales = this.canvasScales.length;
+        this.rowsList = new Array(totCanvasScales);
+        this.columnsList = new Array(totCanvasScales);
+        var selectedScaleId = totCanvasScales - 1;
+        for (var i = 0; i < totCanvasScales; i++) {
+            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+        }
+        this.selectScale(selectedScaleId);
         _super.prototype.deferredInit.call(this, props);
+    };
+    StaticDisplay.prototype.refresh = function () {
+        _super.prototype.refresh.call(this);
+    };
+    StaticDisplay.prototype.selectScale = function (scaleId) {
+        this.rows = this.rowsList[scaleId];
+        this.columns = this.columnsList[scaleId];
+        this.updateSizingDerivates();
+        this.scale = +this.canvasScales[scaleId];
     };
     return StaticDisplay;
 })(AbstractDisplay);
