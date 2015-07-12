@@ -64,13 +64,16 @@ class AbstractScene {
         var boundaries = this.display.getBoundariesY(this.focus.y, this.map.rows);
         var minRow = boundaries.min;
         var maxRow = boundaries.max;
+        boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
+        var minColumn = boundaries.min;
+        var maxColumn = boundaries.max;
         for (var y = minRow; y <= maxRow; y++) {
-            this.renderRow(y);
-            this.renderEventRow(y);
+            this.renderRow(y,minColumn,maxColumn);
         }
 
         this.renderFocus();
         this.renderPointer();
+        
         this.mainGameLoop_post();
     }
 
@@ -82,17 +85,10 @@ class AbstractScene {
     protected mainGameLoop_post() {
     }
 
-    private renderRow(y: number) {
-        var boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
-        var minColumn = boundaries.min;
-        var maxColumn = boundaries.max;
+    private renderRow(y: number,minColumn: number,maxColumn: number) {
         for (var x = minColumn; x <= maxColumn; x++) {
             this.map.render(this.context, x, y, this.renderingOptions);
         }
-    }
-
-    private renderEventRow(row: number) {
-
     }
 
     protected renderPointer() {

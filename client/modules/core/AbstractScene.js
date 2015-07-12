@@ -32,9 +32,11 @@ var AbstractScene = (function () {
         var boundaries = this.display.getBoundariesY(this.focus.y, this.map.rows);
         var minRow = boundaries.min;
         var maxRow = boundaries.max;
+        boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
+        var minColumn = boundaries.min;
+        var maxColumn = boundaries.max;
         for (var y = minRow; y <= maxRow; y++) {
-            this.renderRow(y);
-            this.renderEventRow(y);
+            this.renderRow(y, minColumn, maxColumn);
         }
         this.renderFocus();
         this.renderPointer();
@@ -46,15 +48,10 @@ var AbstractScene = (function () {
     };
     AbstractScene.prototype.mainGameLoop_post = function () {
     };
-    AbstractScene.prototype.renderRow = function (y) {
-        var boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
-        var minColumn = boundaries.min;
-        var maxColumn = boundaries.max;
+    AbstractScene.prototype.renderRow = function (y, minColumn, maxColumn) {
         for (var x = minColumn; x <= maxColumn; x++) {
             this.map.render(this.context, x, y, this.renderingOptions);
         }
-    };
-    AbstractScene.prototype.renderEventRow = function (row) {
     };
     AbstractScene.prototype.renderPointer = function () {
         if (this.pointer.x != null && this.pointer.y != null) {
