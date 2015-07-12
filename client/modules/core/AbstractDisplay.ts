@@ -68,19 +68,19 @@ class AbstractDisplay {
 
     getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number) {
         var x = focusX - (this.halfColumns * this.cellW);
-        var y = focusY - (this.halfRows * this.cellH);
         if (x < 0) {
             x = 0;
         } else {
-            var maxTranslationX = (maxColumns - this.halfColumns) * this.cellW;
+            var maxTranslationX = (maxColumns - this.columns) * this.cellW;
             if (x > maxTranslationX) {
                 x = maxTranslationX;
             }
         }
+        var y = focusY - (this.halfRows * this.cellH);
         if (y < 0) {
             y = 0;
         } else {
-            var maxTranslationY = (maxRows - this.halfRows) * this.cellH;
+            var maxTranslationY = (maxRows - this.rows) * this.cellH;
             if (y > maxTranslationY) {
                 y = maxTranslationY;
             }
@@ -97,7 +97,7 @@ class AbstractDisplay {
         var min = focusCell - this.halfColumns;
         var max = focusCell + this.halfColumns;
         //console.log(min + " " + max);
-        return this.checkBoundariesLimit(min, max, limit);
+        return this.checkBoundariesLimit(min, max, limit - 1);
     }
 
     getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
