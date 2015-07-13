@@ -18,6 +18,7 @@
 
 <script src="lib/jquery.js"></script>
 <script src="lib/tree.jquery.js"></script>
+<script src="lib/jquery.cookie.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jqtree.css">
 </head>
 <body onload="start()">
@@ -39,9 +40,33 @@
 		    function(dat) {
 		        $('#mapPanel').tree({
 		            data: dat,
+		            autoEscape: false,
 		            autoOpen: 1,
-		    		dragAndDrop: true
+		            //closedIcon: '+',
+		            //openedIcon: '-',
+		    		dragAndDrop: true,
+		    		saveState: 'l4w_MapTree',
+		    		slide: false
 		        });
+		        
+		        $('#mapPanel').bind(
+				    'tree.init',
+				    function(event) {
+				        console.log("tree.init");
+				    }
+				);
+				
+				$('#mapPanel').bind(
+				    'tree.select',
+				    function(event) {
+				        if (event.node) {
+				            var node = event.node;
+				        	$('#extraPanel').show();
+				        	$('#mapName').text(event.node.name);
+				        	$('#mapSize').text("40x30"); //TODO
+				        }
+				    }
+				);
 		    }
 		);
 
@@ -65,6 +90,11 @@
 	</div>
 	<div style="border:1px solid black">
 		<div id="mapPanel"></div>
+	</div>
+	<div id="extraPanel" style="display:none;border:1px solid black">
+	<table>
+	<tr><td>Map</td><td id="mapName"></td></tr>
+	<tr><td>Size</td><td id="mapSize"></td></tr>
 	</div>
 </div>
 </body>
