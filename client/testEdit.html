@@ -20,20 +20,9 @@
 <script src="lib/tree.jquery.js"></script>
 <script src="lib/jquery.cookie.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jqtree.css">
-</head>
-<body onload="start()">
-<div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
-	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
-	Your browser does not support HTML5 Canvas!</canvas>
-		
-	<script type='text/javascript'>
-	var canvas = document.getElementById('canvas1');
-	var ctx = canvas.getContext('2d');
-	ctx.fillStyle='#000000';
-	ctx.font='bold 38px Arial';
-	ctx.fillText("loading...",10,20);
-		
+<link rel="stylesheet" type="text/css" href="style/l4w.css">
 
+<script type='text/javascript'>
 	function start() {	
 		$.getJSON(
 		    'data/map/test.json',
@@ -62,8 +51,9 @@
 				        if (event.node) {
 				            var node = event.node;
 				        	$('#extraPanel').show();
-				        	$('#mapName').text(event.node.name);
-				        	$('#mapSize').text("40x30"); //TODO
+				        	$('#mapName').val(event.node.name);
+				        	$('#mapSizeW').val("40"); //TODO
+				        	$('#mapSizeH').val("30"); //TODO
 				        }
 				    }
 				);
@@ -74,6 +64,20 @@
 	}
 	</script>
 	
+</head>
+<body onload="start()">
+<div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
+	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
+	Your browser does not support HTML5 Canvas!</canvas>
+		
+	<script type='text/javascript'>
+	var canvas = document.getElementById('canvas1');
+	var ctx = canvas.getContext('2d');
+	ctx.fillStyle='#000000';
+	ctx.font='bold 38px Arial';
+	ctx.fillText("loading...",10,20);
+	</script>
+	
 	
 </div>
 <div style="float:right;position:relative;margin-right:0;width:20%">
@@ -82,19 +86,36 @@
 	</div>
 	<div style="border:1px solid black">
 		<table>
-		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td></tr>
-		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td></tr>
-		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td></tr>
-		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td></tr>
+		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td><td><button type="button">A3</button></td><td><button type="button">A4</button></td></tr>
+		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td><td><button type="button">B3</button></td><td><button type="button">B4</button></td></tr>
+		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td><td><button type="button">C3</button></td><td><button type="button">C4</button></td></tr>
+		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td><td><button type="button">D3</button></td><td><button type="button">D4</button></td></tr>
 		</table>
 	</div>
 	<div style="border:1px solid black">
-		<div id="mapPanel"></div>
+		<table>
+	<tr><td id="mapPanel"></td>
+	<tr><td>
+		<button type="submit" onclick="console.log('crea sottonodo');">Aggiungi</button>
+	</td></tr></table>
 	</div>
 	<div id="extraPanel" style="display:none;border:1px solid black">
 	<table>
-	<tr><td>Map</td><td id="mapName"></td></tr>
-	<tr><td>Size</td><td id="mapSize"></td></tr>
+	<tr><td>Name</td><td>
+		<input type="text" id="mapName">
+	</td><td>
+		<button type="submit" onclick="console.log('aggiorna nome');">&#8634;</button>
+	</td></tr>
+	<tr><td>Size</td><td>
+			<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
+			 x 
+			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
+	</td><td>
+		<button type="submit" onclick="console.log('aggiorna dimensione');">&#8634;</button>
+	</td></tr>
+	<tr><td></td><td>
+		<button type="submit" onclick="console.log('elimina nodo');">Elimina</button></td><td>
+	</td></tr>
 	</div>
 </div>
 </body>
