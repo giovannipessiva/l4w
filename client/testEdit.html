@@ -16,7 +16,7 @@
 <script src="modules/tool/StaticDisplay.js"></script>
 <script src="modules/tool/Mapper.js"></script>
 
-<script src="lib/jquery.js"></script>
+<script src="lib/jquery3.js"></script>
 <script src="lib/tree.jquery.js"></script>
 <script src="lib/jquery.cookie.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jqtree.css">
@@ -62,6 +62,29 @@
 
 		Mapper.start(canvas);
 	}
+	
+	function addNode() {
+		var node = $('#mapPanel').tree('getSelectedNode');
+		$('#mapPanel').tree(
+		    'appendNode',
+		    {
+		        label: 'New',
+		        id: 0
+		    },
+		    node
+		);
+	}
+	
+	function changeName() {
+		var newName = $('#mapName').val();
+		var node = $('#mapPanel').tree('getSelectedNode');
+		$('#mapPanel').tree('updateNode', node, newName);
+	}
+	
+	function removeNode() {
+		var node = $('#mapPanel').tree('getSelectedNode');
+		$('#mapPanel').tree('removeNode', node);
+	}
 	</script>
 	
 </head>
@@ -96,7 +119,7 @@
 		<table>
 	<tr><td id="mapPanel"></td>
 	<tr><td>
-		<button type="submit" onclick="console.log('crea sottonodo');">Aggiungi</button>
+		<button type="submit" onclick="addNode();">Aggiungi</button>
 	</td></tr></table>
 	</div>
 	<div id="extraPanel" style="display:none;border:1px solid black">
@@ -104,7 +127,7 @@
 	<tr><td>Name</td><td>
 		<input type="text" id="mapName">
 	</td><td>
-		<button type="submit" onclick="console.log('aggiorna nome');">&#8634;</button>
+		<button type="submit" onclick="changeName();">&#8634;</button>
 	</td></tr>
 	<tr><td>Size</td><td>
 			<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
@@ -114,7 +137,7 @@
 		<button type="submit" onclick="console.log('aggiorna dimensione');">&#8634;</button>
 	</td></tr>
 	<tr><td></td><td>
-		<button type="submit" onclick="console.log('elimina nodo');">Elimina</button></td><td>
+		<button type="submit" onclick="removeNode();">Elimina</button></td><td>
 	</td></tr>
 	</div>
 </div>
