@@ -1,26 +1,36 @@
 [
-    {
-        "label": "Città",
-        "id": 1,
-        "children": [
-            {
-            	"label": "Casa",
-            	"id": 11
-            },
-            {
-            	"label": "Locanda",
-            	"id": 12
-            }
-        ]
-    },
-    {
-        "label": "Foresta",
-        "id": 2,
-        "children": [
-            {
-            	"label": "Grotta",
-            	"id": 21
-            }
-        ]
-    }
+	{
+		"id" : "1",
+		"text" : "Villaggio",
+		"children" : [
+			{
+				"id" : "2",
+				"text" : "Casa"
+			},
+			{
+				"id" : "3",
+				"text" : "Locanda"
+			}
+		]
+	},
+	{
+		"id" : "4",
+		"text" : "Bosco",
+		"children" : [
+			{
+				"id" : "5",
+				"text" : "Grotta",
+				"children" : [
+					{
+						"id" : "6",
+						"text" : "Dungeon"
+					}
+				]
+			},
+			{
+				"id" : "7",
+				"text" : "Lago"
+			}
+		]
+	}
 ]

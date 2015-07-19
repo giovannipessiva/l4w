@@ -16,54 +16,53 @@
 <script src="modules/tool/StaticDisplay.js"></script>
 <script src="modules/tool/Mapper.js"></script>
 
-<script src="lib/jquery3.js"></script>
-<script src="lib/tree.jquery.js"></script>
-<script src="lib/jquery.cookie.js"></script>
-<link rel="stylesheet" type="text/css" href="style/jqtree.css">
+<script src="lib/jquery.js"></script>
+<script src="lib/jstree.js"></script>
+<link rel="stylesheet" type="text/css" href="style/jstree.css">
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
 
 <script type='text/javascript'>
 	function start() {	
-		$.getJSON(
-		    'data/map/test.json',
-		    function(dat) {
-		        $('#mapPanel').tree({
-		            data: dat,
-		            autoEscape: false,
-		            autoOpen: 1,
-		            //closedIcon: '+',
-		            //openedIcon: '-',
-		    		dragAndDrop: true,
-		    		saveState: 'l4w_MapTree',
-		    		slide: false
-		        });
-		        
-		        $('#mapPanel').bind(
-				    'tree.init',
-				    function(event) {
-				        console.log("tree.init");
-				    }
-				);
-				
-				$('#mapPanel').bind(
-				    'tree.select',
-				    function(event) {
-				        if (event.node) {
-				            var node = event.node;
-				        	$('#extraPanel').show();
-				        	$('#mapName').val(event.node.name);
-				        	$('#mapSizeW').val("40"); //TODO
-				        	$('#mapSizeH').val("30"); //TODO
-				        }
-				    }
-				);
+	
+	
+		$('#mapPanel').jstree({
+			'core' : {
+				'data' : {
+					"url" : "data/map/test.json",
+				    "dataType" : "json"
+				},
+				"check_callback" : true,
+			},
+			"multiple" : false,
+			"plugins" : [
+				"dnd",
+				"search",
+				"contextmenu"
+			],
+			"themes" : {
+		    	"dots" : false
 		    }
-		);
+		});
+		
+		$('#mapPanel').on("changed.jstree", function (e, data) {
+		    $('#extraPanel').show();
+		    var node = data.instance.get_selected(true)[0];
+        	$('#mapName').val(node.text);
+        	$('#mapSizeW').val("40"); //TODO
+        	$('#mapSizeH').val("30"); //TODO
+		});
+			
+	
+		/*
+			- caratteri speciale?
+			- disabilita animazione
+		*/
 
 		Mapper.start(canvas);
 	}
 	
 	function addNode() {
+		/*
 		var node = $('#mapPanel').tree('getSelectedNode');
 		$('#mapPanel').tree(
 		    'appendNode',
@@ -73,17 +72,22 @@
 		    },
 		    node
 		);
+		*/
 	}
 	
 	function changeName() {
+		/*
 		var newName = $('#mapName').val();
 		var node = $('#mapPanel').tree('getSelectedNode');
 		$('#mapPanel').tree('updateNode', node, newName);
+		*/
 	}
 	
 	function removeNode() {
+		/*
 		var node = $('#mapPanel').tree('getSelectedNode');
 		$('#mapPanel').tree('removeNode', node);
+		*/
 	}
 	</script>
 	
