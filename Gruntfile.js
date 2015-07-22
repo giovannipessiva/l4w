@@ -3,10 +3,11 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'), 
 
-		ts: {	
+	ts: {	
             options: {
                 target: 'es6',
-                sourceMap: false
+                sourceMap: false,
+                fast: 'never'
             },
             dev: {
                 src: ['client/modules/**/*.ts'],
@@ -52,8 +53,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
-	grunt.registerTask('default', ['typescript','uglify']);
-	//grunt.registerTask('default', ['ts:dev','uglify']);
+	//grunt.registerTask('default', ['typescript','uglify']);
+	grunt.registerTask('default', ['ts:dev','uglify']);
 	
 	grunt.registerTask('travis', 'default');
 };
