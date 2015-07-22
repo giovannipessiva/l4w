@@ -3,6 +3,7 @@ node_js:
 - '0.12'
 install:
 - npm install grunt-cli -g
+- npm install grunt-ts 
 - npm install
 script:
 - grunt travis
