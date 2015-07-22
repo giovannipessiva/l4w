@@ -6,11 +6,11 @@ module.exports = function(grunt) {
 		ts: {	
             options: {
                 target: 'es6',
-                sourceMap: false,
+                sourceMap: false
             },
             dev: {
-                src: ['client/**/*.ts'],
-                out: 'client/<%= pkg.name %>.js',
+                src: ['client/modules/**/*.ts'],
+                out: 'client/<%= pkg.name %>.js'
             }
         },
 
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-				'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
+					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
 				}
 			}
 		}
