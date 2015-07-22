@@ -1,0 +1,5 @@
+build.path.exportedFolder=
+build.path.sourceFolder=client/modules
+compiler.outputDirOption=
+compiler.outputFileOption=client/l4w.js
+eclipse.preferences.version=1

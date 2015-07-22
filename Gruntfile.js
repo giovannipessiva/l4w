@@ -3,25 +3,6 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'), 
 
-		concat: {
-			options: {
-				// define a string to put between each file in the concatenated output
-				separator: ';'
-			},
-			dist: {
-				// the files to concatenate
-				src: [
-					'client/modules/*.js',
-					'client/modules/core/*.js',
-					'client/modules/core/gui/*.js',
-					'client/modules/core/util/*.js',
-					'client/modules/game/*.js',
-					'client/modules/tool/*.js'
-				],
-				// the location of the resulting JS file
-				dest: 'client/<%= pkg.name %>.js'
-			}
-		},
 
 		uglify: {
 			options: {
@@ -41,16 +22,15 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-				'client/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+				'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
 				}
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('default', ['concat', 'uglify']);
+	grunt.registerTask('default', ['uglify']);
 	
 	grunt.registerTask('travis', 'default');
 };
