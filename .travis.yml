@@ -10,9 +10,7 @@ script:
 after_success:
 - bash post_build.sh
 after_failure:
-- echo "---------l4w.js---------"
 - cat client/l4w.js
-- echo "------------------------"
 env:
   global:
     secure: "GNWofqQuYRtxa2ckxIBnWj8OaVJ190Ip4D/3Hqg3VD7w6wmtLgnbsXfidUMdZrLjN20FwGzCMF30H23yPt1AUIOJ4kQVJl9/sD4As99IAxlmOr5c7UhaOBjjyZKfQ3Q0TEkdpQggS1PuRB11kUpGHqPCa1QBKNfPb5Z+2PygAF3/NN/FYyrrlKJ5q3fl2ZwOYmreXC7dn6Yzr83QmfdS0SGGsCD5svaXOMCKz6kZInW/98scgbZj2iTxvcmNrusaZZYn/2ib6uCWDIwdQkmknXVS2d5qr4CnBBBPW0mEIEPU4UMbEy9a6PyVtWCqWETKcoy+k6Wo4jb7DowD1/bJLLhyvPSG6laH5en5CGMj0kSUBi0bKTWTO/3ntj1rcEun5bl5Ki/4WtUcA5eXHqLN6VdWCDER+q5HKiewrvralazMAXhfevw0zIxJe6RSwFMxdpls2SjGiEJXfu2DpfI0rE/Cvg6AkBm+wmn3mUbEKKF/Ly4h4PCkXor4RM/EL14ucBJrYlqryayP/CVheqGDXVSvZB7pvC6tBS7MccjyIG87WHd6mwZsfQ0W/LuSsz8gM8RrFm84ayjf7Zk3YhZ6/dwWsFJa8ComPxkrJIhhm9lOfB+QCvLJEFb8UHeYkmNqbRoz2uDk3y6/GQz/0DHNF0E3FhdrHtbH6RPcduP+xDs="
