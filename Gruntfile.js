@@ -13,6 +13,16 @@ module.exports = function(grunt) {
                 out: 'client/<%= pkg.name %>.js'
             }
         },
+        
+        typescript: {
+		    base: {
+		      src: ['client/modules/**/*.ts'],
+		      dest: 'client/l4w.js',
+		      options: {
+		        target: 'es6'
+		      }
+		    }
+		  },
 
 		uglify: {
 			options: {
@@ -39,9 +49,11 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks("grunt-ts");
+	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
-	grunt.registerTask('default', ['ts:dev','uglify']);
+	grunt.registerTask('default', ['typescript','uglify']);
+	//grunt.registerTask('default', ['ts:dev','uglify']);
 	
 	grunt.registerTask('travis', 'default');
 };
