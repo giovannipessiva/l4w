@@ -106,16 +106,16 @@ var AbstractScene = (function () {
     };
     AbstractScene.prototype.moveFocus = function (direction) {
         switch (direction) {
-            case Constant.Direction.UP:
+            case 0 /* UP */:
                 this.focus.y -= +this.display.cellH;
                 break;
-            case Constant.Direction.DOWN:
+            case 1 /* DOWN */:
                 this.focus.y += +this.display.cellH;
                 break;
-            case Constant.Direction.LEFT:
+            case 2 /* LEFT */:
                 this.focus.x -= +this.display.cellW;
                 break;
-            case Constant.Direction.RIGHT:
+            case 3 /* RIGHT */:
                 this.focus.x += +this.display.cellW;
                 break;
         }

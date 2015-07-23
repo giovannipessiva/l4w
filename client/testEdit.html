@@ -47,7 +47,6 @@
 		$('#mapPanel').on("changed.jstree", function (e, data) {
 		    $('#extraPanel').show();
 		    var node = data.instance.get_selected(true)[0];
-        	$('#mapName').val(node.text);
         	$('#mapSizeW').val("40"); //TODO
         	$('#mapSizeH').val("30"); //TODO
 		});
@@ -75,20 +74,6 @@
 		*/
 	}
 	
-	function changeName() {
-		/*
-		var newName = $('#mapName').val();
-		var node = $('#mapPanel').tree('getSelectedNode');
-		$('#mapPanel').tree('updateNode', node, newName);
-		*/
-	}
-	
-	function removeNode() {
-		/*
-		var node = $('#mapPanel').tree('getSelectedNode');
-		$('#mapPanel').tree('removeNode', node);
-		*/
-	}
 	</script>
 	
 </head>
@@ -122,26 +107,16 @@
 	<div style="border:1px solid black">
 		<table>
 	<tr><td id="mapPanel"></td>
-	<tr><td>
-		<button type="submit" onclick="addNode();">Aggiungi</button>
-	</td></tr></table>
+	</table>
 	</div>
 	<div id="extraPanel" style="display:none;border:1px solid black">
 	<table>
-	<tr><td>Name</td><td>
-		<input type="text" id="mapName">
-	</td><td>
-		<button type="submit" onclick="changeName();">&#8634;</button>
-	</td></tr>
 	<tr><td>Size</td><td>
 			<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
 			 x 
 			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
 	</td><td>
 		<button type="submit" onclick="console.log('aggiorna dimensione');">&#8634;</button>
-	</td></tr>
-	<tr><td></td><td>
-		<button type="submit" onclick="removeNode();">Elimina</button></td><td>
 	</td></tr>
 	</div>
 </div>
