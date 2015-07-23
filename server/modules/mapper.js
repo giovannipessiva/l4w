@@ -13,6 +13,9 @@ module.exports = {
             console.log("Maps updated: " + filePath);
             response.sendStatus(200);
         });
-    }
+    },
+    getTiles: function(response) {
+    	var filePath = path.resolve(__dirname + '/../../client/assets/tileset/tiles.json');
+	}
 };
    

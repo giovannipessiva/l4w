@@ -45,8 +45,8 @@ app.get('/assets/:file', function(request, response) {
 app.get('/assets/:type/:file', function(request, response) {
     var file = request.params.file;
     var type = request.params.type;
-    var filePath = path.resolve(__dirname + '/../client/assets');
-    utils.sendFile(filePath + "/" + type + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/assets/' + type);
+    utils.sendFile(filePath + "/" + file, response);
 });
 app.get('/style/:file', function(request, response) {
     var file = request.params.file;

@@ -18,8 +18,6 @@
 
 <script type='text/javascript'>
 	function start() {	
-	
-	
 		$('#mapPanel').jstree({
 			'core' : {
 				"animation" : 0,
@@ -44,15 +42,46 @@
 		    var node = data.instance.get_selected(true)[0];
         	$('#mapSizeW').val(node.data.w);
         	$('#mapSizeH').val(node.data.h);
+        	$('#tiles').val(node.data.tile);
 		});
 		
 		Mapper.start(canvas);
+		
+		loadTiles();
 	}
 	
 	function changeSize() {
 		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
     	node.data.w = $('#mapSizeW').val();
     	node.data.h = $('#mapSizeH').val();
+    	
+    	var updatedData = $('#mapPanel').jstree(true).get_json('#', {flat:true});
+    	$.ajax({
+    		url: "edit/maps",
+    		type: 'post',
+    		contentType: 'application/json',
+    		data: JSON.stringify(updatedData),
+    		success: function(result){
+        		console.log("Maps updated");
+    		}
+    	});
+	}
+	
+	function loadTiles() {
+		$.getJSON(
+			"assets/tileset/tiles.json", 
+			function( data ) {
+			 	var sel = $("#tiles");
+			    for (var i=0; i<data.length; i++) {
+			    	sel.append('<option value="' + data[i].name + '">' + data[i].desc + '</option>');
+			    }
+			}
+		);	
+	}
+	
+	function changeTile() {
+		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+    	node.data.tile = $('#tiles').val();
     	
     	var updatedData = $('#mapPanel').jstree(true).get_json('#', {flat:true});
     	$.ajax({
@@ -103,13 +132,25 @@
 	</div>
 	<div id="extraPanel" style="display:none;border:1px solid black">
 	<table>
-	<tr><td>Size</td><td>
+	<tr>
+		<td>Tile</td>
+		<td>
+			<select id="tiles" onchange="changeTile()"></select>
+		</td>
+		<td>
+		</td>
+	</tr>
+	<tr>
+		<td>Size</td>
+		<td>
 			<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
 			 x 
 			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
-	</td><td>
-		<button type="submit" onclick="changeSize();">&#8634;</button>
-	</td></tr>
+		</td>
+		<td>
+			<button type="submit" onclick="changeSize();">&#8634;</button>
+		</td>
+	</tr>
 	</div>
 </div>
 </body>
