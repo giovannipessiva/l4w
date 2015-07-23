@@ -24,7 +24,7 @@
 			'core' : {
 				"animation" : 0,
 				'data' : {
-					"url" : "data/map/test.json",
+					"url" : "data/map/maps.json",
 				    "dataType" : "json"
 				},
 				"check_callback" : true,
@@ -53,6 +53,17 @@
 		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
     	node.data.w = $('#mapSizeW').val();
     	node.data.h = $('#mapSizeH').val();
+    	
+    	var updatedData = $('#mapPanel').jstree(true).get_json('#', {flat:true});
+    	$.ajax({
+    		url: "edit/maps",
+    		type: 'post',
+    		contentType: 'application/json',
+    		data: JSON.stringify(updatedData),
+    		success: function(result){
+        		console.log("Maps updated");
+    		}
+    	});
 	}
 	
 </script>

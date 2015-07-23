@@ -15,7 +15,7 @@ rm .project
 rm .travis.yml
 rm Gruntfile.js
 rm README.md
-rm post_build.sh
+rm *.sh
 
 git add . --all
 git commit -m "Travis build"
