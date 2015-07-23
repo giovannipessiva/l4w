@@ -5,13 +5,25 @@
 		"children" : [
 			{
 				"id" : "2",
-				"text" : "Casa"
+				"text" : "Casa",
+				"data" : {
+					"w": "21",
+					"h": "16"
+				}
 			},
 			{
 				"id" : "3",
-				"text" : "Locanda"
+				"text" : "Locanda",
+				"data" : {
+					"w": "30",
+					"h": "19"
+				}
 			}
-		]
+		],
+		"data" : {
+			"w": "50",
+			"h": "30"
+		}
 	},
 	{
 		"id" : "4",
@@ -23,14 +35,30 @@
 				"children" : [
 					{
 						"id" : "6",
-						"text" : "Dungeon"
+						"text" : "Dungeon",
+				"data" : {
+					"w": "30",
+					"h": "60"
+				}
 					}
-				]
+				],
+				"data" : {
+					"w": "30",
+					"h": "30"
+				}
 			},
 			{
 				"id" : "7",
-				"text" : "Lago"
+				"text" : "Lago",
+				"data" : {
+					"w": "30",
+					"h": "19"
+				}
 			}
-		]
+		],
+		"data" : {
+			"w": "70",
+			"h": "40"
+		}
 	}
 ]

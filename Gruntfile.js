@@ -3,25 +3,27 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'), 
 
-		concat: {
-			options: {
-				// define a string to put between each file in the concatenated output
-				separator: ';'
-			},
-			dist: {
-				// the files to concatenate
-				src: [
-					'client/modules/*.js',
-					'client/modules/core/*.js',
-					'client/modules/core/gui/*.js',
-					'client/modules/core/util/*.js',
-					'client/modules/game/*.js',
-					'client/modules/tool/*.js'
-				],
-				// the location of the resulting JS file
-				dest: 'client/<%= pkg.name %>.js'
-			}
-		},
+	ts: {	
+            options: {
+                target: 'es6',
+                sourceMap: false,
+                fast: 'never'
+            },
+            dev: {
+                src: ['client/modules/**/*.ts'],
+                out: 'client/<%= pkg.name %>.js'
+            }
+        },
+        
+        typescript: {
+		    base: {
+		      src: ['client/modules/**/*.ts'],
+		      dest: 'client/l4w.js',
+		      options: {
+		        target: 'es6'
+		      }
+		    }
+		  },
 
 		uglify: {
 			options: {
@@ -41,16 +43,19 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-				'client/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
 				}
 			}
 		}
 	});
 
+	grunt.loadNpmTasks("grunt-ts");
+	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('default', ['concat', 'uglify']);
+	//grunt.registerTask('default', ['typescript','uglify']);
+	//grunt.registerTask('default', ['ts:dev','uglify']);
+	grunt.registerTask('default', ['uglify']);
 	
 	grunt.registerTask('travis', 'default');
 };

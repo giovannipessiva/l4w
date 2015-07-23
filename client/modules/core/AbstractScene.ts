@@ -169,7 +169,7 @@ class AbstractScene {
     }
 
     updateContext(canvas: HTMLCanvasElement) {
-        this.context = canvas.getContext("2d");
+        this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
         this.context.scale(this.display.scale, this.display.scale);
     }
 }

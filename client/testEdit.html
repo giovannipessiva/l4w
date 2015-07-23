@@ -4,21 +4,11 @@
 <meta charset="UTF-8">
 <title>Test Edit</title>
 
-<script src="modules/core/util/Constant.js"></script>
-<script src="modules/core/util/Input.js"></script>
-<script src="modules/core/util/Resource.js"></script>
-<script src="modules/core/util/Time.js"></script>
-<script src="modules/core/AbstractScene.js"></script>
-<script src="modules/core/Actor.js"></script>
-<script src="modules/core/AbstractDisplay.js"></script>
-<script src="modules/core/World.js"></script>
-<script src="modules/tool/StaticScene.js"></script>
-<script src="modules/tool/StaticDisplay.js"></script>
-<script src="modules/tool/Mapper.js"></script>
+<script type="text/javascript" src="l4w.js"></script>
 
-<script src="lib/jquery.js"></script>
-<script src="lib/jstree.js"></script>
-<link rel="stylesheet" type="text/css" href="style/jstree.css">
+<script type="text/javascript" src="lib/jquery.js"></script>
+<script type="text/javascript" src="lib/jstree.js"></script>
+<link rel="stylesheet" type="text/css" href="style/jstree/style.min.css">
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
 
 <script type='text/javascript'>
@@ -27,6 +17,7 @@
 	
 		$('#mapPanel').jstree({
 			'core' : {
+				"animation" : 0,
 				'data' : {
 					"url" : "data/map/test.json",
 				    "dataType" : "json"
@@ -36,7 +27,6 @@
 			"multiple" : false,
 			"plugins" : [
 				"dnd",
-				"search",
 				"contextmenu"
 			],
 			"themes" : {
@@ -47,34 +37,20 @@
 		$('#mapPanel').on("changed.jstree", function (e, data) {
 		    $('#extraPanel').show();
 		    var node = data.instance.get_selected(true)[0];
-        	$('#mapSizeW').val("40"); //TODO
-        	$('#mapSizeH').val("30"); //TODO
+        	$('#mapSizeW').val(node.data.w);
+        	$('#mapSizeH').val(node.data.h);
 		});
-			
-	
-		/*
-			- caratteri speciale?
-			- disabilita animazione
-		*/
-
+		
 		Mapper.start(canvas);
 	}
 	
-	function addNode() {
-		/*
-		var node = $('#mapPanel').tree('getSelectedNode');
-		$('#mapPanel').tree(
-		    'appendNode',
-		    {
-		        label: 'New',
-		        id: 0
-		    },
-		    node
-		);
-		*/
+	function changeSize() {
+		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+    	node.data.w = $('#mapSizeW').val();
+    	node.data.h = $('#mapSizeH').val();
 	}
 	
-	</script>
+</script>
 	
 </head>
 <body onload="start()">
@@ -116,7 +92,7 @@
 			 x 
 			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
 	</td><td>
-		<button type="submit" onclick="console.log('aggiorna dimensione');">&#8634;</button>
+		<button type="submit" onclick="changeSize();">&#8634;</button>
 	</td></tr>
 	</div>
 </div>
