@@ -13,7 +13,7 @@ module.exports = {
                 'x-sent': true
             }
         };
-        response.sendFile(path + file, options, function(err) {
+        response.sendFile(path + "/" + file, options, function(err) {
             if (err && response.statusCode != 304 && err.code !== "ECONNABORT") {
             	if(response.statusCode == 404 && file !== placeholder) {
             		sendFile(path,placeholder,response);

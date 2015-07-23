@@ -19,27 +19,27 @@ app.get('/edit', function(request, response) {
 // Resources redirection
 app.get('/js/:script', function(request, response) {
     var file = request.params.script;
-    var filePath = path.resolve(__dirname + '/../client/');
+    var filePath = path.resolve(__dirname + '/../client');
     utils.sendFile(filePath, file, response);
 });
 app.get('/lib/:script', function(request, response) {
     var file = request.params.script;
-    var filePath = path.resolve(__dirname + '/../client/lib/');
+    var filePath = path.resolve(__dirname + '/../client/lib');
     utils.sendFile(filePath, file, response);
 });
 app.get('/data/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/data/');
+    var filePath = path.resolve(__dirname + '/../client/data');
     utils.sendFile(filePath, file, response);
 });
 app.get('/data/map/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/data/map/');
+    var filePath = path.resolve(__dirname + '/../client/data/map');
     utils.sendFile(filePath, file, response);
 });
 app.get('/assets/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/assets/');
+    var filePath = path.resolve(__dirname + '/../client/assets');
     utils.sendFile(filePath, file, response);
 });
 app.get('/assets/:type/:file', function(request, response) {
@@ -50,12 +50,12 @@ app.get('/assets/:type/:file', function(request, response) {
 });
 app.get('/style/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style/');
+    var filePath = path.resolve(__dirname + '/../client/style');
     utils.sendFile(filePath, file, response);
 });
 app.get('/style/jstree/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style/jstree/');
+    var filePath = path.resolve(__dirname + '/../client/style/jstree');
     utils.sendFile(filePath, file, response);
 });
 

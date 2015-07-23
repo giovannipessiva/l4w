@@ -77,6 +77,12 @@ function changeTile() {
 }
 
 function loadTile() {
-	//TODO
-	$('#tmpImg').src = "/assets/tileset/" + $('#tiles').val();
+	var $loader = $(document.createElement('img'));
+	$loader.one('load', function() {
+		$('#tmpImg').attr('src', $loader.attr('src'));
+    });
+    $loader.attr('src', "assets/tileset/" + $('#tiles').val());
+    if($loader.complete) {
+        $loader.trigger('load');
+    }
 }
