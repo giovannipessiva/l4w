@@ -11,91 +11,11 @@
 <meta http-equiv='pragma' content='no-cache'>
 
 <script type="text/javascript" src="js/l4w.js"></script>
+<script type="text/javascript" src="js/editPage.js"></script>
 <script type="text/javascript" src="lib/jquery.js"></script>
 <script type="text/javascript" src="lib/jstree.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jstree/style.min.css">
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
-
-<script type='text/javascript'>
-	function start() {	
-		$('#mapPanel').jstree({
-			'core' : {
-				"animation" : 0,
-				'data' : {
-					"url" : "data/map/maps.json",
-				    "dataType" : "json"
-				},
-				"check_callback" : true,
-			},
-			"multiple" : false,
-			"plugins" : [
-				"dnd",
-				"contextmenu"
-			],
-			"themes" : {
-		    	"dots" : false
-		    }
-		});
-		
-		$('#mapPanel').on("changed.jstree", function (e, data) {
-		    $('#extraPanel').show();
-		    var node = data.instance.get_selected(true)[0];
-        	$('#mapSizeW').val(node.data.w);
-        	$('#mapSizeH').val(node.data.h);
-        	$('#tiles').val(node.data.tile);
-		});
-		
-		Mapper.start(canvas);
-		
-		loadTiles();
-	}
-	
-	function changeSize() {
-		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-    	node.data.w = $('#mapSizeW').val();
-    	node.data.h = $('#mapSizeH').val();
-    	
-    	var updatedData = $('#mapPanel').jstree(true).get_json('#', {flat:true});
-    	$.ajax({
-    		url: "edit/maps",
-    		type: 'post',
-    		contentType: 'application/json',
-    		data: JSON.stringify(updatedData),
-    		success: function(result){
-        		console.log("Maps updated");
-    		}
-    	});
-	}
-	
-	function loadTiles() {
-		$.getJSON(
-			"assets/tileset/tiles.json", 
-			function( data ) {
-			 	var sel = $("#tiles");
-			    for (var i=0; i<data.length; i++) {
-			    	sel.append('<option value="' + data[i].name + '">' + data[i].desc + '</option>');
-			    }
-			}
-		);	
-	}
-	
-	function changeTile() {
-		var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-    	node.data.tile = $('#tiles').val();
-    	
-    	var updatedData = $('#mapPanel').jstree(true).get_json('#', {flat:true});
-    	$.ajax({
-    		url: "edit/maps",
-    		type: 'post',
-    		contentType: 'application/json',
-    		data: JSON.stringify(updatedData),
-    		success: function(result){
-        		console.log("Maps updated");
-    		}
-    	});
-	}
-	
-</script>
 
 </head>
 <body onload="start()">
@@ -110,8 +30,7 @@
 	ctx.font='bold 38px Arial';
 	ctx.fillText("loading...",10,20);
 	</script>
-	
-	
+
 </div>
 <div style="float:right;position:relative;margin-right:0;width:20%">
 	<div style="border:1px solid black">
@@ -126,11 +45,15 @@
 		</table>
 	</div>
 	<div style="border:1px solid black">
-		<table>
-	<tr><td id="mapPanel"></td>
-	</table>
+		<!-- <canvas id="tileBase"></canvas> -->
+		<img id="tmpImg" src="assets/tileset/404.png" />
 	</div>
-	<div id="extraPanel" style="display:none;border:1px solid black">
+	<div style="border:1px solid black">
+		<table>
+		<tr><td id="mapPanel"></td>
+		</table>
+	</div>
+	<div id="mapDetailPanel" style="display:none;border:1px solid black">
 	<table>
 	<tr>
 		<td>Tile</td>

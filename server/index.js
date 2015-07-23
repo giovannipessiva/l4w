@@ -10,53 +10,53 @@ app.set('port',(process.env.PORT || 5000));
 
 // Views redirection
 app.get('/', function(request, response) {
-    utils.sendFile(__dirname + '/views/home.html', response);
+    utils.sendFile(__dirname + '/views/', 'home.html', response);
 });
 app.get('/edit', function(request, response) {
-    utils.sendFile(__dirname + '/views/edit.html', response);
+    utils.sendFile(__dirname + '/views/', 'edit.html', response);
 });
 
 // Resources redirection
 app.get('/js/:script', function(request, response) {
     var file = request.params.script;
-    var filePath = path.resolve(__dirname + '/../client');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/lib/:script', function(request, response) {
     var file = request.params.script;
-    var filePath = path.resolve(__dirname + '/../client/lib');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/lib/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/data/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/data');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/data/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/data/map/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/data/map');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/data/map/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/assets/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/assets');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/assets/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/assets/:type/:file', function(request, response) {
     var file = request.params.file;
     var type = request.params.type;
     var filePath = path.resolve(__dirname + '/../client/assets/' + type);
-    utils.sendFile(filePath + "/" + file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get('/style/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/style/');
+    utils.sendFile(filePath, file, response);
 });
 app.get('/style/jstree/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style/jstree');
-    utils.sendFile(filePath + "/" + file, response);
+    var filePath = path.resolve(__dirname + '/../client/style/jstree/');
+    utils.sendFile(filePath, file, response);
 });
 
 // Server logic

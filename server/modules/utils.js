@@ -1,8 +1,10 @@
 var path = require('path');
 var fs = require('fs');
 
+var placeholder = "404.png";
+
 module.exports = {
-    sendFile: function(file, response) {
+    sendFile: function(path, file, response) {
         //Send a file as response
         var options = {
             dotfiles: 'deny',
@@ -11,10 +13,14 @@ module.exports = {
                 'x-sent': true
             }
         };
-        response.sendFile(file, options, function(err) {
+        response.sendFile(path + file, options, function(err) {
             if (err && response.statusCode != 304 && err.code !== "ECONNABORT") {
-                console.log("utils.sendFile - " + err);
-                response.status(err.status).end();
+            	if(response.statusCode == 404 && file !== placeholder) {
+            		sendFile(path,placeholder,response);
+            	} else {
+	                console.log("utils.sendFile - " + err);
+	                response.status(err.status).end();
+            	}
             }
         });
     }
