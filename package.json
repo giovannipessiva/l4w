@@ -1,22 +1,22 @@
 {
   "name": "l4w",
-  "version": "2.0.0-alpha",
+  "version": "0.1.0",
   "description": "It's not ready yet",
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js"
   },
   "dependencies": {
-    "express": "~4.9.x"
+    "express": "^4.9.x"
   },
   "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-ts": "~4.2",
-    "grunt-typescript": "~0.6.2",
-    "grunt-contrib-uglify": "~0.5.0"
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.5.0",
+    "grunt-ts": "^4.2",
+    "grunt-typescript": "^0.6.2"
   },
   "engines": {
-    "node": "0.12.2"
+    "node": "^0.12.2"
   },
   "repository": {
     "type": "git",
