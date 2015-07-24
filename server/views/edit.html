@@ -11,14 +11,13 @@
 <meta http-equiv='pragma' content='no-cache'>
 
 <script type="text/javascript" src="js/l4w.js"></script>
-<script type="text/javascript" src="js/l4w.edit.js"></script>
 <script type="text/javascript" src="lib/jquery.js"></script>
 <script type="text/javascript" src="lib/jstree.js"></script>
 <link rel="stylesheet" type="text/css" href="style/jstree/style.min.css">
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
 
 </head>
-<body onload="start()">
+<body onload="EditPage.start();">
 <div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
 	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
 	Your browser does not support HTML5 Canvas!</canvas>
@@ -58,7 +57,7 @@
 	<tr>
 		<td>Tile</td>
 		<td>
-			<select id="tiles" onchange="changeTile()"></select>
+			<select id="tiles" onchange="EditPage.changeTile();"></select>
 		</td>
 		<td>
 		</td>
@@ -71,7 +70,7 @@
 			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
 		</td>
 		<td>
-			<button type="submit" onclick="changeSize();">&#8634;</button>
+			<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
 		</td>
 	</tr>
 	</div>

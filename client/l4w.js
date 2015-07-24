@@ -1,129 +1,3 @@
-var Resource;
-(function (Resource) {
-    var dataFolder = "data/";
-    var assetsFolder = "assets/";
-    var charFolder = assetsFolder + "charset/";
-    var faceFolder = assetsFolder + "faceset/";
-    var skinFolder = assetsFolder + "skin/";
-    var tileFolder = assetsFolder + "tileset/";
-    var properties = new Map();
-    ;
-    function loadPropertes(file, onLoadCallback) {
-        if (file in properties) {
-            return properties[file];
-        }
-        else {
-            function parsePropertiesCallback() {
-                var props = parseProperties(this.responseText);
-                properties[file] = props;
-                onLoadCallback(props);
-            }
-            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
-        }
-    }
-    Resource.loadPropertes = loadPropertes;
-    ;
-    function parseProperties(content) {
-        var props = new Map();
-        var lines = content.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (line !== "" && line.indexOf("#") !== 0) {
-                var lineTokens = line.split("=");
-                props[lineTokens[0]] = lineTokens[1];
-            }
-        }
-        return props;
-    }
-    ;
-    function sendRequest(uri, callback) {
-        var request = new XMLHttpRequest();
-        request.onload = callback;
-        request.onerror = handleRequestError;
-        request.ontimeout = handleRequestTimeout;
-        request.open("GET", uri, true);
-        try {
-            request.send();
-        }
-        catch (exception) {
-            if (exception.name == "NetworkError") {
-                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
-            }
-        }
-        function handleRequestError(event) {
-            console.error("Error while getting " + uri);
-        }
-        ;
-        function handleRequestTimeout() {
-            console.error("Timeout while etting " + uri);
-        }
-        ;
-    }
-})(Resource || (Resource = {}));
-var Mapper;
-(function (Mapper) {
-    function start(canvas) {
-        var display = new StaticDisplay(canvas, function () {
-            var scene = new StaticScene(display);
-            initInput(canvas, scene, display);
-            initWidgets(canvas, scene, display);
-            scene.start(canvas);
-        });
-    }
-    Mapper.start = start;
-    function initInput(canvas, scene, display) {
-        var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.W] = function (e) {
-            scene.moveFocus(0 /* UP */);
-        };
-        inputCallbackMap[Input.Keys.S] = function (e) {
-            scene.moveFocus(1 /* DOWN */);
-        };
-        inputCallbackMap[Input.Keys.A] = function (e) {
-            scene.moveFocus(2 /* LEFT */);
-        };
-        inputCallbackMap[Input.Keys.D] = function (e) {
-            scene.moveFocus(3 /* RIGHT */);
-        };
-        inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleEditorGrid();
-        };
-        inputCallbackMap[Input.Keys.F3] = function (e) {
-            scene.toggleCellNumbering();
-        };
-        inputCallbackMap[Input.Keys.F4] = function (e) {
-            scene.toggleFocus();
-        };
-        Input.init(canvas, display, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-    function initWidgets(canvas, scene, display) {
-        var inputRange = document.getElementById("zoom");
-        inputRange.onchange = function (e) {
-            display.selectScale(+inputRange.value);
-            display.refresh();
-            scene.updateContext(canvas);
-        };
-    }
-    ;
-})(Mapper || (Mapper = {}));
 var World;
 (function (World) {
     var Map = (function () {
@@ -404,81 +278,102 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var DynamicScene = (function (_super) {
-    __extends(DynamicScene, _super);
-    function DynamicScene(display) {
+var StaticScene = (function (_super) {
+    __extends(StaticScene, _super);
+    function StaticScene(display) {
         _super.call(this, display);
-        this.FPS = 20;
-        this.refreshInterval = 1000 / this.FPS;
-        this.autoFPS = true;
-        this.secondFPS = 0;
-        this.countFPS = 0;
-        this.lastFPS = 0;
-        this.FPSPerformance = [22, 21, 20];
-        this.paused = false;
-        this.hero = new Actor.Event();
+        this.renderingOptions.showEditorGrid = true;
     }
-    DynamicScene.prototype.mainGameLoop_pre = function () {
-        if (this.paused) {
-            return false;
-        }
+    StaticScene.prototype.mainGameLoop_pre = function () {
         if (!_super.prototype.mainGameLoop_pre.call(this)) {
             return false;
         }
-        this.context.fillStyle = '#000000';
-        this.context.font = 'bold 40px Arial';
-        this.context.fillText("(it's not ready yet)", 160, 260);
-        var time = Time.getTime();
-        this.hero.update(this.events, this.map, time);
-        for (var event in this.events) {
-            event.update(this.events, this.map, time);
-        }
         return true;
     };
-    DynamicScene.prototype.mainGameLoop_post = function () {
+    StaticScene.prototype.mainGameLoop_post = function () {
         _super.prototype.mainGameLoop_post.call(this);
-        this.renderFPS();
     };
-    DynamicScene.prototype.togglePause = function (pause) {
-        if (pause != null) {
-            this.paused = pause;
-        }
-        else {
-            this.paused = !this.paused;
-        }
-    };
-    DynamicScene.prototype.toggleFPS = function (enable) {
+    StaticScene.prototype.toggleEditorGrid = function (enable) {
         if (enable != null) {
-            this.renderingOptions.showFPS = enable;
+            this.renderingOptions.showEditorGrid = enable;
         }
         else {
-            this.renderingOptions.showFPS = !this.renderingOptions.showFPS;
+            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
         }
     };
-    DynamicScene.prototype.renderFPS = function () {
-        var seconds = Math.floor(Time.getTime() / 1000);
-        if (seconds == this.secondFPS) {
-            this.countFPS++;
+    StaticScene.prototype.renderPointer = function () {
+        if (this.pointer.x != null && this.pointer.y != null) {
+            this.context.save();
+            this.context.globalAlpha = 0.4;
+            this.context.fillStyle = Constant.Color.YELLOW;
+            this.context.fillRect(this.pointer.x * this.display.cellW, this.pointer.y * this.display.cellH, this.display.cellW, this.display.cellH);
+            this.context.restore();
+        }
+    };
+    return StaticScene;
+})(AbstractScene);
+var Resource;
+(function (Resource) {
+    var dataFolder = "data/";
+    var assetsFolder = "assets/";
+    var charFolder = assetsFolder + "charset/";
+    var faceFolder = assetsFolder + "faceset/";
+    var skinFolder = assetsFolder + "skin/";
+    var tileFolder = assetsFolder + "tileset/";
+    var properties = new Map();
+    ;
+    function loadPropertes(file, onLoadCallback) {
+        if (file in properties) {
+            return properties[file];
         }
         else {
-            this.lastFPS = this.countFPS;
-            this.countFPS = 1;
-            this.secondFPS = seconds;
-            if (this.autoFPS == true) {
-                this.FPSPerformance.shift();
-                this.FPSPerformance[2] = this.lastFPS;
-                var avg = (this.FPSPerformance[0] + this.FPSPerformance[1] + this.FPSPerformance[2]) / 3;
-                this.FPS = Math.ceil(avg) + 2;
+            function parsePropertiesCallback() {
+                var props = parseProperties(this.responseText);
+                properties[file] = props;
+                onLoadCallback(props);
+            }
+            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
+        }
+    }
+    Resource.loadPropertes = loadPropertes;
+    ;
+    function parseProperties(content) {
+        var props = new Map();
+        var lines = content.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line !== "" && line.indexOf("#") !== 0) {
+                var lineTokens = line.split("=");
+                props[lineTokens[0]] = lineTokens[1];
             }
         }
-        if (this.renderingOptions.showFPS) {
-            this.context.fillStyle = Constant.Color.RED;
-            this.context.font = "bold 18px Arial";
-            this.context.fillText("" + this.lastFPS, 10, 20);
+        return props;
+    }
+    ;
+    function sendRequest(uri, callback) {
+        var request = new XMLHttpRequest();
+        request.onload = callback;
+        request.onerror = handleRequestError;
+        request.ontimeout = handleRequestTimeout;
+        request.open("GET", uri, true);
+        try {
+            request.send();
         }
-    };
-    return DynamicScene;
-})(AbstractScene);
+        catch (exception) {
+            if (exception.name == "NetworkError") {
+                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
+            }
+        }
+        function handleRequestError(event) {
+            console.error("Error while getting " + uri);
+        }
+        ;
+        function handleRequestTimeout() {
+            console.error("Timeout while etting " + uri);
+        }
+        ;
+    }
+})(Resource || (Resource = {}));
 var AbstractDisplay = (function () {
     function AbstractDisplay(cnvs, onCompleted) {
         this.canvas = cnvs;
@@ -580,6 +475,211 @@ var AbstractDisplay = (function () {
     };
     return AbstractDisplay;
 })();
+var DynamicDisplay = (function (_super) {
+    __extends(DynamicDisplay, _super);
+    function DynamicDisplay(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    DynamicDisplay.prototype.deferredInit = function (props) {
+        this.cellH = props["cellHeight"];
+        this.cellW = props["cellWidth"];
+        this.rows = props["rows"];
+        this.columns = props["columns"];
+        this.canvasRatio = props["canvasRatio"];
+        _super.prototype.deferredInit.call(this, props);
+    };
+    DynamicDisplay.prototype.refresh = function () {
+        var ratioH = this.baseH / this.height();
+        var ratioW = this.baseW / this.width();
+        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        _super.prototype.refresh.call(this);
+    };
+    DynamicDisplay.prototype.width = function () {
+        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
+    };
+    DynamicDisplay.prototype.height = function () {
+        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+    };
+    return DynamicDisplay;
+})(AbstractDisplay);
+var StaticDisplay = (function (_super) {
+    __extends(StaticDisplay, _super);
+    function StaticDisplay(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    StaticDisplay.prototype.deferredInit = function (props) {
+        this.cellH = props["cellHeightEditor"];
+        this.cellW = props["cellWidthEditor"];
+        this.rows = props["rowsEditor"];
+        this.columns = props["columnsEditor"];
+        this.canvasScales = props["canvasScale"].split(",");
+        var totCanvasScales = this.canvasScales.length;
+        this.rowsList = new Array(totCanvasScales);
+        this.columnsList = new Array(totCanvasScales);
+        var selectedScaleId = totCanvasScales - 1;
+        for (var i = 0; i < totCanvasScales; i++) {
+            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+        }
+        this.selectScale(selectedScaleId);
+        _super.prototype.deferredInit.call(this, props);
+    };
+    StaticDisplay.prototype.refresh = function () {
+        _super.prototype.refresh.call(this);
+    };
+    StaticDisplay.prototype.selectScale = function (scaleId) {
+        this.rows = this.rowsList[scaleId];
+        this.columns = this.columnsList[scaleId];
+        this.updateSizingDerivates();
+        this.scale = +this.canvasScales[scaleId];
+    };
+    StaticDisplay.prototype.getBoundariesX = function (focusX, limit) {
+        return _super.prototype.getBoundariesX.call(this, focusX, limit);
+    };
+    StaticDisplay.prototype.getBoundariesY = function (focusY, limit) {
+        return _super.prototype.getBoundariesY.call(this, focusY, limit);
+    };
+    return StaticDisplay;
+})(AbstractDisplay);
+var DynamicScene = (function (_super) {
+    __extends(DynamicScene, _super);
+    function DynamicScene(display) {
+        _super.call(this, display);
+        this.FPS = 20;
+        this.refreshInterval = 1000 / this.FPS;
+        this.autoFPS = true;
+        this.secondFPS = 0;
+        this.countFPS = 0;
+        this.lastFPS = 0;
+        this.FPSPerformance = [22, 21, 20];
+        this.paused = false;
+        this.hero = new Actor.Event();
+    }
+    DynamicScene.prototype.mainGameLoop_pre = function () {
+        if (this.paused) {
+            return false;
+        }
+        if (!_super.prototype.mainGameLoop_pre.call(this)) {
+            return false;
+        }
+        this.context.fillStyle = '#000000';
+        this.context.font = 'bold 40px Arial';
+        this.context.fillText("(it's not ready yet)", 160, 260);
+        var time = Time.getTime();
+        this.hero.update(this.events, this.map, time);
+        for (var event in this.events) {
+            event.update(this.events, this.map, time);
+        }
+        return true;
+    };
+    DynamicScene.prototype.mainGameLoop_post = function () {
+        _super.prototype.mainGameLoop_post.call(this);
+        this.renderFPS();
+    };
+    DynamicScene.prototype.togglePause = function (pause) {
+        if (pause != null) {
+            this.paused = pause;
+        }
+        else {
+            this.paused = !this.paused;
+        }
+    };
+    DynamicScene.prototype.toggleFPS = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showFPS = enable;
+        }
+        else {
+            this.renderingOptions.showFPS = !this.renderingOptions.showFPS;
+        }
+    };
+    DynamicScene.prototype.renderFPS = function () {
+        var seconds = Math.floor(Time.getTime() / 1000);
+        if (seconds == this.secondFPS) {
+            this.countFPS++;
+        }
+        else {
+            this.lastFPS = this.countFPS;
+            this.countFPS = 1;
+            this.secondFPS = seconds;
+            if (this.autoFPS == true) {
+                this.FPSPerformance.shift();
+                this.FPSPerformance[2] = this.lastFPS;
+                var avg = (this.FPSPerformance[0] + this.FPSPerformance[1] + this.FPSPerformance[2]) / 3;
+                this.FPS = Math.ceil(avg) + 2;
+            }
+        }
+        if (this.renderingOptions.showFPS) {
+            this.context.fillStyle = Constant.Color.RED;
+            this.context.font = "bold 18px Arial";
+            this.context.fillText("" + this.lastFPS, 10, 20);
+        }
+    };
+    return DynamicScene;
+})(AbstractScene);
+var Mapper;
+(function (Mapper) {
+    function start(canvas) {
+        var display = new StaticDisplay(canvas, function () {
+            var scene = new StaticScene(display);
+            initInput(canvas, scene, display);
+            initWidgets(canvas, scene, display);
+            scene.start(canvas);
+        });
+    }
+    Mapper.start = start;
+    function initInput(canvas, scene, display) {
+        var inputCallbackMap = new Map();
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(0 /* UP */);
+        };
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(1 /* DOWN */);
+        };
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(2 /* LEFT */);
+        };
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(3 /* RIGHT */);
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            scene.toggleEditorGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
+        };
+        Input.init(canvas, display, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
+    ;
+    function initWidgets(canvas, scene, display) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            display.selectScale(+inputRange.value);
+            display.refresh();
+            scene.updateContext(canvas);
+        };
+    }
+    ;
+})(Mapper || (Mapper = {}));
 var Input;
 (function (Input) {
     var Keys = (function () {
@@ -729,33 +829,6 @@ var Input;
     Input.init = init;
     ;
 })(Input || (Input = {}));
-var DynamicDisplay = (function (_super) {
-    __extends(DynamicDisplay, _super);
-    function DynamicDisplay(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
-    }
-    DynamicDisplay.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeight"];
-        this.cellW = props["cellWidth"];
-        this.rows = props["rows"];
-        this.columns = props["columns"];
-        this.canvasRatio = props["canvasRatio"];
-        _super.prototype.deferredInit.call(this, props);
-    };
-    DynamicDisplay.prototype.refresh = function () {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        _super.prototype.refresh.call(this);
-    };
-    DynamicDisplay.prototype.width = function () {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
-    };
-    DynamicDisplay.prototype.height = function () {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-    };
-    return DynamicDisplay;
-})(AbstractDisplay);
 var Game;
 (function (Game) {
     function start(canvas) {
@@ -819,76 +892,83 @@ var Game;
     }
     ;
 })(Game || (Game = {}));
-var StaticDisplay = (function (_super) {
-    __extends(StaticDisplay, _super);
-    function StaticDisplay(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
+var EditPage;
+(function (EditPage) {
+    function start() {
+        $('#mapPanel').jstree({
+            'core': {
+                "animation": 0,
+                'data': {
+                    "url": "data/map/maps.json",
+                    "dataType": "json"
+                },
+                "check_callback": true,
+            },
+            "multiple": false,
+            "plugins": ["dnd", "contextmenu"],
+            "themes": {
+                "dots": false
+            }
+        });
+        $('#mapPanel').on("changed.jstree", function (e, data) {
+            $('#mapDetailPanel').show();
+            var node = data.instance.get_selected(true)[0];
+            $('#mapSizeW').val(node.data.w);
+            $('#mapSizeH').val(node.data.h);
+            $('#tiles').val(node.data.tile);
+            loadTile();
+        });
+        var canvas = document.getElementById('canvas1');
+        Mapper.start(canvas);
+        loadTiles();
     }
-    StaticDisplay.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeightEditor"];
-        this.cellW = props["cellWidthEditor"];
-        this.rows = props["rowsEditor"];
-        this.columns = props["columnsEditor"];
-        this.canvasScales = props["canvasScale"].split(",");
-        var totCanvasScales = this.canvasScales.length;
-        this.rowsList = new Array(totCanvasScales);
-        this.columnsList = new Array(totCanvasScales);
-        var selectedScaleId = totCanvasScales - 1;
-        for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
-        }
-        this.selectScale(selectedScaleId);
-        _super.prototype.deferredInit.call(this, props);
-    };
-    StaticDisplay.prototype.refresh = function () {
-        _super.prototype.refresh.call(this);
-    };
-    StaticDisplay.prototype.selectScale = function (scaleId) {
-        this.rows = this.rowsList[scaleId];
-        this.columns = this.columnsList[scaleId];
-        this.updateSizingDerivates();
-        this.scale = +this.canvasScales[scaleId];
-    };
-    StaticDisplay.prototype.getBoundariesX = function (focusX, limit) {
-        return _super.prototype.getBoundariesX.call(this, focusX, limit);
-    };
-    StaticDisplay.prototype.getBoundariesY = function (focusY, limit) {
-        return _super.prototype.getBoundariesY.call(this, focusY, limit);
-    };
-    return StaticDisplay;
-})(AbstractDisplay);
-var StaticScene = (function (_super) {
-    __extends(StaticScene, _super);
-    function StaticScene(display) {
-        _super.call(this, display);
-        this.renderingOptions.showEditorGrid = true;
+    EditPage.start = start;
+    function changeSize() {
+        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+        node.data.w = $('#mapSizeW').val();
+        node.data.h = $('#mapSizeH').val();
+        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        $.ajax({
+            url: "edit/maps",
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                console.log("Maps updated");
+            }
+        });
     }
-    StaticScene.prototype.mainGameLoop_pre = function () {
-        if (!_super.prototype.mainGameLoop_pre.call(this)) {
-            return false;
-        }
-        return true;
-    };
-    StaticScene.prototype.mainGameLoop_post = function () {
-        _super.prototype.mainGameLoop_post.call(this);
-    };
-    StaticScene.prototype.toggleEditorGrid = function (enable) {
-        if (enable != null) {
-            this.renderingOptions.showEditorGrid = enable;
-        }
-        else {
-            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
-        }
-    };
-    StaticScene.prototype.renderPointer = function () {
-        if (this.pointer.x != null && this.pointer.y != null) {
-            this.context.save();
-            this.context.globalAlpha = 0.4;
-            this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.fillRect(this.pointer.x * this.display.cellW, this.pointer.y * this.display.cellH, this.display.cellW, this.display.cellH);
-            this.context.restore();
-        }
-    };
-    return StaticScene;
-})(AbstractScene);
+    EditPage.changeSize = changeSize;
+    function loadTiles() {
+        $.getJSON("data/resources/tiles.json", function (data) {
+            var sel = $("#tiles");
+            for (var i = 0; i < data.length; i++) {
+                sel.append('<option value="' + data[i].name + '">' + data[i].desc + '</option>');
+            }
+        });
+    }
+    EditPage.loadTiles = loadTiles;
+    function changeTile() {
+        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+        node.data.tile = $('#tiles').val();
+        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        $.ajax({
+            url: "edit/maps",
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                loadTile();
+            }
+        });
+    }
+    EditPage.changeTile = changeTile;
+    function loadTile() {
+        var $loader = $(document.createElement('img'));
+        $loader.attr('src', "assets/tileset/" + $('#tiles').val());
+        $loader.load(function () {
+            $('#tmpImg').attr('src', $loader.attr('src'));
+        });
+    }
+    EditPage.loadTile = loadTile;
+})(EditPage || (EditPage = {}));
