@@ -14,8 +14,9 @@ rm -rf .externalToolBuilders
 rm .project
 rm .travis.yml
 rm Gruntfile.js
-rm README.md
+rm *.md
 rm *.sh
+rm *.bat
 
 git add . --all
 git commit -m "Travis build"
