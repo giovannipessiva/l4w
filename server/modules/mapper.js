@@ -15,7 +15,7 @@ module.exports = {
         });
     },
     getTiles: function(response) {
-    	var filePath = path.resolve(__dirname + '/../../client/assets/tileset/tiles.json');
+    	var filePath = path.resolve(__dirname + '/../../client/data/resources/tiles.json');
 	}
 };
    

@@ -49,7 +49,7 @@ function changeSize() {
 }
 
 function loadTiles() {
-	$.getJSON("assets/tileset/tiles.json", function(data) {
+	$.getJSON("data/resources/tiles.json", function(data) {
 		var sel = $("#tiles");
 		for (var i = 0; i < data.length; i++) {
 			sel.append('<option value="' + data[i].name + '">' + data[i].desc
