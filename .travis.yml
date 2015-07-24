@@ -9,6 +9,7 @@ install:
 script:
 - grunt travis
 after_success:
+- npm version patch
 - bash post_build.sh
 after_failure:
 - cat client/l4w.js
