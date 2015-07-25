@@ -1,3 +1,5 @@
+///<reference path="../../interfaces/jquery.d.ts" />
+
 /**
  * Module for resources loading
  */
@@ -20,7 +22,7 @@ module Resource {
             return properties[file];
         } else {
             function parsePropertiesCallback() {
-                var props: Map<string,string> = parseProperties(this.responseText);
+                var props: Map<string, string> = parseProperties(this.responseText);
                 properties[file] = props;
                 onLoadCallback(props);
             }
@@ -46,7 +48,7 @@ module Resource {
         request.onload = callback;
         request.onerror = handleRequestError;
         request.ontimeout = handleRequestTimeout;
-        request.open("GET", uri, true); 
+        request.open("GET", uri, true);
         try {
             request.send();
         } catch (exception) {
@@ -61,5 +63,13 @@ module Resource {
         function handleRequestTimeout() {
             console.error("Timeout while etting " + uri);
         };
+    }
+
+    export function loadAsset(uri: string, assetId: string) {
+        var $loader = $(document.createElement("img"));
+        $loader.attr('src', "assets/" + uri);
+        $loader.load(function() {
+            $('#' + assetId).attr('src', $loader.attr('src'));
+        });
     }
 }
