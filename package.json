@@ -7,7 +7,9 @@
     "start": "node server/index.js"
   },
   "dependencies": {
-    "express": "^4.9.x"
+    "compression": "^1.5.1",
+    "express": "^4.9.x",
+    "serve-favicon": "^2.3.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
