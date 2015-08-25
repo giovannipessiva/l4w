@@ -176,7 +176,11 @@ module Input {
         });
 
         function mapEvent(e) {
-            return display.mapPosition(e.clientX, e.clientY);
+            var position: Point = {
+               x: e.clientX,
+               y: e.clientY
+            }
+            return display.mapPositionToGrid(position);
         }
 
     };

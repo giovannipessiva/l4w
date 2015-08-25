@@ -1,12 +1,8 @@
 /// <reference path="Actor.ts" />
 /// <reference path="World.ts" />
 /// <reference path="util/Constant.ts" />
+/// <reference path="util/Commons.ts" />
 /// <reference path="util/Time.ts" />
-
-interface Point {
-    x: number;
-    y: number;
-};
 
 var nextAnimationFrame =
     window.requestAnimationFrame ||
@@ -93,12 +89,13 @@ class AbstractScene {
 
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
+            var mappedPointer = this.display.mapPositionFromGrid(this.pointer);
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.arc(
-                this.display.mapCoordinateX(this.pointer.x),
-                this.display.mapCoordinateY(this.pointer.y),
+                mappedPointer.x,
+                mappedPointer.y,
                 18,
                 0,
                 Constant.DOUBLE_PI);
@@ -152,8 +149,10 @@ class AbstractScene {
     }
 
     updatePointer(x: number, y: number) {
-        this.pointer.x = x;
-        this.pointer.y = y;
+        this.pointer = {
+            x: x,
+            y: y 
+        }
     }
 
     moveFocus(direction: Constant.Direction) {

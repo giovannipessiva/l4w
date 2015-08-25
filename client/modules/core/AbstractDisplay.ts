@@ -1,4 +1,5 @@
 /// <reference path="util/Resource.ts" />
+/// <reference path="util/Commons.ts" />
 
 /**
  * Module for managing canvas autosizing
@@ -57,46 +58,51 @@ class AbstractDisplay {
             this.baseH + this.currentTranslation.y);
     }
 
-    mapPosition(
-        x: number,
-        y: number) {
-        var rect = this.canvas.getBoundingClientRect();
-        var i = Math.floor((x - rect.left + this.currentTranslation.x) / (this.cellW * this.scale));
-        var j = Math.floor((y - rect.top + this.currentTranslation.y) / (this.cellH * this.scale));
+    mapPositionToGrid(position: Point) : Point {
+        var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
+        var i = Math.floor((position.x - rect.left + this.currentTranslation.x) / (this.cellW * this.scale)); //TODO precalcola le cell scalate
+        var j = Math.floor((position.y - rect.top + this.currentTranslation.y) / (this.cellH * this.scale));
+        console.log(i+" "+j);
         return { x: i, y: j };
+    }
+    
+    mapPositionFromGrid(position: Point) : Point {
+        var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
+        var x = (position.x + 0.5) * this.cellW;
+        var y = (position.y + 0.5) * this.cellH;
+        return { x: x, y: y };
     }
 
     getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number) {
-        var x = focusX - (this.halfColumns * this.cellW);
-        if (x < 0) {
-            x = 0;
+        var leftTopX = focusX - (this.halfColumns * this.cellW);
+        if (leftTopX < 0) {
+            leftTopX = 0;
         } else {
             var maxTranslationX = (maxColumns - this.columns) * this.cellW;
-            if (x > maxTranslationX) {
-                x = maxTranslationX;
+            if (leftTopX > maxTranslationX) {
+                leftTopX = maxTranslationX;
             }
         }
-        var y = focusY - (this.halfRows * this.cellH);
-        if (y < 0) {
-            y = 0;
+        var leftTopY = focusY - (this.halfRows * this.cellH);
+        if (leftTopY < 0) {
+            leftTopY = 0;
         } else {
             var maxTranslationY = (maxRows - this.rows) * this.cellH;
-            if (y > maxTranslationY) {
-                y = maxTranslationY;
+            if (leftTopY > maxTranslationY) {
+                leftTopY = maxTranslationY;
             }
         }
-        var newTranslation = { x: x, y: y };
-        x = this.currentTranslation.x - x;
-        y = this.currentTranslation.y - y;
+        var newTranslation = { x: leftTopX, y: leftTopY };
+        leftTopX = this.currentTranslation.x - leftTopX;
+        leftTopY = this.currentTranslation.y - leftTopY;
         this.currentTranslation = newTranslation;
-        return { x: x, y: y };
+        return { x: leftTopX, y: leftTopY };
     }
 
     getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
         var focusCell = Math.round(focusX / this.cellW);
         var min = focusCell - this.halfColumns;
         var max = focusCell + this.halfColumns;
-        //console.log(min + " " + max);
         return this.checkBoundariesLimit(min, max, limit - 1);
     }
 
@@ -127,12 +133,5 @@ class AbstractDisplay {
     }
     getOffsetY(focusY: number) {
         return focusY % this.cellH;
-    }
-
-    mapCoordinateX(pointerX: number) {
-        return (pointerX + 0.5) * this.cellW;
-    }
-    mapCoordinateY(pointerY: number) {
-        return (pointerY + 0.5) * this.cellH;
     }
 }
