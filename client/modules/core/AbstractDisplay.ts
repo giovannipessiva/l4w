@@ -60,9 +60,8 @@ class AbstractDisplay {
 
     mapPositionToGrid(position: Point) : Point {
         var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
-        var i = Math.floor((position.x - rect.left + this.currentTranslation.x) / (this.cellW * this.scale)); //TODO precalcola le cell scalate
-        var j = Math.floor((position.y - rect.top + this.currentTranslation.y) / (this.cellH * this.scale));
-        console.log(i+" "+j);
+        var i = Math.floor((position.x - rect.left) / (this.cellW  * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
+        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
     }
     

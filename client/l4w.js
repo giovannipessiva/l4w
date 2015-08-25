@@ -235,9 +235,8 @@ var AbstractDisplay = (function () {
     };
     AbstractDisplay.prototype.mapPositionToGrid = function (position) {
         var rect = this.canvas.getBoundingClientRect();
-        var i = Math.floor((position.x - rect.left + this.currentTranslation.x) / (this.cellW * this.scale));
-        var j = Math.floor((position.y - rect.top + this.currentTranslation.y) / (this.cellH * this.scale));
-        console.log(i + " " + j);
+        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scale) + this.currentTranslation.x / this.cellW);
+        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
     };
     AbstractDisplay.prototype.mapPositionFromGrid = function (position) {
