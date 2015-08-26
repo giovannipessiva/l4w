@@ -1,8 +1,8 @@
-/// <reference path="../core/AbstractDisplay.ts" />
+/// <reference path="../core/AbstractGrid.ts" />
 /// <reference path="../core/util/Input.ts" />
 /// <reference path="../core/AbstractScene.ts" />
 /// <reference path="DynamicScene.ts" />
-/// <reference path="DynamicDisplay.ts" />
+/// <reference path="DynamicGrid.ts" />
 
 /**
  * Module for initializing and launching a game

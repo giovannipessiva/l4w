@@ -1,4 +1,4 @@
-/// <reference path="../AbstractDisplay.ts" />
+/// <reference path="../AbstractGrid.ts" />
 
 /**
  * Module for input handling:

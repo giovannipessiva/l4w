@@ -1,150 +1,3 @@
-var Resource;
-(function (Resource) {
-    var dataFolder = "data/";
-    var assetsFolder = "assets/";
-    var charFolder = assetsFolder + "charset/";
-    var faceFolder = assetsFolder + "faceset/";
-    var skinFolder = assetsFolder + "skin/";
-    var tileFolder = assetsFolder + "tileset/";
-    var properties = new Map();
-    ;
-    function loadPropertes(file, onLoadCallback) {
-        if (file in properties) {
-            return properties[file];
-        }
-        else {
-            function parsePropertiesCallback() {
-                var props = parseProperties(this.responseText);
-                properties[file] = props;
-                onLoadCallback(props);
-            }
-            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
-        }
-    }
-    Resource.loadPropertes = loadPropertes;
-    ;
-    function parseProperties(content) {
-        var props = new Map();
-        var lines = content.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (line !== "" && line.indexOf("#") !== 0) {
-                var lineTokens = line.split("=");
-                props[lineTokens[0]] = lineTokens[1];
-            }
-        }
-        return props;
-    }
-    ;
-    function sendRequest(uri, callback) {
-        var request = new XMLHttpRequest();
-        request.onload = callback;
-        request.onerror = handleRequestError;
-        request.ontimeout = handleRequestTimeout;
-        request.open("GET", uri, true);
-        try {
-            request.send();
-        }
-        catch (exception) {
-            if (exception.name == "NetworkError") {
-                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
-            }
-        }
-        function handleRequestError(event) {
-            console.error("Error while getting " + uri);
-        }
-        ;
-        function handleRequestTimeout() {
-            console.error("Timeout while etting " + uri);
-        }
-        ;
-    }
-    function loadAsset(uri, assetId) {
-        var $loader = $(document.createElement("img"));
-        $loader.attr('src', "assets/" + uri);
-        $loader.load(function () {
-            $('#' + assetId).attr('src', $loader.attr('src'));
-        });
-    }
-    Resource.loadAsset = loadAsset;
-})(Resource || (Resource = {}));
-var EditPage;
-(function (EditPage) {
-    function start() {
-        $('#mapPanel').jstree({
-            'core': {
-                "animation": 0,
-                'data': {
-                    "url": "data/map/maps.json",
-                    "dataType": "json"
-                },
-                "check_callback": true,
-            },
-            "multiple": false,
-            "plugins": ["dnd", "contextmenu"],
-            "themes": {
-                "dots": false
-            }
-        });
-        $('#mapPanel').on("changed.jstree", function (e, data) {
-            $('#mapDetailPanel').show();
-            var node = data.instance.get_selected(true)[0];
-            $('#mapSizeW').val(node.data.w);
-            $('#mapSizeH').val(node.data.h);
-            $('#tiles').val(node.data.tile);
-            loadTile();
-        });
-        var canvas = document.getElementById('canvas1');
-        Mapper.start(canvas);
-        loadTiles();
-    }
-    EditPage.start = start;
-    function changeSize() {
-        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-        node.data.w = $('#mapSizeW').val();
-        node.data.h = $('#mapSizeH').val();
-        var updatedData = $('#mapPanel').jstree(true).get_json('#');
-        $.ajax({
-            url: "edit/maps",
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedData),
-            success: function (result) {
-                console.log("Maps updated");
-            }
-        });
-    }
-    EditPage.changeSize = changeSize;
-    function loadTiles() {
-        $.getJSON("data/resources/tiles.json", function (data) {
-            var sel = $("#tiles");
-            for (var i = 0; i < data.length; i++) {
-                sel.append('<option value="' + data[i].name + '">' + data[i].desc + '</option>');
-            }
-        });
-    }
-    EditPage.loadTiles = loadTiles;
-    function changeTile() {
-        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-        node.data.tile = $('#tiles').val();
-        var updatedData = $('#mapPanel').jstree(true).get_json('#');
-        $.ajax({
-            url: "edit/maps",
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedData),
-            success: function (result) {
-                loadTile();
-            }
-        });
-    }
-    EditPage.changeTile = changeTile;
-    function loadTile() {
-        var uri = "tileset/" + $('#tiles').val();
-        Resource.loadAsset(uri, "tmpImg");
-    }
-    EditPage.loadTile = loadTile;
-})(EditPage || (EditPage = {}));
 var World;
 (function (World) {
     var Map = (function () {
@@ -204,108 +57,6 @@ var World;
     })();
     World.Options = Options;
 })(World || (World = {}));
-;
-var AbstractDisplay = (function () {
-    function AbstractDisplay(cnvs, onCompleted) {
-        this.canvas = cnvs;
-        this.currentTranslation = { x: 0, y: 0 };
-        (function (display) {
-            Resource.loadPropertes("l4w", function (props) {
-                display.deferredInit(props);
-                onCompleted();
-            });
-        })(this);
-    }
-    AbstractDisplay.prototype.deferredInit = function (props) {
-        this.updateSizingDerivates();
-        this.refresh();
-    };
-    AbstractDisplay.prototype.updateSizingDerivates = function () {
-        this.baseH = this.cellH * this.rows;
-        this.baseW = this.cellW * this.columns;
-        this.halfRows = Math.floor(this.rows / 2);
-        this.halfColumns = Math.floor(this.columns / 2);
-    };
-    AbstractDisplay.prototype.refresh = function () {
-        this.canvas.height = this.baseH * this.scale;
-        this.canvas.width = this.baseW * this.scale;
-    };
-    AbstractDisplay.prototype.clear = function (context) {
-        context.clearRect(this.currentTranslation.x, this.currentTranslation.y, this.baseW + this.currentTranslation.x, this.baseH + this.currentTranslation.y);
-    };
-    AbstractDisplay.prototype.mapPositionToGrid = function (position) {
-        var rect = this.canvas.getBoundingClientRect();
-        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scale) + this.currentTranslation.x / this.cellW);
-        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
-        return { x: i, y: j };
-    };
-    AbstractDisplay.prototype.mapPositionFromGrid = function (position) {
-        var rect = this.canvas.getBoundingClientRect();
-        var x = (position.x + 0.5) * this.cellW;
-        var y = (position.y + 0.5) * this.cellH;
-        return { x: x, y: y };
-    };
-    AbstractDisplay.prototype.getTranslation = function (focusX, focusY, maxColumns, maxRows) {
-        var leftTopX = focusX - (this.halfColumns * this.cellW);
-        if (leftTopX < 0) {
-            leftTopX = 0;
-        }
-        else {
-            var maxTranslationX = (maxColumns - this.columns) * this.cellW;
-            if (leftTopX > maxTranslationX) {
-                leftTopX = maxTranslationX;
-            }
-        }
-        var leftTopY = focusY - (this.halfRows * this.cellH);
-        if (leftTopY < 0) {
-            leftTopY = 0;
-        }
-        else {
-            var maxTranslationY = (maxRows - this.rows) * this.cellH;
-            if (leftTopY > maxTranslationY) {
-                leftTopY = maxTranslationY;
-            }
-        }
-        var newTranslation = { x: leftTopX, y: leftTopY };
-        leftTopX = this.currentTranslation.x - leftTopX;
-        leftTopY = this.currentTranslation.y - leftTopY;
-        this.currentTranslation = newTranslation;
-        return { x: leftTopX, y: leftTopY };
-    };
-    AbstractDisplay.prototype.getBoundariesX = function (focusX, limit) {
-        var focusCell = Math.round(focusX / this.cellW);
-        var min = focusCell - this.halfColumns;
-        var max = focusCell + this.halfColumns;
-        return this.checkBoundariesLimit(min, max, limit - 1);
-    };
-    AbstractDisplay.prototype.getBoundariesY = function (focusY, limit) {
-        var focusCell = Math.round(focusY / this.cellH);
-        var min = focusCell - this.halfRows;
-        var max = focusCell + this.halfRows;
-        return this.checkBoundariesLimit(min, max, limit - 1);
-    };
-    AbstractDisplay.prototype.checkBoundariesLimit = function (min, max, maxLimit) {
-        if (min < 0) {
-            max -= min;
-            min = 0;
-        }
-        if (max > maxLimit) {
-            min -= (max - maxLimit);
-            max = maxLimit;
-        }
-        return {
-            min: min,
-            max: max
-        };
-    };
-    AbstractDisplay.prototype.getOffsetX = function (focusX) {
-        return focusX % this.cellW;
-    };
-    AbstractDisplay.prototype.getOffsetY = function (focusY) {
-        return focusY % this.cellH;
-    };
-    return AbstractDisplay;
-})();
 var Actor;
 (function (Actor) {
     var Event = (function () {
@@ -335,70 +86,6 @@ var Actor;
         return EventState;
     })();
 })(Actor || (Actor = {}));
-var Mapper;
-(function (Mapper) {
-    function start(canvas) {
-        var display = new StaticDisplay(canvas, function () {
-            var scene = new StaticScene(display);
-            initInput(canvas, scene, display);
-            initWidgets(canvas, scene, display);
-            scene.start(canvas);
-        });
-    }
-    Mapper.start = start;
-    function initInput(canvas, scene, display) {
-        var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.W] = function (e) {
-            scene.moveFocus(0 /* UP */);
-        };
-        inputCallbackMap[Input.Keys.S] = function (e) {
-            scene.moveFocus(1 /* DOWN */);
-        };
-        inputCallbackMap[Input.Keys.A] = function (e) {
-            scene.moveFocus(2 /* LEFT */);
-        };
-        inputCallbackMap[Input.Keys.D] = function (e) {
-            scene.moveFocus(3 /* RIGHT */);
-        };
-        inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleEditorGrid();
-        };
-        inputCallbackMap[Input.Keys.F3] = function (e) {
-            scene.toggleCellNumbering();
-        };
-        inputCallbackMap[Input.Keys.F4] = function (e) {
-            scene.toggleFocus();
-        };
-        Input.init(canvas, display, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-    function initWidgets(canvas, scene, display) {
-        var inputRange = document.getElementById("zoom");
-        inputRange.onchange = function (e) {
-            display.selectScale(+inputRange.value);
-            display.refresh();
-            scene.updateContext(canvas);
-        };
-    }
-    ;
-})(Mapper || (Mapper = {}));
 var Constant;
 (function (Constant) {
     Constant.DOUBLE_PI = Math.PI * 2;
@@ -421,39 +108,7 @@ var Constant;
     })(Constant.Direction || (Constant.Direction = {}));
     var Direction = Constant.Direction;
 })(Constant || (Constant = {}));
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var DynamicDisplay = (function (_super) {
-    __extends(DynamicDisplay, _super);
-    function DynamicDisplay(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
-    }
-    DynamicDisplay.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeight"];
-        this.cellW = props["cellWidth"];
-        this.rows = props["rows"];
-        this.columns = props["columns"];
-        this.canvasRatio = props["canvasRatio"];
-        _super.prototype.deferredInit.call(this, props);
-    };
-    DynamicDisplay.prototype.refresh = function () {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        _super.prototype.refresh.call(this);
-    };
-    DynamicDisplay.prototype.width = function () {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
-    };
-    DynamicDisplay.prototype.height = function () {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-    };
-    return DynamicDisplay;
-})(AbstractDisplay);
+;
 var Time;
 (function (Time) {
     function getTime() {
@@ -620,6 +275,210 @@ var AbstractScene = (function () {
     };
     return AbstractScene;
 })();
+var Resource;
+(function (Resource) {
+    var dataFolder = "data/";
+    var assetsFolder = "assets/";
+    var charFolder = assetsFolder + "charset/";
+    var faceFolder = assetsFolder + "faceset/";
+    var skinFolder = assetsFolder + "skin/";
+    var tileFolder = assetsFolder + "tileset/";
+    var properties = new Map();
+    ;
+    function loadPropertes(file, onLoadCallback) {
+        if (file in properties) {
+            return properties[file];
+        }
+        else {
+            function parsePropertiesCallback() {
+                var props = parseProperties(this.responseText);
+                properties[file] = props;
+                onLoadCallback(props);
+            }
+            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
+        }
+    }
+    Resource.loadPropertes = loadPropertes;
+    ;
+    function parseProperties(content) {
+        var props = new Map();
+        var lines = content.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line !== "" && line.indexOf("#") !== 0) {
+                var lineTokens = line.split("=");
+                props[lineTokens[0]] = lineTokens[1];
+            }
+        }
+        return props;
+    }
+    ;
+    function sendRequest(uri, callback) {
+        var request = new XMLHttpRequest();
+        request.onload = callback;
+        request.onerror = handleRequestError;
+        request.ontimeout = handleRequestTimeout;
+        request.open("GET", uri, true);
+        try {
+            request.send();
+        }
+        catch (exception) {
+            if (exception.name == "NetworkError") {
+                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
+            }
+        }
+        function handleRequestError(event) {
+            console.error("Error while getting " + uri);
+        }
+        ;
+        function handleRequestTimeout() {
+            console.error("Timeout while etting " + uri);
+        }
+        ;
+    }
+    function loadAsset(uri, assetId) {
+        var $loader = $(document.createElement("img"));
+        $loader.attr('src', "assets/" + uri);
+        $loader.load(function () {
+            $('#' + assetId).attr('src', $loader.attr('src'));
+        });
+    }
+    Resource.loadAsset = loadAsset;
+})(Resource || (Resource = {}));
+var AbstractDisplay = (function () {
+    function AbstractDisplay(cnvs, onCompleted) {
+        this.canvas = cnvs;
+        this.currentTranslation = { x: 0, y: 0 };
+        (function (display) {
+            Resource.loadPropertes("l4w", function (props) {
+                display.deferredInit(props);
+                onCompleted();
+            });
+        })(this);
+    }
+    AbstractDisplay.prototype.deferredInit = function (props) {
+        this.updateSizingDerivates();
+        this.refresh();
+    };
+    AbstractDisplay.prototype.updateSizingDerivates = function () {
+        this.baseH = this.cellH * this.rows;
+        this.baseW = this.cellW * this.columns;
+        this.halfRows = Math.floor(this.rows / 2);
+        this.halfColumns = Math.floor(this.columns / 2);
+    };
+    AbstractDisplay.prototype.refresh = function () {
+        this.canvas.height = this.baseH * this.scale;
+        this.canvas.width = this.baseW * this.scale;
+    };
+    AbstractDisplay.prototype.clear = function (context) {
+        context.clearRect(this.currentTranslation.x, this.currentTranslation.y, this.baseW + this.currentTranslation.x, this.baseH + this.currentTranslation.y);
+    };
+    AbstractDisplay.prototype.mapPositionToGrid = function (position) {
+        var rect = this.canvas.getBoundingClientRect();
+        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scale) + this.currentTranslation.x / this.cellW);
+        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
+        return { x: i, y: j };
+    };
+    AbstractDisplay.prototype.mapPositionFromGrid = function (position) {
+        var rect = this.canvas.getBoundingClientRect();
+        var x = (position.x + 0.5) * this.cellW;
+        var y = (position.y + 0.5) * this.cellH;
+        return { x: x, y: y };
+    };
+    AbstractDisplay.prototype.getTranslation = function (focusX, focusY, maxColumns, maxRows) {
+        var leftTopX = focusX - (this.halfColumns * this.cellW);
+        if (leftTopX < 0) {
+            leftTopX = 0;
+        }
+        else {
+            var maxTranslationX = (maxColumns - this.columns) * this.cellW;
+            if (leftTopX > maxTranslationX) {
+                leftTopX = maxTranslationX;
+            }
+        }
+        var leftTopY = focusY - (this.halfRows * this.cellH);
+        if (leftTopY < 0) {
+            leftTopY = 0;
+        }
+        else {
+            var maxTranslationY = (maxRows - this.rows) * this.cellH;
+            if (leftTopY > maxTranslationY) {
+                leftTopY = maxTranslationY;
+            }
+        }
+        var newTranslation = { x: leftTopX, y: leftTopY };
+        leftTopX = this.currentTranslation.x - leftTopX;
+        leftTopY = this.currentTranslation.y - leftTopY;
+        this.currentTranslation = newTranslation;
+        return { x: leftTopX, y: leftTopY };
+    };
+    AbstractDisplay.prototype.getBoundariesX = function (focusX, limit) {
+        var focusCell = Math.round(focusX / this.cellW);
+        var min = focusCell - this.halfColumns;
+        var max = focusCell + this.halfColumns;
+        return this.checkBoundariesLimit(min, max, limit - 1);
+    };
+    AbstractDisplay.prototype.getBoundariesY = function (focusY, limit) {
+        var focusCell = Math.round(focusY / this.cellH);
+        var min = focusCell - this.halfRows;
+        var max = focusCell + this.halfRows;
+        return this.checkBoundariesLimit(min, max, limit - 1);
+    };
+    AbstractDisplay.prototype.checkBoundariesLimit = function (min, max, maxLimit) {
+        if (min < 0) {
+            max -= min;
+            min = 0;
+        }
+        if (max > maxLimit) {
+            min -= (max - maxLimit);
+            max = maxLimit;
+        }
+        return {
+            min: min,
+            max: max
+        };
+    };
+    AbstractDisplay.prototype.getOffsetX = function (focusX) {
+        return focusX % this.cellW;
+    };
+    AbstractDisplay.prototype.getOffsetY = function (focusY) {
+        return focusY % this.cellH;
+    };
+    return AbstractDisplay;
+})();
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var DynamicDisplay = (function (_super) {
+    __extends(DynamicDisplay, _super);
+    function DynamicDisplay(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    DynamicDisplay.prototype.deferredInit = function (props) {
+        this.cellH = props["cellHeight"];
+        this.cellW = props["cellWidth"];
+        this.rows = props["rows"];
+        this.columns = props["columns"];
+        this.canvasRatio = props["canvasRatio"];
+        _super.prototype.deferredInit.call(this, props);
+    };
+    DynamicDisplay.prototype.refresh = function () {
+        var ratioH = this.baseH / this.height();
+        var ratioW = this.baseW / this.width();
+        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        _super.prototype.refresh.call(this);
+    };
+    DynamicDisplay.prototype.width = function () {
+        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
+    };
+    DynamicDisplay.prototype.height = function () {
+        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+    };
+    return DynamicDisplay;
+})(AbstractDisplay);
 var StaticScene = (function (_super) {
     __extends(StaticScene, _super);
     function StaticScene(display) {
@@ -654,6 +513,45 @@ var StaticScene = (function (_super) {
     };
     return StaticScene;
 })(AbstractScene);
+var StaticDisplay = (function (_super) {
+    __extends(StaticDisplay, _super);
+    function StaticDisplay(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    StaticDisplay.prototype.deferredInit = function (props) {
+        this.cellH = props["cellHeightEditor"];
+        this.cellW = props["cellWidthEditor"];
+        this.rows = props["rowsEditor"];
+        this.columns = props["columnsEditor"];
+        this.canvasScales = props["canvasScale"].split(",");
+        var totCanvasScales = this.canvasScales.length;
+        this.rowsList = new Array(totCanvasScales);
+        this.columnsList = new Array(totCanvasScales);
+        var selectedScaleId = totCanvasScales - 1;
+        for (var i = 0; i < totCanvasScales; i++) {
+            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+        }
+        this.selectScale(selectedScaleId);
+        _super.prototype.deferredInit.call(this, props);
+    };
+    StaticDisplay.prototype.refresh = function () {
+        _super.prototype.refresh.call(this);
+    };
+    StaticDisplay.prototype.selectScale = function (scaleId) {
+        this.rows = this.rowsList[scaleId];
+        this.columns = this.columnsList[scaleId];
+        this.updateSizingDerivates();
+        this.scale = +this.canvasScales[scaleId];
+    };
+    StaticDisplay.prototype.getBoundariesX = function (focusX, limit) {
+        return _super.prototype.getBoundariesX.call(this, focusX, limit);
+    };
+    StaticDisplay.prototype.getBoundariesY = function (focusY, limit) {
+        return _super.prototype.getBoundariesY.call(this, focusY, limit);
+    };
+    return StaticDisplay;
+})(AbstractDisplay);
 var DynamicScene = (function (_super) {
     __extends(DynamicScene, _super);
     function DynamicScene(display) {
@@ -729,6 +627,70 @@ var DynamicScene = (function (_super) {
     };
     return DynamicScene;
 })(AbstractScene);
+var Mapper;
+(function (Mapper) {
+    function start(canvas) {
+        var display = new StaticDisplay(canvas, function () {
+            var scene = new StaticScene(display);
+            initInput(canvas, scene, display);
+            initWidgets(canvas, scene, display);
+            scene.start(canvas);
+        });
+    }
+    Mapper.start = start;
+    function initInput(canvas, scene, display) {
+        var inputCallbackMap = new Map();
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(0 /* UP */);
+        };
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(1 /* DOWN */);
+        };
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(2 /* LEFT */);
+        };
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(3 /* RIGHT */);
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            scene.toggleEditorGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
+        };
+        Input.init(canvas, display, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
+    ;
+    function initWidgets(canvas, scene, display) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            display.selectScale(+inputRange.value);
+            display.refresh();
+            scene.updateContext(canvas);
+        };
+    }
+    ;
+})(Mapper || (Mapper = {}));
 var Input;
 (function (Input) {
     var Keys = (function () {
@@ -945,42 +907,80 @@ var Game;
     }
     ;
 })(Game || (Game = {}));
-var StaticDisplay = (function (_super) {
-    __extends(StaticDisplay, _super);
-    function StaticDisplay(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
+var EditPage;
+(function (EditPage) {
+    function start() {
+        $('#mapPanel').jstree({
+            'core': {
+                "animation": 0,
+                'data': {
+                    "url": "data/map/maps.json",
+                    "dataType": "json"
+                },
+                "check_callback": true,
+            },
+            "multiple": false,
+            "plugins": ["dnd", "contextmenu"],
+            "themes": {
+                "dots": false
+            }
+        });
+        $('#mapPanel').on("changed.jstree", function (e, data) {
+            $('#mapDetailPanel').show();
+            var node = data.instance.get_selected(true)[0];
+            $('#mapSizeW').val(node.data.w);
+            $('#mapSizeH').val(node.data.h);
+            $('#tiles').val(node.data.tile);
+            loadTile();
+        });
+        var canvas = document.getElementById('canvas1');
+        Mapper.start(canvas);
+        loadTiles();
     }
-    StaticDisplay.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeightEditor"];
-        this.cellW = props["cellWidthEditor"];
-        this.rows = props["rowsEditor"];
-        this.columns = props["columnsEditor"];
-        this.canvasScales = props["canvasScale"].split(",");
-        var totCanvasScales = this.canvasScales.length;
-        this.rowsList = new Array(totCanvasScales);
-        this.columnsList = new Array(totCanvasScales);
-        var selectedScaleId = totCanvasScales - 1;
-        for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
-        }
-        this.selectScale(selectedScaleId);
-        _super.prototype.deferredInit.call(this, props);
-    };
-    StaticDisplay.prototype.refresh = function () {
-        _super.prototype.refresh.call(this);
-    };
-    StaticDisplay.prototype.selectScale = function (scaleId) {
-        this.rows = this.rowsList[scaleId];
-        this.columns = this.columnsList[scaleId];
-        this.updateSizingDerivates();
-        this.scale = +this.canvasScales[scaleId];
-    };
-    StaticDisplay.prototype.getBoundariesX = function (focusX, limit) {
-        return _super.prototype.getBoundariesX.call(this, focusX, limit);
-    };
-    StaticDisplay.prototype.getBoundariesY = function (focusY, limit) {
-        return _super.prototype.getBoundariesY.call(this, focusY, limit);
-    };
-    return StaticDisplay;
-})(AbstractDisplay);
+    EditPage.start = start;
+    function changeSize() {
+        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+        node.data.w = $('#mapSizeW').val();
+        node.data.h = $('#mapSizeH').val();
+        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        $.ajax({
+            url: "edit/maps",
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                console.log("Maps updated");
+            }
+        });
+    }
+    EditPage.changeSize = changeSize;
+    function loadTiles() {
+        $.getJSON("data/resources/tiles.json", function (data) {
+            var sel = $("#tiles");
+            for (var i = 0; i < data.length; i++) {
+                sel.append('<option value="' + data[i].name + '">' + data[i].desc + '</option>');
+            }
+        });
+    }
+    EditPage.loadTiles = loadTiles;
+    function changeTile() {
+        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
+        node.data.tile = $('#tiles').val();
+        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        $.ajax({
+            url: "edit/maps",
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                loadTile();
+            }
+        });
+    }
+    EditPage.changeTile = changeTile;
+    function loadTile() {
+        var uri = "tileset/" + $('#tiles').val();
+        Resource.loadAsset(uri, "tmpImg");
+    }
+    EditPage.loadTile = loadTile;
+})(EditPage || (EditPage = {}));

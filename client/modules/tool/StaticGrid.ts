@@ -1,4 +1,4 @@
-/// <reference path="../core/AbstractDisplay.ts" />
+/// <reference path="../core/AbstractGrid.ts" />
  
 /**
  * Module for managing canvas autosizing
