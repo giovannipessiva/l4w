@@ -4,7 +4,7 @@
 /**
  * Module for managing canvas autosizing
  */
-class AbstractDisplay {
+class AbstractGrid {
 
     protected canvas: HTMLCanvasElement;
     protected baseH: number;
@@ -25,9 +25,9 @@ class AbstractDisplay {
         this.canvas = cnvs;
         this.currentTranslation = { x: 0, y: 0 };
 
-        (function(display) {
+        (function(grid) {
             Resource.loadPropertes("l4w", function(props: Map<string, string>) {
-                display.deferredInit(props);
+                grid.deferredInit(props);
                 onCompleted();
             });
         })(this);
@@ -58,6 +58,10 @@ class AbstractDisplay {
             this.baseH + this.currentTranslation.y);
     }
 
+    /**
+     * Convert a position in the webpage to a position on the grid (cell coordinates)
+     * @param position : position in pixels (absolute coordinates in the page)
+     */
     mapPositionToGrid(position: Point) : Point {
         var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
         var i = Math.floor((position.x - rect.left) / (this.cellW  * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
@@ -65,14 +69,21 @@ class AbstractDisplay {
         return { x: i, y: j };
     }
     
-    mapPositionFromGrid(position: Point) : Point {
+    /**
+     * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
+     * @param position : position in cell coordinates
+     */
+    mapCellToCanvas(position: Point) : Point {
         var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
         var x = (position.x + 0.5) * this.cellW;
         var y = (position.y + 0.5) * this.cellH;
         return { x: x, y: y };
     }
 
-    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number) {
+    /**
+     * Returns the translation (as cell numbers) applied to the canvas
+     */
+    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): Point {
         var leftTopX = focusX - (this.halfColumns * this.cellW);
         if (leftTopX < 0) {
             leftTopX = 0;

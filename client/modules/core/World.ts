@@ -7,11 +7,11 @@ module World {
 
         rows: number;
         columns: number;
-        display: AbstractDisplay;
+        display: AbstractGrid;
 
         private layers: MapLayer[];
 
-        constructor(display: AbstractDisplay) {
+        constructor(display: AbstractGrid) {
             //TODO load map
             this.rows = 30;
             this.columns = 50;

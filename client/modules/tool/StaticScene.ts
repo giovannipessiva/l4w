@@ -5,7 +5,7 @@
  */
 class StaticScene extends AbstractScene {
 
-    constructor(display: StaticDisplay) {
+    constructor(display: StaticGrid) {
         super(display);   
         this.renderingOptions.showEditorGrid=true;
     }
@@ -36,10 +36,10 @@ class StaticScene extends AbstractScene {
             this.context.globalAlpha = 0.4;
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.fillRect(
-                this.pointer.x * this.display.cellW,
-                this.pointer.y * this.display.cellH,
-                this.display.cellW,
-                 this.display.cellH);
+                this.pointer.x * this.grid.cellW,
+                this.pointer.y * this.grid.cellH,
+                this.grid.cellW,
+                 this.grid.cellH);
             this.context.restore();
         }
     }

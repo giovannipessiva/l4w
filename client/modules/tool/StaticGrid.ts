@@ -3,7 +3,7 @@
 /**
  * Module for managing canvas autosizing
  */
-class StaticDisplay extends AbstractDisplay {
+class StaticGrid extends AbstractGrid {
 
     private rowsList: number[];
     private columnsList: number[];

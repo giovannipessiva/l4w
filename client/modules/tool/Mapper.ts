@@ -1,7 +1,7 @@
 module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var display = new StaticDisplay(canvas, function() {
+        var display = new StaticGrid(canvas, function() {
             var scene = new StaticScene(display);
             initInput(canvas, scene, display);
             initWidgets(canvas, scene, display);
@@ -9,7 +9,7 @@ module Mapper {
         });
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticDisplay) {
+    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
            scene.moveFocus(Constant.Direction.UP); 
@@ -59,7 +59,7 @@ module Mapper {
             );
     };
     
-    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticDisplay) {
+    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticGrid) {
         var inputRange: HTMLInputElement = <HTMLInputElement> document.getElementById("zoom");
         inputRange.onchange = function(e: Event){
             display.selectScale(+inputRange.value);

@@ -3,7 +3,7 @@
 /**
  * Module for managing canvas autosizing
  */
-class DynamicDisplay extends AbstractDisplay {
+class DynamicGrid extends AbstractGrid {
 
     canvasRatio: number;
     

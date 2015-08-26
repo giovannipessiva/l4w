@@ -1,5 +1,6 @@
 /// <reference path="Actor.ts" />
 /// <reference path="World.ts" />
+/// <reference path="AbstractGrid.ts" />
 /// <reference path="util/Constant.ts" />
 /// <reference path="util/Commons.ts" />
 /// <reference path="util/Time.ts" />
@@ -27,9 +28,9 @@ class AbstractScene {
     layers: number;
 
     context: CanvasRenderingContext2D;
-    display: AbstractDisplay;
+    grid: AbstractGrid;
 
-    constructor(display: AbstractDisplay) {
+    constructor(display: AbstractGrid) {
         this.map = new World.Map(display);
         this.focus = {
             x: 6 * 32, y: 6 * 32
@@ -39,7 +40,7 @@ class AbstractScene {
         };
         this.renderingOptions = new World.Options();
         this.layers = this.map.getLayers();
-        this.display = display;
+        this.grid = display;
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -57,10 +58,10 @@ class AbstractScene {
             return;
         }
 
-        var boundaries = this.display.getBoundariesY(this.focus.y, this.map.rows);
+        var boundaries = this.grid.getBoundariesY(this.focus.y, this.map.rows);
         var minRow = boundaries.min;
         var maxRow = boundaries.max;
-        boundaries = this.display.getBoundariesX(this.focus.x, this.map.columns);
+        boundaries = this.grid.getBoundariesX(this.focus.x, this.map.columns);
         var minColumn = boundaries.min;
         var maxColumn = boundaries.max;
         for (var y = minRow; y <= maxRow; y++) {
@@ -74,7 +75,7 @@ class AbstractScene {
     }
 
     protected mainGameLoop_pre(): boolean {
-        this.display.clear(this.context); //TODO rimuovere a regime
+        this.grid.clear(this.context); //TODO rimuovere a regime
         return true;
     }
 
@@ -89,7 +90,7 @@ class AbstractScene {
 
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
-            var mappedPointer = this.display.mapPositionFromGrid(this.pointer);
+            var mappedPointer = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
@@ -158,17 +159,17 @@ class AbstractScene {
     moveFocus(direction: Constant.Direction) {
         //TODO class Movable
         switch (direction) {
-            case Constant.Direction.UP: this.focus.y -= +this.display.cellH; break;
-            case Constant.Direction.DOWN: this.focus.y += +this.display.cellH; break;
-            case Constant.Direction.LEFT: this.focus.x -= +this.display.cellW; break;
-            case Constant.Direction.RIGHT: this.focus.x += +this.display.cellW; break;
+            case Constant.Direction.UP: this.focus.y -= +this.grid.cellH; break;
+            case Constant.Direction.DOWN: this.focus.y += +this.grid.cellH; break;
+            case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
+            case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
         }
-        var translationPoint: Point = this.display.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
+        var translationPoint: Point = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
 
     updateContext(canvas: HTMLCanvasElement) {
         this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
-        this.context.scale(this.display.scale, this.display.scale);
+        this.context.scale(this.grid.scale, this.grid.scale);
     }
 }

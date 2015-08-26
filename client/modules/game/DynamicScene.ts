@@ -19,7 +19,7 @@ class DynamicScene extends AbstractScene {
     hero: Actor.Event;
     events: Actor.Event[];
 
-    constructor(display: DynamicDisplay) {
+    constructor(display: DynamicGrid) {
         super(display);        
         this.hero = new Actor.Event();
     }

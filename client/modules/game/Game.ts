@@ -10,14 +10,14 @@
 module Game {
 
     export function start(canvas: HTMLCanvasElement) {
-        var display = new DynamicDisplay(canvas, function() {
+        var display = new DynamicGrid(canvas, function() {
             var scene = new DynamicScene(display);
             initInput(canvas, scene, display);
             scene.start(canvas);
         });
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, display: DynamicDisplay) {
+    function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, display: DynamicGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
            scene.moveFocus(Constant.Direction.UP); 

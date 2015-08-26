@@ -39,7 +39,7 @@ module Input {
 
     export function init(
         canvas: HTMLCanvasElement,
-        display: AbstractDisplay,
+        display: AbstractGrid,
         inputCallbacks: Map<string, Input.IKeyboardCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
