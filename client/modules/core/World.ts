@@ -7,16 +7,16 @@ module World {
 
         rows: number;
         columns: number;
-        display: AbstractGrid;
+        grid: AbstractGrid;
 
         private layers: MapLayer[];
 
-        constructor(display: AbstractGrid) {
+        constructor(grid: AbstractGrid) {
             //TODO load map
             this.rows = 30;
             this.columns = 50;
             this.layers = [];
-            this.display = display;
+            this.grid = grid;
         }
 
         render(context: CanvasRenderingContext2D, x: number, y: number, renderingOptions: World.Options) {
@@ -27,20 +27,20 @@ module World {
                 if (renderingOptions.showGrid) {
                     context.strokeStyle = Constant.Color.RED;
                     context.strokeRect(
-                        x * this.display.cellW,
-                        y * this.display.cellH,
-                        this.display.cellW,
-                        this.display.cellH);
+                        x * this.grid.cellW,
+                        y * this.grid.cellH,
+                        this.grid.cellW,
+                        this.grid.cellH);
                 }
                 if (renderingOptions.showEditorGrid) {
                     context.save();
                     context.globalAlpha = 0.4;
                     context.strokeStyle = Constant.Color.GREY;
                     context.strokeRect(
-                        x * this.display.cellW,
-                        y * this.display.cellH,
-                        this.display.cellW,
-                        this.display.cellH);
+                        x * this.grid.cellW,
+                        y * this.grid.cellH,
+                        this.grid.cellW,
+                        this.grid.cellH);
                     context.restore();
                 }
                 if (renderingOptions.showCellNumbers) {
@@ -48,8 +48,8 @@ module World {
                     context.font = "bold 10px Arial";
                     context.fillText(
                         x + "," + y,
-                        x * this.display.cellW + 1,
-                        y * this.display.cellH + 10);
+                        x * this.grid.cellW + 1,
+                        y * this.grid.cellH + 10);
                 }
             }
         }

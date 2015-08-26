@@ -1,5 +1,6 @@
 /// <reference path="../interfaces/jstree.d.ts" />
 /// <reference path="../core/util/Resource.ts" />
+/// <reference path="../core/util/Commons.ts" />
 
 module EditPage {
 
@@ -79,7 +80,16 @@ module EditPage {
     }
 
     export function loadTile() {
+        // Load the tileset
         var uri = "tileset/" + $('#tiles').val();
         Resource.loadAsset(uri, "tmpImg");
+        // Resize the panel to match the tileset
+        var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
+            var width = +props['cellWidth'] * +props['tileColumns'];
+            $('toolsPanel').width(width);
+            //$('toolsPanel').css("width", width+"px");
+            console.log("resizing:"+width);
+        };
+        Resource.loadProperties(resizerCallback);
     }
 }

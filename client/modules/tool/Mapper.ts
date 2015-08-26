@@ -1,15 +1,15 @@
 module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var display = new StaticGrid(canvas, function() {
-            var scene = new StaticScene(display);
-            initInput(canvas, scene, display);
-            initWidgets(canvas, scene, display);
+        var grid = new StaticGrid(canvas, function() {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            initWidgets(canvas, scene, grid);
             scene.start(canvas);
         });
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticGrid) {
+    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
            scene.moveFocus(Constant.Direction.UP); 
@@ -36,7 +36,7 @@ module Mapper {
 
         Input.init(
             canvas,
-            display,
+            grid,
             inputCallbackMap,
             function() { },
             function() { },
@@ -59,11 +59,11 @@ module Mapper {
             );
     };
     
-    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, display: StaticGrid) {
+    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
         var inputRange: HTMLInputElement = <HTMLInputElement> document.getElementById("zoom");
         inputRange.onchange = function(e: Event){
-            display.selectScale(+inputRange.value);
-            display.refresh();
+            grid.selectScale(+inputRange.value);
+            grid.refresh();
             scene.updateContext(canvas);
         };
     };

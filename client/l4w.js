@@ -23,15 +23,15 @@ var Constant;
 var Mapper;
 (function (Mapper) {
     function start(canvas) {
-        var display = new StaticGrid(canvas, function () {
-            var scene = new StaticScene(display);
-            initInput(canvas, scene, display);
-            initWidgets(canvas, scene, display);
+        var grid = new StaticGrid(canvas, function () {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            initWidgets(canvas, scene, grid);
             scene.start(canvas);
         });
     }
     Mapper.start = start;
-    function initInput(canvas, scene, display) {
+    function initInput(canvas, scene, grid) {
         var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.W] = function (e) {
             scene.moveFocus(0 /* UP */);
@@ -54,7 +54,7 @@ var Mapper;
         inputCallbackMap[Input.Keys.F4] = function (e) {
             scene.toggleFocus();
         };
-        Input.init(canvas, display, inputCallbackMap, function () {
+        Input.init(canvas, grid, inputCallbackMap, function () {
         }, function () {
         }, function () {
         }, function () {
@@ -74,11 +74,11 @@ var Mapper;
         });
     }
     ;
-    function initWidgets(canvas, scene, display) {
+    function initWidgets(canvas, scene, grid) {
         var inputRange = document.getElementById("zoom");
         inputRange.onchange = function (e) {
-            display.selectScale(+inputRange.value);
-            display.refresh();
+            grid.selectScale(+inputRange.value);
+            grid.refresh();
             scene.updateContext(canvas);
         };
     }
@@ -87,11 +87,11 @@ var Mapper;
 var World;
 (function (World) {
     var Map = (function () {
-        function Map(display) {
+        function Map(grid) {
             this.rows = 30;
             this.columns = 50;
             this.layers = [];
-            this.display = display;
+            this.grid = grid;
         }
         Map.prototype.render = function (context, x, y, renderingOptions) {
             for (var layer in this.layers) {
@@ -100,19 +100,19 @@ var World;
             if (renderingOptions != null) {
                 if (renderingOptions.showGrid) {
                     context.strokeStyle = Constant.Color.RED;
-                    context.strokeRect(x * this.display.cellW, y * this.display.cellH, this.display.cellW, this.display.cellH);
+                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
                 }
                 if (renderingOptions.showEditorGrid) {
                     context.save();
                     context.globalAlpha = 0.4;
                     context.strokeStyle = Constant.Color.GREY;
-                    context.strokeRect(x * this.display.cellW, y * this.display.cellH, this.display.cellW, this.display.cellH);
+                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
                     context.restore();
                 }
                 if (renderingOptions.showCellNumbers) {
                     context.fillStyle = Constant.Color.RED;
                     context.font = "bold 10px Arial";
-                    context.fillText(x + "," + y, x * this.display.cellW + 1, y * this.display.cellH + 10);
+                    context.fillText(x + "," + y, x * this.grid.cellW + 1, y * this.grid.cellH + 10);
                 }
             }
         };
@@ -181,10 +181,10 @@ var Resource;
     var skinFolder = assetsFolder + "skin/";
     var tileFolder = assetsFolder + "tileset/";
     var properties = new Map();
-    ;
-    function loadPropertes(file, onLoadCallback) {
+    function loadProperties(onLoadCallback, file) {
+        if (file === void 0) { file = "l4w"; }
         if (file in properties) {
-            return properties[file];
+            onLoadCallback(properties[file]);
         }
         else {
             function parsePropertiesCallback() {
@@ -195,7 +195,7 @@ var Resource;
             sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
         }
     }
-    Resource.loadPropertes = loadPropertes;
+    Resource.loadProperties = loadProperties;
     ;
     function parseProperties(content) {
         var props = new Map();
@@ -243,20 +243,23 @@ var Resource;
     Resource.loadAsset = loadAsset;
 })(Resource || (Resource = {}));
 ;
+;
 var AbstractGrid = (function () {
     function AbstractGrid(cnvs, onCompleted) {
         this.canvas = cnvs;
         this.currentTranslation = { x: 0, y: 0 };
         (function (grid) {
-            Resource.loadPropertes("l4w", function (props) {
+            Resource.loadProperties(function (props) {
                 grid.deferredInit(props);
+                grid.updateSizingDerivates();
+                grid.refresh();
                 onCompleted();
             });
         })(this);
     }
     AbstractGrid.prototype.deferredInit = function (props) {
-        this.updateSizingDerivates();
-        this.refresh();
+        this.cellH = props["cellHeight"];
+        this.cellW = props["cellWidth"];
     };
     AbstractGrid.prototype.updateSizingDerivates = function () {
         this.baseH = this.cellH * this.rows;
@@ -382,8 +385,8 @@ var nextAnimationFrame = window.requestAnimationFrame || window.msRequestAnimati
     window.setTimeout(this.mainGameLoop, this.refreshInterval);
 };
 var AbstractScene = (function () {
-    function AbstractScene(display) {
-        this.map = new World.Map(display);
+    function AbstractScene(grid) {
+        this.map = new World.Map(grid);
         this.focus = {
             x: 6 * 32,
             y: 6 * 32
@@ -394,7 +397,7 @@ var AbstractScene = (function () {
         };
         this.renderingOptions = new World.Options();
         this.layers = this.map.getLayers();
-        this.grid = display;
+        this.grid = grid;
     }
     AbstractScene.prototype.start = function (canvas) {
         this.updateContext(canvas);
@@ -584,6 +587,12 @@ var EditPage;
     function loadTile() {
         var uri = "tileset/" + $('#tiles').val();
         Resource.loadAsset(uri, "tmpImg");
+        var resizerCallback = function (props) {
+            var width = +props['cellWidth'] * +props['tileColumns'];
+            $('toolsPanel').width(width);
+            console.log("resizing:" + width);
+        };
+        Resource.loadProperties(resizerCallback);
     }
     EditPage.loadTile = loadTile;
 })(EditPage || (EditPage = {}));
@@ -618,7 +627,7 @@ var Input;
     ;
     ;
     ;
-    function init(canvas, display, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
+    function init(canvas, grid, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
         var actionOngoing = false;
         var lastKey;
         var flagPause = false;
@@ -734,7 +743,7 @@ var Input;
                 x: e.clientX,
                 y: e.clientY
             };
-            return display.mapPositionToGrid(position);
+            return grid.mapPositionToGrid(position);
         }
     }
     Input.init = init;
@@ -748,8 +757,8 @@ var __extends = this.__extends || function (d, b) {
 };
 var DynamicScene = (function (_super) {
     __extends(DynamicScene, _super);
-    function DynamicScene(display) {
-        _super.call(this, display);
+    function DynamicScene(grid) {
+        _super.call(this, grid);
         this.FPS = 20;
         this.refreshInterval = 1000 / this.FPS;
         this.autoFPS = true;
@@ -827,12 +836,10 @@ var DynamicGrid = (function (_super) {
         _super.call(this, cnvs, onCompleted);
     }
     DynamicGrid.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeight"];
-        this.cellW = props["cellWidth"];
+        _super.prototype.deferredInit.call(this, props);
         this.rows = props["rows"];
         this.columns = props["columns"];
         this.canvasRatio = props["canvasRatio"];
-        _super.prototype.deferredInit.call(this, props);
     };
     DynamicGrid.prototype.refresh = function () {
         var ratioH = this.baseH / this.height();
@@ -851,14 +858,14 @@ var DynamicGrid = (function (_super) {
 var Game;
 (function (Game) {
     function start(canvas) {
-        var display = new DynamicGrid(canvas, function () {
-            var scene = new DynamicScene(display);
-            initInput(canvas, scene, display);
+        var grid = new DynamicGrid(canvas, function () {
+            var scene = new DynamicScene(grid);
+            initInput(canvas, scene, grid);
             scene.start(canvas);
         });
     }
     Game.start = start;
-    function initInput(canvas, scene, display) {
+    function initInput(canvas, scene, grid) {
         var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.W] = function (e) {
             scene.moveFocus(0 /* UP */);
@@ -884,7 +891,7 @@ var Game;
         inputCallbackMap[Input.Keys.F4] = function (e) {
             scene.toggleFocus();
         };
-        Input.init(canvas, display, inputCallbackMap, function () {
+        Input.init(canvas, grid, inputCallbackMap, function () {
         }, function () {
         }, function () {
         }, function () {
@@ -899,7 +906,7 @@ var Game;
             console.log("unpause");
             scene.togglePause(false);
         }, function () {
-            display.refresh();
+            grid.refresh();
             scene.updateContext(canvas);
         }, function () {
             console.log("rightClick");
@@ -917,10 +924,10 @@ var StaticGrid = (function (_super) {
         _super.call(this, cnvs, onCompleted);
     }
     StaticGrid.prototype.deferredInit = function (props) {
-        this.cellH = props["cellHeightEditor"];
-        this.cellW = props["cellWidthEditor"];
+        _super.prototype.deferredInit.call(this, props);
         this.rows = props["rowsEditor"];
         this.columns = props["columnsEditor"];
+        this.tileColumns = props["tileColumns"];
         this.canvasScales = props["canvasScale"].split(",");
         var totCanvasScales = this.canvasScales.length;
         this.rowsList = new Array(totCanvasScales);
@@ -931,7 +938,6 @@ var StaticGrid = (function (_super) {
             this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
         }
         this.selectScale(selectedScaleId);
-        _super.prototype.deferredInit.call(this, props);
     };
     StaticGrid.prototype.refresh = function () {
         _super.prototype.refresh.call(this);
@@ -952,8 +958,8 @@ var StaticGrid = (function (_super) {
 })(AbstractGrid);
 var StaticScene = (function (_super) {
     __extends(StaticScene, _super);
-    function StaticScene(display) {
-        _super.call(this, display);
+    function StaticScene(grid) {
+        _super.call(this, grid);
         this.renderingOptions.showEditorGrid = true;
     }
     StaticScene.prototype.mainGameLoop_pre = function () {

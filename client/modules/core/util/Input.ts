@@ -39,7 +39,7 @@ module Input {
 
     export function init(
         canvas: HTMLCanvasElement,
-        display: AbstractGrid,
+        grid: AbstractGrid,
         inputCallbacks: Map<string, Input.IKeyboardCallback>,
         resetCallback: IEventCallback,
         actionCallback: IPositionCallback,
@@ -180,7 +180,7 @@ module Input {
                x: e.clientX,
                y: e.clientY
             }
-            return display.mapPositionToGrid(position);
+            return grid.mapPositionToGrid(position);
         }
 
     };

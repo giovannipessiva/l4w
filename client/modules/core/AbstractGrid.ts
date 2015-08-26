@@ -26,16 +26,18 @@ class AbstractGrid {
         this.currentTranslation = { x: 0, y: 0 };
 
         (function(grid) {
-            Resource.loadPropertes("l4w", function(props: Map<string, string>) {
+            Resource.loadProperties(function(props: Map<string, string>) {
                 grid.deferredInit(props);
+                grid.updateSizingDerivates();
+                grid.refresh();
                 onCompleted();
             });
         })(this);
     }
 
     deferredInit(props: Map<string, string>) {
-        this.updateSizingDerivates();
-        this.refresh();
+        this.cellH = props["cellHeight"];
+        this.cellW = props["cellWidth"];
     }
 
     updateSizingDerivates() {

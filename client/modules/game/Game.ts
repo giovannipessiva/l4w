@@ -10,14 +10,14 @@
 module Game {
 
     export function start(canvas: HTMLCanvasElement) {
-        var display = new DynamicGrid(canvas, function() {
-            var scene = new DynamicScene(display);
-            initInput(canvas, scene, display);
+        var grid = new DynamicGrid(canvas, function() {
+            var scene = new DynamicScene(grid);
+            initInput(canvas, scene, grid);
             scene.start(canvas);
         });
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, display: DynamicGrid) {
+    function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, grid: DynamicGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
            scene.moveFocus(Constant.Direction.UP); 
@@ -47,7 +47,7 @@ module Game {
 
         Input.init(
             canvas,
-            display,
+            grid,
             inputCallbackMap,
             function() { },
             function() { },
@@ -70,7 +70,7 @@ module Game {
                 scene.togglePause(false);
             },
             function() {
-                display.refresh();
+                grid.refresh();
                 scene.updateContext(canvas);
             },
             function() { console.log("rightClick"); },

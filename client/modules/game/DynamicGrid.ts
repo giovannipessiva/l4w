@@ -14,12 +14,10 @@ class DynamicGrid extends AbstractGrid {
     }
 
     deferredInit(props: Map<string,string>) {
-        this.cellH = props["cellHeight"];
-        this.cellW = props["cellWidth"];
+        super.deferredInit(props);
         this.rows = props["rows"];
         this.columns = props["columns"];
         this.canvasRatio = props["canvasRatio"];
-        super.deferredInit(props);
     }
     
     refresh() {

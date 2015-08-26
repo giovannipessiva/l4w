@@ -5,6 +5,7 @@
  */
 class StaticGrid extends AbstractGrid {
 
+    private tileColumns: number;
     private rowsList: number[];
     private columnsList: number[];
     private canvasScales: string[];
@@ -17,10 +18,10 @@ class StaticGrid extends AbstractGrid {
     }
 
     deferredInit(props: Map<string, string>) {
-        this.cellH = props["cellHeightEditor"];
-        this.cellW = props["cellWidthEditor"];
+        super.deferredInit(props); 
         this.rows = props["rowsEditor"];
         this.columns = props["columnsEditor"];
+        this.tileColumns = props["tileColumns"];
         this.canvasScales = props["canvasScale"].split(",");
         
         var totCanvasScales = this.canvasScales.length;
@@ -33,7 +34,6 @@ class StaticGrid extends AbstractGrid {
             this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
         }
         this.selectScale(selectedScaleId);
-        super.deferredInit(props);  
     }
 
     refresh() {

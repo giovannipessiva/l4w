@@ -15,11 +15,9 @@ module Resource {
 
     var properties: Map<string, string> = new Map<string, string>();
 
-    export interface IPropertiesCallback { (props: Map<string, string>): void };
-
-    export function loadPropertes(file: string, onLoadCallback: IPropertiesCallback) {
+    export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
         if (file in properties) {
-            return properties[file];
+            onLoadCallback(properties[file]);
         } else {
             function parsePropertiesCallback() {
                 var props: Map<string, string> = parseProperties(this.responseText);

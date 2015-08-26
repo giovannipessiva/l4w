@@ -30,8 +30,8 @@ class AbstractScene {
     context: CanvasRenderingContext2D;
     grid: AbstractGrid;
 
-    constructor(display: AbstractGrid) {
-        this.map = new World.Map(display);
+    constructor(grid: AbstractGrid) {
+        this.map = new World.Map(grid);
         this.focus = {
             x: 6 * 32, y: 6 * 32
         };
@@ -40,7 +40,7 @@ class AbstractScene {
         };
         this.renderingOptions = new World.Options();
         this.layers = this.map.getLayers();
-        this.grid = display;
+        this.grid = grid;
     }
 
     start(canvas: HTMLCanvasElement) {

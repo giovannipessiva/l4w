@@ -1,12 +1,12 @@
 /// <reference path="../core/AbstractScene.ts" />
 
-/*
+/**
  * Scene implementation for managing static rendering
  */
 class StaticScene extends AbstractScene {
 
-    constructor(display: StaticGrid) {
-        super(display);   
+    constructor(grid: StaticGrid) {
+        super(grid);   
         this.renderingOptions.showEditorGrid=true;
     }
 
