@@ -86,9 +86,7 @@ module EditPage {
         // Resize the panel to match the tileset
         var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
             var width = +props['cellWidth'] * +props['tileColumns'];
-            $('toolsPanel').width(width);
-            //$('toolsPanel').css("width", width+"px");
-            console.log("resizing:"+width);
+            $('#toolsPanel').width(width);
         };
         Resource.loadProperties(resizerCallback);
     }
