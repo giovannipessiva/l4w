@@ -88,19 +88,23 @@ module EditPage {
 
     export function loadTile() {
         // Clear the canvas
-        var canvas = <HTMLCanvasElement> $('#canvasTile')[0];
-        var context = <CanvasRenderingContext2D> canvas.getContext('2d')
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        var canvasTile = <HTMLCanvasElement> $('#canvasTile')[0];
+        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext('2d');      
+        var canvasSelector = <HTMLCanvasElement> $('#canvasSelector')[0];
+        contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         var uri = "tileset/" + $('#tiles').val();
         Resource.loadAsset(uri, function(element: JQuery){
             // Resize the canvas
             var image = new Image();
             image.src = element.attr("src");
-            canvas.height = image.naturalHeight;
-            canvas.width = image.naturalWidth;
+            $('#tilePanel').height(image.naturalHeight);
+            canvasTile.height = image.naturalHeight;
+            canvasTile.width = image.naturalWidth;
+            canvasSelector.height = image.naturalHeight;
+            canvasSelector.width = image.naturalWidth;      
             // Paint the img in the canvas
-            context.drawImage(element[0],0,0);
+            contextTile.drawImage(element[0],0,0);
         });
     }
 }

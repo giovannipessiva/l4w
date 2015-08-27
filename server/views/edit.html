@@ -43,8 +43,11 @@
 		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td><td><button type="button">D3</button></td><td><button type="button">D4</button></td></tr>
 		</table>
 	</div>
-	<div style="border:1px solid black">
-		<canvas id="canvasTile" width="256" height="800">
+	<div id="tilePanel" style="border:1px solid black;position: relative;">
+		<canvas id="canvasTile" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0">
+		Your browser does not support HTML5 Canvas!</canvas>
+		
+		<canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:1">
 		Your browser does not support HTML5 Canvas!</canvas>
 	</div>
 	<div style="border:1px solid black">
