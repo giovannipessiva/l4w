@@ -86,6 +86,9 @@ var Actor;
         return EventState;
     })();
 })(Actor || (Actor = {}));
+;
+;
+;
 var Resource;
 (function (Resource) {
     var dataFolder = "data/";
@@ -147,17 +150,21 @@ var Resource;
         }
         ;
     }
-    function loadAsset(uri, assetId) {
+    function loadAsset(uri, callback) {
         var $loader = $(document.createElement("img"));
         $loader.attr('src', "assets/" + uri);
         $loader.load(function () {
-            $('#' + assetId).attr('src', $loader.attr('src'));
+            callback($loader);
         });
     }
     Resource.loadAsset = loadAsset;
+    function loadAssetToImg(uri, assetId) {
+        loadAsset(uri, function (tmpImg) {
+            $('#' + assetId).attr('src', tmpImg.attr('src'));
+        });
+    }
+    Resource.loadAssetToImg = loadAssetToImg;
 })(Resource || (Resource = {}));
-;
-;
 var AbstractGrid = (function () {
     function AbstractGrid(cnvs, onCompleted) {
         this.canvas = cnvs;
@@ -806,6 +813,11 @@ var EditPage;
             $('#tiles').val(node.data.tile);
             loadTile();
         });
+        var resizerCallback = function (props) {
+            var width = +props['cellWidth'] * +props['tileColumns'] + 2;
+            $('#toolsPanel').width(width);
+        };
+        Resource.loadProperties(resizerCallback);
         var canvas = document.getElementById('canvas1');
         Mapper.start(canvas);
         loadTiles();
@@ -852,13 +864,17 @@ var EditPage;
     }
     EditPage.changeTile = changeTile;
     function loadTile() {
+        var canvas = $('#canvasTile')[0];
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
         var uri = "tileset/" + $('#tiles').val();
-        Resource.loadAsset(uri, "tmpImg");
-        var resizerCallback = function (props) {
-            var width = +props['cellWidth'] * +props['tileColumns'];
-            $('#toolsPanel').width(width);
-        };
-        Resource.loadProperties(resizerCallback);
+        Resource.loadAsset(uri, function (element) {
+            var image = new Image();
+            image.src = element.attr("src");
+            canvas.height = image.naturalHeight;
+            canvas.width = image.naturalWidth;
+            context.drawImage(element[0], 0, 0);
+        });
     }
     EditPage.loadTile = loadTile;
 })(EditPage || (EditPage = {}));

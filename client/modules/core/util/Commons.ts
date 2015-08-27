@@ -6,4 +6,11 @@ interface Point {
     y: number;
 };
 
-interface IPropertiesCallback { (props: Map<string, string>): void };
+interface IJQueryCallback {
+   (element: JQuery): void
+};
+
+interface IPropertiesCallback {
+   (props: Map<string, string>): void
+};
+

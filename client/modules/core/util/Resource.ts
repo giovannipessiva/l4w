@@ -1,4 +1,5 @@
 ///<reference path="../../interfaces/jquery.d.ts" />
+///<reference path="Commons.ts" />
 
 /**
  * Module for resources loading
@@ -62,12 +63,24 @@ module Resource {
             console.error("Timeout while etting " + uri);
         };
     }
-
-    export function loadAsset(uri: string, assetId: string) {
+    
+    /**
+     * Load an asset and call a callback
+     */
+    export function loadAsset(uri: string, callback: IJQueryCallback) {
         var $loader = $(document.createElement("img"));
         $loader.attr('src', "assets/" + uri);
         $loader.load(function() {
-            $('#' + assetId).attr('src', $loader.attr('src'));
+            callback($loader);
+        });
+    }
+    
+    /**
+     * Load an asset and put it in an img element
+     */
+    export function loadAssetToImg(uri: string, assetId: string) {
+        loadAsset(uri,function(tmpImg: JQuery) {
+            $('#' + assetId).attr('src', tmpImg.attr('src'));
         });
     }
 }

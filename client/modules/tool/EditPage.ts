@@ -29,6 +29,13 @@ module EditPage {
             $('#tiles').val(node.data.tile);
             loadTile();
         });
+        
+        // Resize the panel to match the tileset
+        var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
+            var width = +props['cellWidth'] * +props['tileColumns'] + 2;
+            $('#toolsPanel').width(width);
+        };
+        Resource.loadProperties(resizerCallback);
 
         var canvas = <HTMLCanvasElement> document.getElementById('canvas1');
         Mapper.start(canvas);
@@ -80,14 +87,20 @@ module EditPage {
     }
 
     export function loadTile() {
+        // Clear the canvas
+        var canvas = <HTMLCanvasElement> $('#canvasTile')[0];
+        var context = <CanvasRenderingContext2D> canvas.getContext('2d')
+        context.clearRect(0, 0, canvas.width, canvas.height);
         // Load the tileset
         var uri = "tileset/" + $('#tiles').val();
-        Resource.loadAsset(uri, "tmpImg");
-        // Resize the panel to match the tileset
-        var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
-            var width = +props['cellWidth'] * +props['tileColumns'];
-            $('#toolsPanel').width(width);
-        };
-        Resource.loadProperties(resizerCallback);
+        Resource.loadAsset(uri, function(element: JQuery){
+            // Resize the canvas
+            var image = new Image();
+            image.src = element.attr("src");
+            canvas.height = image.naturalHeight;
+            canvas.width = image.naturalWidth;
+            // Paint the img in the canvas
+            context.drawImage(element[0],0,0);
+        });
     }
 }
