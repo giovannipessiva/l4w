@@ -90,7 +90,7 @@ module EditPage {
         // Clear the canvas
         var canvasTile = <HTMLCanvasElement> $('#canvasTile')[0];
         var contextTile = <CanvasRenderingContext2D> canvasTile.getContext('2d');      
-        var canvasSelector = <HTMLCanvasElement> $('#canvasSelector')[0];
+        var canvasTilePicker = <HTMLCanvasElement> $('#canvasSelector')[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         var uri = "tileset/" + $('#tiles').val();
@@ -101,10 +101,17 @@ module EditPage {
             $('#tilePanel').height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
-            canvasSelector.height = image.naturalHeight;
-            canvasSelector.width = image.naturalWidth;      
+            canvasTilePicker.height = image.naturalHeight;
+            canvasTilePicker.width = image.naturalWidth;      
             // Paint the img in the canvas
             contextTile.drawImage(element[0],0,0);
+            // Manage the tile selector canvas
+            startTilePicker(canvasTilePicker);
         });
+    }
+    
+    function startTilePicker(canvas: HTMLCanvasElement) {
+       //TODO nuova static grid
+       TilePicker.start(canvas);
     }
 }

@@ -21,16 +21,16 @@ class AbstractGrid {
 
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (): void }) {
+        onCompleted: { (grid: AbstractGrid): void }) {
         this.canvas = cnvs;
         this.currentTranslation = { x: 0, y: 0 };
 
-        (function(grid) {
+        (function(grid: AbstractGrid) {
             Resource.loadProperties(function(props: Map<string, string>) {
                 grid.deferredInit(props);
                 grid.updateSizingDerivates();
                 grid.refresh();
-                onCompleted();
+                onCompleted(grid);
             });
         })(this);
     }

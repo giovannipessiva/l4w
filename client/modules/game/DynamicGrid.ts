@@ -9,7 +9,7 @@ class DynamicGrid extends AbstractGrid {
     
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (): void }) {
+        onCompleted: { (grid: DynamicGrid): void }) {
         super(cnvs, onCompleted);
     }
 

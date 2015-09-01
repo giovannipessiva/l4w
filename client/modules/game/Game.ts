@@ -10,7 +10,7 @@
 module Game {
 
     export function start(canvas: HTMLCanvasElement) {
-        var grid = new DynamicGrid(canvas, function() {
+        new DynamicGrid(canvas, function(grid: DynamicGrid) {
             var scene = new DynamicScene(grid);
             initInput(canvas, scene, grid);
             scene.start(canvas);

@@ -12,7 +12,7 @@ class StaticGrid extends AbstractGrid {
 
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (): void }) {
+        onCompleted: { (grid: StaticGrid): void }) {
         super(cnvs, onCompleted);
 
     }

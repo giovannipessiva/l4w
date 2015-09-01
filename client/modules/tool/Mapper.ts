@@ -1,7 +1,7 @@
 module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
-        var grid = new StaticGrid(canvas, function() {
+        new StaticGrid(canvas, function(grid: StaticGrid) {
             var scene = new StaticScene(grid);
             initInput(canvas, scene, grid);
             initWidgets(canvas, scene, grid);
