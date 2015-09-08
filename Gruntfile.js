@@ -3,31 +3,35 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'), 
 
-		ts: {	
-			src: ['client/modules/**/*.ts'],
-			out: 'client/<%= pkg.name %>.ts.js',
+		ts: {
 	        options: {
 	            target: 'es6',
 	            sourceMap: false,
 	            fast: 'never'
-	        },
+	        }, 
+	        dev: {
+                src: ['client/modules/**/*.ts'],
+                out: 'client/<%= pkg.name %>.ts.js'
+            }
 	    },
 	        
 	    typescript: {
-	    	src: ['client/modules/**/*.ts'],
-	      	dest: 'client/<%= pkg.name %>.typescript.js',
-	      	options: {
-	        	target: 'es6'
-	      	}
+	    	base: {
+		    	src: ['client/modules/**/*.ts'],
+		      	dest: 'client/<%= pkg.name %>.typescript.js',
+		      	options: {
+		        	target: 'es6'
+		      	}
+		    }
 		},
 		
 		tslint: {
+    	    files: {
+	            src: ['client/modules/**/*.ts','!client/modules/interfaces/*.ts']
+	        },
     		options: {
       			configuration: grunt.file.readJSON("tslint.json")
-      		},
-      	    files: {
-	            src: ['client/modules/**/*.ts','!client/modules/interfaces/*.ts']
-	        }
+      		}
 	    },
 	
 		uglify: {
@@ -64,7 +68,7 @@ module.exports = function(grunt) {
 	    grunt.task.run(['tslint']);
 	});
 	
-	grunt.registerTask('requiredTasks', ['uglify','typescript','ts']);
+	grunt.registerTask('requiredTasks', ['uglify','typescript','ts:dev']);
 	
 	grunt.registerTask('travis', ['optionalTasks','requiredTasks']);
 };
