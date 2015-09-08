@@ -1,91 +1,37 @@
-var World;
-(function (World) {
-    var Map = (function () {
-        function Map(grid) {
-            this.rows = 30;
-            this.columns = 50;
-            this.layers = [];
-            this.grid = grid;
-        }
-        Map.prototype.render = function (context, x, y, renderingOptions) {
-            for (var layer in this.layers) {
-                layer.render(context, x, y);
-            }
-            if (renderingOptions != null) {
-                if (renderingOptions.showGrid) {
-                    context.strokeStyle = Constant.Color.RED;
-                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
-                }
-                if (renderingOptions.showEditorGrid) {
-                    context.save();
-                    context.globalAlpha = 0.4;
-                    context.strokeStyle = Constant.Color.GREY;
-                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
-                    context.restore();
-                }
-                if (renderingOptions.showCellNumbers) {
-                    context.fillStyle = Constant.Color.RED;
-                    context.font = "bold 10px Arial";
-                    context.fillText(x + "," + y, x * this.grid.cellW + 1, y * this.grid.cellH + 10);
-                }
-            }
-        };
-        Map.prototype.getLayers = function () {
-            return this.layers.length;
-        };
-        return Map;
-    })();
-    World.Map = Map;
+var TilePicker;
+(function (TilePicker) {
+    function start(canvas) {
+        new StaticGrid(canvas, function (grid) {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            scene.start(canvas);
+            scene.toggleEditorGrid(true);
+        });
+    }
+    TilePicker.start = start;
+    function initInput(canvas, scene, grid) {
+        var inputCallbackMap = new Map();
+        Input.init(canvas, grid, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
     ;
-    var MapLayer = (function () {
-        function MapLayer() {
-        }
-        MapLayer.prototype.render = function (context, x, y) {
-        };
-        return MapLayer;
-    })();
-    var Options = (function () {
-        function Options() {
-            this.showGrid = false;
-            this.showEditorGrid = false;
-            this.showFPS = false;
-            this.showCellNumbers = false;
-            this.showFocus = false;
-            this.fps = 0;
-        }
-        return Options;
-    })();
-    World.Options = Options;
-})(World || (World = {}));
-var Actor;
-(function (Actor) {
-    var Event = (function () {
-        function Event() {
-            this.states = [];
-            this.states.push(new EventState(this));
-            this.state = 0;
-        }
-        Event.prototype.update = function (events, map, time) {
-            this.states[this.state].update(events, map, time);
-        };
-        Event.prototype.render = function (x, y) {
-            this.states[this.state].render(x, y);
-        };
-        return Event;
-    })();
-    Actor.Event = Event;
-    ;
-    var EventState = (function () {
-        function EventState(event) {
-            this.event = event;
-        }
-        EventState.prototype.update = function (events, map, time) {
-        };
-        EventState.prototype.render = function (x, y) {
-        };
-        return EventState;
-    })();
-})(Actor || (Actor = {}));
+})(TilePicker || (TilePicker = {}));
 ;
 ;
 ;
@@ -268,6 +214,94 @@ var AbstractGrid = (function () {
     };
     return AbstractGrid;
 })();
+var World;
+(function (World) {
+    var Map = (function () {
+        function Map(grid) {
+            this.rows = 30;
+            this.columns = 50;
+            this.layers = [];
+            this.grid = grid;
+        }
+        Map.prototype.render = function (context, x, y, renderingOptions) {
+            for (var layer in this.layers) {
+                layer.render(context, x, y);
+            }
+            if (renderingOptions != null) {
+                if (renderingOptions.showGrid) {
+                    context.strokeStyle = Constant.Color.RED;
+                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+                }
+                if (renderingOptions.showEditorGrid) {
+                    context.save();
+                    context.globalAlpha = 0.4;
+                    context.strokeStyle = Constant.Color.GREY;
+                    context.strokeRect(x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+                    context.restore();
+                }
+                if (renderingOptions.showCellNumbers) {
+                    context.fillStyle = Constant.Color.RED;
+                    context.font = "bold 10px Arial";
+                    context.fillText(x + "," + y, x * this.grid.cellW + 1, y * this.grid.cellH + 10);
+                }
+            }
+        };
+        Map.prototype.getLayers = function () {
+            return this.layers.length;
+        };
+        return Map;
+    })();
+    World.Map = Map;
+    ;
+    var MapLayer = (function () {
+        function MapLayer() {
+        }
+        MapLayer.prototype.render = function (context, x, y) {
+        };
+        return MapLayer;
+    })();
+    var Options = (function () {
+        function Options() {
+            this.showGrid = false;
+            this.showEditorGrid = false;
+            this.showFPS = false;
+            this.showCellNumbers = false;
+            this.showFocus = false;
+            this.fps = 0;
+        }
+        return Options;
+    })();
+    World.Options = Options;
+})(World || (World = {}));
+var Actor;
+(function (Actor) {
+    var Event = (function () {
+        function Event() {
+            this.states = [];
+            this.states.push(new EventState(this));
+            this.state = 0;
+        }
+        Event.prototype.update = function (events, map, time) {
+            this.states[this.state].update(events, map, time);
+        };
+        Event.prototype.render = function (x, y) {
+            this.states[this.state].render(x, y);
+        };
+        return Event;
+    })();
+    Actor.Event = Event;
+    ;
+    var EventState = (function () {
+        function EventState(event) {
+            this.event = event;
+        }
+        EventState.prototype.update = function (events, map, time) {
+        };
+        EventState.prototype.render = function (x, y) {
+        };
+        return EventState;
+    })();
+})(Actor || (Actor = {}));
 var Constant;
 (function (Constant) {
     Constant.DOUBLE_PI = Math.PI * 2;
@@ -487,74 +521,6 @@ var DynamicGrid = (function (_super) {
     };
     return DynamicGrid;
 })(AbstractGrid);
-var TilePicker;
-(function (TilePicker) {
-    function start(canvas) {
-        new StaticGrid(canvas, function (grid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            scene.start(canvas);
-            scene.toggleEditorGrid(true);
-        });
-    }
-    TilePicker.start = start;
-    function initInput(canvas, scene, grid) {
-        var inputCallbackMap = new Map();
-        Input.init(canvas, grid, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-})(TilePicker || (TilePicker = {}));
-var StaticScene = (function (_super) {
-    __extends(StaticScene, _super);
-    function StaticScene(grid) {
-        _super.call(this, grid);
-        this.renderingOptions.showEditorGrid = true;
-    }
-    StaticScene.prototype.mainGameLoop_pre = function () {
-        if (!_super.prototype.mainGameLoop_pre.call(this)) {
-            return false;
-        }
-        return true;
-    };
-    StaticScene.prototype.mainGameLoop_post = function () {
-        _super.prototype.mainGameLoop_post.call(this);
-    };
-    StaticScene.prototype.toggleEditorGrid = function (enable) {
-        if (enable != null) {
-            this.renderingOptions.showEditorGrid = enable;
-        }
-        else {
-            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
-        }
-    };
-    StaticScene.prototype.renderPointer = function () {
-        if (this.pointer.x != null && this.pointer.y != null) {
-            this.context.save();
-            this.context.globalAlpha = 0.4;
-            this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
-            this.context.restore();
-        }
-    };
-    return StaticScene;
-})(AbstractScene);
 var StaticGrid = (function (_super) {
     __extends(StaticGrid, _super);
     function StaticGrid(cnvs, onCompleted) {
@@ -593,145 +559,6 @@ var StaticGrid = (function (_super) {
     };
     return StaticGrid;
 })(AbstractGrid);
-var DynamicScene = (function (_super) {
-    __extends(DynamicScene, _super);
-    function DynamicScene(grid) {
-        _super.call(this, grid);
-        this.FPS = 20;
-        this.refreshInterval = 1000 / this.FPS;
-        this.autoFPS = true;
-        this.secondFPS = 0;
-        this.countFPS = 0;
-        this.lastFPS = 0;
-        this.FPSPerformance = [22, 21, 20];
-        this.paused = false;
-        this.hero = new Actor.Event();
-    }
-    DynamicScene.prototype.mainGameLoop_pre = function () {
-        if (this.paused) {
-            return false;
-        }
-        if (!_super.prototype.mainGameLoop_pre.call(this)) {
-            return false;
-        }
-        this.context.fillStyle = '#000000';
-        this.context.font = 'bold 40px Arial';
-        this.context.fillText("(it's not ready yet)", 160, 260);
-        var time = Time.getTime();
-        this.hero.update(this.events, this.map, time);
-        for (var event in this.events) {
-            event.update(this.events, this.map, time);
-        }
-        return true;
-    };
-    DynamicScene.prototype.mainGameLoop_post = function () {
-        _super.prototype.mainGameLoop_post.call(this);
-        this.renderFPS();
-    };
-    DynamicScene.prototype.togglePause = function (pause) {
-        if (pause != null) {
-            this.paused = pause;
-        }
-        else {
-            this.paused = !this.paused;
-        }
-    };
-    DynamicScene.prototype.toggleFPS = function (enable) {
-        if (enable != null) {
-            this.renderingOptions.showFPS = enable;
-        }
-        else {
-            this.renderingOptions.showFPS = !this.renderingOptions.showFPS;
-        }
-    };
-    DynamicScene.prototype.renderFPS = function () {
-        var seconds = Math.floor(Time.getTime() / 1000);
-        if (seconds == this.secondFPS) {
-            this.countFPS++;
-        }
-        else {
-            this.lastFPS = this.countFPS;
-            this.countFPS = 1;
-            this.secondFPS = seconds;
-            if (this.autoFPS == true) {
-                this.FPSPerformance.shift();
-                this.FPSPerformance[2] = this.lastFPS;
-                var avg = (this.FPSPerformance[0] + this.FPSPerformance[1] + this.FPSPerformance[2]) / 3;
-                this.FPS = Math.ceil(avg) + 2;
-            }
-        }
-        if (this.renderingOptions.showFPS) {
-            this.context.fillStyle = Constant.Color.RED;
-            this.context.font = "bold 18px Arial";
-            this.context.fillText("" + this.lastFPS, 10, 20);
-        }
-    };
-    return DynamicScene;
-})(AbstractScene);
-var Mapper;
-(function (Mapper) {
-    function start(canvas) {
-        new StaticGrid(canvas, function (grid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            initWidgets(canvas, scene, grid);
-            scene.start(canvas);
-        });
-    }
-    Mapper.start = start;
-    function initInput(canvas, scene, grid) {
-        var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.W] = function (e) {
-            scene.moveFocus(0 /* UP */);
-        };
-        inputCallbackMap[Input.Keys.S] = function (e) {
-            scene.moveFocus(1 /* DOWN */);
-        };
-        inputCallbackMap[Input.Keys.A] = function (e) {
-            scene.moveFocus(2 /* LEFT */);
-        };
-        inputCallbackMap[Input.Keys.D] = function (e) {
-            scene.moveFocus(3 /* RIGHT */);
-        };
-        inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleEditorGrid();
-        };
-        inputCallbackMap[Input.Keys.F3] = function (e) {
-            scene.toggleCellNumbering();
-        };
-        inputCallbackMap[Input.Keys.F4] = function (e) {
-            scene.toggleFocus();
-        };
-        Input.init(canvas, grid, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-    function initWidgets(canvas, scene, grid) {
-        var inputRange = document.getElementById("zoom");
-        inputRange.onchange = function (e) {
-            grid.selectScale(+inputRange.value);
-            grid.refresh();
-            scene.updateContext(canvas);
-        };
-    }
-    ;
-})(Mapper || (Mapper = {}));
 var Input;
 (function (Input) {
     var Keys = (function () {
@@ -885,6 +712,179 @@ var Input;
     Input.init = init;
     ;
 })(Input || (Input = {}));
+var StaticScene = (function (_super) {
+    __extends(StaticScene, _super);
+    function StaticScene(grid) {
+        _super.call(this, grid);
+        this.renderingOptions.showEditorGrid = true;
+    }
+    StaticScene.prototype.mainGameLoop_pre = function () {
+        if (!_super.prototype.mainGameLoop_pre.call(this)) {
+            return false;
+        }
+        return true;
+    };
+    StaticScene.prototype.mainGameLoop_post = function () {
+        _super.prototype.mainGameLoop_post.call(this);
+    };
+    StaticScene.prototype.toggleEditorGrid = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showEditorGrid = enable;
+        }
+        else {
+            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+        }
+    };
+    StaticScene.prototype.renderPointer = function () {
+        if (this.pointer.x != null && this.pointer.y != null) {
+            this.context.save();
+            this.context.globalAlpha = 0.4;
+            this.context.fillStyle = Constant.Color.YELLOW;
+            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+            this.context.restore();
+        }
+    };
+    return StaticScene;
+})(AbstractScene);
+var Mapper;
+(function (Mapper) {
+    function start(canvas) {
+        new StaticGrid(canvas, function (grid) {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            initWidgets(canvas, scene, grid);
+            scene.start(canvas);
+        });
+    }
+    Mapper.start = start;
+    function initInput(canvas, scene, grid) {
+        var inputCallbackMap = new Map();
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(0 /* UP */);
+        };
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(1 /* DOWN */);
+        };
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(2 /* LEFT */);
+        };
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(3 /* RIGHT */);
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            scene.toggleEditorGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
+        };
+        Input.init(canvas, grid, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
+    ;
+    function initWidgets(canvas, scene, grid) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            grid.selectScale(+inputRange.value);
+            grid.refresh();
+            scene.updateContext(canvas);
+        };
+    }
+    ;
+})(Mapper || (Mapper = {}));
+var DynamicScene = (function (_super) {
+    __extends(DynamicScene, _super);
+    function DynamicScene(grid) {
+        _super.call(this, grid);
+        this.FPS = 20;
+        this.refreshInterval = 1000 / this.FPS;
+        this.autoFPS = true;
+        this.secondFPS = 0;
+        this.countFPS = 0;
+        this.lastFPS = 0;
+        this.FPSPerformance = [22, 21, 20];
+        this.paused = false;
+        this.hero = new Actor.Event();
+    }
+    DynamicScene.prototype.mainGameLoop_pre = function () {
+        if (this.paused) {
+            return false;
+        }
+        if (!_super.prototype.mainGameLoop_pre.call(this)) {
+            return false;
+        }
+        this.context.fillStyle = '#000000';
+        this.context.font = 'bold 40px Arial';
+        this.context.fillText("(it's not ready yet)", 160, 260);
+        var time = Time.getTime();
+        this.hero.update(this.events, this.map, time);
+        for (var event in this.events) {
+            event.update(this.events, this.map, time);
+        }
+        return true;
+    };
+    DynamicScene.prototype.mainGameLoop_post = function () {
+        _super.prototype.mainGameLoop_post.call(this);
+        this.renderFPS();
+    };
+    DynamicScene.prototype.togglePause = function (pause) {
+        if (pause != null) {
+            this.paused = pause;
+        }
+        else {
+            this.paused = !this.paused;
+        }
+    };
+    DynamicScene.prototype.toggleFPS = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showFPS = enable;
+        }
+        else {
+            this.renderingOptions.showFPS = !this.renderingOptions.showFPS;
+        }
+    };
+    DynamicScene.prototype.renderFPS = function () {
+        var seconds = Math.floor(Time.getTime() / 1000);
+        if (seconds == this.secondFPS) {
+            this.countFPS++;
+        }
+        else {
+            this.lastFPS = this.countFPS;
+            this.countFPS = 1;
+            this.secondFPS = seconds;
+            if (this.autoFPS == true) {
+                this.FPSPerformance.shift();
+                this.FPSPerformance[2] = this.lastFPS;
+                var avg = (this.FPSPerformance[0] + this.FPSPerformance[1] + this.FPSPerformance[2]) / 3;
+                this.FPS = Math.ceil(avg) + 2;
+            }
+        }
+        if (this.renderingOptions.showFPS) {
+            this.context.fillStyle = Constant.Color.RED;
+            this.context.font = "bold 18px Arial";
+            this.context.fillText("" + this.lastFPS, 10, 20);
+        }
+    };
+    return DynamicScene;
+})(AbstractScene);
 var Game;
 (function (Game) {
     function start(canvas) {

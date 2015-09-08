@@ -176,7 +176,7 @@ module Input {
         });
 
         function mapEvent(e) {
-            var position: Point = {
+            var position: IPoint = {
                x: e.clientX,
                y: e.clientY
             }

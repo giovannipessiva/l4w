@@ -15,7 +15,7 @@ class AbstractGrid {
     cellW: number;
     protected halfRows: number;
     protected halfColumns: number;
-    private currentTranslation: Point;
+    private currentTranslation: IPoint;
 
     scale: number;
 
@@ -64,7 +64,7 @@ class AbstractGrid {
      * Convert a position in the webpage to a position on the grid (cell coordinates)
      * @param position : position in pixels (absolute coordinates in the page)
      */
-    mapPositionToGrid(position: Point) : Point {
+    mapPositionToGrid(position: IPoint) : IPoint {
         var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
         var i = Math.floor((position.x - rect.left) / (this.cellW  * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
         var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
@@ -75,7 +75,7 @@ class AbstractGrid {
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
      * @param position : position in cell coordinates
      */
-    mapCellToCanvas(position: Point) : Point {
+    mapCellToCanvas(position: IPoint) : IPoint {
         var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
         var x = (position.x + 0.5) * this.cellW;
         var y = (position.y + 0.5) * this.cellH;
@@ -85,7 +85,7 @@ class AbstractGrid {
     /**
      * Returns the translation (as cell numbers) applied to the canvas
      */
-    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): Point {
+    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): IPoint {
         var leftTopX = focusX - (this.halfColumns * this.cellW);
         if (leftTopX < 0) {
             leftTopX = 0;

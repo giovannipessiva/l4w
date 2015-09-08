@@ -21,8 +21,8 @@ class AbstractScene {
 
     map: World.Map;
 
-    focus: Point;
-    pointer: Point;
+    focus: IPoint;
+    pointer: IPoint;
 
     renderingOptions: World.Options;
     layers: number;
@@ -164,7 +164,7 @@ class AbstractScene {
             case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
         }
-        var translationPoint: Point = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
+        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
 

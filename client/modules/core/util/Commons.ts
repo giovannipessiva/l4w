@@ -1,7 +1,7 @@
 /**
  * Module for common type structures and function interfaces
  */
-interface Point {
+interface IPoint {
     x: number;
     y: number;
 };

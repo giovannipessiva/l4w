@@ -14,6 +14,7 @@ rm -rf .externalToolBuilders
 rm .project
 rm .travis.yml
 rm Gruntfile.js
+rm tslint.json
 rm *.md
 rm *.sh
 rm *.bat
