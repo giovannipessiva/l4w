@@ -4,25 +4,21 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'), 
 
 		ts: {	
+			src: ['client/modules/**/*.ts'],
+			out: 'client/<%= pkg.name %>.ts.js',
 	        options: {
 	            target: 'es6',
 	            sourceMap: false,
 	            fast: 'never'
 	        },
-	        dev: {
-	            src: ['client/modules/**/*.ts'],
-	            out: 'client/<%= pkg.name %>.js'
-	        }
 	    },
 	        
 	    typescript: {
-		    base: {
-		    	src: ['client/modules/**/*.ts'],
-		      	dest: 'client/l4w.js',
-		      	options: {
-		        	target: 'es6'
-		      	}
-			}
+	    	src: ['client/modules/**/*.ts'],
+	      	dest: 'client/<%= pkg.name %>.typescript.js',
+	      	options: {
+	        	target: 'es6'
+	      	}
 		},
 		
 		tslint: {
@@ -30,9 +26,8 @@ module.exports = function(grunt) {
       			configuration: grunt.file.readJSON("tslint.json")
       		},
       	    files: {
-	            src: ['client/modules/**/*.ts']
-	        },
-	        outputFile: "tslint.out.txt"
+	            src: ['client/modules/**/*.ts','!client/modules/interfaces/*.ts']
+	        }
 	    },
 	
 		uglify: {
@@ -69,10 +64,7 @@ module.exports = function(grunt) {
 	    grunt.task.run(['tslint']);
 	});
 	
-	//FIXME typescript compilation doesnt work as it should..l
-	//grunt.registerTask('requiredTasks', ['typescript','uglify']);
-	//grunt.registerTask('requiredTasks', ['ts:dev','uglify']);
-	grunt.registerTask('requiredTasks', ['uglify']);
+	grunt.registerTask('requiredTasks', ['uglify','typescript','ts']);
 	
 	grunt.registerTask('travis', ['optionalTasks','requiredTasks']);
 };
