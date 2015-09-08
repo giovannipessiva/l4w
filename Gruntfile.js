@@ -7,7 +7,8 @@ module.exports = function(grunt) {
 	        options: {
 	            target: 'es6',
 	            sourceMap: false,
-	            fast: 'never'
+	            fast: 'never',
+	            removeComments: true
 	        }, 
 	        dev: {
                 src: ['client/modules/**/*.ts'],
@@ -52,7 +53,9 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
+					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js'],
+					'client/<%= pkg.name %>.ts.min.js': ['client/<%= pkg.name %>.ts.js'],
+					'client/<%= pkg.name %>.typescript.min.js': ['client/<%= pkg.name %>.typescript.js']
 				}
 			}
 		}
