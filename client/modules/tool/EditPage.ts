@@ -104,7 +104,7 @@ module EditPage {
             canvasTilePicker.height = image.naturalHeight;
             canvasTilePicker.width = image.naturalWidth;      
             // Paint the img in the canvas
-            contextTile.drawImage(element[0],0,0);
+            contextTile.drawImage(<HTMLImageElement> element[0],0,0);
             // Manage the tile selector canvas
             startTilePicker(canvasTilePicker);
         });
