@@ -4,15 +4,15 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'), 
 
 		ts: {
-	        options: {
-	            target: 'es6',
-	            sourceMap: false,
-	            fast: 'never',
-	            removeComments: true
-	        }, 
 	        dev: {
                 src: ['client/modules/**/*.ts'],
-                out: 'client/<%= pkg.name %>.ts.js'
+                out: 'client/<%= pkg.name %>.ts.js',
+                options: {
+    	            target: 'es6',
+    	            sourceMap: false,
+    	            fast: 'never',
+    	            removeComments: true
+    	        }
             }
 	    },
 	        
@@ -21,7 +21,8 @@ module.exports = function(grunt) {
 		    	src: ['client/modules/**/*.ts'],
 		      	dest: 'client/<%= pkg.name %>.typescript.js',
 		      	options: {
-		        	target: 'es6'
+		        	target: 'es6',
+		        	removeComments: true
 		      	}
 		    }
 		},
@@ -53,9 +54,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js'],
-					'client/<%= pkg.name %>.ts.min.js': ['client/<%= pkg.name %>.ts.js'],
-					'client/<%= pkg.name %>.typescript.min.js': ['client/<%= pkg.name %>.typescript.js']
+					'client/<%= pkg.name %>.min.js': ['client/<%= pkg.name %>.js']
 				}
 			}
 		}
