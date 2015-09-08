@@ -63,12 +63,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-tslint');
-
+	
+	grunt.registerTask('optionalTasks', 'tasks that can fail', function () {
+	    grunt.option('force', true);
+	    grunt.task.run(['tslint']);
+	});
+	
 	//FIXME typescript compilation doesnt work as it should..l
-	//grunt.registerTask('default', ['typescript','uglify']);
-	//grunt.registerTask('default', ['ts:dev','uglify']);
+	//grunt.registerTask('requiredTasks', ['typescript','uglify']);
+	//grunt.registerTask('requiredTasks', ['ts:dev','uglify']);
+	grunt.registerTask('requiredTasks', ['uglify']);
 	
-	grunt.registerTask('default', ['tslint','uglify']);
-	
-	grunt.registerTask('travis', 'default');
+	grunt.registerTask('travis', ['optionalTasks','requiredTasks']);
 };
