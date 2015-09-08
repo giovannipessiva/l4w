@@ -15,17 +15,6 @@ module.exports = function(grunt) {
     	        }
             }
 	    },
-	        
-	    typescript: {
-	    	base: {
-		    	src: ['client/modules/**/*.ts'],
-		      	dest: 'client/<%= pkg.name %>.typescript.js',
-		      	options: {
-		        	target: 'es6',
-		        	removeComments: true
-		      	}
-		    }
-		},
 		
 		tslint: {
     	    files: {
@@ -61,7 +50,6 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks("grunt-ts");
-	grunt.loadNpmTasks('grunt-typescript');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-tslint');
 	
@@ -70,7 +58,7 @@ module.exports = function(grunt) {
 	    grunt.task.run(['tslint']);
 	});
 	
-	grunt.registerTask('requiredTasks', ['uglify','typescript','ts:dev']);
+	grunt.registerTask('requiredTasks', ['uglify','ts:dev']);
 	
 	grunt.registerTask('travis', ['optionalTasks','requiredTasks']);
 };
