@@ -179,8 +179,8 @@ var AbstractGrid = (function () {
         })(this);
     }
     AbstractGrid.prototype.deferredInit = function (props) {
-        this.cellH = +props.get("cellHeight");
-        this.cellW = +props.get("cellWidth");
+        this.cellH = +props["cellHeight"];
+        this.cellW = +props["cellWidth"];
     };
     AbstractGrid.prototype.updateSizingDerivates = function () {
         this.baseH = this.cellH * this.rows;
@@ -468,9 +468,9 @@ var DynamicGrid = (function (_super) {
     }
     DynamicGrid.prototype.deferredInit = function (props) {
         _super.prototype.deferredInit.call(this, props);
-        this.rows = +props.get("rows");
-        this.columns = +props.get("columns");
-        this.canvasRatio = +props.get("canvasRatio");
+        this.rows = +props["rows"];
+        this.columns = +props["columns"];
+        this.canvasRatio = +props["canvasRatio"];
     };
     DynamicGrid.prototype.refresh = function () {
         var ratioH = this.baseH / this.height();
@@ -561,10 +561,10 @@ var StaticGrid = (function (_super) {
     }
     StaticGrid.prototype.deferredInit = function (props) {
         _super.prototype.deferredInit.call(this, props);
-        this.rows = +props.get("rowsEditor");
-        this.columns = +props.get("columnsEditor");
-        this.tileColumns = +props.get("tileColumns");
-        this.canvasScales = props.get("canvasScale").split(",");
+        this.rows = +props["rowsEditor"];
+        this.columns = +props["columnsEditor"];
+        this.tileColumns = +props["tileColumns"];
+        this.canvasScales = props["canvasScale"].split(",");
         var totCanvasScales = this.canvasScales.length;
         this.rowsList = new Array(totCanvasScales);
         this.columnsList = new Array(totCanvasScales);

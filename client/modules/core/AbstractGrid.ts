@@ -36,8 +36,8 @@ class AbstractGrid {
     }
 
     deferredInit(props: Map<string, string>) {
-        this.cellH = +props.get("cellHeight");
-        this.cellW = +props.get("cellWidth");
+        this.cellH = +props["cellHeight"];
+        this.cellW = +props["cellWidth"];
     }
 
     updateSizingDerivates() {

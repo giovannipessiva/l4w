@@ -10,7 +10,7 @@
         "no-duplicate-variable": true,
         "no-internal-module": true,
         "no-require-imports": true,
-        "no-string-literal": true,
+        "no-string-literal": false,
         "no-unreachable": true,
         "no-unused-variable": true,
         "no-use-before-declare": true,
