@@ -7,10 +7,10 @@ interface IPoint {
 };
 
 interface IJQueryCallback {
-   (element: JQuery): void
+   (element: JQuery): void;
 };
 
 interface IPropertiesCallback {
-   (props: Map<string, string>): void
+   (props: Map<string, string>): void;
 };
 
