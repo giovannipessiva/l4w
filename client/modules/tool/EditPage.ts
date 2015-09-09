@@ -5,10 +5,10 @@
 module EditPage {
 
     export function start() {
-        $('#mapPanel').jstree({
-            'core': {
+        $("#mapPanel").jstree({
+            "core": {
                 "animation": 0,
-                'data': {
+                "data": {
                     "url": "data/map/maps.json",
                     "dataType": "json"
                 },
@@ -21,38 +21,38 @@ module EditPage {
             }
         });
 
-        $('#mapPanel').on("changed.jstree", function(e, data) {
-            $('#mapDetailPanel').show();
+        $("#mapPanel").on("changed.jstree", function(e, data) {
+            $("#mapDetailPanel").show();
             var node = data.instance.get_selected(true)[0];
-            $('#mapSizeW').val(node.data.w);
-            $('#mapSizeH').val(node.data.h);
-            $('#tiles').val(node.data.tile);
+            $("#mapSizeW").val(node.data.w);
+            $("#mapSizeH").val(node.data.h);
+            $("#tiles").val(node.data.tile);
             loadTile();
         });
         
         // Resize the panel to match the tileset
         var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
-            var width = +props['cellWidth'] * +props['tileColumns'] + 2;
-            $('#toolsPanel').width(width);
+            var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
+            $("#toolsPanel").width(width);
         };
         Resource.loadProperties(resizerCallback);
 
-        var canvas = <HTMLCanvasElement> document.getElementById('canvas1');
+        var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
         Mapper.start(canvas);
 
         loadTiles();
     }
 
     export function changeSize() {
-        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-        node.data.w = $('#mapSizeW').val();
-        node.data.h = $('#mapSizeH').val();
+        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        node.data.w = $("#mapSizeW").val();
+        node.data.h = $("#mapSizeH").val();
 
-        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        var updatedData = $("#mapPanel").jstree(true).get_json("#");
         $.ajax({
             url: "edit/maps",
-            type: 'post',
-            contentType: 'application/json',
+            type: "post",
+            contentType: "application/json",
             data: JSON.stringify(updatedData),
             success: function(result) {
                 console.log("Maps updated");
@@ -64,21 +64,21 @@ module EditPage {
         $.getJSON("data/resources/tiles.json", function(data) {
             var sel = $("#tiles");
             for (var i = 0; i < data.length; i++) {
-                sel.append('<option value="' + data[i].name + '">' + data[i].desc
-                    + '</option>');
+                sel.append("<option value='" + data[i].name + "'>" + data[i].desc
+                    + "</option>");
             }
         });
     }
 
     export function changeTile() {
-        var node = $('#mapPanel').jstree(true).get_selected(true)[0];
-        node.data.tile = $('#tiles').val();
+        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        node.data.tile = $("#tiles").val();
 
-        var updatedData = $('#mapPanel').jstree(true).get_json('#');
+        var updatedData = $("#mapPanel").jstree(true).get_json("#");
         $.ajax({
             url: "edit/maps",
-            type: 'post',
-            contentType: 'application/json',
+            type: "post",
+            contentType: "application/json",
             data: JSON.stringify(updatedData),
             success: function(result) {
                 loadTile();
@@ -88,17 +88,17 @@ module EditPage {
 
     export function loadTile() {
         // Clear the canvas
-        var canvasTile = <HTMLCanvasElement> $('#canvasTile')[0];
-        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext('2d');      
-        var canvasTilePicker = <HTMLCanvasElement> $('#canvasSelector')[0];
+        var canvasTile = <HTMLCanvasElement> $("#canvasTile")[0];
+        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");      
+        var canvasTilePicker = <HTMLCanvasElement> $("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        var uri = "tileset/" + $('#tiles').val();
+        var uri = "tileset/" + $("#tiles").val();
         Resource.loadAsset(uri, function(element: JQuery){
             // Resize the canvas
             var image = new Image();
             image.src = element.attr("src");
-            $('#tilePanel').height(image.naturalHeight);
+            $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilePicker.height = image.naturalHeight;

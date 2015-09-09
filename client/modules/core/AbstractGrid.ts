@@ -36,8 +36,8 @@ class AbstractGrid {
     }
 
     deferredInit(props: Map<string, string>) {
-        this.cellH = props["cellHeight"];
-        this.cellW = props["cellWidth"];
+        this.cellH = +props.get("cellHeight");
+        this.cellW = +props.get("cellWidth");
     }
 
     updateSizingDerivates() {
@@ -65,7 +65,7 @@ class AbstractGrid {
      * @param position : position in pixels (absolute coordinates in the page)
      */
     mapPositionToGrid(position: IPoint) : IPoint {
-        var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
+        var rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
         var i = Math.floor((position.x - rect.left) / (this.cellW  * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
         var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
@@ -76,7 +76,6 @@ class AbstractGrid {
      * @param position : position in cell coordinates
      */
     mapCellToCanvas(position: IPoint) : IPoint {
-        var rect = this.canvas.getBoundingClientRect(); //TODO puo' essere recuperato una volta sola
         var x = (position.x + 0.5) * this.cellW;
         var y = (position.y + 0.5) * this.cellH;
         return { x: x, y: y };

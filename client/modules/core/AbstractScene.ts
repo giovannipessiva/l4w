@@ -54,7 +54,7 @@ class AbstractScene {
             scene.mainGameLoop();
         });
 
-        if (this.mainGameLoop_pre() == false) {
+        if (this.mainGameLoop_pre() === false) {
             return;
         }
 
@@ -153,7 +153,7 @@ class AbstractScene {
         this.pointer = {
             x: x,
             y: y 
-        }
+        };
     }
 
     moveFocus(direction: Constant.Direction) {

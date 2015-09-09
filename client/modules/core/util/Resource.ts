@@ -51,7 +51,7 @@ module Resource {
         try {
             request.send();
         } catch (exception) {
-            if (exception.name == "NetworkError") {
+            if (exception.name === "NetworkError") {
                 console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
             }
         }
@@ -69,7 +69,7 @@ module Resource {
      */
     export function loadAsset(uri: string, callback: IJQueryCallback) {
         var $loader = $(document.createElement("img"));
-        $loader.attr('src', "assets/" + uri);
+        $loader.attr("src", "assets/" + uri);
         $loader.load(function() {
             callback($loader);
         });
@@ -80,7 +80,7 @@ module Resource {
      */
     export function loadAssetToImg(uri: string, assetId: string) {
         loadAsset(uri,function(tmpImg: JQuery) {
-            $('#' + assetId).attr('src', tmpImg.attr('src'));
+            $("#" + assetId).attr("src", tmpImg.attr("src"));
         });
     }
 }

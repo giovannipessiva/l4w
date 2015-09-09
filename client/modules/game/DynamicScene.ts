@@ -12,7 +12,7 @@ class DynamicScene extends AbstractScene {
     secondFPS = 0;
     countFPS = 0;
     lastFPS = 0;
-    FPSPerformance = [22, 21, 20];
+    fpsPerformance = [22, 21, 20];
 
     paused = false;
 
@@ -33,8 +33,8 @@ class DynamicScene extends AbstractScene {
         }
 
         //TODO rimuovere a regime
-        this.context.fillStyle = '#000000';
-        this.context.font = 'bold 40px Arial';
+        this.context.fillStyle = "#000000";
+        this.context.font = "bold 40px Arial";
         this.context.fillText("(it's not ready yet)", 160, 260);
 
         var time = Time.getTime();
@@ -69,16 +69,16 @@ class DynamicScene extends AbstractScene {
 
     private renderFPS() {
         var seconds = Math.floor(Time.getTime() / 1000);
-        if (seconds == this.secondFPS) {
+        if (seconds === this.secondFPS) {
             this.countFPS++;
         } else {
             this.lastFPS = this.countFPS;
             this.countFPS = 1;
             this.secondFPS = seconds;
-            if (this.autoFPS == true) {
-                this.FPSPerformance.shift();
-                this.FPSPerformance[2] = this.lastFPS;
-                var avg: number = (this.FPSPerformance[0] + this.FPSPerformance[1] + this.FPSPerformance[2]) / 3;
+            if (this.autoFPS === true) {
+                this.fpsPerformance.shift();
+                this.fpsPerformance[2] = this.lastFPS;
+                var avg: number = (this.fpsPerformance[0] + this.fpsPerformance[1] + this.fpsPerformance[2]) / 3;
                 this.FPS = Math.ceil(avg) + 2;
             }
         }

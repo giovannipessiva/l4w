@@ -33,9 +33,15 @@ module Input {
         static F4 = "115";
     }
 
-    export interface IPositionCallback { (x: number, y: number): void };
-    export interface IEventCallback { (): void };
-    export interface IKeyboardCallback { (e: KeyboardEvent): void };
+    export interface IPositionCallback {
+       (x: number, y: number): void;
+    };
+    export interface IEventCallback {
+       (): void;
+    };
+    export interface IKeyboardCallback {
+       (e: KeyboardEvent): void;
+    };
 
     export function init(
         canvas: HTMLCanvasElement,
@@ -54,7 +60,6 @@ module Input {
         doubleClickCallback: IPositionCallback,
         wheelCallback: IPositionCallback) {
 
-        var actionOngoing: boolean = false;
         var lastKey: number;
         var flagPause: boolean = false;
         
@@ -73,12 +78,11 @@ module Input {
         var flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e) {
             var rect = canvas.getBoundingClientRect();
-            var mouse_x = e.clientX - rect.left;
-            var mouse_y = e.clientY - rect.top;
-            actionCallback(mouse_x, mouse_y);
+            var mouseX = e.clientX - rect.left;
+            var mouseY = e.clientY - rect.top;
+            actionCallback(mouseX, mouseY);
         });
         canvas.addEventListener("mousemove", function(e) {
-            var rect = canvas.getBoundingClientRect();
             var position = mapEvent(e);
             if (flagMouseDown) {
                 ongoingActionCallback(position.x, position.y);
@@ -179,7 +183,7 @@ module Input {
             var position: IPoint = {
                x: e.clientX,
                y: e.clientY
-            }
+            };
             return grid.mapPositionToGrid(position);
         }
 

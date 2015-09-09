@@ -27,7 +27,7 @@ module Time {
         }
 
         isActive() {
-            return this.startTime != 0;
+            return this.startTime !== 0;
         }
 
         stop() {

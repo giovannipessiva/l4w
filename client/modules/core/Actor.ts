@@ -1,8 +1,8 @@
 /// <reference path="World.ts" />
   
 /**
-* Module to handle an event
-*/
+ * Module to handle an event
+ */
 module Actor {
 
     export class Event {
@@ -16,7 +16,7 @@ module Actor {
         constructor() {
             this.states = [];
             this.states.push(new EventState(this));
-            this.state = 0
+            this.state = 0;
         }
 
         update(events: Event[], map: World.Map, time: number) {
