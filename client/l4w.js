@@ -461,137 +461,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var DynamicGrid = (function (_super) {
-    __extends(DynamicGrid, _super);
-    function DynamicGrid(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
-    }
-    DynamicGrid.prototype.deferredInit = function (props) {
-        _super.prototype.deferredInit.call(this, props);
-        this.rows = +props["rows"];
-        this.columns = +props["columns"];
-        this.canvasRatio = +props["canvasRatio"];
-    };
-    DynamicGrid.prototype.refresh = function () {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        _super.prototype.refresh.call(this);
-    };
-    DynamicGrid.prototype.width = function () {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
-    };
-    DynamicGrid.prototype.height = function () {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-    };
-    return DynamicGrid;
-})(AbstractGrid);
-var TilePicker;
-(function (TilePicker) {
-    function start(canvas) {
-        new StaticGrid(canvas, function (grid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            scene.start(canvas);
-            scene.toggleEditorGrid(true);
-        });
-    }
-    TilePicker.start = start;
-    function initInput(canvas, scene, grid) {
-        var inputCallbackMap = new Map();
-        Input.init(canvas, grid, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-})(TilePicker || (TilePicker = {}));
-var StaticScene = (function (_super) {
-    __extends(StaticScene, _super);
-    function StaticScene(grid) {
-        _super.call(this, grid);
-        this.renderingOptions.showEditorGrid = true;
-    }
-    StaticScene.prototype.mainGameLoop_pre = function () {
-        if (!_super.prototype.mainGameLoop_pre.call(this)) {
-            return false;
-        }
-        return true;
-    };
-    StaticScene.prototype.mainGameLoop_post = function () {
-        _super.prototype.mainGameLoop_post.call(this);
-    };
-    StaticScene.prototype.toggleEditorGrid = function (enable) {
-        if (enable != null) {
-            this.renderingOptions.showEditorGrid = enable;
-        }
-        else {
-            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
-        }
-    };
-    StaticScene.prototype.renderPointer = function () {
-        if (this.pointer.x != null && this.pointer.y != null) {
-            this.context.save();
-            this.context.globalAlpha = 0.4;
-            this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
-            this.context.restore();
-        }
-    };
-    return StaticScene;
-})(AbstractScene);
-var StaticGrid = (function (_super) {
-    __extends(StaticGrid, _super);
-    function StaticGrid(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
-    }
-    StaticGrid.prototype.deferredInit = function (props) {
-        _super.prototype.deferredInit.call(this, props);
-        this.rows = +props["rowsEditor"];
-        this.columns = +props["columnsEditor"];
-        this.tileColumns = +props["tileColumns"];
-        this.canvasScales = props["canvasScale"].split(",");
-        var totCanvasScales = this.canvasScales.length;
-        this.rowsList = new Array(totCanvasScales);
-        this.columnsList = new Array(totCanvasScales);
-        var selectedScaleId = totCanvasScales - 1;
-        for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
-        }
-        this.selectScale(selectedScaleId);
-    };
-    StaticGrid.prototype.refresh = function () {
-        _super.prototype.refresh.call(this);
-    };
-    StaticGrid.prototype.selectScale = function (scaleId) {
-        this.rows = this.rowsList[scaleId];
-        this.columns = this.columnsList[scaleId];
-        this.updateSizingDerivates();
-        this.scale = +this.canvasScales[scaleId];
-    };
-    StaticGrid.prototype.getBoundariesX = function (focusX, limit) {
-        return _super.prototype.getBoundariesX.call(this, focusX, limit);
-    };
-    StaticGrid.prototype.getBoundariesY = function (focusY, limit) {
-        return _super.prototype.getBoundariesY.call(this, focusY, limit);
-    };
-    return StaticGrid;
-})(AbstractGrid);
 var DynamicScene = (function (_super) {
     __extends(DynamicScene, _super);
     function DynamicScene(grid) {
@@ -667,70 +536,6 @@ var DynamicScene = (function (_super) {
     };
     return DynamicScene;
 })(AbstractScene);
-var Mapper;
-(function (Mapper) {
-    function start(canvas) {
-        new StaticGrid(canvas, function (grid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            initWidgets(canvas, scene, grid);
-            scene.start(canvas);
-        });
-    }
-    Mapper.start = start;
-    function initInput(canvas, scene, grid) {
-        var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.W] = function (e) {
-            scene.moveFocus(0 /* UP */);
-        };
-        inputCallbackMap[Input.Keys.S] = function (e) {
-            scene.moveFocus(1 /* DOWN */);
-        };
-        inputCallbackMap[Input.Keys.A] = function (e) {
-            scene.moveFocus(2 /* LEFT */);
-        };
-        inputCallbackMap[Input.Keys.D] = function (e) {
-            scene.moveFocus(3 /* RIGHT */);
-        };
-        inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleEditorGrid();
-        };
-        inputCallbackMap[Input.Keys.F3] = function (e) {
-            scene.toggleCellNumbering();
-        };
-        inputCallbackMap[Input.Keys.F4] = function (e) {
-            scene.toggleFocus();
-        };
-        Input.init(canvas, grid, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-    function initWidgets(canvas, scene, grid) {
-        var inputRange = document.getElementById("zoom");
-        inputRange.onchange = function (e) {
-            grid.selectScale(+inputRange.value);
-            grid.refresh();
-            scene.updateContext(canvas);
-        };
-    }
-    ;
-})(Mapper || (Mapper = {}));
 var Input;
 (function (Input) {
     var Keys = (function () {
@@ -882,16 +687,17 @@ var Input;
     Input.init = init;
     ;
 })(Input || (Input = {}));
-var Game;
-(function (Game) {
+var Mapper;
+(function (Mapper) {
     function start(canvas) {
-        new DynamicGrid(canvas, function (grid) {
-            var scene = new DynamicScene(grid);
+        new StaticGrid(canvas, function (grid) {
+            var scene = new StaticScene(grid);
             initInput(canvas, scene, grid);
+            initWidgets(canvas, scene, grid);
             scene.start(canvas);
         });
     }
-    Game.start = start;
+    Mapper.start = start;
     function initInput(canvas, scene, grid) {
         var inputCallbackMap = new Map();
         inputCallbackMap[Input.Keys.W] = function (e) {
@@ -906,11 +712,8 @@ var Game;
         inputCallbackMap[Input.Keys.D] = function (e) {
             scene.moveFocus(3 /* RIGHT */);
         };
-        inputCallbackMap[Input.Keys.F1] = function (e) {
-            scene.toggleFPS();
-        };
         inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleGrid();
+            scene.toggleEditorGrid();
         };
         inputCallbackMap[Input.Keys.F3] = function (e) {
             scene.toggleCellNumbering();
@@ -927,14 +730,8 @@ var Game;
         }, function (x, y) {
             scene.updatePointer(x, y);
         }, function () {
-            console.log("pause");
-            scene.togglePause(true);
         }, function () {
-            console.log("unpause");
-            scene.togglePause(false);
         }, function () {
-            grid.refresh();
-            scene.updateContext(canvas);
         }, function () {
             console.log("rightClick");
         }, function () {
@@ -944,7 +741,16 @@ var Game;
         });
     }
     ;
-})(Game || (Game = {}));
+    function initWidgets(canvas, scene, grid) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            grid.selectScale(+inputRange.value);
+            grid.refresh();
+            scene.updateContext(canvas);
+        };
+    }
+    ;
+})(Mapper || (Mapper = {}));
 var EditPage;
 (function (EditPage) {
     function start() {
@@ -1044,3 +850,201 @@ var EditPage;
         TilePicker.start(canvas);
     }
 })(EditPage || (EditPage = {}));
+var DynamicGrid = (function (_super) {
+    __extends(DynamicGrid, _super);
+    function DynamicGrid(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    DynamicGrid.prototype.deferredInit = function (props) {
+        _super.prototype.deferredInit.call(this, props);
+        this.rows = +props["rows"];
+        this.columns = +props["columns"];
+        this.canvasRatio = +props["canvasRatio"];
+    };
+    DynamicGrid.prototype.refresh = function () {
+        var ratioH = this.baseH / this.height();
+        var ratioW = this.baseW / this.width();
+        this.scale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        _super.prototype.refresh.call(this);
+    };
+    DynamicGrid.prototype.width = function () {
+        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
+    };
+    DynamicGrid.prototype.height = function () {
+        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+    };
+    return DynamicGrid;
+})(AbstractGrid);
+var Game;
+(function (Game) {
+    function start(canvas) {
+        new DynamicGrid(canvas, function (grid) {
+            var scene = new DynamicScene(grid);
+            initInput(canvas, scene, grid);
+            scene.start(canvas);
+        });
+    }
+    Game.start = start;
+    function initInput(canvas, scene, grid) {
+        var inputCallbackMap = new Map();
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(0 /* UP */);
+        };
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(1 /* DOWN */);
+        };
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(2 /* LEFT */);
+        };
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(3 /* RIGHT */);
+        };
+        inputCallbackMap[Input.Keys.F1] = function (e) {
+            scene.toggleFPS();
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            scene.toggleGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
+        };
+        Input.init(canvas, grid, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+            console.log("pause");
+            scene.togglePause(true);
+        }, function () {
+            console.log("unpause");
+            scene.togglePause(false);
+        }, function () {
+            grid.refresh();
+            scene.updateContext(canvas);
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
+    ;
+})(Game || (Game = {}));
+var StaticScene = (function (_super) {
+    __extends(StaticScene, _super);
+    function StaticScene(grid) {
+        _super.call(this, grid);
+        this.renderingOptions.showEditorGrid = true;
+    }
+    StaticScene.prototype.mainGameLoop_pre = function () {
+        if (!_super.prototype.mainGameLoop_pre.call(this)) {
+            return false;
+        }
+        return true;
+    };
+    StaticScene.prototype.mainGameLoop_post = function () {
+        _super.prototype.mainGameLoop_post.call(this);
+    };
+    StaticScene.prototype.toggleEditorGrid = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showEditorGrid = enable;
+        }
+        else {
+            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+        }
+    };
+    StaticScene.prototype.renderPointer = function () {
+        if (this.pointer.x != null && this.pointer.y != null) {
+            this.context.save();
+            this.context.globalAlpha = 0.4;
+            this.context.fillStyle = Constant.Color.YELLOW;
+            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+            this.context.restore();
+        }
+    };
+    return StaticScene;
+})(AbstractScene);
+var StaticGrid = (function (_super) {
+    __extends(StaticGrid, _super);
+    function StaticGrid(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    StaticGrid.prototype.deferredInit = function (props) {
+        _super.prototype.deferredInit.call(this, props);
+        this.rows = +props["rowsEditor"];
+        this.columns = +props["columnsEditor"];
+        this.tileColumns = +props["tileColumns"];
+        this.canvasScales = new Array();
+        this.canvasScales.push(props["canvasScaleD"]);
+        this.canvasScales.push(props["canvasScaleC"]);
+        this.canvasScales.push(props["canvasScaleB"]);
+        this.canvasScales.push(props["canvasScaleA"]);
+        var totCanvasScales = this.canvasScales.length;
+        this.rowsList = new Array(totCanvasScales);
+        this.columnsList = new Array(totCanvasScales);
+        var selectedScaleId = totCanvasScales - 1;
+        for (var i = 0; i < totCanvasScales; i++) {
+            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+        }
+        this.selectScale(selectedScaleId);
+    };
+    StaticGrid.prototype.refresh = function () {
+        _super.prototype.refresh.call(this);
+    };
+    StaticGrid.prototype.selectScale = function (scaleId) {
+        this.rows = this.rowsList[scaleId];
+        this.columns = this.columnsList[scaleId];
+        this.updateSizingDerivates();
+        this.scale = +this.canvasScales[scaleId];
+    };
+    StaticGrid.prototype.getBoundariesX = function (focusX, limit) {
+        return _super.prototype.getBoundariesX.call(this, focusX, limit);
+    };
+    StaticGrid.prototype.getBoundariesY = function (focusY, limit) {
+        return _super.prototype.getBoundariesY.call(this, focusY, limit);
+    };
+    return StaticGrid;
+})(AbstractGrid);
+var TilePicker;
+(function (TilePicker) {
+    function start(canvas) {
+        new StaticGrid(canvas, function (grid) {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            scene.start(canvas);
+            scene.toggleEditorGrid(true);
+        });
+    }
+    TilePicker.start = start;
+    function initInput(canvas, scene, grid) {
+        var inputCallbackMap = new Map();
+        Input.init(canvas, grid, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
+    }
+    ;
+})(TilePicker || (TilePicker = {}));

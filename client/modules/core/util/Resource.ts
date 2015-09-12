@@ -21,7 +21,7 @@ module Resource {
             onLoadCallback(properties[file]);
         } else {
             function parsePropertiesCallback() {
-                var props: Map<string, string> = parseProperties(this.responseText);
+                var props: Map<string, number> = parseProperties(this.responseText);
                 properties[file] = props;
                 onLoadCallback(props);
             }
@@ -29,8 +29,8 @@ module Resource {
         }
     };
 
-    function parseProperties(content: string): Map<string, string> {
-        var props: Map<string, string> = new Map<string, string>();
+    function parseProperties(content: string): Map<string, number> {
+        var props: Map<string, number> = new Map<string, number>();
         var lines = content.split("\n");
         for (var i = 0; i < lines.length; i++) {
             var line = lines[i].trim();

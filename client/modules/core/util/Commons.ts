@@ -11,6 +11,6 @@ interface IJQueryCallback {
 };
 
 interface IPropertiesCallback {
-   (props: Map<string, string>): void;
+   (props: Map<string, number>): void;
 };
 

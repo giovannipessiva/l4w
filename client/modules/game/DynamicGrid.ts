@@ -13,7 +13,7 @@ class DynamicGrid extends AbstractGrid {
         super(cnvs, onCompleted);
     }
 
-    deferredInit(props: Map<string,string>) {
+    deferredInit(props: Map<string,number>) {
         super.deferredInit(props);
         this.rows = +props["rows"];
         this.columns = +props["columns"];

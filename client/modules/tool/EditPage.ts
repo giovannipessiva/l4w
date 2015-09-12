@@ -31,7 +31,7 @@ module EditPage {
         });
         
         // Resize the panel to match the tileset
-        var resizerCallback: IPropertiesCallback = function(props: Map<string, string>) {
+        var resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
             var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
             $("#toolsPanel").width(width);
         };

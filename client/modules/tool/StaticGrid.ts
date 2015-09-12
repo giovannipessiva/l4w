@@ -17,13 +17,17 @@ class StaticGrid extends AbstractGrid {
 
     }
 
-    deferredInit(props: Map<string, string>) {
+    deferredInit(props: Map<string, number>) {
         super.deferredInit(props); 
         this.rows = +props["rowsEditor"];
         this.columns = +props["columnsEditor"];
         this.tileColumns = +props["tileColumns"];
-        this.canvasScales = props["canvasScale"].split(",");
-        
+        this.canvasScales = new Array();
+        this.canvasScales.push(props["canvasScaleD"]);
+        this.canvasScales.push(props["canvasScaleC"]);
+        this.canvasScales.push(props["canvasScaleB"]);
+        this.canvasScales.push(props["canvasScaleA"]);
+   
         var totCanvasScales = this.canvasScales.length;
         this.rowsList = new Array(totCanvasScales);
         this.columnsList = new Array(totCanvasScales);

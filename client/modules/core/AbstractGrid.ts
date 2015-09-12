@@ -26,7 +26,7 @@ class AbstractGrid {
         this.currentTranslation = { x: 0, y: 0 };
 
         (function(grid: AbstractGrid) {
-            Resource.loadProperties(function(props: Map<string, string>) {
+            Resource.loadProperties(function(props: Map<string, number>) {
                 grid.deferredInit(props);
                 grid.updateSizingDerivates();
                 grid.refresh();
@@ -35,7 +35,7 @@ class AbstractGrid {
         })(this);
     }
 
-    deferredInit(props: Map<string, string>) {
+    deferredInit(props: Map<string, number>) {
         this.cellH = +props["cellHeight"];
         this.cellW = +props["cellWidth"];
     }
