@@ -10,7 +10,24 @@
 <meta http-equiv='expires' content='0'>
 <meta http-equiv='pragma' content='no-cache'>
 
-<script type="text/javascript" src="js/l4w.js"></script>
+<script src="lib/require.js"></script>
+<script type='text/javascript'>
+requirejs(["lib/jquery"],function($){
+    requirejs(["js/l4w.min"],function(l4w){
+        finishedLoading();
+    },function(err){
+        // If min version is unavailable, use the full version
+        requirejs(["js/l4w"],function(l4w){
+            finishedLoading();
+        });
+    });
+});
+
+function finishedLoading(){
+    Game.start(canvas);
+};
+</script>
+
 </head>
 <body>
 <div style="position:relative;margin-left:auto;margin-right:auto;">
@@ -22,12 +39,6 @@ Your browser does not support HTML5 Canvas!</canvas>
 	ctx.fillStyle='#000000';
 	ctx.font='bold 38px Arial';
 	ctx.fillText("loading...",10,50);
-	
-	document.addEventListener("DOMContentLoaded", start);
-	
-	function start() {
-		Game.start(canvas);
-	}
 </script> 
 </div>
 </body>

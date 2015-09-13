@@ -1,3 +1,181 @@
+;
+;
+;
+var Resource;
+(function (Resource) {
+    var dataFolder = "data/";
+    var assetsFolder = "assets/";
+    var charFolder = assetsFolder + "charset/";
+    var faceFolder = assetsFolder + "faceset/";
+    var skinFolder = assetsFolder + "skin/";
+    var tileFolder = assetsFolder + "tileset/";
+    var properties = new Map();
+    function loadProperties(onLoadCallback, file) {
+        if (file === void 0) { file = "l4w"; }
+        if (file in properties) {
+            onLoadCallback(properties[file]);
+        }
+        else {
+            function parsePropertiesCallback() {
+                var props = parseProperties(this.responseText);
+                properties[file] = props;
+                onLoadCallback(props);
+            }
+            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
+        }
+    }
+    Resource.loadProperties = loadProperties;
+    ;
+    function parseProperties(content) {
+        var props = new Map();
+        var lines = content.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (line !== "" && line.indexOf("#") !== 0) {
+                var lineTokens = line.split("=");
+                props[lineTokens[0]] = lineTokens[1];
+            }
+        }
+        return props;
+    }
+    ;
+    function sendRequest(uri, callback) {
+        var request = new XMLHttpRequest();
+        request.onload = callback;
+        request.onerror = handleRequestError;
+        request.ontimeout = handleRequestTimeout;
+        request.open("GET", uri, true);
+        try {
+            request.send();
+        }
+        catch (exception) {
+            if (exception.name === "NetworkError") {
+                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
+            }
+        }
+        function handleRequestError(event) {
+            console.error("Error while getting " + uri);
+        }
+        ;
+        function handleRequestTimeout() {
+            console.error("Timeout while etting " + uri);
+        }
+        ;
+    }
+    function loadAsset(uri, callback) {
+        var $loader = $(document.createElement("img"));
+        $loader.attr("src", "assets/" + uri);
+        $loader.load(function () {
+            callback($loader);
+        });
+    }
+    Resource.loadAsset = loadAsset;
+    function loadAssetToImg(uri, assetId) {
+        loadAsset(uri, function (tmpImg) {
+            $("#" + assetId).attr("src", tmpImg.attr("src"));
+        });
+    }
+    Resource.loadAssetToImg = loadAssetToImg;
+})(Resource || (Resource = {}));
+var EditPage;
+(function (EditPage) {
+    function start() {
+        $("#mapPanel").jstree({
+            "core": {
+                "animation": 0,
+                "data": {
+                    "url": "data/map/maps.json",
+                    "dataType": "json"
+                },
+                "check_callback": true,
+            },
+            "multiple": false,
+            "plugins": ["dnd", "contextmenu"],
+            "themes": {
+                "dots": false
+            }
+        });
+        $("#mapPanel").on("changed.jstree", function (e, data) {
+            $("#mapDetailPanel").show();
+            var node = data.instance.get_selected(true)[0];
+            $("#mapSizeW").val(node.data.w);
+            $("#mapSizeH").val(node.data.h);
+            $("#tiles").val(node.data.tile);
+            loadTile();
+        });
+        var resizerCallback = function (props) {
+            var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
+            $("#toolsPanel").width(width);
+        };
+        Resource.loadProperties(resizerCallback);
+        var canvas = document.getElementById("canvas1");
+        Mapper.start(canvas);
+        loadTiles();
+    }
+    EditPage.start = start;
+    function changeSize() {
+        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        node.data.w = $("#mapSizeW").val();
+        node.data.h = $("#mapSizeH").val();
+        var updatedData = $("#mapPanel").jstree(true).get_json("#");
+        $.ajax({
+            url: "edit/maps",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                console.log("Maps updated");
+            }
+        });
+    }
+    EditPage.changeSize = changeSize;
+    function loadTiles() {
+        $.getJSON("data/resources/tiles.json", function (data) {
+            var sel = $("#tiles");
+            for (var i = 0; i < data.length; i++) {
+                sel.append("<option value='" + data[i].name + "'>" + data[i].desc + "</option>");
+            }
+        });
+    }
+    EditPage.loadTiles = loadTiles;
+    function changeTile() {
+        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        node.data.tile = $("#tiles").val();
+        var updatedData = $("#mapPanel").jstree(true).get_json("#");
+        $.ajax({
+            url: "edit/maps",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(updatedData),
+            success: function (result) {
+                loadTile();
+            }
+        });
+    }
+    EditPage.changeTile = changeTile;
+    function loadTile() {
+        var canvasTile = $("#canvasTile")[0];
+        var contextTile = canvasTile.getContext("2d");
+        var canvasTilePicker = $("#canvasSelector")[0];
+        contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
+        var uri = "tileset/" + $("#tiles").val();
+        Resource.loadAsset(uri, function (element) {
+            var image = new Image();
+            image.src = element.attr("src");
+            $("#tilePanel").height(image.naturalHeight);
+            canvasTile.height = image.naturalHeight;
+            canvasTile.width = image.naturalWidth;
+            canvasTilePicker.height = image.naturalHeight;
+            canvasTilePicker.width = image.naturalWidth;
+            contextTile.drawImage(element[0], 0, 0);
+            startTilePicker(canvasTilePicker);
+        });
+    }
+    EditPage.loadTile = loadTile;
+    function startTilePicker(canvas) {
+        TilePicker.start(canvas);
+    }
+})(EditPage || (EditPage = {}));
 var World;
 (function (World) {
     var Map = (function () {
@@ -86,85 +264,6 @@ var Actor;
         return EventState;
     })();
 })(Actor || (Actor = {}));
-;
-;
-;
-var Resource;
-(function (Resource) {
-    var dataFolder = "data/";
-    var assetsFolder = "assets/";
-    var charFolder = assetsFolder + "charset/";
-    var faceFolder = assetsFolder + "faceset/";
-    var skinFolder = assetsFolder + "skin/";
-    var tileFolder = assetsFolder + "tileset/";
-    var properties = new Map();
-    function loadProperties(onLoadCallback, file) {
-        if (file === void 0) { file = "l4w"; }
-        if (file in properties) {
-            onLoadCallback(properties[file]);
-        }
-        else {
-            function parsePropertiesCallback() {
-                var props = parseProperties(this.responseText);
-                properties[file] = props;
-                onLoadCallback(props);
-            }
-            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
-        }
-    }
-    Resource.loadProperties = loadProperties;
-    ;
-    function parseProperties(content) {
-        var props = new Map();
-        var lines = content.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (line !== "" && line.indexOf("#") !== 0) {
-                var lineTokens = line.split("=");
-                props[lineTokens[0]] = lineTokens[1];
-            }
-        }
-        return props;
-    }
-    ;
-    function sendRequest(uri, callback) {
-        var request = new XMLHttpRequest();
-        request.onload = callback;
-        request.onerror = handleRequestError;
-        request.ontimeout = handleRequestTimeout;
-        request.open("GET", uri, true);
-        try {
-            request.send();
-        }
-        catch (exception) {
-            if (exception.name === "NetworkError") {
-                console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
-            }
-        }
-        function handleRequestError(event) {
-            console.error("Error while getting " + uri);
-        }
-        ;
-        function handleRequestTimeout() {
-            console.error("Timeout while etting " + uri);
-        }
-        ;
-    }
-    function loadAsset(uri, callback) {
-        var $loader = $(document.createElement("img"));
-        $loader.attr("src", "assets/" + uri);
-        $loader.load(function () {
-            callback($loader);
-        });
-    }
-    Resource.loadAsset = loadAsset;
-    function loadAssetToImg(uri, assetId) {
-        loadAsset(uri, function (tmpImg) {
-            $("#" + assetId).attr("src", tmpImg.attr("src"));
-        });
-    }
-    Resource.loadAssetToImg = loadAssetToImg;
-})(Resource || (Resource = {}));
 var AbstractGrid = (function () {
     function AbstractGrid(cnvs, onCompleted) {
         this.canvas = cnvs;
@@ -267,6 +366,205 @@ var AbstractGrid = (function () {
     };
     return AbstractGrid;
 })();
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var StaticGrid = (function (_super) {
+    __extends(StaticGrid, _super);
+    function StaticGrid(cnvs, onCompleted) {
+        _super.call(this, cnvs, onCompleted);
+    }
+    StaticGrid.prototype.deferredInit = function (props) {
+        _super.prototype.deferredInit.call(this, props);
+        this.rows = +props["rowsEditor"];
+        this.columns = +props["columnsEditor"];
+        this.tileColumns = +props["tileColumns"];
+        this.canvasScales = new Array();
+        this.canvasScales.push(props["canvasScaleD"]);
+        this.canvasScales.push(props["canvasScaleC"]);
+        this.canvasScales.push(props["canvasScaleB"]);
+        this.canvasScales.push(props["canvasScaleA"]);
+        var totCanvasScales = this.canvasScales.length;
+        this.rowsList = new Array(totCanvasScales);
+        this.columnsList = new Array(totCanvasScales);
+        var selectedScaleId = totCanvasScales - 1;
+        for (var i = 0; i < totCanvasScales; i++) {
+            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+        }
+        this.selectScale(selectedScaleId);
+    };
+    StaticGrid.prototype.refresh = function () {
+        _super.prototype.refresh.call(this);
+    };
+    StaticGrid.prototype.selectScale = function (scaleId) {
+        this.rows = this.rowsList[scaleId];
+        this.columns = this.columnsList[scaleId];
+        this.updateSizingDerivates();
+        this.scale = +this.canvasScales[scaleId];
+    };
+    StaticGrid.prototype.getBoundariesX = function (focusX, limit) {
+        return _super.prototype.getBoundariesX.call(this, focusX, limit);
+    };
+    StaticGrid.prototype.getBoundariesY = function (focusY, limit) {
+        return _super.prototype.getBoundariesY.call(this, focusY, limit);
+    };
+    return StaticGrid;
+})(AbstractGrid);
+var Input;
+(function (Input) {
+    var Keys = (function () {
+        function Keys() {
+        }
+        Keys.UP = "38";
+        Keys.DOWN = "40";
+        Keys.LEFT = "37";
+        Keys.RIGHT = "39";
+        Keys.CTRL = "17";
+        Keys.ALT = "18";
+        Keys.ENTER = "13";
+        Keys.SPACE = "32";
+        Keys.CAPS = "20";
+        Keys.SHIFT = "16";
+        Keys.W = "87";
+        Keys.A = "65";
+        Keys.D = "68";
+        Keys.S = "83";
+        Keys.J = "74";
+        Keys.K = "75";
+        Keys.F1 = "112";
+        Keys.F2 = "113";
+        Keys.F3 = "114";
+        Keys.F4 = "115";
+        return Keys;
+    })();
+    Input.Keys = Keys;
+    ;
+    ;
+    ;
+    function init(canvas, grid, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
+        var lastKey;
+        var flagPause = false;
+        inputCallbacks[Keys.SPACE] = function (e) {
+            if (flagPause) {
+                unpauseCallback();
+                flagPause = false;
+            }
+            else {
+                pauseCallback();
+                flagPause = true;
+            }
+        };
+        var flagMouseDown = false;
+        canvas.addEventListener("click", function (e) {
+            var rect = canvas.getBoundingClientRect();
+            var mouseX = e.clientX - rect.left;
+            var mouseY = e.clientY - rect.top;
+            actionCallback(mouseX, mouseY);
+        });
+        canvas.addEventListener("mousemove", function (e) {
+            var position = mapEvent(e);
+            if (flagMouseDown) {
+                ongoingActionCallback(position.x, position.y);
+            }
+            else {
+                hoverCallback(position.x, position.y);
+            }
+        });
+        canvas.addEventListener("mousedown", function (e) {
+            flagMouseDown = true;
+            var position = mapEvent(e);
+            startActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("mouseup", function (e) {
+            flagMouseDown = false;
+            var position = mapEvent(e);
+            endActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("mouseout", function (e) {
+            if (flagMouseDown) {
+                ongoingActionCallback(null, null);
+            }
+            else {
+                hoverCallback(null, null);
+            }
+        });
+        canvas.addEventListener("contextmenu", function (e) {
+            var position = mapEvent(e);
+            rightClickCallback(position.x, position.y);
+        });
+        canvas.addEventListener("dblclick", function (e) {
+            var position = mapEvent(e);
+            doubleClickCallback(position.x, position.y);
+        });
+        canvas.addEventListener("wheel", function (e) {
+            e.preventDefault();
+            var position = mapEvent(e);
+            wheelCallback(position.x, position.y);
+        });
+        canvas.addEventListener("touchstart", function (e) {
+            var position = mapEvent(e);
+            startActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("touchend", function (e) {
+            var position = mapEvent(e);
+            ongoingActionCallback(null, null);
+            endActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("touchcancel", function (e) {
+            var position = mapEvent(e);
+            ongoingActionCallback(null, null);
+            endActionCallback(position.x, position.y);
+        });
+        canvas.addEventListener("touchmove", function (e) {
+            var position = mapEvent(e);
+            ongoingActionCallback(position.x, position.y);
+        });
+        document.addEventListener("keydown", function (e) {
+            var callback = inputCallbacks[String(e.keyCode)];
+            if (callback !== undefined) {
+                e.preventDefault();
+                callback(e);
+            }
+            else {
+            }
+            lastKey = e.keyCode;
+        });
+        document.addEventListener("keyup", function (e) {
+            if (e.keyCode === lastKey) {
+                resetCallback();
+            }
+        });
+        document.addEventListener("visibilitychange", function () {
+            if (document.hidden) {
+                pauseCallback();
+                flagPause = true;
+            }
+            else {
+                unpauseCallback();
+                flagPause = false;
+            }
+        });
+        window.addEventListener("resize", function (event) {
+            resizeCallback();
+        });
+        document.addEventListener("orientationchange", function () {
+            resizeCallback();
+        });
+        function mapEvent(e) {
+            var position = {
+                x: e.clientX,
+                y: e.clientY
+            };
+            return grid.mapPositionToGrid(position);
+        }
+    }
+    Input.init = init;
+    ;
+})(Input || (Input = {}));
 var Constant;
 (function (Constant) {
     Constant.DOUBLE_PI = Math.PI * 2;
@@ -455,12 +753,6 @@ var AbstractScene = (function () {
     };
     return AbstractScene;
 })();
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 var DynamicScene = (function (_super) {
     __extends(DynamicScene, _super);
     function DynamicScene(grid) {
@@ -536,320 +828,6 @@ var DynamicScene = (function (_super) {
     };
     return DynamicScene;
 })(AbstractScene);
-var Input;
-(function (Input) {
-    var Keys = (function () {
-        function Keys() {
-        }
-        Keys.UP = "38";
-        Keys.DOWN = "40";
-        Keys.LEFT = "37";
-        Keys.RIGHT = "39";
-        Keys.CTRL = "17";
-        Keys.ALT = "18";
-        Keys.ENTER = "13";
-        Keys.SPACE = "32";
-        Keys.CAPS = "20";
-        Keys.SHIFT = "16";
-        Keys.W = "87";
-        Keys.A = "65";
-        Keys.D = "68";
-        Keys.S = "83";
-        Keys.J = "74";
-        Keys.K = "75";
-        Keys.F1 = "112";
-        Keys.F2 = "113";
-        Keys.F3 = "114";
-        Keys.F4 = "115";
-        return Keys;
-    })();
-    Input.Keys = Keys;
-    ;
-    ;
-    ;
-    function init(canvas, grid, inputCallbacks, resetCallback, actionCallback, startActionCallback, endActionCallback, ongoingActionCallback, hoverCallback, pauseCallback, unpauseCallback, resizeCallback, rightClickCallback, doubleClickCallback, wheelCallback) {
-        var lastKey;
-        var flagPause = false;
-        inputCallbacks[Keys.SPACE] = function (e) {
-            if (flagPause) {
-                unpauseCallback();
-                flagPause = false;
-            }
-            else {
-                pauseCallback();
-                flagPause = true;
-            }
-        };
-        var flagMouseDown = false;
-        canvas.addEventListener("click", function (e) {
-            var rect = canvas.getBoundingClientRect();
-            var mouseX = e.clientX - rect.left;
-            var mouseY = e.clientY - rect.top;
-            actionCallback(mouseX, mouseY);
-        });
-        canvas.addEventListener("mousemove", function (e) {
-            var position = mapEvent(e);
-            if (flagMouseDown) {
-                ongoingActionCallback(position.x, position.y);
-            }
-            else {
-                hoverCallback(position.x, position.y);
-            }
-        });
-        canvas.addEventListener("mousedown", function (e) {
-            flagMouseDown = true;
-            var position = mapEvent(e);
-            startActionCallback(position.x, position.y);
-        });
-        canvas.addEventListener("mouseup", function (e) {
-            flagMouseDown = false;
-            var position = mapEvent(e);
-            endActionCallback(position.x, position.y);
-        });
-        canvas.addEventListener("mouseout", function (e) {
-            if (flagMouseDown) {
-                ongoingActionCallback(null, null);
-            }
-            else {
-                hoverCallback(null, null);
-            }
-        });
-        canvas.addEventListener("contextmenu", function (e) {
-            var position = mapEvent(e);
-            rightClickCallback(position.x, position.y);
-        });
-        canvas.addEventListener("dblclick", function (e) {
-            var position = mapEvent(e);
-            doubleClickCallback(position.x, position.y);
-        });
-        canvas.addEventListener("wheel", function (e) {
-            e.preventDefault();
-            var position = mapEvent(e);
-            wheelCallback(position.x, position.y);
-        });
-        canvas.addEventListener("touchstart", function (e) {
-            var position = mapEvent(e);
-            startActionCallback(position.x, position.y);
-        });
-        canvas.addEventListener("touchend", function (e) {
-            var position = mapEvent(e);
-            ongoingActionCallback(null, null);
-            endActionCallback(position.x, position.y);
-        });
-        canvas.addEventListener("touchcancel", function (e) {
-            var position = mapEvent(e);
-            ongoingActionCallback(null, null);
-            endActionCallback(position.x, position.y);
-        });
-        canvas.addEventListener("touchmove", function (e) {
-            var position = mapEvent(e);
-            ongoingActionCallback(position.x, position.y);
-        });
-        document.addEventListener("keydown", function (e) {
-            var callback = inputCallbacks[String(e.keyCode)];
-            if (callback !== undefined) {
-                e.preventDefault();
-                callback(e);
-            }
-            else {
-            }
-            lastKey = e.keyCode;
-        });
-        document.addEventListener("keyup", function (e) {
-            if (e.keyCode === lastKey) {
-                resetCallback();
-            }
-        });
-        document.addEventListener("visibilitychange", function () {
-            if (document.hidden) {
-                pauseCallback();
-                flagPause = true;
-            }
-            else {
-                unpauseCallback();
-                flagPause = false;
-            }
-        });
-        window.addEventListener("resize", function (event) {
-            resizeCallback();
-        });
-        document.addEventListener("orientationchange", function () {
-            resizeCallback();
-        });
-        function mapEvent(e) {
-            var position = {
-                x: e.clientX,
-                y: e.clientY
-            };
-            return grid.mapPositionToGrid(position);
-        }
-    }
-    Input.init = init;
-    ;
-})(Input || (Input = {}));
-var Mapper;
-(function (Mapper) {
-    function start(canvas) {
-        new StaticGrid(canvas, function (grid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            initWidgets(canvas, scene, grid);
-            scene.start(canvas);
-        });
-    }
-    Mapper.start = start;
-    function initInput(canvas, scene, grid) {
-        var inputCallbackMap = new Map();
-        inputCallbackMap[Input.Keys.W] = function (e) {
-            scene.moveFocus(0 /* UP */);
-        };
-        inputCallbackMap[Input.Keys.S] = function (e) {
-            scene.moveFocus(1 /* DOWN */);
-        };
-        inputCallbackMap[Input.Keys.A] = function (e) {
-            scene.moveFocus(2 /* LEFT */);
-        };
-        inputCallbackMap[Input.Keys.D] = function (e) {
-            scene.moveFocus(3 /* RIGHT */);
-        };
-        inputCallbackMap[Input.Keys.F2] = function (e) {
-            scene.toggleEditorGrid();
-        };
-        inputCallbackMap[Input.Keys.F3] = function (e) {
-            scene.toggleCellNumbering();
-        };
-        inputCallbackMap[Input.Keys.F4] = function (e) {
-            scene.toggleFocus();
-        };
-        Input.init(canvas, grid, inputCallbackMap, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function (x, y) {
-            scene.updatePointer(x, y);
-        }, function () {
-        }, function () {
-        }, function () {
-        }, function () {
-            console.log("rightClick");
-        }, function () {
-            console.log("doubleClick");
-        }, function () {
-            console.log("wheel");
-        });
-    }
-    ;
-    function initWidgets(canvas, scene, grid) {
-        var inputRange = document.getElementById("zoom");
-        inputRange.onchange = function (e) {
-            grid.selectScale(+inputRange.value);
-            grid.refresh();
-            scene.updateContext(canvas);
-        };
-    }
-    ;
-})(Mapper || (Mapper = {}));
-var EditPage;
-(function (EditPage) {
-    function start() {
-        $("#mapPanel").jstree({
-            "core": {
-                "animation": 0,
-                "data": {
-                    "url": "data/map/maps.json",
-                    "dataType": "json"
-                },
-                "check_callback": true,
-            },
-            "multiple": false,
-            "plugins": ["dnd", "contextmenu"],
-            "themes": {
-                "dots": false
-            }
-        });
-        $("#mapPanel").on("changed.jstree", function (e, data) {
-            $("#mapDetailPanel").show();
-            var node = data.instance.get_selected(true)[0];
-            $("#mapSizeW").val(node.data.w);
-            $("#mapSizeH").val(node.data.h);
-            $("#tiles").val(node.data.tile);
-            loadTile();
-        });
-        var resizerCallback = function (props) {
-            var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
-            $("#toolsPanel").width(width);
-        };
-        Resource.loadProperties(resizerCallback);
-        var canvas = document.getElementById("canvas1");
-        Mapper.start(canvas);
-        loadTiles();
-    }
-    EditPage.start = start;
-    function changeSize() {
-        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
-        node.data.w = $("#mapSizeW").val();
-        node.data.h = $("#mapSizeH").val();
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(updatedData),
-            success: function (result) {
-                console.log("Maps updated");
-            }
-        });
-    }
-    EditPage.changeSize = changeSize;
-    function loadTiles() {
-        $.getJSON("data/resources/tiles.json", function (data) {
-            var sel = $("#tiles");
-            for (var i = 0; i < data.length; i++) {
-                sel.append("<option value='" + data[i].name + "'>" + data[i].desc + "</option>");
-            }
-        });
-    }
-    EditPage.loadTiles = loadTiles;
-    function changeTile() {
-        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
-        node.data.tile = $("#tiles").val();
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(updatedData),
-            success: function (result) {
-                loadTile();
-            }
-        });
-    }
-    EditPage.changeTile = changeTile;
-    function loadTile() {
-        var canvasTile = $("#canvasTile")[0];
-        var contextTile = canvasTile.getContext("2d");
-        var canvasTilePicker = $("#canvasSelector")[0];
-        contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
-        var uri = "tileset/" + $("#tiles").val();
-        Resource.loadAsset(uri, function (element) {
-            var image = new Image();
-            image.src = element.attr("src");
-            $("#tilePanel").height(image.naturalHeight);
-            canvasTile.height = image.naturalHeight;
-            canvasTile.width = image.naturalWidth;
-            canvasTilePicker.height = image.naturalHeight;
-            canvasTilePicker.width = image.naturalWidth;
-            contextTile.drawImage(element[0], 0, 0);
-            startTilePicker(canvasTilePicker);
-        });
-    }
-    EditPage.loadTile = loadTile;
-    function startTilePicker(canvas) {
-        TilePicker.start(canvas);
-    }
-})(EditPage || (EditPage = {}));
 var DynamicGrid = (function (_super) {
     __extends(DynamicGrid, _super);
     function DynamicGrid(cnvs, onCompleted) {
@@ -938,82 +916,70 @@ var Game;
     }
     ;
 })(Game || (Game = {}));
-var StaticScene = (function (_super) {
-    __extends(StaticScene, _super);
-    function StaticScene(grid) {
-        _super.call(this, grid);
-        this.renderingOptions.showEditorGrid = true;
+var Mapper;
+(function (Mapper) {
+    function start(canvas) {
+        new StaticGrid(canvas, function (grid) {
+            var scene = new StaticScene(grid);
+            initInput(canvas, scene, grid);
+            initWidgets(canvas, scene, grid);
+            scene.start(canvas);
+        });
     }
-    StaticScene.prototype.mainGameLoop_pre = function () {
-        if (!_super.prototype.mainGameLoop_pre.call(this)) {
-            return false;
-        }
-        return true;
-    };
-    StaticScene.prototype.mainGameLoop_post = function () {
-        _super.prototype.mainGameLoop_post.call(this);
-    };
-    StaticScene.prototype.toggleEditorGrid = function (enable) {
-        if (enable != null) {
-            this.renderingOptions.showEditorGrid = enable;
-        }
-        else {
-            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
-        }
-    };
-    StaticScene.prototype.renderPointer = function () {
-        if (this.pointer.x != null && this.pointer.y != null) {
-            this.context.save();
-            this.context.globalAlpha = 0.4;
-            this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
-            this.context.restore();
-        }
-    };
-    return StaticScene;
-})(AbstractScene);
-var StaticGrid = (function (_super) {
-    __extends(StaticGrid, _super);
-    function StaticGrid(cnvs, onCompleted) {
-        _super.call(this, cnvs, onCompleted);
+    Mapper.start = start;
+    function initInput(canvas, scene, grid) {
+        var inputCallbackMap = new Map();
+        inputCallbackMap[Input.Keys.W] = function (e) {
+            scene.moveFocus(0 /* UP */);
+        };
+        inputCallbackMap[Input.Keys.S] = function (e) {
+            scene.moveFocus(1 /* DOWN */);
+        };
+        inputCallbackMap[Input.Keys.A] = function (e) {
+            scene.moveFocus(2 /* LEFT */);
+        };
+        inputCallbackMap[Input.Keys.D] = function (e) {
+            scene.moveFocus(3 /* RIGHT */);
+        };
+        inputCallbackMap[Input.Keys.F2] = function (e) {
+            scene.toggleEditorGrid();
+        };
+        inputCallbackMap[Input.Keys.F3] = function (e) {
+            scene.toggleCellNumbering();
+        };
+        inputCallbackMap[Input.Keys.F4] = function (e) {
+            scene.toggleFocus();
+        };
+        Input.init(canvas, grid, inputCallbackMap, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function (x, y) {
+            scene.updatePointer(x, y);
+        }, function () {
+        }, function () {
+        }, function () {
+        }, function () {
+            console.log("rightClick");
+        }, function () {
+            console.log("doubleClick");
+        }, function () {
+            console.log("wheel");
+        });
     }
-    StaticGrid.prototype.deferredInit = function (props) {
-        _super.prototype.deferredInit.call(this, props);
-        this.rows = +props["rowsEditor"];
-        this.columns = +props["columnsEditor"];
-        this.tileColumns = +props["tileColumns"];
-        this.canvasScales = new Array();
-        this.canvasScales.push(props["canvasScaleD"]);
-        this.canvasScales.push(props["canvasScaleC"]);
-        this.canvasScales.push(props["canvasScaleB"]);
-        this.canvasScales.push(props["canvasScaleA"]);
-        var totCanvasScales = this.canvasScales.length;
-        this.rowsList = new Array(totCanvasScales);
-        this.columnsList = new Array(totCanvasScales);
-        var selectedScaleId = totCanvasScales - 1;
-        for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
-        }
-        this.selectScale(selectedScaleId);
-    };
-    StaticGrid.prototype.refresh = function () {
-        _super.prototype.refresh.call(this);
-    };
-    StaticGrid.prototype.selectScale = function (scaleId) {
-        this.rows = this.rowsList[scaleId];
-        this.columns = this.columnsList[scaleId];
-        this.updateSizingDerivates();
-        this.scale = +this.canvasScales[scaleId];
-    };
-    StaticGrid.prototype.getBoundariesX = function (focusX, limit) {
-        return _super.prototype.getBoundariesX.call(this, focusX, limit);
-    };
-    StaticGrid.prototype.getBoundariesY = function (focusY, limit) {
-        return _super.prototype.getBoundariesY.call(this, focusY, limit);
-    };
-    return StaticGrid;
-})(AbstractGrid);
+    ;
+    function initWidgets(canvas, scene, grid) {
+        var inputRange = document.getElementById("zoom");
+        inputRange.onchange = function (e) {
+            grid.selectScale(+inputRange.value);
+            grid.refresh();
+            scene.updateContext(canvas);
+        };
+    }
+    ;
+})(Mapper || (Mapper = {}));
 var TilePicker;
 (function (TilePicker) {
     function start(canvas) {
@@ -1048,3 +1014,37 @@ var TilePicker;
     }
     ;
 })(TilePicker || (TilePicker = {}));
+var StaticScene = (function (_super) {
+    __extends(StaticScene, _super);
+    function StaticScene(grid) {
+        _super.call(this, grid);
+        this.renderingOptions.showEditorGrid = true;
+    }
+    StaticScene.prototype.mainGameLoop_pre = function () {
+        if (!_super.prototype.mainGameLoop_pre.call(this)) {
+            return false;
+        }
+        return true;
+    };
+    StaticScene.prototype.mainGameLoop_post = function () {
+        _super.prototype.mainGameLoop_post.call(this);
+    };
+    StaticScene.prototype.toggleEditorGrid = function (enable) {
+        if (enable != null) {
+            this.renderingOptions.showEditorGrid = enable;
+        }
+        else {
+            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+        }
+    };
+    StaticScene.prototype.renderPointer = function () {
+        if (this.pointer.x != null && this.pointer.y != null) {
+            this.context.save();
+            this.context.globalAlpha = 0.4;
+            this.context.fillStyle = Constant.Color.YELLOW;
+            this.context.fillRect(this.pointer.x * this.grid.cellW, this.pointer.y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+            this.context.restore();
+        }
+    };
+    return StaticScene;
+})(AbstractScene);

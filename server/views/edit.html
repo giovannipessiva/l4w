@@ -10,14 +10,31 @@
 <meta http-equiv='expires' content='0'>
 <meta http-equiv='pragma' content='no-cache'>
 
-<script type="text/javascript" src="js/l4w.js"></script>
-<script type="text/javascript" src="lib/jquery.js"></script>
-<script type="text/javascript" src="lib/jstree.js"></script>
+<script src="lib/require.js"></script>
+<script type='text/javascript'>
+requirejs(["lib/jquery"],function($){
+    requirejs(["lib/jstree"],function(jstree){
+        requirejs(["js/l4w.min"],function(l4w){
+            finishedLoading();
+        },function(err){
+            // If min version is unavailable, use the full version
+            requirejs(["js/l4w"],function(l4w){
+                finishedLoading();
+            });
+        });
+    });
+});
+
+function finishedLoading(){
+    EditPage.start();
+};
+</script>
+
 <link rel="stylesheet" type="text/css" href="style/jstree/style.min.css">
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
 
 </head>
-<body onload="EditPage.start();">
+<body>
 <div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
 	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
 	Your browser does not support HTML5 Canvas!</canvas>
