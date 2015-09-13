@@ -8,5 +8,5 @@ body {
 }
 
 .l4wCanvas:active {
-    cursor: url("/assets/pointer/sword-on.png"), pointer;
+    cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
 }
