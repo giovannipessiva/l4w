@@ -7,12 +7,13 @@
 module Resource {
 
     var dataFolder = "data/";
-    var assetsFolder = "assets/";
 
-    var charFolder = assetsFolder + "charset/";
-    var faceFolder = assetsFolder + "faceset/";
-    var skinFolder = assetsFolder + "skin/";
-    var tileFolder = assetsFolder + "tileset/";
+    export enum ResurceTypeEnum {
+        CHAR,
+        FACE,
+        SKIN,
+        TILE
+    }
 
     var properties: Map<string, string> = new Map<string, string>();
 
@@ -67,9 +68,10 @@ module Resource {
     /**
      * Load an asset and call a callback
      */
-    export function loadAsset(uri: string, callback: IJQueryCallback) {
+    export function loadAsset(file: string, assetType: ResurceTypeEnum, callback: IJQueryCallback) {
+        var path = getAssetPath(file,assetType);
         var $loader = $(document.createElement("img"));
-        $loader.attr("src", "assets/" + uri);
+        $loader.attr("src", path);
         $loader.load(function() {
             callback($loader);
         });
@@ -78,9 +80,28 @@ module Resource {
     /**
      * Load an asset and put it in an img element
      */
-    export function loadAssetToImg(uri: string, assetId: string) {
-        loadAsset(uri,function(tmpImg: JQuery) {
-            $("#" + assetId).attr("src", tmpImg.attr("src"));
+    export function loadAssetToImg(file: string, assetType: ResurceTypeEnum, imageId: string) {
+        loadAsset(file, assetType, function(tmpImg: JQuery) {
+            $("#" + imageId).attr("src", tmpImg.attr("src"));
         });
+    }
+
+    function getAssetPath(file: string, assetType: ResurceTypeEnum): string {
+        var path = "assets/";
+        switch (assetType) {
+            case ResurceTypeEnum.CHAR:
+                path += "charset/";
+                break;
+            case ResurceTypeEnum.FACE:
+                path += "faceset/";
+                break;
+            case ResurceTypeEnum.SKIN:
+                path += "skin/";
+                break;
+            case ResurceTypeEnum.TILE:
+                path += "tileset/";
+                break;
+        };
+        return path + file;
     }
 }

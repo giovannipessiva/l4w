@@ -4,11 +4,13 @@
 var Resource;
 (function (Resource) {
     var dataFolder = "data/";
-    var assetsFolder = "assets/";
-    var charFolder = assetsFolder + "charset/";
-    var faceFolder = assetsFolder + "faceset/";
-    var skinFolder = assetsFolder + "skin/";
-    var tileFolder = assetsFolder + "tileset/";
+    (function (ResurceTypeEnum) {
+        ResurceTypeEnum[ResurceTypeEnum["CHAR"] = 0] = "CHAR";
+        ResurceTypeEnum[ResurceTypeEnum["FACE"] = 1] = "FACE";
+        ResurceTypeEnum[ResurceTypeEnum["SKIN"] = 2] = "SKIN";
+        ResurceTypeEnum[ResurceTypeEnum["TILE"] = 3] = "TILE";
+    })(Resource.ResurceTypeEnum || (Resource.ResurceTypeEnum = {}));
+    var ResurceTypeEnum = Resource.ResurceTypeEnum;
     var properties = new Map();
     function loadProperties(onLoadCallback, file) {
         if (file === void 0) { file = "l4w"; }
@@ -62,20 +64,40 @@ var Resource;
         }
         ;
     }
-    function loadAsset(uri, callback) {
+    function loadAsset(file, assetType, callback) {
+        var path = getAssetPath(file, assetType);
         var $loader = $(document.createElement("img"));
-        $loader.attr("src", "assets/" + uri);
+        $loader.attr("src", path);
         $loader.load(function () {
             callback($loader);
         });
     }
     Resource.loadAsset = loadAsset;
-    function loadAssetToImg(uri, assetId) {
-        loadAsset(uri, function (tmpImg) {
-            $("#" + assetId).attr("src", tmpImg.attr("src"));
+    function loadAssetToImg(file, assetType, imageId) {
+        loadAsset(file, assetType, function (tmpImg) {
+            $("#" + imageId).attr("src", tmpImg.attr("src"));
         });
     }
     Resource.loadAssetToImg = loadAssetToImg;
+    function getAssetPath(file, assetType) {
+        var path = "assets/";
+        switch (assetType) {
+            case 0 /* CHAR */:
+                path += "charset/";
+                break;
+            case 1 /* FACE */:
+                path += "faceset/";
+                break;
+            case 2 /* SKIN */:
+                path += "skin/";
+                break;
+            case 3 /* TILE */:
+                path += "tileset/";
+                break;
+        }
+        ;
+        return path + file;
+    }
 })(Resource || (Resource = {}));
 var EditPage;
 (function (EditPage) {
@@ -158,8 +180,7 @@ var EditPage;
         var contextTile = canvasTile.getContext("2d");
         var canvasTilePicker = $("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
-        var uri = "tileset/" + $("#tiles").val();
-        Resource.loadAsset(uri, function (element) {
+        Resource.loadAsset($("#tiles").val(), 3 /* TILE */, function (element) {
             var image = new Image();
             image.src = element.attr("src");
             $("#tilePanel").height(image.naturalHeight);
