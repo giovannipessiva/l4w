@@ -9,6 +9,7 @@ module.exports = function(grunt) {
                 out: 'client/<%= pkg.name %>.ts.js',
                 options: {
     	            target: 'es6',
+    	            module: 'amd',
     	            sourceMap: false,
     	            fast: 'never',
     	            removeComments: true
