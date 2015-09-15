@@ -50,7 +50,6 @@ module.exports = function(grunt) {
 		}
 	});
 
-    grunt.loadNpmTasks("typescript");
 	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-tslint');
