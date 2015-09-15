@@ -2,9 +2,10 @@ language: node_js
 node_js:
 - '0.12'
 install:
+- npm install grunt
 - npm install grunt-cli -g
+- npm install typescript
 - npm install grunt-ts
-- npm install grunt-typescript --save-dev
 - npm install
 script:
 - grunt travis
