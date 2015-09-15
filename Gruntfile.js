@@ -17,13 +17,13 @@ module.exports = function(grunt) {
             }
 	    },
 		
-		tslint: {
-    	    files: {
-	            src: ['client/modules/**/*.ts','!client/modules/interfaces/*.ts']
-	        },
-    		options: {
-      			configuration: grunt.file.readJSON("tslint.json")
-      		}
+        tslint: {
+            files: {
+                src: ['client/modules/**/*.ts','!client/modules/interfaces/*.ts']
+            },
+            options: {
+                configuration: grunt.file.readJSON("tslint.json")
+            }
 	    },
 	
 		uglify: {
@@ -50,6 +50,7 @@ module.exports = function(grunt) {
 		}
 	});
 
+    grunt.loadNpmTasks("typescript");
 	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-tslint');
