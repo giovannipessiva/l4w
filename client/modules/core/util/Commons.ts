@@ -1,3 +1,5 @@
+/// <reference path="../../interfaces/es6.d.ts" />
+
 /**
  * Module for common type structures and function interfaces
  */

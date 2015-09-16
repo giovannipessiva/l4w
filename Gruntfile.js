@@ -8,10 +8,9 @@ module.exports = function(grunt) {
                 src: ['client/modules/**/*.ts'],
                 out: 'client/<%= pkg.name %>.ts.js',
                 options: {
-    	            target: 'es6',
+    	            target: 'es5',
     	            sourceMap: false,
-    	            fast: 'never',
-    	            removeComments: true
+    	            fast: 'never'
     	        }
             }
 	    },
