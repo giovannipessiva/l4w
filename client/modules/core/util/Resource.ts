@@ -61,7 +61,7 @@ module Resource {
         };
 
         function handleRequestTimeout() {
-            console.error("Timeout while etting " + uri);
+            console.error("Timeout while getting " + uri);
         };
     }
     
