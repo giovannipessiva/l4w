@@ -15,9 +15,9 @@ class DynamicGrid extends AbstractGrid {
 
     deferredInit(props: Map<string,number>) {
         super.deferredInit(props);
-        this.rows = +props["rows"];
-        this.columns = +props["columns"];
-        this.canvasRatio = +props["canvasRatio"];
+        this.rows = props.get("rows");
+        this.columns = props.get("columns");
+        this.canvasRatio = props.get("canvasRatio");
     }
     
     refresh() {

@@ -9,7 +9,7 @@ class StaticGrid extends AbstractGrid {
     private tileColumns: number;
     private rowsList: number[];
     private columnsList: number[];
-    private canvasScales: string[];
+    private canvasScales: number[];
     private overriddenProps: Map<string, number>;
 
     constructor(
@@ -26,14 +26,14 @@ class StaticGrid extends AbstractGrid {
             props = Utils.mergeMaps(this.overriddenProps, props);
         }
         super.deferredInit(props);
-        this.rows = +props["rowsEditor"];
-        this.columns = +props["columnsEditor"];
-        this.tileColumns = +props["tileColumns"];
+        this.rows = props.get("rowsEditor");
+        this.columns = props.get("columnsEditor");
+        this.tileColumns = props.get("tileColumns");
         this.canvasScales = new Array();
-        this.canvasScales.push(props["canvasScaleD"]);
-        this.canvasScales.push(props["canvasScaleC"]);
-        this.canvasScales.push(props["canvasScaleB"]);
-        this.canvasScales.push(props["canvasScaleA"]);
+        this.canvasScales.push(props.get("canvasScaleD"));
+        this.canvasScales.push(props.get("canvasScaleC"));
+        this.canvasScales.push(props.get("canvasScaleB"));
+        this.canvasScales.push(props.get("canvasScaleA"));
 
         var totCanvasScales = this.canvasScales.length;
         this.rowsList = new Array(totCanvasScales);
@@ -41,8 +41,8 @@ class StaticGrid extends AbstractGrid {
 
         var selectedScaleId = totCanvasScales - 1;
         for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / +this.canvasScales[i]);
+            this.rowsList[i] = Math.floor(this.rows / this.canvasScales[i]);
+            this.columnsList[i] = Math.floor(this.columns / this.canvasScales[i]);
         }
         this.selectScale(selectedScaleId);
     }
@@ -55,7 +55,7 @@ class StaticGrid extends AbstractGrid {
         this.rows = this.rowsList[scaleId];
         this.columns = this.columnsList[scaleId];
         this.updateSizingDerivates();
-        this.scale = +this.canvasScales[scaleId];
+        this.scale = this.canvasScales[scaleId];
     }
 
     getBoundariesX(focusX: number, limit: number): { min: number; max: number } {

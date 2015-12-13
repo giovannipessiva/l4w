@@ -16,7 +16,7 @@ module Resource {
         MAP
     }
 
-    var propertiesCache: Map<string, Map<string,number>> = new Map<string, Map<string,number>>();
+    var propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
 
     export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
         if (propertiesCache.has(file)) {
