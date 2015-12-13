@@ -6,7 +6,7 @@ module Mapper {
             initInput(canvas, scene, grid);
             initWidgets(canvas, scene, grid);
             scene.start(canvas);
-        });
+        }, GridTypeEnum.mapper);
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {

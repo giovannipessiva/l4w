@@ -1,6 +1,10 @@
 /// <reference path="util/Resource.ts" />
 /// <reference path="util/Commons.ts" />
 
+enum GridTypeEnum {
+    game, mapper, tilePicker
+};
+
 /**
  * Module for managing canvas autosizing
  */
@@ -16,14 +20,16 @@ class AbstractGrid {
     protected halfRows: number;
     protected halfColumns: number;
     private currentTranslation: IPoint;
-
+    protected gridType: GridTypeEnum;
     scale: number;
 
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (grid: AbstractGrid): void }) {
+        onCompleted: { (grid: AbstractGrid): void },
+        gridType: GridTypeEnum) {
         this.canvas = cnvs;
         this.currentTranslation = { x: 0, y: 0 };
+        this.gridType = gridType;
 
         //Make sure properties file is available, then start init process
         (function(grid: AbstractGrid) {
@@ -39,6 +45,8 @@ class AbstractGrid {
     deferredInit(props: Map<string, number>) {
         this.cellH = props.get("cellHeight");
         this.cellW = props.get("cellWidth");
+        this.rows = props.get(GridTypeEnum[this.gridType] + "Rows");
+        this.columns = props.get(GridTypeEnum[this.gridType] + "Columns");
     }
 
     updateSizingDerivates() {
@@ -65,9 +73,9 @@ class AbstractGrid {
      * Convert a position in the webpage to a position on the grid (cell coordinates)
      * @param position : position in pixels (absolute coordinates in the page)
      */
-    mapPositionToGrid(position: IPoint) : IPoint {
+    mapPositionToGrid(position: IPoint): IPoint {
         var rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
-        var i = Math.floor((position.x - rect.left) / (this.cellW  * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
+        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
         var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
     }
@@ -76,7 +84,7 @@ class AbstractGrid {
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
      * @param position : position in cell coordinates
      */
-    mapCellToCanvas(position: IPoint) : IPoint {
+    mapCellToCanvas(position: IPoint): IPoint {
         var x = (position.x + 0.5) * this.cellW;
         var y = (position.y + 0.5) * this.cellH;
         return { x: x, y: y };

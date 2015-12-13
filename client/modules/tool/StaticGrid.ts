@@ -15,10 +15,11 @@ class StaticGrid extends AbstractGrid {
     constructor(
         cnvs: HTMLCanvasElement,
         onCompleted: { (grid: StaticGrid): void },
+        gridType: GridTypeEnum,
         overriddenProperties?: Map<string, number>
         ) {
         this.overriddenProps = overriddenProperties;
-        super(cnvs, onCompleted);
+        super(cnvs, onCompleted, gridType);
     }
 
     deferredInit(props: Map<string, number>) {
@@ -26,36 +27,50 @@ class StaticGrid extends AbstractGrid {
             props = Utils.mergeMaps(this.overriddenProps, props);
         }
         super.deferredInit(props);
-        this.rows = props.get("rowsEditor");
-        this.columns = props.get("columnsEditor");
         this.tileColumns = props.get("tileColumns");
-        this.canvasScales = new Array();
-        this.canvasScales.push(props.get("canvasScaleD"));
-        this.canvasScales.push(props.get("canvasScaleC"));
-        this.canvasScales.push(props.get("canvasScaleB"));
-        this.canvasScales.push(props.get("canvasScaleA"));
 
-        var totCanvasScales = this.canvasScales.length;
-        this.rowsList = new Array(totCanvasScales);
-        this.columnsList = new Array(totCanvasScales);
+        switch (this.gridType) {
+            case GridTypeEnum.mapper:
+                this.canvasScales = new Array();
+                this.canvasScales.push(props.get("canvasScaleD"));
+                this.canvasScales.push(props.get("canvasScaleC"));
+                this.canvasScales.push(props.get("canvasScaleB"));
+                this.canvasScales.push(props.get("canvasScaleA"));
 
-        var selectedScaleId = totCanvasScales - 1;
-        for (var i = 0; i < totCanvasScales; i++) {
-            this.rowsList[i] = Math.floor(this.rows / this.canvasScales[i]);
-            this.columnsList[i] = Math.floor(this.columns / this.canvasScales[i]);
+                var totCanvasScales = this.canvasScales.length;
+                this.rowsList = new Array(totCanvasScales);
+                this.columnsList = new Array(totCanvasScales);
+
+                var selectedScaleId = totCanvasScales - 1;
+                for (var i = 0; i < totCanvasScales; i++) {
+                    this.rowsList[i] = Math.floor(this.rows / this.canvasScales[i]);
+                    this.columnsList[i] = Math.floor(this.columns / this.canvasScales[i]);
+                }
+                this.selectScale(selectedScaleId);
+                break;
+            case GridTypeEnum.tilePicker:
+                this.scale=1;
+                this.updateSizingDerivates();
         }
-        this.selectScale(selectedScaleId);
     }
 
-    refresh() {
-        super.refresh();
-    }
-
+    /**
+     * Usato quando cambia la scala
+     */
     selectScale(scaleId: number) {
         this.rows = this.rowsList[scaleId];
         this.columns = this.columnsList[scaleId];
         this.updateSizingDerivates();
         this.scale = this.canvasScales[scaleId];
+    }
+    
+    /**
+     * Usato quando cambia la dimensione
+     */
+    updateSize(rows: number, columns: number) {
+        this.rows = rows;
+        this.columns = columns;
+        this.updateSizingDerivates();
     }
 
     getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
@@ -66,5 +81,10 @@ class StaticGrid extends AbstractGrid {
     getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
         //TODO seleziona solo il range che può essere cambiato
         return super.getBoundariesY(focusY, limit);
+    }
+
+    refresh() {
+        super.refresh();
+
     }
 }

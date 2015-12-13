@@ -10,13 +10,11 @@ class DynamicGrid extends AbstractGrid {
     constructor(
         cnvs: HTMLCanvasElement,
         onCompleted: { (grid: DynamicGrid): void }) {
-        super(cnvs, onCompleted);
+        super(cnvs, onCompleted, GridTypeEnum.game);
     }
 
     deferredInit(props: Map<string,number>) {
         super.deferredInit(props);
-        this.rows = props.get("rows");
-        this.columns = props.get("columns");
         this.canvasRatio = props.get("canvasRatio");
     }
     

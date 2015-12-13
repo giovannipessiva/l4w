@@ -38,7 +38,17 @@ module Resource {
             var line = lines[i].trim();
             if (line !== "" && line.indexOf("#") !== 0) {
                 var lineTokens = line.split("=");
-                props.set(lineTokens[0], +lineTokens[1]);
+                var value: number = +lineTokens[1];
+                if(!isNaN(value)) {
+                    props.set(lineTokens[0], value);
+                } else {
+                    // If value is NaN, check if it's a valid key 
+                    if(props.has(lineTokens[1])) {
+                        props.set(lineTokens[0], props.get(lineTokens[1]));
+                    } else {
+                        console.error("Error parsing properties file at line "+i+": "+value);
+                    }
+                }
             }
         }
         return props;

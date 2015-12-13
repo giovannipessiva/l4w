@@ -12,7 +12,7 @@ module TilePicker {
             initInput(canvas, scene, grid);
             scene.start(canvas);
             scene.toggleEditorGrid(true);
-        }, overriddenProps);
+        }, GridTypeEnum.tilePicker, overriddenProps);
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
@@ -42,5 +42,8 @@ module TilePicker {
             function() { console.log("wheel"); }
             );
     };
+ 
+    //TODO metodo per aggiornare la grid? o lo faccio da fuori?
+    //updateSize
 
 }
