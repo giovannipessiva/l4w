@@ -13,6 +13,7 @@ requirejs(["lib/jquery"],function($){
             finishedLoading();
         },function(err){
             // If min version is unavailable, use the full version
+            console.log("Minified version unavailable, using full script");
             requirejs(["js/l4w"],function(l4w){
                 finishedLoading();
             });
@@ -88,6 +89,7 @@ function finishedLoading(){
 			<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
 		</td>
 	</tr>
+	</table>
 	</div>
 </div>
 </body>
