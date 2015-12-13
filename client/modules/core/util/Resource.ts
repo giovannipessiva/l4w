@@ -12,7 +12,8 @@ module Resource {
         CHAR,
         FACE,
         SKIN,
-        TILE
+        TILE,
+        MAP
     }
 
     var properties: Map<string, string> = new Map<string, string>();
@@ -68,8 +69,8 @@ module Resource {
     /**
      * Load an asset and call a callback
      */
-    export function loadAsset(file: string, assetType: ResurceTypeEnum, callback: IJQueryCallback) {
-        var path = getAssetPath(file,assetType);
+    export function load(file: string, assetType: ResurceTypeEnum, callback: IJQueryCallback) {
+        var path = getResourcePath(file, assetType);
         var $loader = $(document.createElement("img"));
         $loader.attr("src", path);
         $loader.load(function() {
@@ -80,28 +81,45 @@ module Resource {
     /**
      * Load an asset and put it in an img element
      */
-    export function loadAssetToImg(file: string, assetType: ResurceTypeEnum, imageId: string) {
-        loadAsset(file, assetType, function(tmpImg: JQuery) {
+    export function loadToImg(file: string, resourceType: ResurceTypeEnum, imageId: string) {
+        load(file, resourceType, function(tmpImg: JQuery) {
             $("#" + imageId).attr("src", tmpImg.attr("src"));
         });
     }
 
-    function getAssetPath(file: string, assetType: ResurceTypeEnum): string {
-        var path = "assets/";
+    function getResourcePath(file: string, assetType: ResurceTypeEnum): string {
+        var path;
         switch (assetType) {
             case ResurceTypeEnum.CHAR:
-                path += "charset/";
-                break;
             case ResurceTypeEnum.FACE:
-                path += "faceset/";
-                break;
             case ResurceTypeEnum.SKIN:
-                path += "skin/";
-                break;
             case ResurceTypeEnum.TILE:
-                path += "tileset/";
+                path = "assets/";
+                switch (assetType) {
+                    case ResurceTypeEnum.CHAR:
+                        path += "charset/";
+                        break;
+                    case ResurceTypeEnum.FACE:
+                        path += "faceset/";
+                        break;
+                    case ResurceTypeEnum.SKIN:
+                        path += "skin/";
+                        break;
+                    case ResurceTypeEnum.TILE:
+                        path += "tileset/";
+                        break;
+                };
+                break;
+            case ResurceTypeEnum.MAP:
+                path = "data/";
+                switch (assetType) {
+                    case ResurceTypeEnum.MAP:
+                        path += "map/";
+                        break;
+                };
                 break;
         };
+
         return path + file;
     }
 }
