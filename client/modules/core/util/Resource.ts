@@ -16,15 +16,15 @@ module Resource {
         MAP
     }
 
-    var properties: Map<string, string> = new Map<string, string>();
+    var propertiesCache: Map<string, Map<string,number>> = new Map<string, Map<string,number>>();
 
     export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
-        if (file in properties) {
-            onLoadCallback(properties[file]);
+        if (propertiesCache.has(file)) {
+            onLoadCallback(propertiesCache.get(file));
         } else {
             function parsePropertiesCallback() {
                 var props: Map<string, number> = parseProperties(this.responseText);
-                properties[file] = props;
+                propertiesCache.set(file, props);
                 onLoadCallback(props);
             }
             sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
@@ -38,7 +38,7 @@ module Resource {
             var line = lines[i].trim();
             if (line !== "" && line.indexOf("#") !== 0) {
                 var lineTokens = line.split("=");
-                props[lineTokens[0]] = lineTokens[1];
+                props.set(lineTokens[0], +lineTokens[1]);
             }
         }
         return props;
