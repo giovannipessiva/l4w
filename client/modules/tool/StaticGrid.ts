@@ -1,5 +1,6 @@
 /// <reference path="../core/AbstractGrid.ts" />
- 
+/// <reference path="../core/util/Utils.ts" />
+
 /**
  * Module for managing canvas autosizing
  */
@@ -9,16 +10,22 @@ class StaticGrid extends AbstractGrid {
     private rowsList: number[];
     private columnsList: number[];
     private canvasScales: string[];
+    private overriddenProps: Map<string, number>;
 
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (grid: StaticGrid): void }) {
+        onCompleted: { (grid: StaticGrid): void },
+        overriddenProperties?: Map<string, number>
+        ) {
+        this.overriddenProps = overriddenProperties;
         super(cnvs, onCompleted);
-
     }
 
     deferredInit(props: Map<string, number>) {
-        super.deferredInit(props); 
+        if (!Utils.isEmpty(this.overriddenProps)) {
+            props = Utils.mergeMaps(this.overriddenProps, props);
+        }
+        super.deferredInit(props);
         this.rows = +props["rowsEditor"];
         this.columns = +props["columnsEditor"];
         this.tileColumns = +props["tileColumns"];
@@ -27,11 +34,11 @@ class StaticGrid extends AbstractGrid {
         this.canvasScales.push(props["canvasScaleC"]);
         this.canvasScales.push(props["canvasScaleB"]);
         this.canvasScales.push(props["canvasScaleA"]);
-   
+
         var totCanvasScales = this.canvasScales.length;
         this.rowsList = new Array(totCanvasScales);
         this.columnsList = new Array(totCanvasScales);
-        
+
         var selectedScaleId = totCanvasScales - 1;
         for (var i = 0; i < totCanvasScales; i++) {
             this.rowsList[i] = Math.floor(this.rows / +this.canvasScales[i]);
@@ -50,14 +57,14 @@ class StaticGrid extends AbstractGrid {
         this.updateSizingDerivates();
         this.scale = +this.canvasScales[scaleId];
     }
-    
+
     getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
         //TODO seleziona solo il range che può essere cambiato
-        return super.getBoundariesX(focusX,limit);
+        return super.getBoundariesX(focusX, limit);
     }
 
     getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
         //TODO seleziona solo il range che può essere cambiato
-        return super.getBoundariesY(focusY,limit);
+        return super.getBoundariesY(focusY, limit);
     }
 }

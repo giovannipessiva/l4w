@@ -1,12 +1,18 @@
+/// <reference path="../core/util/Utils.ts" />
+
 module TilePicker {
 
     export function start(canvas: HTMLCanvasElement) {
+
+        var overriddenProps: Map<string, number> = new Map<string, number>();
+        overriddenProps.set("canvasScaleA",1);
+
         new StaticGrid(canvas, function(grid: StaticGrid) {
             var scene = new StaticScene(grid);
             initInput(canvas, scene, grid);
             scene.start(canvas);
             scene.toggleEditorGrid(true);
-        });
+        }, overriddenProps);
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {

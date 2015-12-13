@@ -25,6 +25,7 @@ class AbstractGrid {
         this.canvas = cnvs;
         this.currentTranslation = { x: 0, y: 0 };
 
+        //Make sure properties file is available, then start init process
         (function(grid: AbstractGrid) {
             Resource.loadProperties(function(props: Map<string, number>) {
                 grid.deferredInit(props);
