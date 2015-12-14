@@ -33,7 +33,7 @@ class AbstractScene {
     constructor(grid: AbstractGrid) {
         this.map = new World.Map(grid);
         this.focus = {
-            x: 6 * 32, y: 6 * 32
+            x: 0, y: 0
         };
         this.pointer = {
             x: 0, y: 0
@@ -58,12 +58,12 @@ class AbstractScene {
             return;
         }
 
-        var boundaries = this.grid.getBoundariesY(this.focus.y, this.map.rows);
-        var minRow = boundaries.min;
-        var maxRow = boundaries.max;
-        boundaries = this.grid.getBoundariesX(this.focus.x, this.map.columns);
-        var minColumn = boundaries.min;
-        var maxColumn = boundaries.max;
+        var boundariesY = this.grid.getBoundariesY(this.focus.y, this.map.rows);
+        var minRow = boundariesY.min;
+        var maxRow = boundariesY.max;
+        var boundariesX = this.grid.getBoundariesX(this.focus.x, this.map.columns);
+        var minColumn = boundariesX.min;
+        var maxColumn = boundariesX.max;
         for (var y = minRow; y <= maxRow; y++) {
             this.renderRow(y,minColumn,maxColumn);
         }
@@ -90,7 +90,7 @@ class AbstractScene {
 
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
-            var mappedPointer = this.grid.mapCellToCanvas(this.pointer);
+            var mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
