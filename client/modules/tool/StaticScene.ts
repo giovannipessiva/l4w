@@ -39,7 +39,7 @@ class StaticScene extends AbstractScene {
                 this.pointer.x * this.grid.cellW,
                 this.pointer.y * this.grid.cellH,
                 this.grid.cellW,
-                 this.grid.cellH);
+                this.grid.cellH);
             this.context.restore();
         }
     }
