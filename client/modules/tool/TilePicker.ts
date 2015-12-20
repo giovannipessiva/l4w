@@ -2,14 +2,22 @@
 
 module TilePicker {
 
+    var tilePicker: StaticGrid;
+
     export function start(canvas: HTMLCanvasElement) {
 
-        new StaticGrid(canvas, function(grid: StaticGrid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            scene.start(canvas);
-            scene.toggleEditorGrid(true);
-        }, GridTypeEnum.tilePicker);
+        if (Utils.isUndefined(tilePicker)) {
+            // Create a new instance
+            tilePicker = new StaticGrid(canvas, function(grid: StaticGrid) {
+                var scene = new StaticScene(grid);
+                initInput(canvas, scene, grid);
+                scene.start(canvas);
+                scene.toggleEditorGrid(true);
+            }, GridTypeEnum.tilePicker);
+        } else {
+            // Update current instance
+            tilePicker.updateSize(canvas.height, canvas.width);
+        }
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {

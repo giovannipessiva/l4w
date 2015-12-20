@@ -49,7 +49,7 @@ class StaticGrid extends AbstractGrid {
                 this.selectScale(selectedScaleId);
                 break;
             case GridTypeEnum.tilePicker:
-                this.scale=1;
+                this.scale = 1;
                 this.updateSizingDerivates();
         }
     }
@@ -65,11 +65,11 @@ class StaticGrid extends AbstractGrid {
     }
     
     /**
-     * Usato quando cambia la dimensione
+     * Usato quando cambia la dimensione 
      */
-    updateSize(rows: number, columns: number) {
-        this.rows = rows;
-        this.columns = columns;
+    updateSize(height: number, width: number) {
+        this.rows = Math.floor(height / this.cellH);
+        this.columns = Math.floor(width / this.cellW);
         this.updateSizingDerivates();
     }
 

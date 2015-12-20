@@ -89,11 +89,11 @@ module EditPage {
     export function loadTile() {
         // Clear the canvas
         var canvasTile = <HTMLCanvasElement> $("#canvasTile")[0];
-        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");      
+        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");
         var canvasTilePicker = <HTMLCanvasElement> $("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load($("#tiles").val(),Resource.ResurceTypeEnum.TILE, function(element: JQuery){
+        Resource.load($("#tiles").val(), Resource.ResurceTypeEnum.TILE, function(element: JQuery) {
             // Resize the canvas
             var image = new Image();
             image.src = element.attr("src");
@@ -103,14 +103,9 @@ module EditPage {
             canvasTilePicker.height = image.naturalHeight;
             canvasTilePicker.width = image.naturalWidth;      
             // Paint the img in the canvas
-            contextTile.drawImage(<HTMLImageElement> element[0],0,0);
+            contextTile.drawImage(<HTMLImageElement> element[0], 0, 0);
             // Manage the tile selector canvas
-            startTilePicker(canvasTilePicker);
+            TilePicker.start(canvasTilePicker);
         });
-    }
-    
-    function startTilePicker(canvas: HTMLCanvasElement) {
-       //TODO nuova static grid
-       TilePicker.start(canvas);
     }
 }
