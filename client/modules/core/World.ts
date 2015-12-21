@@ -28,24 +28,35 @@ module World {
         renderEffects(context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, renderingConfiguration: World.Configuration) {
             if (!Utils.isUndefined(renderingConfiguration)) {
                 if (renderingConfiguration.enableSelection && !Utils.isUndefined(renderingConfiguration.selectPointStart)) {
-                    
+
                     var x = renderingConfiguration.selectPointStart.x * this.grid.cellW;
                     var y = renderingConfiguration.selectPointStart.y * this.grid.cellH;
-                    
+
                     var h;
                     var w;
-                    if(Utils.isUndefined(renderingConfiguration.selectPointEnd)) {
+                    if (Utils.isUndefined(renderingConfiguration.selectPointEnd)) {
                         h = this.grid.cellW;
                         w = this.grid.cellH;
-                    } else { 
-                        h = renderingConfiguration.selectPointEnd.x * this.grid.cellW - x;
-                        w = renderingConfiguration.selectPointEnd.y * this.grid.cellH - y;
+                    } else {
+                        var x2 = renderingConfiguration.selectPointEnd.x * this.grid.cellW;
+                        var y2 = renderingConfiguration.selectPointEnd.y * this.grid.cellH;
+                        if (x > x2) {
+                            h = x - x2;
+                            x = x2;
+                        } else {
+                            h = x2 - x + this.grid.cellH;
+                        }
+                        if (y > y2) {
+                            w = y - y2;
+                            y = y2;
+                        } else {
+                            w = y2 - y + this.grid.cellW;
+                        }
                     }
-                    
                     context.save();
                     context.strokeStyle = Constant.Color.RED;
                     context.lineWidth = 3;
-                    context.strokeRect(x,y,h,w);
+                    context.strokeRect(x, y, h, w);
                     context.restore();
                 }
             }
