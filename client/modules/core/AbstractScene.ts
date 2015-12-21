@@ -24,7 +24,7 @@ class AbstractScene {
     focus: IPoint;
     pointer: IPoint;
 
-    renderingOptions: World.Options;
+    renderingConfiguration: World.Configuration;
     layers: number;
 
     context: CanvasRenderingContext2D;
@@ -38,7 +38,7 @@ class AbstractScene {
         this.pointer = {
             x: 0, y: 0
         };
-        this.renderingOptions = new World.Options();
+        this.renderingConfiguration = new World.Configuration();
         this.layers = this.map.getLayers();
         this.grid = grid;
     }
@@ -64,8 +64,22 @@ class AbstractScene {
         var boundariesX = this.grid.getBoundariesX(this.focus.x);
         var minColumn = boundariesX.min;
         var maxColumn = boundariesX.max;
+        
+        // Base rendering
         for (var y = minRow; y <= maxRow; y++) {
-            this.renderRow(y,minColumn,maxColumn);
+            for (var x = minColumn; x <= maxColumn; x++) {
+                this.map.render(this.context, x, y);
+            }
+        }
+        
+        // Effects rendering
+        this.map.renderEffects(this.context, minRow, maxRow, minColumn, maxColumn, this.renderingConfiguration);
+
+        // Additions rendering
+        for (var y = minRow; y <= maxRow; y++) {
+            for (var x = minColumn; x <= maxColumn; x++) { 
+                this.map.renderOptionals(this.context, x, y, this.renderingConfiguration);
+            }
         }
 
         this.renderFocus();
@@ -80,12 +94,6 @@ class AbstractScene {
     }
 
     protected mainGameLoop_post() {
-    }
-
-    private renderRow(y: number,minColumn: number,maxColumn: number) {
-        for (var x = minColumn; x <= maxColumn; x++) {
-            this.map.render(this.context, x, y, this.renderingOptions);
-        }
     }
 
     protected renderPointer() {
@@ -108,7 +116,7 @@ class AbstractScene {
     }
 
     protected renderFocus() {
-        if (this.focus.x != null && this.focus.y != null && this.renderingOptions.showFocus) {
+        if (this.focus.x != null && this.focus.y != null && this.renderingConfiguration.showFocus) {
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.BLACK;
@@ -126,26 +134,26 @@ class AbstractScene {
 
     toggleGrid(enable?: boolean) {
         if (enable != null) {
-            this.renderingOptions.showGrid = enable;
+            this.renderingConfiguration.showGrid = enable;
         } else {
-            this.renderingOptions.showGrid = !this.renderingOptions.showGrid;
+            this.renderingConfiguration.showGrid = !this.renderingConfiguration.showGrid;
         }
 
     }
 
     toggleCellNumbering(enable?: boolean) {
         if (enable != null) {
-            this.renderingOptions.showCellNumbers = enable;
+            this.renderingConfiguration.showCellNumbers = enable;
         } else {
-            this.renderingOptions.showCellNumbers = !this.renderingOptions.showCellNumbers;
+            this.renderingConfiguration.showCellNumbers = !this.renderingConfiguration.showCellNumbers;
         }
     }
 
     toggleFocus(enable?: boolean) {
         if (enable != null) {
-            this.renderingOptions.showFocus = enable;
+            this.renderingConfiguration.showFocus = enable;
         } else {
-            this.renderingOptions.showFocus = !this.renderingOptions.showFocus;
+            this.renderingConfiguration.showFocus = !this.renderingConfiguration.showFocus;
         }
     }
 

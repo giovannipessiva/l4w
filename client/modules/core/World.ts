@@ -13,18 +13,47 @@ module World {
 
         constructor(grid: AbstractGrid) {
             //TODO load map
-            this.rows = 30;
-            this.columns = 50;
+            this.rows = 40; //TODO grandezza totale della mappa
+            this.columns = 50; //TODO grandezza totale della mappa
             this.layers = [];
             this.grid = grid;
         }
 
-        render(context: CanvasRenderingContext2D, x: number, y: number, renderingOptions: World.Options) {
+        render(context: CanvasRenderingContext2D, x: number, y: number) {
             for (var layer in this.layers) {
                 layer.render(context, x, y);
             }
-            if (renderingOptions != null) {
-                if (renderingOptions.showGrid) {
+        }
+
+        renderEffects(context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, renderingConfiguration: World.Configuration) {
+            if (!Utils.isUndefined(renderingConfiguration)) {
+                if (renderingConfiguration.enableSelection && !Utils.isUndefined(renderingConfiguration.selectPointStart)) {
+                    
+                    var x = renderingConfiguration.selectPointStart.x * this.grid.cellW;
+                    var y = renderingConfiguration.selectPointStart.y * this.grid.cellH;
+                    
+                    var h;
+                    var w;
+                    if(Utils.isUndefined(renderingConfiguration.selectPointEnd)) {
+                        h = this.grid.cellW;
+                        w = this.grid.cellH;
+                    } else { 
+                        h = renderingConfiguration.selectPointEnd.x * this.grid.cellW - x;
+                        w = renderingConfiguration.selectPointEnd.y * this.grid.cellH - y;
+                    }
+                    
+                    context.save();
+                    context.strokeStyle = Constant.Color.RED;
+                    context.lineWidth = 3;
+                    context.strokeRect(x,y,h,w);
+                    context.restore();
+                }
+            }
+        }
+
+        renderOptionals(context: CanvasRenderingContext2D, x: number, y: number, renderingConfiguration: World.Configuration) {
+            if (!Utils.isUndefined(renderingConfiguration)) {
+                if (renderingConfiguration.showGrid) {
                     context.strokeStyle = Constant.Color.RED;
                     context.strokeRect(
                         x * this.grid.cellW,
@@ -32,7 +61,7 @@ module World {
                         this.grid.cellW,
                         this.grid.cellH);
                 }
-                if (renderingOptions.showEditorGrid) {
+                if (renderingConfiguration.showEditorGrid) {
                     context.save();
                     context.globalAlpha = 0.4;
                     context.strokeStyle = Constant.Color.GREY;
@@ -43,7 +72,7 @@ module World {
                         this.grid.cellH);
                     context.restore();
                 }
-                if (renderingOptions.showCellNumbers) {
+                if (renderingConfiguration.showCellNumbers) {
                     context.fillStyle = Constant.Color.RED;
                     context.font = "bold 10px Arial";
                     context.fillText(
@@ -68,14 +97,17 @@ module World {
 
     }
 
-    export class Options {
+    export class Configuration {
         showGrid: boolean = false;
         showEditorGrid: boolean = false;
         showFPS: boolean = false;
         showCellNumbers: boolean = false;
         showFocus: boolean = false;
+        enableSelection: boolean = false;
 
         fps: number = 0;
+        selectPointStart: IPoint;
+        selectPointEnd: IPoint;
     }
 
 }

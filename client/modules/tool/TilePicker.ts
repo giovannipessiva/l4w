@@ -28,11 +28,21 @@ module TilePicker {
             grid,
             inputCallbackMap,
             function() { },
-            function() { },
-            function() { },
-            function() { },
+            function(x, y) {
+                // Action
+                scene.select(x, y);
+            },
+            function(x, y) {
+                // Start action
+                scene.select(x, y);
+            },
+            function(x, y) {
+                //End action
+                scene.selectEnd(x, y);
+            },
             function(x, y) {
                 //Ongoing
+                scene.selectEnd(x, y);
                 scene.updatePointer(x, y);
             },
             function(x, y) {

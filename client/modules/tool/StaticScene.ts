@@ -4,10 +4,11 @@
  * Scene implementation for managing static rendering
  */
 class StaticScene extends AbstractScene {
-
+    
     constructor(grid: StaticGrid) {
         super(grid);   
-        this.renderingOptions.showEditorGrid=true;
+        this.renderingConfiguration.showEditorGrid=true;
+        this.renderingConfiguration.enableSelection=true;
     }
 
     protected mainGameLoop_pre() {
@@ -24,9 +25,9 @@ class StaticScene extends AbstractScene {
 
     toggleEditorGrid(enable?: boolean) {
         if (enable != null) {
-            this.renderingOptions.showEditorGrid = enable;
+            this.renderingConfiguration.showEditorGrid = enable;
         } else {
-            this.renderingOptions.showEditorGrid = !this.renderingOptions.showEditorGrid;
+            this.renderingConfiguration.showEditorGrid = !this.renderingConfiguration.showEditorGrid;
         }
     }
     
@@ -50,6 +51,21 @@ class StaticScene extends AbstractScene {
     updateSize(height: number, width: number) {
         var staticGrid: StaticGrid = <StaticGrid> this.grid;
         staticGrid.updateSize(height, width);
+    }
+    
+    select(x: number, y: number) {
+        this.renderingConfiguration.selectPointStart = {
+            x: x,
+            y: y
+        };
+        this.renderingConfiguration.selectPointEnd = null;
+    }
+    
+    selectEnd(x: number, y: number) {
+        this.renderingConfiguration.selectPointEnd = {
+            x: x,
+            y: y
+        };
     }
 
 }

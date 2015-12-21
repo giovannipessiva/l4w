@@ -61,9 +61,9 @@ class DynamicScene extends AbstractScene {
 
     toggleFPS(enable?: boolean) {
         if (enable != null) {
-            this.renderingOptions.showFPS = enable;
+            this.renderingConfiguration.showFPS = enable;
         } else {
-            this.renderingOptions.showFPS = !this.renderingOptions.showFPS;
+            this.renderingConfiguration.showFPS = !this.renderingConfiguration.showFPS;
         }
     }
 
@@ -83,7 +83,7 @@ class DynamicScene extends AbstractScene {
             }
         }
 
-        if (this.renderingOptions.showFPS) {
+        if (this.renderingConfiguration.showFPS) {
             this.context.fillStyle = Constant.Color.RED;
             this.context.font = "bold 18px Arial";
             this.context.fillText("" + this.lastFPS, 10, 20);
