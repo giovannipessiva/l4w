@@ -43,5 +43,13 @@ class StaticScene extends AbstractScene {
             this.context.restore();
         }
     }
+    
+    /**
+     * Usato quando cambia la dimensione 
+     */
+    updateSize(height: number, width: number) {
+        var staticGrid: StaticGrid = <StaticGrid> this.grid;
+        staticGrid.updateSize(height, width);
+    }
 
 }

@@ -58,10 +58,10 @@ class AbstractScene {
             return;
         }
 
-        var boundariesY = this.grid.getBoundariesY(this.focus.y, this.map.rows);
+        var boundariesY = this.grid.getBoundariesY(this.focus.y);
         var minRow = boundariesY.min;
         var maxRow = boundariesY.max;
-        var boundariesX = this.grid.getBoundariesX(this.focus.x, this.map.columns);
+        var boundariesX = this.grid.getBoundariesX(this.focus.x);
         var minColumn = boundariesX.min;
         var maxColumn = boundariesX.max;
         for (var y = minRow; y <= maxRow; y++) {

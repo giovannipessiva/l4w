@@ -2,21 +2,21 @@
 
 module TilePicker {
 
-    var tilePicker: StaticGrid;
+    var scene: StaticScene;
 
     export function start(canvas: HTMLCanvasElement) {
 
-        if (Utils.isUndefined(tilePicker)) {
+        if (Utils.isUndefined(scene)) {
             // Create a new instance
-            tilePicker = new StaticGrid(canvas, function(grid: StaticGrid) {
-                var scene = new StaticScene(grid);
+            new StaticGrid(canvas, function(grid: StaticGrid) {
+                scene = new StaticScene(grid);
                 initInput(canvas, scene, grid);
                 scene.start(canvas);
                 scene.toggleEditorGrid(true);
             }, GridTypeEnum.tilePicker);
         } else {
             // Update current instance
-            tilePicker.updateSize(canvas.height, canvas.width);
+            scene.updateSize(canvas.height, canvas.width);
         }
     }
 
@@ -47,8 +47,4 @@ module TilePicker {
             function() { console.log("wheel"); }
             );
     };
- 
-    //TODO metodo per aggiornare la grid? o lo faccio da fuori?
-    //updateSize
-
 }

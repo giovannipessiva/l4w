@@ -6,7 +6,7 @@ enum GridTypeEnum {
 };
 
 /**
- * Module for managing canvas autosizing
+ * Module for managing canvas sizing
  */
 class AbstractGrid {
 
@@ -119,18 +119,18 @@ class AbstractGrid {
         return { x: leftTopX, y: leftTopY };
     }
 
-    getBoundariesX(focusX: number, limit: number): { min: number; max: number } {
-        var focusCell = Math.round(focusX / this.cellW);
-        var min = focusCell - this.halfColumns;
-        var max = focusCell + this.halfColumns;
-        return this.checkBoundariesLimit(min, max, limit - 1);
+    getBoundariesX(focusX: number): { min: number; max: number } {
+        var focusColumn = Math.round(focusX / this.cellW);
+        var min = focusColumn - this.halfColumns;
+        var max = focusColumn + this.halfColumns;
+        return this.checkBoundariesLimit(min, max, this.columns - 1);
     }
 
-    getBoundariesY(focusY: number, limit: number): { min: number; max: number } {
-        var focusCell = Math.round(focusY / this.cellH);
-        var min = focusCell - this.halfRows;
-        var max = focusCell + this.halfRows;
-        return this.checkBoundariesLimit(min, max, limit - 1);
+    getBoundariesY(focusY: number): { min: number; max: number } {
+        var focusRow = Math.round(focusY / this.cellH);
+        var min = focusRow - this.halfRows;
+        var max = focusRow + this.halfRows;
+        return this.checkBoundariesLimit(min, max, this.rows - 1);
     }
 
     private checkBoundariesLimit(min: number, max: number, maxLimit: number): { min: number; max: number } {
