@@ -6,11 +6,11 @@
 module Utils {
     
     export function isEmpty<K,V>(map: Map<K,V>): boolean {
-        return (typeof map === 'undefined') || (map.size == 0);
+        return (typeof map === "undefined") || (map.size == 0);
     }
     
     export function isUndefined(obj: any): boolean {
-        return (obj == null) || (typeof obj === 'undefined');
+        return (obj === null) || (typeof obj === "undefined");
     }
     
     export function mergeMaps<T>(primary: Map<string,T>, secondary: Map<string,T>): Map<string,T> {
