@@ -4,11 +4,11 @@
  * Scene implementation for managing static rendering
  */
 class StaticScene extends AbstractScene {
-    
+
     constructor(grid: StaticGrid) {
-        super(grid);   
-        this.renderingConfiguration.showEditorGrid=true;
-        this.renderingConfiguration.enableSelection=true;
+        super(grid);
+        this.renderingConfiguration.showEditorGrid = true;
+        this.renderingConfiguration.enableSelection = true;
     }
 
     protected mainGameLoop_pre() {
@@ -30,7 +30,7 @@ class StaticScene extends AbstractScene {
             this.renderingConfiguration.showEditorGrid = !this.renderingConfiguration.showEditorGrid;
         }
     }
-    
+
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
             this.context.save();
@@ -52,20 +52,29 @@ class StaticScene extends AbstractScene {
         var staticGrid: StaticGrid = <StaticGrid> this.grid;
         staticGrid.updateSize(height, width);
     }
-    
+
     select(x: number, y: number) {
-        this.renderingConfiguration.selectPointStart = {
-            x: x,
-            y: y
-        };
-        this.renderingConfiguration.selectPointEnd = null;
+        if (x != null && y != null) {
+            this.renderingConfiguration.selectPointStart = {
+                x: x,
+                y: y
+            };
+            this.renderingConfiguration.selectPointEnd = null;
+        }
+    }
+
+    selectEnd(x: number, y: number) {
+        if (x != null && y != null) {
+            this.renderingConfiguration.selectPointEnd = {
+                x: x,
+                y: y
+            };
+        }
     }
     
-    selectEnd(x: number, y: number) {
-        this.renderingConfiguration.selectPointEnd = {
-            x: x,
-            y: y
-        };
+    cleanSelection() {
+        this.renderingConfiguration.selectPointStart = null;
+        this.renderingConfiguration.selectPointEnd = null;
     }
 
 }

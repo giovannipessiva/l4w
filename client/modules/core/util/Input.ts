@@ -77,10 +77,8 @@ module Input {
         // Mouse events 
         var flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e) {
-            var rect = canvas.getBoundingClientRect();
-            var mouseX = e.clientX - rect.left;
-            var mouseY = e.clientY - rect.top;
-            actionCallback(mouseX, mouseY);
+            var position = mapEvent(e);
+            actionCallback(position.x, position.y);
         });
         canvas.addEventListener("mousemove", function(e) {
             var position = mapEvent(e);
@@ -108,6 +106,7 @@ module Input {
             }
         });
         canvas.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
             var position = mapEvent(e);
             rightClickCallback(position.x, position.y);
         });

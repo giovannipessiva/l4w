@@ -28,10 +28,7 @@ module TilePicker {
             grid,
             inputCallbackMap,
             function() { },
-            function(x, y) {
-                // Action
-                scene.select(x, y);
-            },
+            function() { },
             function(x, y) {
                 // Start action
                 scene.select(x, y);
@@ -52,7 +49,10 @@ module TilePicker {
             function() { },
             function() { },
             function() { },
-            function() { console.log("rightClick"); },
+            function(x, y) {
+                //OnRightClick
+               scene.cleanSelection(); 
+            },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
             );
