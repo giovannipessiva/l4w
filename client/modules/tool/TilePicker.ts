@@ -29,17 +29,23 @@ module TilePicker {
             inputCallbackMap,
             function() { },
             function() { },
-            function(x, y) {
+            function(x, y, mouseButton) {
                 // Start action
-                scene.select(x, y);
+                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                    scene.select(x, y);
+                }
             },
-            function(x, y) {
+            function(x, y, mouseButton) {
                 //End action
-                scene.selectEnd(x, y);
+                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                    scene.selectEnd(x, y);
+                }
             },
-            function(x, y) {
+            function(x, y, mouseButton) {
                 //Ongoing
-                scene.selectEnd(x, y);
+                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                    scene.selectEnd(x, y);
+                }
                 scene.updatePointer(x, y);
             },
             function(x, y) {
@@ -51,7 +57,7 @@ module TilePicker {
             function() { },
             function(x, y) {
                 //OnRightClick
-               scene.cleanSelection(); 
+                scene.cleanSelection();
             },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }

@@ -19,13 +19,49 @@ module World {
             this.grid = grid;
         }
 
-        render(context: CanvasRenderingContext2D, x: number, y: number) {
+        renderCell(context: CanvasRenderingContext2D, x: number, y: number) {
             for (var layer in this.layers) {
                 layer.render(context, x, y);
             }
         }
+        
+        renderGlobalEffects(context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
 
-        renderEffects(context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, renderingConfiguration: World.Configuration) {
+        }
+
+        renderCellUI(context: CanvasRenderingContext2D, x: number, y: number, renderingConfiguration: World.Configuration) {
+            if (!Utils.isUndefined(renderingConfiguration)) {
+                if (renderingConfiguration.showGrid) {
+                    context.strokeStyle = Constant.Color.RED;
+                    context.strokeRect(
+                        x * this.grid.cellW,
+                        y * this.grid.cellH,
+                        this.grid.cellW,
+                        this.grid.cellH);
+                }
+                if (renderingConfiguration.showEditorGrid) {
+                    context.save();
+                    context.globalAlpha = 0.4;
+                    context.strokeStyle = Constant.Color.GREY;
+                    context.strokeRect(
+                        x * this.grid.cellW,
+                        y * this.grid.cellH,
+                        this.grid.cellW,
+                        this.grid.cellH);
+                    context.restore();
+                }
+                if (renderingConfiguration.showCellNumbers) {
+                    context.fillStyle = Constant.Color.RED;
+                    context.font = "bold 10px Arial";
+                    context.fillText(
+                        x + "," + y,
+                        x * this.grid.cellW + 1,
+                        y * this.grid.cellH + 10);
+                }
+            }
+        }
+        
+        renderGlobalUI(context: CanvasRenderingContext2D, renderingConfiguration: World.Configuration) {
             if (!Utils.isUndefined(renderingConfiguration)) {
                 if (renderingConfiguration.enableSelection && !Utils.isUndefined(renderingConfiguration.selectPointStart)) {
                     var x = renderingConfiguration.selectPointStart.x * this.grid.cellW;
@@ -60,38 +96,6 @@ module World {
                     context.strokeRect(x, y, w, h);
                     context.restore();
 
-                }
-            }
-        }
-
-        renderOptionals(context: CanvasRenderingContext2D, x: number, y: number, renderingConfiguration: World.Configuration) {
-            if (!Utils.isUndefined(renderingConfiguration)) {
-                if (renderingConfiguration.showGrid) {
-                    context.strokeStyle = Constant.Color.RED;
-                    context.strokeRect(
-                        x * this.grid.cellW,
-                        y * this.grid.cellH,
-                        this.grid.cellW,
-                        this.grid.cellH);
-                }
-                if (renderingConfiguration.showEditorGrid) {
-                    context.save();
-                    context.globalAlpha = 0.4;
-                    context.strokeStyle = Constant.Color.GREY;
-                    context.strokeRect(
-                        x * this.grid.cellW,
-                        y * this.grid.cellH,
-                        this.grid.cellW,
-                        this.grid.cellH);
-                    context.restore();
-                }
-                if (renderingConfiguration.showCellNumbers) {
-                    context.fillStyle = Constant.Color.RED;
-                    context.font = "bold 10px Arial";
-                    context.fillText(
-                        x + "," + y,
-                        x * this.grid.cellW + 1,
-                        y * this.grid.cellH + 10);
                 }
             }
         }

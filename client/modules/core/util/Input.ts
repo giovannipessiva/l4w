@@ -33,14 +33,20 @@ module Input {
         static F4 = "115";
     }
 
+    export class MouseButtons {
+        static LEFT = 0;
+        static MIDDLE = 1;
+        static RIGHT = 2;
+    }
+
     export interface IPositionCallback {
-       (x: number, y: number): void;
+        (x: number, y: number, mouseButton?: number): void;
     };
     export interface IEventCallback {
-       (): void;
+        (): void;
     };
     export interface IKeyboardCallback {
-       (e: KeyboardEvent): void;
+        (e: KeyboardEvent): void;
     };
 
     export function init(
@@ -83,7 +89,7 @@ module Input {
         canvas.addEventListener("mousemove", function(e) {
             var position = mapEvent(e);
             if (flagMouseDown) {
-                ongoingActionCallback(position.x, position.y);
+                ongoingActionCallback(position.x, position.y, e.button);
             } else {
                 hoverCallback(position.x, position.y);
             }
@@ -91,16 +97,16 @@ module Input {
         canvas.addEventListener("mousedown", function(e: PointerEvent) {
             flagMouseDown = true;
             var position = mapEvent(e);
-            startActionCallback(position.x, position.y);
+            startActionCallback(position.x, position.y, e.button);
         });
         canvas.addEventListener("mouseup", function(e: PointerEvent) {
             flagMouseDown = false;
             var position = mapEvent(e);
-            endActionCallback(position.x, position.y);
+            endActionCallback(position.x, position.y, e.button);
         });
         canvas.addEventListener("mouseout", function(e: PointerEvent) {
             if (flagMouseDown) {
-                ongoingActionCallback(null, null);
+                ongoingActionCallback(null, null, e.button);
             } else {
                 hoverCallback(null, null);
             }
@@ -129,7 +135,7 @@ module Input {
             var position = mapEvent(e);
             ongoingActionCallback(null, null);
             endActionCallback(position.x, position.y);
-            
+
         });
         canvas.addEventListener("touchcancel", function(e) {
             var position = mapEvent(e);
@@ -180,8 +186,8 @@ module Input {
 
         function mapEvent(e) {
             var position: IPoint = {
-               x: e.clientX,
-               y: e.clientY
+                x: e.clientX,
+                y: e.clientY
             };
             return grid.mapPositionToGrid(position);
         }

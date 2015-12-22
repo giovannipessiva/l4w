@@ -68,23 +68,24 @@ class AbstractScene {
         // Base rendering
         for (var y = minRow; y <= maxRow; y++) {
             for (var x = minColumn; x <= maxColumn; x++) {
-                this.map.render(this.context, x, y);
+                this.map.renderCell(this.context, x, y);
             }
         }
         
         // Effects rendering
-        this.map.renderEffects(this.context, minRow, maxRow, minColumn, maxColumn, this.renderingConfiguration);
+        this.map.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
 
-        // Additions rendering
+        // UI rendering
         for (var y = minRow; y <= maxRow; y++) {
-            for (var x = minColumn; x <= maxColumn; x++) { 
-                this.map.renderOptionals(this.context, x, y, this.renderingConfiguration);
+            for (var x = minColumn; x <= maxColumn; x++) {
+                this.map.renderCellUI(this.context, x, y, this.renderingConfiguration);
             }
         }
+        this.map.renderGlobalUI(this.context, this.renderingConfiguration);
 
         this.renderFocus();
         this.renderPointer();
-        
+
         this.mainGameLoop_post();
     }
 
@@ -160,7 +161,7 @@ class AbstractScene {
     updatePointer(x: number, y: number) {
         this.pointer = {
             x: x,
-            y: y 
+            y: y
         };
     }
 
