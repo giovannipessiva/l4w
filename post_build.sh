@@ -7,7 +7,6 @@ git checkout deploy
 mv client/modules/core/asm/*.js client/
 
 rm -rf client/modules
-rm -rf client/test*
 rm -rf client/.gitignore
 rm -rf .settings
 rm -rf .externalToolBuilders
