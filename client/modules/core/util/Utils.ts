@@ -6,7 +6,8 @@
 module Utils {
 
     export function isEmpty<K, V>(map: Map<K, V>): boolean {
-        return (typeof map === "undefined") || (map.size === 0);
+//        return isUndefined(map) || (map.size === 0);
+        return isUndefined(map); //FIXME Map.size doesnt compile
     }
 
     export function isUndefined(obj: any): boolean {
