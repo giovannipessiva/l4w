@@ -7,8 +7,8 @@
     "start": "node server/index.js"
   },
   "dependencies": {
-    "compression": "^1.5",
-    "express": "^4.9",
+    "compression": "^1.6",
+    "express": "^4.13",
     "serve-favicon": "^2.3"
   },
   "devDependencies": {
