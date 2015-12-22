@@ -8,11 +8,18 @@ interface IPoint {
     y: number;
 };
 
+interface IRectangle {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+};
+
 interface IJQueryCallback {
-   (element: JQuery): void;
+    (element: JQuery): void;
 };
 
 interface IPropertiesCallback {
-   (props: Map<string, number>): void;
+    (props: Map<string, number>): void;
 };
 

@@ -1,15 +1,24 @@
 module Mapper {
 
+    export var mapper: MapperScene;
+
     export function start(canvas: HTMLCanvasElement) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
-            var scene = new StaticScene(grid);
-            initInput(canvas, scene, grid);
-            initWidgets(canvas, scene, grid);
-            scene.start(canvas);
+            var mapper = new MapperScene(grid);
+            initInput(canvas, mapper, grid);
+            initWidgets(canvas, mapper, grid);
+            injectTilePicker(mapper);
+            mapper.start(canvas);
         }, GridTypeEnum.mapper);
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
+    function injectTilePicker(mapper) {
+        TilePicker.injectReference(function(tilePicker: StaticScene) {
+            mapper.setTilePicker(tilePicker);
+        });
+    }
+
+    function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
             scene.moveFocus(Constant.Direction.UP);

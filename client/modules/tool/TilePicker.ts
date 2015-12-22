@@ -2,21 +2,23 @@
 
 module TilePicker {
 
-    var scene: StaticScene;
+    var tilePicker: StaticScene;
+    var injectionCallback;
 
     export function start(canvas: HTMLCanvasElement) {
 
-        if (Utils.isUndefined(scene)) {
+        if (Utils.isUndefined(tilePicker)) {
             // Create a new instance
             new StaticGrid(canvas, function(grid: StaticGrid) {
-                scene = new StaticScene(grid);
-                initInput(canvas, scene, grid);
-                scene.start(canvas);
-                scene.toggleEditorGrid(true);
+                var tmp = new StaticScene(grid);
+                registerReference(tmp);
+                initInput(canvas, tilePicker, grid);
+                tilePicker.start(canvas);
+                tilePicker.toggleEditorGrid(true);
             }, GridTypeEnum.tilePicker);
         } else {
             // Update current instance
-            scene.updateSize(canvas.height, canvas.width);
+            tilePicker.updateSize(canvas.height, canvas.width);
         }
     }
 
@@ -61,6 +63,21 @@ module TilePicker {
             },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
-            );
+        );
     };
+    
+    function registerReference(scene: StaticScene): StaticScene {
+        tilePicker = scene;
+        if(!Utils.isUndefined(injectionCallback)) {
+            injectionCallback(scene);
+        }
+        return scene;
+    }
+    
+    export function injectReference(callback) {
+        injectionCallback = callback;
+        if(!Utils.isUndefined(tilePicker)) {
+           callback(tilePicker); 
+        }
+    }
 }
