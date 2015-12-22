@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 					if_return: true,
 					join_vars: true
 				},
-				screwIE8: { },
+				//screwIE8: true,
 				mangle: true
 			},
 			dist: {
