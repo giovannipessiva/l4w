@@ -7,14 +7,15 @@ module Mapper {
             var mapper = new MapperScene(grid);
             initInput(canvas, mapper, grid);
             initWidgets(canvas, mapper, grid);
-            injectTilePicker(mapper);
+            injectScenes(mapper);
             mapper.start(canvas);
         }, GridTypeEnum.mapper);
     }
 
-    function injectTilePicker(mapper) {
-        TilePicker.injectReference(function(tilePicker: StaticScene) {
+    function injectScenes(mapper) {
+        TilePicker.injectReference(function(tilePicker: TilePickerScene) {
             mapper.setTilePicker(tilePicker);
+            tilePicker.setMapper(mapper);
         });
     }
 

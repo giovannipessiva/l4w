@@ -2,7 +2,7 @@
 
 module TilePicker {
 
-    var tilePicker: StaticScene;
+    var tilePicker: TilePickerScene;
     var injectionCallback;
 
     export function start(canvas: HTMLCanvasElement) {
@@ -10,7 +10,7 @@ module TilePicker {
         if (Utils.isUndefined(tilePicker)) {
             // Create a new instance
             new StaticGrid(canvas, function(grid: StaticGrid) {
-                var tmp = new StaticScene(grid);
+                var tmp = new TilePickerScene(grid);
                 registerReference(tmp);
                 initInput(canvas, tilePicker, grid);
                 tilePicker.start(canvas);
@@ -22,7 +22,7 @@ module TilePicker {
         }
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
+    function initInput(canvas: HTMLCanvasElement, scene: TilePickerScene, grid: StaticGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
 
         Input.init(
@@ -66,7 +66,7 @@ module TilePicker {
         );
     };
     
-    function registerReference(scene: StaticScene): StaticScene {
+    function registerReference(scene: TilePickerScene): StaticScene {
         tilePicker = scene;
         if(!Utils.isUndefined(injectionCallback)) {
             injectionCallback(scene);

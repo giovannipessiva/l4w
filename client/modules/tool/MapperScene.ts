@@ -1,20 +1,19 @@
+/// <reference path="StaticScene.ts" />
+
 /**
- * Scene implementation for managing Mapper logics
- */
+* Scene implementation for managing Mapper logics
+*/
 class MapperScene extends StaticScene {
 
-    private tilePicker: StaticScene;
+    private tilePicker: TilePickerScene;
 
-    setTilePicker(tilePicker: StaticScene) {
+    setTilePicker(tilePicker: TilePickerScene) {
         this.tilePicker = tilePicker;
     }
 
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
-            var selectionArea: IRectangle;
-            if (!Utils.isUndefined(this.tilePicker)) {
-                selectionArea = this.tilePicker.getSelectionArea();
-            }
+            var selectionArea: IRectangle = this.getSelectionArea();
             if (Utils.isUndefined(selectionArea)) {
                 super.renderPointer();
             } else {
@@ -29,6 +28,18 @@ class MapperScene extends StaticScene {
                     (selectionArea.y2 - selectionArea.y1 + 1) * this.grid.cellH);
                 this.context.restore();
             }
+        }
+    }
+
+    select(x: number, y: number) {
+        super.select(x, y);
+    }
+
+    getSelectionArea(): IRectangle {
+        if (!Utils.isUndefined(this.tilePicker)) {
+            return this.tilePicker.getSelectionArea();
+        } else {
+            return null;
         }
     }
 }
