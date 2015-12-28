@@ -1,4 +1,5 @@
 /// <reference path="../interfaces/jstree.d.ts" />
+/// <reference path="../interfaces/jstree.d.extended.ts" />
 /// <reference path="../core/util/Resource.ts" />
 /// <reference path="../core/util/Commons.ts" />
 
@@ -23,11 +24,12 @@ module EditPage {
 
         $("#mapPanel").on("changed.jstree", function(e, data) {
             $("#mapDetailPanel").show();
-            var node = data.instance.get_selected(true)[0];
-            $("#mapSizeW").val(node.data.w);
-            $("#mapSizeH").val(node.data.h);
+            var node: JSTreeNode = getSelectedNode();
+            $("#mapSizeW").val(node.data.w + "");
+            $("#mapSizeH").val(node.data.h + "");
             $("#tiles").val(node.data.tile);
-            loadTile();
+            TilePicker.loadTile(node.data.tile);
+            Mapper.loadMap(node);
         });
         
         // Resize the panel to match the tileset
@@ -44,7 +46,7 @@ module EditPage {
     }
 
     export function changeSize() {
-        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        var node = getSelectedNode();
         node.data.w = $("#mapSizeW").val();
         node.data.h = $("#mapSizeH").val();
 
@@ -81,31 +83,13 @@ module EditPage {
             contentType: "application/json",
             data: JSON.stringify(updatedData),
             success: function(result) {
-                loadTile();
+                TilePicker.loadTile(node.data.tile);
+                Mapper.changeTile(node.data.tile);
             }
         });
     }
 
-    export function loadTile() {
-        // Clear the canvas
-        var canvasTile = <HTMLCanvasElement> $("#canvasTile")[0];
-        var contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");
-        var canvasTilePicker = <HTMLCanvasElement> $("#canvasSelector")[0];
-        contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
-        // Load the tileset
-        Resource.load($("#tiles").val(), Resource.ResurceTypeEnum.TILE, function(element: JQuery) {
-            // Resize the canvas
-            var image = new Image();
-            image.src = element.attr("src");
-            $("#tilePanel").height(image.naturalHeight);
-            canvasTile.height = image.naturalHeight;
-            canvasTile.width = image.naturalWidth;
-            canvasTilePicker.height = image.naturalHeight;
-            canvasTilePicker.width = image.naturalWidth;      
-            // Paint the img in the canvas
-            contextTile.drawImage(<HTMLImageElement> element[0], 0, 0);
-            // Manage the tile selector canvas
-            TilePicker.start(canvasTilePicker);
-        });
+    function getSelectedNode(): JSTreeNode {
+        return $("#mapPanel").jstree(true).get_selected(true)[0];
     }
 }

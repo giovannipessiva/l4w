@@ -11,6 +11,17 @@ module Mapper {
             mapper.start(canvas);
         }, GridTypeEnum.mapper);
     }
+    
+    export function changeTile(tile: string) {
+        //controlla se il tile è diverso da quello attuale
+        //se lo è, cambialo e ridisegna la mappa
+    }
+    
+    export function loadMap(mapNode: JSTreeNode) {
+        Resource.load(mapNode.id, Resource.ResurceTypeEnum.MAP, function(element: JQuery) {
+            //TODO disegna la mappa caricata
+        });
+    }
 
     function injectScenes(mapper) {
         TilePicker.injectReference(function(tilePicker: TilePickerScene) {
