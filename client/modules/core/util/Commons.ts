@@ -15,6 +15,12 @@ interface IRectangle {
     y2: number;
 };
 
+interface JSTreeNodeData {
+    w: number;
+    h: number;
+    tile: string;
+}
+
 interface IJQueryCallback {
     (element: JQuery): void;
 };
@@ -22,4 +28,3 @@ interface IJQueryCallback {
 interface IPropertiesCallback {
     (props: Map<string, number>): void;
 };
-

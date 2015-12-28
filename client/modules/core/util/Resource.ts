@@ -39,14 +39,14 @@ module Resource {
             if (line !== "" && line.indexOf("#") !== 0) {
                 var lineTokens = line.split("=");
                 var value: number = +lineTokens[1];
-                if(!isNaN(value)) {
+                if (!isNaN(value)) {
                     props.set(lineTokens[0], value);
                 } else {
                     // If value is NaN, check if it's a valid key 
-                    if(props.has(lineTokens[1])) {
+                    if (props.has(lineTokens[1])) {
                         props.set(lineTokens[0], props.get(lineTokens[1]));
                     } else {
-                        console.error("Error parsing properties file at line "+i+": "+value);
+                        console.error("Error parsing properties file at line " + i + ": " + value);
                     }
                 }
             }
@@ -80,6 +80,12 @@ module Resource {
      * Load an asset and call a callback
      */
     export function load(file: string, assetType: ResurceTypeEnum, callback: IJQueryCallback) {
+        //TODO find out why sometimes a null file di loaded
+        if (Utils.isUndefined(file)) {
+            console.error("Trying to load empty file!");
+            console.trace();
+        }
+        
         var path = getResourcePath(file, assetType);
         var $loader = $(document.createElement("img"));
         $loader.attr("src", path);

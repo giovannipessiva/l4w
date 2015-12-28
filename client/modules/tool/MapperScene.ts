@@ -1,8 +1,8 @@
 /// <reference path="StaticScene.ts" />
 
 /**
-* Scene implementation for managing Mapper logics
-*/
+ * Scene implementation for managing Mapper logics
+ */
 class MapperScene extends StaticScene {
 
     private tilePicker: TilePickerScene;
