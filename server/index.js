@@ -38,8 +38,8 @@ app.get('/data/:file', function(request, response) {
 });
 app.get('/data/:type/:file', function(request, response) {
 	var file = request.params.file;
-	var typology = request.params.type;
-	var filePath = path.resolve(__dirname + '/../client/data/' + typology);
+	var type = request.params.type;
+	var filePath = path.resolve(__dirname + '/../client/data/' + type);
 	utils.sendFile(filePath, file, response);
 });
 app.get('/assets/:file', function(request, response) {
@@ -49,8 +49,8 @@ app.get('/assets/:file', function(request, response) {
 });
 app.get('/assets/:type/:file', function(request, response) {
 	var file = request.params.file;
-	var typology = request.params.type;
-	var filePath = path.resolve(__dirname + '/../client/assets/' + typology);
+	var type = request.params.type;
+	var filePath = path.resolve(__dirname + '/../client/assets/' + type);
 	utils.sendFile(filePath, file, response);
 });
 app.get('/style/:file', function(request, response) {

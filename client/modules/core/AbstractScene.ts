@@ -19,7 +19,10 @@ var nextAnimationFrame =
  */
 class AbstractScene {
 
-    map: World.Map;
+    map: IMap;
+    tile: string;
+    
+    location: World.Location;
 
     focus: IPoint;
     pointer: IPoint;
@@ -31,7 +34,7 @@ class AbstractScene {
     grid: AbstractGrid;
 
     constructor(grid: AbstractGrid) {
-        this.map = new World.Map(grid);
+        this.location = new World.Location(grid);
         this.focus = {
             x: 0, y: 0
         };
@@ -39,7 +42,7 @@ class AbstractScene {
             x: 0, y: 0
         };
         this.renderingConfiguration = new World.Configuration();
-        this.layers = this.map.getLayers();
+        this.layers = this.location.getLayers();
         this.grid = grid;
     }
 
@@ -68,20 +71,20 @@ class AbstractScene {
         // Base rendering
         for (var y = minRow; y <= maxRow; y++) {
             for (var x = minColumn; x <= maxColumn; x++) {
-                this.map.renderCell(this.context, x, y);
+                this.location.renderCell(this.context, x, y);
             }
         }
         
         // Effects rendering
-        this.map.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
+        this.location.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
 
         // UI rendering
         for (var y = minRow; y <= maxRow; y++) {
             for (var x = minColumn; x <= maxColumn; x++) {
-                this.map.renderCellUI(this.context, x, y, this.renderingConfiguration);
+                this.location.renderCellUI(this.context, x, y, this.renderingConfiguration);
             }
         }
-        this.map.renderGlobalUI(this.context, this.renderingConfiguration);
+        this.location.renderGlobalUI(this.context, this.renderingConfiguration);
 
         this.renderFocus();
         this.renderPointer();
@@ -173,12 +176,20 @@ class AbstractScene {
             case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
         }
-        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.columns, this.map.rows);
+        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.location.columns, this.location.rows);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
 
     updateContext(canvas: HTMLCanvasElement) {
         this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
         this.context.scale(this.grid.scale, this.grid.scale);
+    }
+       
+    setMap(map: IMap) {
+       this.map = map;
+    }
+           
+    setTile(tile: string) {
+       this.tile = tile;
     }
 }

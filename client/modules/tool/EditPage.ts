@@ -23,6 +23,7 @@ module EditPage {
         });
 
         $("#mapPanel").on("changed.jstree", function(e, data) {
+            //TODO avoid double call at start
             $("#mapDetailPanel").show();
             var node: JSTreeNode = getSelectedNode();
             $("#mapSizeW").val(node.data.w + "");

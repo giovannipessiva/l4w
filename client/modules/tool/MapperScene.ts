@@ -7,14 +7,10 @@ class MapperScene extends StaticScene {
 
     private tilePicker: TilePickerScene;
 
-    setTilePicker(tilePicker: TilePickerScene) {
-        this.tilePicker = tilePicker;
-    }
-
     protected renderPointer() {
         if (this.pointer.x != null && this.pointer.y != null) {
             var selectionArea: IRectangle = this.getSelectionArea();
-            if (Utils.isUndefined(selectionArea)) {
+            if (Utils.isEmpty(selectionArea)) {
                 super.renderPointer();
             } else {
                 // Pointer with selected tile cells
@@ -36,10 +32,14 @@ class MapperScene extends StaticScene {
     }
 
     getSelectionArea(): IRectangle {
-        if (!Utils.isUndefined(this.tilePicker)) {
+        if (!Utils.isEmpty(this.tilePicker)) {
             return this.tilePicker.getSelectionArea();
         } else {
             return null;
         }
+    }
+    
+    setTilePicker(tilePicker: TilePickerScene) {
+        this.tilePicker = tilePicker;
     }
 }

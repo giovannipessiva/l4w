@@ -22,7 +22,7 @@ module Resource {
         if (propertiesCache.has(file)) {
             onLoadCallback(propertiesCache.get(file));
         } else {
-            function parsePropertiesCallback() {
+            function parsePropertiesCallback(e: ProgressEvent) {
                 var props: Map<string, number> = parseProperties(this.responseText);
                 propertiesCache.set(file, props);
                 onLoadCallback(props);
@@ -54,7 +54,7 @@ module Resource {
         return props;
     };
 
-    function sendRequest(uri: string, callback: { (): void }) {
+    function sendRequest(uri: string, callback: IProgressCallback) {
         var request = new XMLHttpRequest();
         request.onload = callback;
         request.onerror = handleRequestError;
@@ -65,6 +65,8 @@ module Resource {
         } catch (exception) {
             if (exception.name === "NetworkError") {
                 console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
+            } else {
+                console.error(exception);
             }
         }
         function handleRequestError(event: ErrorEvent) {
@@ -79,28 +81,43 @@ module Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: ResurceTypeEnum, callback: IJQueryCallback) {
-        //TODO find out why sometimes a null file di loaded
-        if (Utils.isUndefined(file)) {
+    export function load(file: string, assetType: ResurceTypeEnum, callback: { (response: any): void }) {
+        
+        //TODO find out why sometimes a null file is loaded
+        if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
         }
-        
+
         var path = getResourcePath(file, assetType);
-        var $loader = $(document.createElement("img"));
-        $loader.attr("src", path);
-        $loader.load(function() {
-            callback($loader);
-        });
-    }
-    
-    /**
-     * Load an asset and put it in an img element
-     */
-    export function loadToImg(file: string, resourceType: ResurceTypeEnum, imageId: string) {
-        load(file, resourceType, function(tmpImg: JQuery) {
-            $("#" + imageId).attr("src", tmpImg.attr("src"));
-        });
+
+        switch (assetType) {
+            case ResurceTypeEnum.CHAR:
+            case ResurceTypeEnum.FACE:
+            case ResurceTypeEnum.SKIN:
+            case ResurceTypeEnum.TILE:
+                // Load image file
+                var $loader = $(document.createElement("img"));
+                $loader.attr("src", path);
+                $loader.load(function() {
+                    callback($loader);
+                });
+                break;
+            case ResurceTypeEnum.MAP:
+                // Load text file
+                
+                //TODO verificare come gestire l'output
+                function parsePropertiesCallback(e: ProgressEvent) {
+                    callback(this.responseText);
+                }
+
+                sendRequest(path + ".json", parsePropertiesCallback);
+                break;
+            default:
+                console.error("Unexpected resource type");
+                console.trace();
+        }
+
     }
 
     function getResourcePath(file: string, assetType: ResurceTypeEnum): string {
@@ -124,6 +141,9 @@ module Resource {
                     case ResurceTypeEnum.TILE:
                         path += "tileset/";
                         break;
+                    default:
+                        console.error("Unexpected resource type");
+                        console.trace();
                 };
                 break;
             case ResurceTypeEnum.MAP:
@@ -132,8 +152,14 @@ module Resource {
                     case ResurceTypeEnum.MAP:
                         path += "map/";
                         break;
+                    default:
+                        console.error("Unexpected resource type");
+                        console.trace();
                 };
                 break;
+            default:
+                console.error("Unexpected resource type");
+                console.trace();
         };
 
         return path + file;

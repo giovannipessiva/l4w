@@ -19,7 +19,7 @@ module Actor {
             this.state = 0;
         }
 
-        update(events: Event[], map: World.Map, time: number) {
+        update(events: Event[], map: World.Location, time: number) {
             this.states[this.state].update(events, map, time);
         }
 
@@ -37,7 +37,7 @@ module Actor {
             this.event = event;
         }
 
-        update(events: Event[], map: World.Map, time: number) {
+        update(events: Event[], map: World.Location, time: number) {
             //TODO update EventState
         }
 

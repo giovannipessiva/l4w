@@ -12,7 +12,7 @@ class TilePickerScene extends StaticScene {
     }
 
     select(x: number, y: number) {
-        if (!Utils.isUndefined(this.mapper)) {
+        if (!Utils.isEmpty(this.mapper)) {
             this.mapper.cleanSelection();
         }
         super.select(x, y);

@@ -15,10 +15,10 @@ interface IRectangle {
     y2: number;
 };
 
-interface IJQueryCallback {
-    (element: JQuery): void;
-};
-
 interface IPropertiesCallback {
     (props: Map<string, number>): void;
+};
+
+interface IProgressCallback {
+    (e: ProgressEvent): void;
 };

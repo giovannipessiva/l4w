@@ -1,6 +1,7 @@
 module Mapper {
 
     export var mapper: MapperScene;
+    var tmpMap: IMap;
 
     export function start(canvas: HTMLCanvasElement) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
@@ -8,18 +9,34 @@ module Mapper {
             initInput(canvas, mapper, grid);
             initWidgets(canvas, mapper, grid);
             injectScenes(mapper);
+            if (!Utils.isEmpty(tmpMap)) {
+                mapper.setMap(tmpMap);
+            }
             mapper.start(canvas);
         }, GridTypeEnum.mapper);
     }
-    
+
     export function changeTile(tile: string) {
-        //controlla se il tile è diverso da quello attuale
-        //se lo è, cambialo e ridisegna la mappa
+        mapper.setTile(tile);
     }
-    
+
     export function loadMap(mapNode: JSTreeNode) {
-        Resource.load(mapNode.id, Resource.ResurceTypeEnum.MAP, function(element: JQuery) {
-            //TODO disegna la mappa caricata
+        Resource.load(mapNode.id, Resource.ResurceTypeEnum.MAP, function(resourceText: string) {
+            if (Utils.isEmpty(resourceText)) {
+                console.error("Error while loading map: " + mapNode.id);
+            } else {
+                try {
+                    var map: IMap = JSON.parse(resourceText);
+                    injectMap(map);
+                } catch (exception) {
+                    if (exception.name === "SyntaxError") {
+                        console.error("Error while parsing map: " + mapNode.id);
+                        console.error(exception.message);
+                    } else {
+                        console.error(exception);
+                    }
+                }
+            }
         });
     }
 
@@ -28,6 +45,13 @@ module Mapper {
             mapper.setTilePicker(tilePicker);
             tilePicker.setMapper(mapper);
         });
+    }
+
+    function injectMap(map: IMap) {
+        tmpMap = map;
+        if (!Utils.isEmpty(mapper)) {
+            mapper.setMap(map);
+        }
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
@@ -63,19 +87,19 @@ module Mapper {
             function() { },
             function(x, y, mouseButton) {
                 // Start action
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.select(x, y);
                 }
             },
             function(x, y, mouseButton) {
                 //End action
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.selectEnd(x, y);
                 }
             },
             function(x, y, mouseButton) {
                 //Ongoing
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.selectEnd(x, y);
                 }
                 scene.updatePointer(x, y);

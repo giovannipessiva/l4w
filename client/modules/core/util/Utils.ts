@@ -5,13 +5,14 @@
  */
 module Utils {
 
-    export function isEmpty<K, V>(map: Map<K, V>): boolean {
-//        return isUndefined(map) || (map.size === 0);
-        return isUndefined(map); //FIXME Map.size doesnt compile
-    }
-
-    export function isUndefined(obj: any): boolean {
-        return (obj === null) || (typeof obj === "undefined");
+    export function isEmpty(obj: any): boolean {
+        if(obj === null || typeof obj === "undefined") {
+            return true;
+        } else if(typeof obj === "string") {
+            return obj === "";
+        }
+        //TODO come fare a identificare le collections?
+        return false;
     }
 
     export function mergeMaps<T>(primary: Map<string, T>, secondary: Map<string, T>): Map<string, T> {

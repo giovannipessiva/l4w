@@ -3,7 +3,7 @@
  */
 module World {
 
-    export class Map {
+    export class Location {
 
         rows: number;
         columns: number;
@@ -30,7 +30,7 @@ module World {
         }
 
         renderCellUI(context: CanvasRenderingContext2D, x: number, y: number, renderingConfiguration: World.Configuration) {
-            if (!Utils.isUndefined(renderingConfiguration)) {
+            if (!Utils.isEmpty(renderingConfiguration)) {
                 if (renderingConfiguration.showGrid) {
                     context.strokeStyle = Constant.Color.RED;
                     context.strokeRect(
@@ -62,14 +62,14 @@ module World {
         }
         
         renderGlobalUI(context: CanvasRenderingContext2D, renderingConfiguration: World.Configuration) {
-            if (!Utils.isUndefined(renderingConfiguration)) {
-                if (renderingConfiguration.enableSelection && !Utils.isUndefined(renderingConfiguration.selectPointStart)) {
+            if (!Utils.isEmpty(renderingConfiguration)) {
+                if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectPointStart)) {
                     var x = renderingConfiguration.selectPointStart.x * this.grid.cellW;
                     var y = renderingConfiguration.selectPointStart.y * this.grid.cellH;
 
                     var w;
                     var h;
-                    if (Utils.isUndefined(renderingConfiguration.selectPointEnd)) {
+                    if (Utils.isEmpty(renderingConfiguration.selectPointEnd)) {
                         h = this.grid.cellH;
                         w = this.grid.cellW;
                     } else {
@@ -126,5 +126,4 @@ module World {
         selectPointStart: IPoint;
         selectPointEnd: IPoint;
     }
-
 }

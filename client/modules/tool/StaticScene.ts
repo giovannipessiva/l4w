@@ -78,14 +78,14 @@ class StaticScene extends AbstractScene {
     }
 
     getSelectionArea(): IRectangle {
-        if (Utils.isUndefined(this.renderingConfiguration.selectPointStart)) {
+        if (Utils.isEmpty(this.renderingConfiguration.selectPointStart)) {
             return null;
         }
         var x1 = this.renderingConfiguration.selectPointStart.x;
         var y1 = this.renderingConfiguration.selectPointStart.y;
         var x2;
         var y2;
-        if (!Utils.isUndefined(this.renderingConfiguration.selectPointEnd)) {
+        if (!Utils.isEmpty(this.renderingConfiguration.selectPointEnd)) {
             x2 = this.renderingConfiguration.selectPointEnd.x;
             y2 = this.renderingConfiguration.selectPointEnd.y;
             if (x1 > x2) {

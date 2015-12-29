@@ -7,7 +7,7 @@ module TilePicker {
 
     export function start(canvas: HTMLCanvasElement) {
 
-        if (Utils.isUndefined(tilePicker)) {
+        if (Utils.isEmpty(tilePicker)) {
             // Create a new instance
             new StaticGrid(canvas, function(grid: StaticGrid) {
                 var tmp = new TilePickerScene(grid);
@@ -56,19 +56,19 @@ module TilePicker {
             function() { },
             function(x, y, mouseButton) {
                 // Start action
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.select(x, y);
                 }
             },
             function(x, y, mouseButton) {
                 //End action
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.selectEnd(x, y);
                 }
             },
             function(x, y, mouseButton) {
                 //Ongoing
-                if (Utils.isUndefined(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     scene.selectEnd(x, y);
                 }
                 scene.updatePointer(x, y);
@@ -91,7 +91,7 @@ module TilePicker {
 
     function registerReference(scene: TilePickerScene): StaticScene {
         tilePicker = scene;
-        if (!Utils.isUndefined(injectionCallback)) {
+        if (!Utils.isEmpty(injectionCallback)) {
             injectionCallback(scene);
         }
         return scene;
@@ -99,7 +99,7 @@ module TilePicker {
 
     export function injectReference(callback) {
         injectionCallback = callback;
-        if (!Utils.isUndefined(tilePicker)) {
+        if (!Utils.isEmpty(tilePicker)) {
             callback(tilePicker);
         }
     }

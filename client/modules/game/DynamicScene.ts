@@ -38,9 +38,9 @@ class DynamicScene extends AbstractScene {
         this.context.fillText("(it's not ready yet)", 160, 260);
 
         var time = Time.getTime();
-        this.hero.update(this.events, this.map, time);
+        this.hero.update(this.events, this.location, time);
         for (var event in this.events) {
-            event.update(this.events, this.map, time);
+            event.update(this.events, this.location, time);
         }
 
         return true;
