@@ -10,11 +10,12 @@ module Utils {
             return true;
         } else if(typeof obj === "string") {
             return obj === "";
-        }
-        //TODO come fare a identificare le collections?
+        } else if(typeof obj === "object" && "size" in obj) {
+           return obj.size === 0; 
+        } 
         return false;
     }
-
+    
     export function mergeMaps<T>(primary: Map<string, T>, secondary: Map<string, T>): Map<string, T> {
         var newMap: Map<string, T> = new Map<string, T>();
         function addToNewMap(value: T, index: string, map: Map<string, T>) {
