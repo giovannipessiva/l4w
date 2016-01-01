@@ -153,8 +153,6 @@ module Input {
             if (callback !== undefined) {
                 e.preventDefault();
                 callback(e);
-            } else {
-                //console.log("Tasto non registrato:" + e.keyCode); //TODO remove
             }
             lastKey = e.keyCode;
         });

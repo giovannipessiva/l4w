@@ -105,8 +105,6 @@ module Resource {
                 break;
             case ResurceTypeEnum.MAP:
                 // Load text file
-                
-                //TODO verificare come gestire l'output
                 function parsePropertiesCallback(e: ProgressEvent) {
                     callback(this.responseText);
                 }
