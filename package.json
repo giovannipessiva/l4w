@@ -9,7 +9,8 @@
   "dependencies": {
     "compression": "^1.6",
     "express": "^4.13",
-    "serve-favicon": "^2.3"
+    "serve-favicon": "^2.3",
+    "pg": "^4.4"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "^0.11",
