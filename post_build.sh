@@ -10,6 +10,7 @@ rm -rf client/modules
 rm -rf client/.gitignore
 rm -rf .settings
 rm -rf .externalToolBuilders
+rm .env
 rm .project
 rm .travis.yml
 rm Gruntfile.js

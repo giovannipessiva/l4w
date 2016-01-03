@@ -72,17 +72,15 @@ app.post('/edit/maps', function(request, response) {
 	});
 });
 
-//Test connection
+//Test DB connection
 pg.connect(process.env.DATABASE_URL, function(err, client) {
-	if (err)
+	if (err) {
+		console.error("Connection to PostgreSQL failed!");
+		console.warn("If you are running locally: 1) check the URL in .env 2) be sure PostgreSQL is running");
 		throw err;
-	console.log('Connected to postgres! Getting schemas...');
-
-	client.query(
-			'SELECT table_schema,table_name FROM information_schema.tables;')
-			.on('row', function(row) {
-				console.log(JSON.stringify(row));
-			});
+	} else {
+		console.log("Connected to PostgreSQL");
+	}
 });
 
 // Startup message
