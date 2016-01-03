@@ -10,7 +10,8 @@
     "compression": "^1.6",
     "express": "^4.13",
     "serve-favicon": "^2.3",
-    "pg": "^4.4"
+    "pg": "^4.4",
+    "sequelize". "^3.15"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "^0.11",
