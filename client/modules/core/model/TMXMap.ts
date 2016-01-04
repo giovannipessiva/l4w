@@ -3,21 +3,21 @@
  * https://github.com/bjorn/tiled/wiki/JSON-Map-Format
  */
 
-interface TMXMap {
+interface IMap {
     width: number; //Number of tile columns
     height: number; //Number of tile rows
     tilewidth: number; //Map grid width.
     tileheight: number; //Map grid height.
     orientation: string; //Orthogonal, isometric, or staggered
-    layers: [TMXLayer]; //Array of Layers 
-    tilesets: [TMXTileset]; //Array of Tilesets 
+    layers: [IMapLayer]; //Array of Layers 
+    tilesets: [IMapTileset]; //Array of Tilesets 
     backgroundcolor?: string; //Hex-formatted color (#RRGGBB) (Optional)
     renderorder?: string; //Rendering direction (orthogonal maps only)
-    properties: Object; //String key-value pairs
+    properties: { [key: string] : string }; //String key-value pairs
     nextobjectid: number; //Auto-increments for each placed 
 };
 
-interface TMXLayer {
+interface IMapLayer {
     width: number; //Column count. Same as map width in Tiled Qt.
     height: number; //Row count. Same as map height in Tiled Qt.
     name: string; //Name assigned to this layer
@@ -26,19 +26,19 @@ interface TMXLayer {
     x: number; //Horizontal layer offset. Always 0 in Tiled Qt.
     y: number; //Vertical layer offset. Always 0 in Tiled Qt.
     data?: [number]; //Array of GIDs. tilelayer only.
-    objects?: [TMXObject]; //Array of Objects. objectgroup only.
-    properties: Object; //string key-value pairs.
+    objects?: [IMapObject]; //Array of Objects. objectgroup only.
+    properties: { [key: string] : string }; //string key-value pairs.
     opacity: number; //Value between 0 and 1
     draworder?: string; //"topdown" (default) or "index". objectgroup only.
 };
 
-interface TMXObject {
+interface IMapObject {
     id: number; //Incremental id - unique across all objects
     width: number; //Width in pixels. Ignored if using a gid.
     height: number; //Height in pixels. Ignored if using a gid.
     name: string; //String assigned to name field in editor
     type: string; //String assigned to type field in editor
-    properties: Object; //String key-value pairs
+    properties: { [key: string] : string }; //String key-value pairs
     visible: boolean; //Whether object is shown in editor.
     x: number; //x coordinate in pixels
     y: number; //y coordinate in pixels
@@ -46,7 +46,7 @@ interface TMXObject {
     gid: number; //GID, only if object comes from a Tilemap
 };
 
-interface TMXTileset {
+interface IMapTileset {
     firstgid: number; //GID corresponding to the first tile in the set
     image: string; //Image used for tiles in this set
     name: string; //Name given to this tileset
@@ -54,19 +54,19 @@ interface TMXTileset {
     tileheight: number; //Maximum height of tiles in this set
     imagewidth: number; //Width of source image in pixels
     imageheight: number; //Height of source image in pixels
-    properties: Object; //String key-value pairs
+    properties: { [key: string] : string }; //String key-value pairs
     margin: number; //Buffer between image edge and first tile (pixels)
     spacing: number; //Spacing between adjacent tiles in image (pixels)
-    tileproperties: Object; //Per-tile properties, indexed by gid as string
-    terrains?: [TMXTerrain]; //Array of Terrains (optional)
-    tiles?: [{ [k: string] : TMXTile }]; //Gid-indexed Tiles (optional)
+    tileproperties: { [gid: number] : { [key: string] : string } }; //Per-tile properties, indexed by gid as string
+    terrains?: [IMapTerrain]; //Array of Terrains (optional)
+    tiles?: [{ [k: string] : IMapTile }]; //Gid-indexed Tiles (optional)
 };
 
-interface TMXTerrain {
+interface IMapTerrain {
     name: string; //Name of terrain
     tile: number; //Local ID of tile representing terrain
 };
 
-interface TMXTile {
+interface IMapTile {
     terrain: [number]; //Index of terrain for each corner of tile
 };
