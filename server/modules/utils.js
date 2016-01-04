@@ -13,27 +13,37 @@ module.exports = {
                 'x-sent': true
             }
         };
-		if (this.endsWith(file, ".json")) {
-			response.type('application/json');
-		} else if (this.endsWith(file, ".properties")) {
-			response.type("text/x-java-properties");
-		}
-		response.sendFile(
-			path + "/" + file,
-			options,
-			function(err) {
-				if (err && response.statusCode != 304 && err.code !== "ECONNABORT") {
-					if (response.statusCode == 404 && file !== placeholder) {
-						sendFile(path, placeholder, response);
-					} else {
-						console.log("utils.sendFile - " + err);
-						response.status(err.status).end();
-					}
-				}
-			});
+        if (this.endsWith(file, ".json")) {
+            response.type('application/json');
+        } else if (this.endsWith(file, ".properties")) {
+            response.type("text/x-java-properties");
+        }
+        response.sendFile(
+            path + "/" + file,
+            options,
+            function(err) {
+                if (err && response.statusCode != 304 && err.code !== "ECONNABORT") {
+                    if (response.statusCode == 404 && file !== placeholder) {
+                        sendFile(path, placeholder, response);
+                    } else {
+                        console.log("utils.sendFile - " + err);
+                        response.status(err.status).end();
+                    }
+                }
+            });
     },
-    endsWith: function(file,suffix) {
+    endsWith: function(file, suffix) {
         return file.indexOf(suffix, file.length - suffix.length) !== -1;
+    },
+    isEmpty: function(obj) {
+        if (obj === null || typeof obj === "undefined") {
+            return true;
+        } else if (typeof obj === "string") {
+            return obj === "";
+        } else if (typeof obj === "object" && "size" in obj) {
+            return obj.size === 0;
+        }
+        return false;
     }
 };
    
