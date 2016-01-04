@@ -19,14 +19,14 @@ if (utils.isEmpty(process.env.DATABASE_URL)) {
         dialect: 'postgres',
         protocol: 'postgres',
         dialectOptions: {
-            ssl: true
+            //ssl: true //Required for connection to Heroku PostgreSQL
         }
     });
 
     sequelize.authenticate().then(function() {
         console.log("Connection to PostgreSQL successful");
     }).catch(function(err) {
-        console.log("Connection to PostgreSQL failed: " + err);
+        console.error("Connection to PostgreSQL failed: " + err);
         process.exit(1);
     }).done();
 }
