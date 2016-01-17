@@ -10,7 +10,6 @@ var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
 
 //Test DB connection
-console.log("Testing PostgreSQL connection...");
 if (utils.isEmpty(process.env.DATABASE_URL)) {
     console.error("Env variable DATABASE_URL undefined!");
     process.exit(1);
@@ -23,9 +22,7 @@ if (utils.isEmpty(process.env.DATABASE_URL)) {
         }
     });
 
-    sequelize.authenticate().then(function() {
-        console.log("Connection to PostgreSQL successful");
-    }).catch(function(err) {
+    sequelize.authenticate().catch(function(err) {
         console.error("Connection to PostgreSQL failed: " + err);
         process.exit(1);
     }).done();

@@ -1,4 +1,4 @@
-/// <reference path="model/TMXMap.ts" />
+/// <reference path="model/Map.ts" />
 
 /**
  * Class for handling TMXMaps
