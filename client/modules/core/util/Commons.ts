@@ -15,6 +15,19 @@ interface IRectangle {
     y2: number;
 };
 
+class RenderConfiguration {
+    showGrid: boolean = false;
+    showEditorGrid: boolean = false;
+    showFPS: boolean = false;
+    showCellNumbers: boolean = false;
+    showFocus: boolean = false;
+    enableSelection: boolean = false;
+
+    fps: number = 0;
+    selectPointStart: IPoint;
+    selectPointEnd: IPoint;
+}
+
 interface IPropertiesCallback {
     (props: Map<string, number>): void;
 };

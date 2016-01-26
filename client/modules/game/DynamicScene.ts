@@ -1,5 +1,6 @@
 /// <reference path="../core/AbstractScene.ts" />
-
+/// <reference path="../core/DataLoader.ts" />
+/// <reference path="../core/manager/EventManager.ts" />
 /*
  * Scene implementation for managing dynamic rendering
  */
@@ -16,12 +17,12 @@ class DynamicScene extends AbstractScene {
 
     paused = false;
 
-    hero: Actor.Event;
-    events: Actor.Event[];
+    hero: IEvent;
+    events: IEvent[];
 
     constructor(grid: DynamicGrid) {
         super(grid);        
-        this.hero = new Actor.Event();
+        this.hero = DataLoader.loadHero();
     }
 
     protected mainGameLoop_pre() {
@@ -38,9 +39,9 @@ class DynamicScene extends AbstractScene {
         this.context.fillText("(it's not ready yet)", 160, 260);
 
         var time = Time.getTime();
-        this.hero.update(this.events, this.location, time);
+        EventManager.update(this.hero, time);
         for (var event in this.events) {
-            event.update(this.events, this.location, time);
+            EventManager.update(event, time);
         }
 
         return true;

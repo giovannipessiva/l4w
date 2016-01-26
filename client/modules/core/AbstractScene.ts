@@ -1,5 +1,5 @@
-/// <reference path="Actor.ts" />
-/// <reference path="World.ts" />
+/// <reference path="manager/EventManager.ts" />
+/// <reference path="MapEngine.ts" />
 /// <reference path="AbstractGrid.ts" />
 /// <reference path="util/Constant.ts" />
 /// <reference path="util/Commons.ts" />
@@ -22,27 +22,25 @@ class AbstractScene {
     map: IMap;
     tile: string;
     
-    location: World.Location;
-
     focus: IPoint;
     pointer: IPoint;
 
-    renderingConfiguration: World.Configuration;
+    renderingConfiguration: RenderConfiguration;
     layers: number;
 
     context: CanvasRenderingContext2D;
     grid: AbstractGrid;
+    mapEngine: MapEngine;
 
     constructor(grid: AbstractGrid) {
-        this.location = new World.Location(grid);
+        this.mapEngine = new MapEngine(grid);
         this.focus = {
             x: 0, y: 0
         };
         this.pointer = {
             x: 0, y: 0
         };
-        this.renderingConfiguration = new World.Configuration();
-        this.layers = this.location.getLayers();
+        this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
     }
 
@@ -69,22 +67,12 @@ class AbstractScene {
         var maxColumn = boundariesX.max;
         
         // Base rendering
-        for (var y = minRow; y <= maxRow; y++) {
-            for (var x = minColumn; x <= maxColumn; x++) {
-                this.location.renderCell(this.context, x, y);
-            }
-        }
-        
+        this.mapEngine.render(this.context, minRow, maxRow, minColumn, maxColumn);
         // Effects rendering
-        this.location.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
-
+        this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
-        for (var y = minRow; y <= maxRow; y++) {
-            for (var x = minColumn; x <= maxColumn; x++) {
-                this.location.renderCellUI(this.context, x, y, this.renderingConfiguration);
-            }
-        }
-        this.location.renderGlobalUI(this.context, this.renderingConfiguration);
+        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        this.mapEngine.renderGlobalUI(this.context, this.renderingConfiguration);
 
         this.renderFocus();
         this.renderPointer();
@@ -176,7 +164,7 @@ class AbstractScene {
             case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
         }
-        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.location.columns, this.location.rows);
+        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.mapEngine.columns, this.mapEngine.rows);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
 
