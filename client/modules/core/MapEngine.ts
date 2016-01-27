@@ -6,16 +6,12 @@
  */
 class MapEngine {
     
-    rows: number;
-    columns: number;
-    
+    map: IMap;
+
     private grid: AbstractGrid;
     
     constructor(grid: AbstractGrid){
-       this.grid=grid; 
-        //TODO remove
-        this.rows=40;
-        this.columns=30;
+        this.grid=grid;
     }
 
     save() {

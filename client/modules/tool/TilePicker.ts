@@ -29,7 +29,7 @@ module TilePicker {
         var canvasTilePicker = <HTMLCanvasElement> $("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.ResurceTypeEnum.TILE, function(element: JQuery) {
+        Resource.load(tile, Resource.TypeEnum.TILE, function(element: JQuery) {
             // Resize the canvas
             var image = new Image();
             image.src = element.attr("src");

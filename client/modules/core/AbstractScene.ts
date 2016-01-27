@@ -42,6 +42,11 @@ class AbstractScene {
         };
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
+        
+        //TODO da rimuovere, la mappa deve essere caricata correttamente
+        this.map = JSON.parse("{}");
+        this.map.width=30;
+        this.map.height=320;
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -164,7 +169,7 @@ class AbstractScene {
             case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
         }
-        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.mapEngine.columns, this.mapEngine.rows);
+        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
 

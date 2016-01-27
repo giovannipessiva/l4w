@@ -35,3 +35,7 @@ interface IPropertiesCallback {
 interface IProgressCallback {
     (e: ProgressEvent): void;
 };
+
+interface IBooleanCallback {
+    (result: boolean): void;
+};

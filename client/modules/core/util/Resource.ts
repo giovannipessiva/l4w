@@ -8,7 +8,7 @@ module Resource {
 
     var dataFolder = "data/";
 
-    export enum ResurceTypeEnum {
+    export enum TypeEnum {
         CHAR,
         FACE,
         SKIN,
@@ -81,7 +81,7 @@ module Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: ResurceTypeEnum, callback: { (response: any): void }) {
+    export function load(file: string, assetType: TypeEnum, callback: { (response: any): void }) {
         
         //TODO find out why sometimes a null file is loaded
         if (Utils.isEmpty(file)) {
@@ -92,10 +92,10 @@ module Resource {
         var path = getResourcePath(file, assetType);
 
         switch (assetType) {
-            case ResurceTypeEnum.CHAR:
-            case ResurceTypeEnum.FACE:
-            case ResurceTypeEnum.SKIN:
-            case ResurceTypeEnum.TILE:
+            case TypeEnum.CHAR:
+            case TypeEnum.FACE:
+            case TypeEnum.SKIN:
+            case TypeEnum.TILE:
                 // Load image file
                 var $loader = $(document.createElement("img"));
                 $loader.attr("src", path);
@@ -103,7 +103,7 @@ module Resource {
                     callback($loader);
                 });
                 break;
-            case ResurceTypeEnum.MAP:
+            case TypeEnum.MAP:
                 // Load text file
                 function parsePropertiesCallback(e: ProgressEvent) {
                     callback(this.responseText);
@@ -117,26 +117,35 @@ module Resource {
         }
 
     }
+    
+    /**
+     * Save an asset to server
+     */
+    export function save(file: string, assetType: TypeEnum, callback: IBooleanCallback) {  
+        var path = getResourcePath(file, assetType);
+        //TODO
+        callback(false);
+    }
 
-    function getResourcePath(file: string, assetType: ResurceTypeEnum): string {
+    function getResourcePath(file: string, assetType: TypeEnum): string {
         var path;
         switch (assetType) {
-            case ResurceTypeEnum.CHAR:
-            case ResurceTypeEnum.FACE:
-            case ResurceTypeEnum.SKIN:
-            case ResurceTypeEnum.TILE:
+            case TypeEnum.CHAR:
+            case TypeEnum.FACE:
+            case TypeEnum.SKIN:
+            case TypeEnum.TILE:
                 path = "assets/";
                 switch (assetType) {
-                    case ResurceTypeEnum.CHAR:
+                    case TypeEnum.CHAR:
                         path += "charset/";
                         break;
-                    case ResurceTypeEnum.FACE:
+                    case TypeEnum.FACE:
                         path += "faceset/";
                         break;
-                    case ResurceTypeEnum.SKIN:
+                    case TypeEnum.SKIN:
                         path += "skin/";
                         break;
-                    case ResurceTypeEnum.TILE:
+                    case TypeEnum.TILE:
                         path += "tileset/";
                         break;
                     default:
@@ -144,10 +153,10 @@ module Resource {
                         console.trace();
                 };
                 break;
-            case ResurceTypeEnum.MAP:
+            case TypeEnum.MAP:
                 path = "data/";
                 switch (assetType) {
-                    case ResurceTypeEnum.MAP:
+                    case TypeEnum.MAP:
                         path += "map/";
                         break;
                     default:

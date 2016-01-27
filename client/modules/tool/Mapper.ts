@@ -21,7 +21,7 @@ module Mapper {
     }
 
     export function loadMap(mapNode: JSTreeNode) {
-        Resource.load(mapNode.id, Resource.ResurceTypeEnum.MAP, function(resourceText: string) {
+        Resource.load(mapNode.id, Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapNode.id);
             } else {
