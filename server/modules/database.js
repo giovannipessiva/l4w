@@ -1,35 +1,69 @@
-var pg = require('pg');
-var Sequelize = require('sequelize');
-var sequelize;
+var fs = require("fs");
+var path = require("path");
+var pg = require("pg");
 
-var utils = require(__dirname + '/utils');
+var models = require(__dirname + "/models");
+var utils = require(__dirname + "/utils");
+
+function getDefaults(type,file) {
+	if(!utils.isEmpty(file)) {
+		return file;
+	}
+	if("map" === type) {
+		//TODO ora c'è un record di default, dovrei fare l'upsert sul solo record interessato
+		return "%MAPS%";
+	}
+}
 
 module.exports = {
-	testConnection: function() {
-		// Test DB connection
-		if (utils.isEmpty(process.env.DATABASE_URL)) {
-		    console.error("Env variable DATABASE_URL undefined!");
-		    process.exit(1);
-		} else {
-		    sequelize = new Sequelize(process.env.DATABASE_URL, {
-		        dialect: 'postgres',
-		        protocol: 'postgres',
-		        dialectOptions: {
-		            // ssl: true //Required for connection to Heroku PostgreSQL
-		        }
-		    });
-
-		    sequelize.authenticate().catch(function(err) {
-		        console.error("Connection to PostgreSQL failed: " + err);
-		        process.exit(1);
-		    }).done();
-		}
+	init : function() {
+		return new Promise(function(resolve, reject) {
+			// Test authentication
+			models.sequelize.authenticate().then(
+					function() {
+						resolve();
+					}, function(err) {
+				console.error("Authentication on PostgreSQL failed: " + err);
+				reject();
+			});
+		});
 	},
 	read: function(type, file, response){
-		if(type === "map"){
-			//TODO leggi da DB la mappa richiesta, ritorna il JSON
-			response.json("{}");
-		}
+		file = getDefaults(type,file);
 		
+		if(type === "map") {
+			models.l4w_map.findOne({
+				where: {
+					id: file
+				},
+				attributes: ["data"]
+			}).then(function(result) {
+				if(!utils.isEmpty(result)) {
+					response.json(result.data);
+				} else {
+					response.status(404).send("Not found");
+				}
+			}, function(error) {
+				console.log(error);
+				response.status(500).send("Error");
+			});
+		}
+	},
+	write: function(type,file,data,response) {
+		file = getDefaults(type,file);
+		
+		if(type === "map") {
+			models.l4w_map.upsert({
+				id: file,
+				data: JSON.parse(data)
+			}).then(function(result) {
+				//FIXME perchè result è sempre false?
+				console.log("Maps updated: " + file);
+				response.status(200).send();
+			}, function(error) {
+				console.log(error);
+				response.status(400).send();
+			});
+		}
 	}
 };

@@ -2,9 +2,11 @@
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('l4w_map', {
-    name: {
+    id: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
     },
     data: {
       type: DataTypes.JSON,

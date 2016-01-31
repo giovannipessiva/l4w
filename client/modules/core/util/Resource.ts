@@ -27,7 +27,7 @@ module Resource {
                 propertiesCache.set(file, props);
                 onLoadCallback(props);
             }
-            sendRequest(dataFolder + file + ".properties", parsePropertiesCallback);
+            sendRequest(dataFolder + "properties/" + file + ".properties", parsePropertiesCallback);
         }
     };
 
@@ -109,7 +109,7 @@ module Resource {
                     callback(this.responseText);
                 }
 
-                sendRequest(path + ".json", parsePropertiesCallback);
+                sendRequest(path, parsePropertiesCallback);
                 break;
             default:
                 console.error("Unexpected resource type");

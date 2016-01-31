@@ -6,6 +6,7 @@ var compression = require('compression');
 var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
 var database = require(__dirname + '/modules/database');
+var security = require(__dirname + '/modules/security');
 
 var app = express();
 app.use(compression());
@@ -31,10 +32,9 @@ app.get('/lib/:script', function(request, response) {
     var filePath = path.resolve(__dirname + '/../client/lib');
     utils.sendFile(filePath, file, response);
 });
-app.get('/data/:file', function(request, response) {
-    var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/data');
-    utils.sendFile(filePath, file, response);
+app.get('/data/:type', function(request, response) {
+	var type = request.params.type;
+	database.read(type, null, response);
 });
 app.get('/data/:type/:file', function(request, response) {
     var file = request.params.file;
@@ -46,7 +46,6 @@ app.get('/data/:type/:file', function(request, response) {
 		utils.sendFile(filePath, file, response);
 		return;
 	}
-
 	database.read(type, file, response);
 
 });
@@ -74,14 +73,19 @@ app.get('/style/jstree/:file', function(request, response) {
 
 // Server logic
 app.post('/edit/maps', function(request, response) {
-    request.on('data', function(body) {
-        mapper.updateMaps(body, response);
-    });
+	security.getBodyData(request,response,function(data){
+        mapper.updateMaps(data, response);
+	});
 });
 
-database.testConnection();
-
-// Startup message
-app.listen(app.get('port'), function() {
-    console.log('L4W is running on port', app.get('port'));
-});
+// Initialize DB connection
+database.init().then(
+	function() {
+		app.listen(app.get('port'), function() {
+			console.log('L4W is running on port', app.get('port'));
+		});
+	},
+	function() {
+		exit();
+	}
+);

@@ -10,7 +10,7 @@ module EditPage {
             "core": {
                 "animation": 0,
                 "data": {
-                    "url": "data/map/maps.json",
+                    "url": "data/map",
                     "dataType": "json"
                 },
                 "check_callback": true,

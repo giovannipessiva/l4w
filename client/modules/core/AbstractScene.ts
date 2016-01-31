@@ -44,9 +44,7 @@ class AbstractScene {
         this.grid = grid;
         
         //TODO da rimuovere, la mappa deve essere caricata correttamente
-        this.map = JSON.parse("{}");
-        this.map.width=30;
-        this.map.height=320;
+        this.map = MapEngine.getNewMap("stub");
     }
 
     start(canvas: HTMLCanvasElement) {

@@ -5,13 +5,13 @@
  * Class for handling gamer maps
  */
 class MapEngine {
-    
+
     map: IMap;
 
     private grid: AbstractGrid;
-    
-    constructor(grid: AbstractGrid){
-        this.grid=grid;
+
+    constructor(grid: AbstractGrid) {
+        this.grid = grid;
     }
 
     save() {
@@ -100,5 +100,15 @@ class MapEngine {
 
             }
         }
+    }
+
+    static getNewMap(name: string): IMap {
+        var map: IMap = JSON.parse("{}");
+    
+        map.name=name;
+        map.width=30;
+        map.height=20;
+        
+        return map;
     }
 }
