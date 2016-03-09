@@ -10,16 +10,17 @@
     "compression": "^1.6",
     "express": "^4.13",
     "serve-favicon": "^2.3",
-    "pg": "^4.4",
-    "sequelize": "^3.18"
+    "pg": "^4.5",
+    "sequelize": "^3.19"
   },
   "devDependencies": {
-    "grunt-contrib-uglify": "^0.11",
+    "grunt-contrib-uglify": "^1.0",
     "grunt-ts": "^5.3",
     "grunt-tslint": "^3.0",
-    "typescript": "^1.7",
-    "tslint": "^3.2",
-    "grunt": "^0.4"
+    "typescript": "^1.8",
+    "tslint": "^3.5",
+    "grunt": "^0.4",
+	"sequelize-auto": "^0.2"
   },
   "engines": {
     "node": "^0.12"
