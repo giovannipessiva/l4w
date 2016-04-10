@@ -87,19 +87,23 @@ module Mapper {
             function() { },
             function(x, y, mouseButton) {
                 // Start action
-                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                if (mouseButton === Input.MouseButtons.LEFT) {
+                    scene.apply(x, y);
+                } else {
                     scene.select(x, y);
                 }
             },
             function(x, y, mouseButton) {
-                //End action
-                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                // End action
+                if (mouseButton === Input.MouseButtons.LEFT) {
                     scene.selectEnd(x, y);
                 }
             },
             function(x, y, mouseButton) {
-                //Ongoing
-                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                // Ongoing action
+                if (mouseButton === Input.MouseButtons.LEFT) {
+                    scene.apply(x, y);
+                } else {
                     scene.selectEnd(x, y);
                 }
                 scene.updatePointer(x, y);

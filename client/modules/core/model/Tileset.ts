@@ -4,9 +4,9 @@ interface ITileset {
     name: string; //Name given to this tileset
     imagewidth: number; //Width of source image in pixels
     imageheight: number; //Height of source image in pixels
-    autotiles?: [IAutoTile]; //Array of Terrains (optional)
-    block: [number]; //Array of codes representing the block attributes
-    over: [boolean]; //Array of flag for over-the-event positioning
+    autotiles?: IAutoTile[]; //Array of Terrains (optional)
+    block: number[]; //Array of codes representing the block attributes
+    over: boolean[]; //Array of flag for over-the-event positioning
 };
 
 interface IAutoTile {
