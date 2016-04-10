@@ -34,9 +34,9 @@ module Input {
     }
 
     export class MouseButtons {
-        static LEFT = 0;
-        static MIDDLE = 1;
+        static LEFT = 1;
         static RIGHT = 2;
+        static MIDDLE = 4;
     }
 
     export interface IPositionCallback {
@@ -89,7 +89,7 @@ module Input {
         canvas.addEventListener("mousemove", function(e) {
             var position = mapEvent(e);
             if (flagMouseDown) {
-                ongoingActionCallback(position.x, position.y, e.button);
+                ongoingActionCallback(position.x, position.y, e.buttons);
             } else {
                 hoverCallback(position.x, position.y);
             }
@@ -97,16 +97,16 @@ module Input {
         canvas.addEventListener("mousedown", function(e: PointerEvent) {
             flagMouseDown = true;
             var position = mapEvent(e);
-            startActionCallback(position.x, position.y, e.button);
+            startActionCallback(position.x, position.y, e.buttons);
         });
         canvas.addEventListener("mouseup", function(e: PointerEvent) {
             flagMouseDown = false;
             var position = mapEvent(e);
-            endActionCallback(position.x, position.y, e.button);
+            endActionCallback(position.x, position.y, e.buttons);
         });
         canvas.addEventListener("mouseout", function(e: PointerEvent) {
             if (flagMouseDown) {
-                ongoingActionCallback(null, null, e.button);
+                ongoingActionCallback(null, null, e.buttons);
             } else {
                 hoverCallback(null, null);
             }
