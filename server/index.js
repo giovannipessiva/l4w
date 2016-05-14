@@ -1,6 +1,5 @@
 var path = require('path');
 var express = require('express');
-var favicon = require('serve-favicon');
 var compression = require('compression');
 
 var mapper = require(__dirname + '/modules/mapper');
@@ -10,7 +9,6 @@ var security = require(__dirname + '/modules/security');
 
 var app = express();
 app.use(compression());
-app.use(favicon(path.resolve(__dirname + "/../client/style/favicon.ico")));
 app.set('port',(process.env.PORT || 5000));
 
 // Views redirection
