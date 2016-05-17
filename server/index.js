@@ -1,6 +1,8 @@
 var path = require('path');
 var express = require('express');
 var compression = require('compression');
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
 
 var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
@@ -17,6 +19,9 @@ app.get('/', function(request, response) {
 });
 app.get('/edit', function(request, response) {
     utils.sendFile(__dirname + '/views/', 'edit.html', response);
+});
+app.get('/auth', function(request, response) {
+    utils.sendFile(__dirname + '/views/', 'auth.html', response);
 });
 
 // Resources redirection

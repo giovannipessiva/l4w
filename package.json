@@ -11,7 +11,9 @@
     "express": "^4.13",
     "serve-favicon": "^2.3",
     "pg": "^4.5",
-    "sequelize": "^3.23"
+    "sequelize": "^3.23",
+    "googleapis": "^7.0",
+	"google-auth-library": "^0.9"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "^1.0",
