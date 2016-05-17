@@ -40,8 +40,10 @@ class DynamicScene extends AbstractScene {
 
         var time = Time.getTime();
         EventManager.update(this.hero, time);
-        for (var event of this.events) {
-            EventManager.update(event, time);
+        if(!Utils.isEmpty(this.events)) {
+            for (var event of this.events) {
+                EventManager.update(event, time);
+            }
         }
 
         return true;
