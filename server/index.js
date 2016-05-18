@@ -18,10 +18,13 @@ app.get('/', function(request, response) {
     utils.sendFile(__dirname + '/views/', 'home.html', response);
 });
 app.get('/edit', function(request, response) {
-    utils.sendFile(__dirname + '/views/', 'edit.html', response);
-});
-app.get('/auth', function(request, response) {
     utils.sendFile(__dirname + '/views/', 'auth.html', response);
+});
+app.post('/edit', function(request, response) {
+	security.getBodyData(request,response,function(data){
+		console.log(data);
+		utils.sendFile(__dirname + '/views/', 'edit.html', response);
+	});
 });
 
 // Resources redirection

@@ -6,6 +6,10 @@
 <meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
 <link rel='icon' href='style/favicon-edit.ico' />
 
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
 <script src="lib/require.js"></script>
 <script type='text/javascript'>
 requirejs(["lib/jquery"],function($){
@@ -25,6 +29,13 @@ requirejs(["lib/jquery"],function($){
 function finishedLoading(){
     EditPage.start();
 };
+
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+		window.location = window.location.href;
+    });
+}
 </script>
 
 <link rel="stylesheet" type="text/css" href="style/jstree/style.min.css">
@@ -46,6 +57,8 @@ function finishedLoading(){
 
 </div>
 <div id="toolsPanel" style="float:right;position:relative;margin-right:0;width:256px">
+	 <div style="display:none" class="g-signin2"></div>
+	 <button onclick="signOut();">Sign out</button>
 	<div style="border:1px solid black">
 	-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
 	</div>
