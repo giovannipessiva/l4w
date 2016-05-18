@@ -1,6 +1,8 @@
 @echo off
-rem Run as Heroku local application (will use .env file)
-heroku local
+:loop
 
-rem Run as Node.js application
-rem node server/index.js
+rem Run as Heroku local application (will use .env file)
+call heroku local
+
+echo Restarting...
+goto loop
