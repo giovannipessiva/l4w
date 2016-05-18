@@ -68,12 +68,12 @@ app.get('/assets/:type/:file', function(request, response) {
 });
 app.get('/style/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style');
+    var filePath = path.resolve(__dirname + '/../server/views/style');
     utils.sendFile(filePath, file, response);
 });
 app.get('/style/jstree/:file', function(request, response) {
     var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../client/style/jstree');
+    var filePath = path.resolve(__dirname + '/../server/views/style/jstree');
     utils.sendFile(filePath, file, response);
 });
 
