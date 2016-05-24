@@ -4,6 +4,7 @@ var fs = require('fs');
 var placeholder = "404.png";
 
 module.exports = {
+		
     sendFile: function(path, file, response) {
         //Send a file as response
         var options = {
@@ -32,9 +33,11 @@ module.exports = {
                 }
             });
     },
+    
     endsWith: function(file, suffix) {
         return file.indexOf(suffix, file.length - suffix.length) !== -1;
     },
+    
     isEmpty: function(obj) {
         if (obj === null || typeof obj === "undefined") {
             return true;
@@ -44,6 +47,16 @@ module.exports = {
             return obj.size === 0;
         }
         return false;
+    },
+    
+    parseParameters: function(parameters) {
+    	var paramMap = {};
+    	var paramArray = parameters.split("&"); 
+    	for (var i = 0; i < paramArray.length; i++) {
+    	    var tokens = paramArray[i].split("=");
+    	    paramMap[tokens[0]]=tokens[1];
+    	}
+    	return paramMap;
     }
 };
    

@@ -1,8 +1,7 @@
 var path = require('path');
 var express = require('express');
 var compression = require('compression');
-var google = require('googleapis');
-var GoogleAuth = require('google-auth-library');
+var https = require('https');
 
 var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
@@ -22,7 +21,26 @@ app.get('/edit', function(request, response) {
 });
 app.post('/edit', function(request, response) {
 	security.getBodyData(request,response,function(data){
-		console.log(data);
+		var paramMap = utils.parseParameters(data);
+		
+		https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res) {
+			res.on('data', function(buffer) {
+				var d = JSON.parse(buffer.toString("utf8"));
+				if(security.validateTokeninfoResponse(d)) {
+					console.log("LOGGED IN - "+d.email);
+				} else {
+					// Authentication failed
+					utils.sendFile(__dirname + '/views/', 'auth.html', response);
+					return;
+				}
+			});
+		}).on('error', function(e) {
+			console.error(e);
+			// Google API failed
+			utils.sendFile(__dirname + '/views/', 'auth.html', response);
+			return;
+		});
+		
 		utils.sendFile(__dirname + '/views/', 'edit.html', response);
 	});
 });
