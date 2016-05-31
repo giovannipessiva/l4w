@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "grunt-contrib-uglify": "^1.0",
-    "grunt-ts": "^5.4",
+    "grunt-ts": "^5.5",
     "grunt-tslint": "^3.1",
     "typescript": "^1.8",
     "tslint": "^3.10",

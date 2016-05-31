@@ -5,15 +5,13 @@ module.exports = function(sequelize, DataTypes) {
     id: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     data: {
       type: DataTypes.JSON,
       allowNull: false
     }
   }, {
-    tableName: 'l4w_map',
-    freezeTableName: true
+    tableName: 'l4w_map'
   });
 };

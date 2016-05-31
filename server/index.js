@@ -27,7 +27,7 @@ app.post('/edit', function(request, response) {
 			res.on('data', function(buffer) {
 				var d = JSON.parse(buffer.toString("utf8"));
 				if(security.validateTokeninfoResponse(d)) {
-					console.log("LOGGED IN - "+d.email);
+					database.logUser(d.email);
 				} else {
 					// Authentication failed
 					utils.sendFile(__dirname + '/views/', 'auth.html', response);

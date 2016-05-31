@@ -28,6 +28,7 @@ module.exports = {
 			});
 		});
 	},
+	
 	read: function(type, file, response){
 		file = getDefaults(type,file);
 		
@@ -49,6 +50,7 @@ module.exports = {
 			});
 		}
 	},
+	
 	write: function(type,file,data,response) {
 		file = getDefaults(type,file);
 		
@@ -65,5 +67,40 @@ module.exports = {
 				response.status(400).send();
 			});
 		}
+	},
+	
+	logUser: function(user) {
+		models.log_usr_access.findById(user).then(function(result) {
+			if(result == null) {
+				// First access for this user
+				models.log_usr_access.upsert({
+					user: user,
+					first_seen: new Date(),
+					last_seen: new Date(),
+					access_counter: 1
+				}).then(function(r) {
+					console.log("User first access logged: " + user);
+				}, function(error) {
+					console.log(error);
+				});
+			} else {
+				// User already known
+				models.log_usr_access.update({
+					last_seen: new Date(),
+					access_counter: result.access_counter+1
+				},{
+					where: {
+						user: user,
+					}
+				}).then(function(r) {
+					console.log("User new access logged: " + user);
+				}, function(error) {
+					console.log(error);
+				});
+			}
+		}, function(error) {
+			console.log(error);
+			response.status(500).send();
+		});
 	}
 };
