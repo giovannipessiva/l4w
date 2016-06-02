@@ -15,7 +15,7 @@ module.exports = {
 				maxAge: null
 			},
 			name: this.cookieName,
-			proxy: security.getSessionProxySetting(),
+			proxy: true,
 			resave: false,
 			saveUninitialized: true,
 			secret: process.env.SESSION_SECRET,
