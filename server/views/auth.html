@@ -27,19 +27,7 @@
 		i.setAttribute("name","token");
 		i.setAttribute("value",googleUser.getAuthResponse().id_token);
 		f.appendChild(i);
-		
-		i = document.createElement("input");
-		i.setAttribute("type","text");
-		i.setAttribute("name","name");
-		i.setAttribute("value",profile.getGivenName());
-		f.appendChild(i);
-		
-		i = document.createElement("input");
-		i.setAttribute("type","text");
-		i.setAttribute("name","image");
-		i.setAttribute("value",profile.getImageUrl());
-		f.appendChild(i);
-		
+
 		f.style.display="none";
 		document.body.appendChild(f);
 		f.submit();
@@ -49,6 +37,8 @@
       	document.getElementById("login").style.display="inline";
       }
 	</script>
+	
+	<link rel="stylesheet" type="text/css" href="style/l4w.css">
 
   </head>
   <body>

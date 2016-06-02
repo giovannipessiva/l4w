@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var HttpStatus = require('http-status-codes');
 
 var database = require(__dirname + "/database");
 
@@ -11,10 +12,10 @@ module.exports = {
 //        fs.writeFile(filePath, mapData, function(err) {
 //            if (err) {
 //                console.log(err);
-//                //response.sendStatus(500);
+//                //response.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 //            }
 //            console.log("Maps updated: " + filePath);
-//            response.sendStatus(200);
+//            response.sendStatus(HttpStatus.OK);
 //        });
     },
     getTiles: function(response) {

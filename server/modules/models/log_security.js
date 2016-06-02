@@ -1,25 +1,21 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('log_usr_access', {
-    user: {
+  return sequelize.define('log_security', {
+    event: {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true
     },
-    first_seen: {
-      type: DataTypes.DATE,
+    info: {
+      type: DataTypes.STRING,
       allowNull: true
     },
-    last_seen: {
+    date: {
       type: DataTypes.DATE,
-      allowNull: true
-    },
-    access_counter: {
-      type: DataTypes.INTEGER,
       allowNull: true
     }
   }, {
-    tableName: 'log_usr_access'
+    tableName: 'log_security'
   });
 };

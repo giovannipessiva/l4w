@@ -47,6 +47,8 @@ module EditPage {
         Mapper.start(canvas);
 
         loadTiles();
+        
+        loadNews();
     }
 
     export function changeSize() {
@@ -65,14 +67,21 @@ module EditPage {
             }
         });
     }
-
-    export function loadTiles() {
+    
+    function  loadTiles() {
         $.getJSON("data/resources/tiles.json", function(data) {
             var sel = $("#tiles");
             for (var i = 0; i < data.length; i++) {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
                     + "</option>");
             }
+        });
+    }
+    
+    export function loadNews() {
+        $.getJSON("news", function(data) {
+            var news = $("#news");
+            //TODO manage json response
         });
     }
 

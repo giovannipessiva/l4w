@@ -1,5 +1,6 @@
 var path = require('path');
 var fs = require('fs');
+var HttpStatus = require('http-status-codes');
 
 var placeholder = "404.png";
 
@@ -23,9 +24,9 @@ module.exports = {
             path + "/" + file,
             options,
             function(err) {
-                if (err && response.statusCode != 304 && err.code !== "ECONNABORT") {
-                    if (response.statusCode == 404 && file !== placeholder) {
-                        sendFile(path, placeholder, response);
+                if (err && response.statusCode != HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
+                    if (response.statusCode == HttpStatus.NOT_FOUND && file !== placeholder) {
+                    	sendFile(path, placeholder, response);
                     } else {
                         console.log("utils.sendFile - " + err);
                         response.status(err.status).end();

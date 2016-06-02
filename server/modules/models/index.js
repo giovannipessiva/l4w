@@ -14,7 +14,8 @@ var sequelize = new Sequelize(process.env.DATABASE_URL, {
     protocol: "postgres",
     define: {
         timestamps: false
-    }
+    },
+    logging: false
 });
 var db = {};
 

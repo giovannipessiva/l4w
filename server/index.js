@@ -7,9 +7,11 @@ var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
 var database = require(__dirname + '/modules/database');
 var security = require(__dirname + '/modules/security');
+var session = require(__dirname + '/modules/session');
 
 var app = express();
 app.use(compression());
+app.use(session.init());
 app.set('port',(process.env.PORT || 5000));
 
 // Views redirection
@@ -17,32 +19,49 @@ app.get('/', function(request, response) {
     utils.sendFile(__dirname + '/views/', 'home.html', response);
 });
 app.get('/edit', function(request, response) {
-    utils.sendFile(__dirname + '/views/', 'auth.html', response);
+	if(utils.isEmpty(request.session.user)) {
+		utils.sendFile(__dirname + '/views/', 'auth.html', response);
+	} else {
+		database.logUserSessionAccess(request.session.user);
+		utils.sendFile(__dirname + '/views/', 'edit.html', response);
+	}
 });
 app.post('/edit', function(request, response) {
-	security.getBodyData(request,response,function(data){
-		var paramMap = utils.parseParameters(data);
-		
-		https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res) {
-			res.on('data', function(buffer) {
-				var d = JSON.parse(buffer.toString("utf8"));
-				if(security.validateTokeninfoResponse(d)) {
-					database.logUser(d.email);
-				} else {
-					// Authentication failed
-					utils.sendFile(__dirname + '/views/', 'auth.html', response);
-					return;
-				}
+
+	if(utils.isEmpty(request.session.user)) {
+		// No valid session, use post data to authenticate user
+		security.getBodyData(request,response,function(data){
+			var paramMap = utils.parseParameters(data);
+			https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res) {
+				res.on('data', function(buffer) {
+					var d = JSON.parse(buffer.toString("utf8"));
+					if(security.validateTokeninfoResponse(d)) {
+						database.logUser(d.email,request,response);
+						utils.sendFile(__dirname + '/views/', 'edit.html', response);
+					} else {
+						// Authentication failed
+						utils.sendFile(__dirname + '/views/', 'auth.html', response);
+					}
+				});
+			}).on('error', function(e) {
+				// Google API problem
+				console.error(e);
+				utils.sendFile(__dirname + '/views/', 'auth.html', response);
 			});
-		}).on('error', function(e) {
-			console.error(e);
-			// Google API failed
-			utils.sendFile(__dirname + '/views/', 'auth.html', response);
-			return;
 		});
-		
+	} else {
+		// Valid session found
+		database.logUserSessionAccess(request.session.user);
 		utils.sendFile(__dirname + '/views/', 'edit.html', response);
-	});
+	}
+});
+
+app.get('/logout', function(request, response) {
+	request.session.destroy(function(){
+		request.session = null;
+        response.clearCookie(session.cookieName,{ path: '/' });
+        utils.sendFile(__dirname + '/views/', 'auth.html', response);
+    });
 });
 
 // Resources redirection
@@ -89,9 +108,10 @@ app.get('/style/:file', function(request, response) {
     var filePath = path.resolve(__dirname + '/../server/views/style');
     utils.sendFile(filePath, file, response);
 });
-app.get('/style/jstree/:file', function(request, response) {
-    var file = request.params.file;
-    var filePath = path.resolve(__dirname + '/../server/views/style/jstree');
+app.get('/style/:type/:file', function(request, response) {
+	var type = request.params.type;
+	var file = request.params.file;
+    var filePath = path.resolve(__dirname + '/../server/views/style/'+type);
     utils.sendFile(filePath, file, response);
 });
 
@@ -100,6 +120,10 @@ app.post('/edit/maps', function(request, response) {
 	security.getBodyData(request,response,function(data){
         mapper.updateMaps(data, response);
 	});
+});
+
+app.get('/news', function(request, response) {
+	database.getNews(request.session.user, request.params, response);
 });
 
 // Initialize DB connection

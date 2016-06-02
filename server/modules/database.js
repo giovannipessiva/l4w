@@ -1,9 +1,12 @@
 var fs = require("fs");
 var path = require("path");
 var pg = require("pg");
+var Sequelize = require("sequelize");
+var HttpStatus = require('http-status-codes');
 
 var models = require(__dirname + "/models");
 var utils = require(__dirname + "/utils");
+var constants = require(__dirname + "/constants");
 
 function getDefaults(type,file) {
 	if(!utils.isEmpty(file)) {
@@ -14,6 +17,21 @@ function getDefaults(type,file) {
 		return "%MAPS%";
 	}
 }
+
+function logAccess(user) {
+	// User already known, log this access
+	models.log_access.update({
+		last_seen: new Date(),
+		access_counter: Sequelize.literal('access_counter + 1')
+	},{
+		where: {
+			user: user,
+		}
+	}).then(function(r) {
+	}, function(error) {
+		console.log(error);
+	});
+};
 
 module.exports = {
 	init : function() {
@@ -42,11 +60,11 @@ module.exports = {
 				if(!utils.isEmpty(result)) {
 					response.json(result.data);
 				} else {
-					response.status(404).send("Not found");
+					response.status(HttpStatus.NOT_FOUND).send("Not found");
 				}
 			}, function(error) {
 				console.log(error);
-				response.status(500).send("Error");
+				response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("Error");
 			});
 		}
 	},
@@ -61,46 +79,102 @@ module.exports = {
 			}).then(function(result) {
 				//FIXME perchè result è sempre false?
 				console.log("Maps updated: " + file);
-				response.status(200).send();
+				response.status(HttpStatus.OK).send();
 			}, function(error) {
 				console.log(error);
-				response.status(400).send();
+				response.status(HttpStatus.BAD_REQUEST).send();
 			});
 		}
 	},
 	
-	logUser: function(user) {
-		models.log_usr_access.findById(user).then(function(result) {
-			if(result == null) {
-				// First access for this user
-				models.log_usr_access.upsert({
-					user: user,
-					first_seen: new Date(),
-					last_seen: new Date(),
-					access_counter: 1
-				}).then(function(r) {
-					console.log("User first access logged: " + user);
+	logUserSessionAccess: logAccess,
+	
+	logUser: function(mail, request, response) {
+		models.usr_list.findOne({
+			where: {
+				mail: mail
+			}
+		}).then(function(user_record) {
+			if(user_record == null) {
+				// First access, create the user
+				models.usr_list.upsert({
+					mail: mail,
+				}).then(function(updated) {
+					// Get the new user record
+					models.usr_list.findOne({
+						where: {
+							mail: mail
+						}
+					}).then(function(user_new_record) {
+						if(user_record == null) {						
+							// Add user id to session
+							request.session.user = user_new_record.user;
+							request.session.save();
+							
+							// Send welcome event to the new user
+							models.usr_event.upsert({
+								user: user_new_record.user,
+								event: constants.event.WELCOME,
+								date: new Date()
+							}).then(function(res) {
+							}, function(error) {
+								console.log(error);
+							});
+							
+							// Log first access for the new user user
+							models.log_access.upsert({
+								user: user_new_record.user,
+								first_seen: new Date(),
+								last_seen: new Date(),
+								access_counter: 1
+							}).then(function(res) {
+							}, function(error) {
+								console.log(error);
+							});
+						} else {
+							console.error("Registration failed for: " + mail);
+						}
+					}, function(error) {
+						console.log(error);
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+					});
 				}, function(error) {
 					console.log(error);
+					response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
 				});
 			} else {
-				// User already known
-				models.log_usr_access.update({
-					last_seen: new Date(),
-					access_counter: result.access_counter+1
-				},{
-					where: {
-						user: user,
-					}
-				}).then(function(r) {
-					console.log("User new access logged: " + user);
-				}, function(error) {
-					console.log(error);
-				});
+				// Add user id to session
+				request.session.user = user_record.user;
+				request.session.save();
+				
+				// Log this access
+				logAccess(user_record.user);
 			}
 		}, function(error) {
 			console.log(error);
-			response.status(500).send();
+			response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
 		});
+	},
+	
+	getNews: function(user,params,response) {
+		if(utils.isEmpty(user)) {
+			response.json({});
+		}
+		models.usr_event.findAll({
+			where: { user: user },
+			attributes: ['event'],
+		}).then(function(events) {
+			if(!utils.isEmpty(events)) {
+				var eventsArray = new Array;
+				for (var i = 0; i < events.length; i++) {
+					eventsArray.push(events[i].event);
+				}
+				models.lst_event.findAll({ where: { event: eventsArray } }).then(function(datas) {
+					response.json(datas);
+				});
+			} else {
+				response.json({});
+			}
+		})
 	}
 };
