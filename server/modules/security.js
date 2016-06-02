@@ -70,13 +70,6 @@ module.exports = {
 		return true;		
 	},
 	
-	getSessionProxySetting: function() {
-		//Trust the reverse proxy when setting secure cookies (via the "X-Forwarded-Proto" header)?
-//		return true; // The "X-Forwarded-Proto" header will be used
-//		return false; // All headers are ignored and the connection is considered secure only if there is a direct TLS/SSL connection
-		return undefined; // Uses the "trust proxy" setting from express
-	},
-	
 	getSecureCookieSetting: function() {
 		if(this.isDevEnv()) {
 			return false; // Cookies will work on http connection

@@ -6,13 +6,15 @@
 module Utils {
 
     export function isEmpty(obj: any): boolean {
-        if(obj === null || typeof obj === "undefined") {
+        if (obj === null || typeof obj === "undefined") {
             return true;
-        } else if(typeof obj === "string") {
+        } else if (typeof obj === "string") {
             return obj === "";
-        } else if(typeof obj === "object" && "size" in obj) {
-           return obj.size === 0; 
-        } 
+        } else if (typeof obj === "object" && "size" in obj) {
+            return obj.size === 0;
+        } else if (obj.constructor === Array || obj.constructor === String) {
+            return obj.length === 0;
+        }
         return false;
     }
     

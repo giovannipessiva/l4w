@@ -38,17 +38,19 @@ module.exports = {
     endsWith: function(file, suffix) {
         return file.indexOf(suffix, file.length - suffix.length) !== -1;
     },
-    
-    isEmpty: function(obj) {
-        if (obj === null || typeof obj === "undefined") {
-            return true;
-        } else if (typeof obj === "string") {
-            return obj === "";
-        } else if (typeof obj === "object" && "size" in obj) {
-            return obj.size === 0;
-        }
-        return false;
-    },
+	    
+    isEmpty : function(obj) {
+		if (obj === null || typeof obj === "undefined") {
+			return true;
+		} else if (typeof obj === "string") {
+			return obj === "";
+		} else if (typeof obj === "object" && "size" in obj) {
+			return obj.size === 0;
+		} else if (obj.constructor === Array || obj.constructor === String) {
+			return obj.length === 0;
+		}
+		return false;
+	},
     
     parseParameters: function(parameters) {
     	var paramMap = {};

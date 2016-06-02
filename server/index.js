@@ -12,7 +12,7 @@ var session = require(__dirname + '/modules/session');
 var app = express();
 app.use(compression());
 app.use(session.init());
-app.set('port',(process.env.PORT || 5000));
+app.set("port",(process.env.PORT || 5000));
 
 // Views redirection
 app.get('/', function(request, response) {
@@ -129,7 +129,7 @@ app.get('/news', function(request, response) {
 // Initialize DB connection
 database.init().then(
 	function() {
-		app.listen(app.get('port'), function() {
+		app.listen(app.get("port"), function() {
 			console.log('L4W is running on port', app.get('port'));
 		});
 	},
