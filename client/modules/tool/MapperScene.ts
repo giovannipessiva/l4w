@@ -9,8 +9,8 @@ class MapperScene extends StaticScene {
 
     private tilePicker: TilePickerScene;
     
-    constructor(grid: StaticGrid) {
-        super(grid);
+    constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
+        super(grid,callback);
         this.activeLayer = 0;
     }
 
@@ -43,13 +43,18 @@ class MapperScene extends StaticScene {
         if(Utils.isEmpty(pickerArea)) {
            return;
         }
-        var changedCell = x + y * this.map.layers[this.activeLayer].x;
         var tileColumns = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
-        
-        //TODO qui non dovrei selezionare solo la prima cella, v gestita la selezione ad area dal picker e il trascinamento per applicarla sulla mappa
         var appliedTile = pickerArea.x1 + pickerArea.y1 * tileColumns;
-        
-        this.map.layers[this.activeLayer].data[changedCell] = appliedTile;
+        var changedCell = x + y * this.map.layers[this.activeLayer].x;
+
+        for(var j=pickerArea.y1; j<pickerArea.y2-pickerArea.y1; j++) {
+            for(var i=pickerArea.x1; i<pickerArea.x2-pickerArea.x1; i++) {
+                var appliedTileOffset = i + j * this.map.layers[this.activeLayer].x;
+                var changedCellOffset = i + j * tileColumns;
+                this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+            }
+        }
+        //TODO gestisci trascinamento del picker
     }
 
     getSelectionArea(): IRectangle {

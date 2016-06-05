@@ -20,7 +20,7 @@ var nextAnimationFrame =
 class AbstractScene {
 
     map: IMap;
-    tile: string;
+    tileImage: HTMLImageElement;
     
     focus: IPoint;
     pointer: IPoint;
@@ -32,7 +32,7 @@ class AbstractScene {
     grid: AbstractGrid;
     mapEngine: MapEngine;
 
-    constructor(grid: AbstractGrid) {
+    constructor(grid: AbstractGrid, callback: { (scene: AbstractScene): void }) {
         this.mapEngine = new MapEngine(grid);
         this.focus = {
             x: 0, y: 0
@@ -43,8 +43,8 @@ class AbstractScene {
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
         
-        //TODO da rimuovere, la mappa deve essere caricata correttamente
-        this.map = MapEngine.getNewMap("stub");
+        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
+        this.setMap(MapEngine.getNewMap("stub"),callback);
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -70,7 +70,7 @@ class AbstractScene {
         var maxColumn = boundariesX.max;
         
         // Base rendering
-        this.mapEngine.render(this.context, minRow, maxRow, minColumn, maxColumn);
+//        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn); //FIXME disabilatato per rilascio
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
@@ -176,11 +176,23 @@ class AbstractScene {
         this.context.scale(this.grid.scale, this.grid.scale);
     }
        
-    setMap(map: IMap) {
-       this.map = map;
+    setMap(map: IMap, callback: { (scene: AbstractScene): void }) {
+        (function(scene: AbstractScene) {
+            scene.map = map;
+            scene.setTile(map.tileset.image, function(scene) {
+                callback(scene);
+            })
+        })(this);
     }
-           
-    setTile(tile: string) {
-       this.tile = tile;
+    
+    setTile(tile: string, callback: { (scene: AbstractScene): void }) {
+        //TODO gestisci il caricamento dei metadati del tile
+        (function(scene: AbstractScene) {
+            Resource.load(tile,Resource.TypeEnum.TILE,function(image) {
+                scene.tileImage = image[0];
+                scene.map.tileset.image = tile;
+                callback(scene);
+            });
+        })(this);
     }
 }

@@ -11,9 +11,10 @@ module Game {
 
     export function start(canvas: HTMLCanvasElement) {
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
-            var scene = new DynamicScene(grid);
-            initInput(canvas, scene, grid);
-            scene.start(canvas);
+            new DynamicScene(grid, function(scene: DynamicScene) {
+                initInput(canvas, scene, grid);
+                scene.start(canvas);
+            });
         });
     }
 

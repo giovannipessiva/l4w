@@ -27,4 +27,11 @@ module Utils {
         primary.forEach(addToNewMap);
         return newMap;
     }
+    
+    export function gIDToPoint(gid: number, width: number): IPoint {
+        return {
+            x: gid % width,
+            y: Math.floor(gid / width)
+        };
+    }
 }

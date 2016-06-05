@@ -20,8 +20,8 @@ class DynamicScene extends AbstractScene {
     hero: IEvent;
     events: IEvent[];
 
-    constructor(grid: DynamicGrid) {
-        super(grid);        
+    constructor(grid: DynamicGrid, callback: { (scene: DynamicScene): void }) {
+        super(grid, callback);
         this.hero = DataLoader.loadHero();
     }
 

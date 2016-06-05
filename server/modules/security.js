@@ -27,7 +27,7 @@ module.exports = {
 	        request.on("data", function(data) {
 	            queryData += data;
 	            if(queryData.length > 1e6) {
-	            	this.logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData); //TODO check that it get truncated
+	            	this.logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData);
 	                queryData = "";
 	                response.status(HttpStatus.REQUEST_TOO_LONG).end();
 	                request.connection.destroy();  

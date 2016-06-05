@@ -18,8 +18,8 @@ class StaticGrid extends AbstractGrid {
         gridType: GridTypeEnum,
         overriddenProperties?: Map<string, number>
         ) {
-        this.overriddenProps = overriddenProperties;
         super(cnvs, onCompleted, gridType);
+        this.overriddenProps = overriddenProperties;
     }
 
     deferredInit(props: Map<string, number>) {
@@ -79,7 +79,7 @@ class StaticGrid extends AbstractGrid {
     }
 
     getBoundariesY(focusY: number): { min: number; max: number } {
-        //TODO seleziona solo il range che può essere cambiato
+        //TODO seleziona solo il range che puo' essere cambiato
         return super.getBoundariesY(focusY);
     }
 

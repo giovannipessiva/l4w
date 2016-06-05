@@ -5,19 +5,23 @@ module Mapper {
 
     export function start(canvas: HTMLCanvasElement) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
-            var mapper = new MapperScene(grid);
-            initInput(canvas, mapper, grid);
-            initWidgets(canvas, mapper, grid);
-            injectScenes(mapper);
-            if (!Utils.isEmpty(tmpMap)) {
-                mapper.setMap(tmpMap);
-            }
-            mapper.start(canvas);
+            new MapperScene(grid, function(mapper: MapperScene) {
+                initInput(canvas, mapper, grid);
+                initWidgets(canvas, mapper, grid);
+                injectScenes(mapper);
+                if (!Utils.isEmpty(tmpMap)) {
+                    mapper.setMap(tmpMap, function() {
+                        mapper.start(canvas);
+                    });
+                } else {
+                    mapper.start(canvas);
+                }
+            });
         }, GridTypeEnum.mapper);
     }
 
     export function changeTile(tile: string) {
-        mapper.setTile(tile);
+        mapper.setTile(tile,function(scene){});
     }
 
     export function loadMap(mapNode: JSTreeNode) {
@@ -50,7 +54,7 @@ module Mapper {
     function injectMap(map: IMap) {
         tmpMap = map;
         if (!Utils.isEmpty(mapper)) {
-            mapper.setMap(map);
+            mapper.setMap(map, function(){});
         }
     }
 

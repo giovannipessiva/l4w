@@ -57,8 +57,14 @@ module Resource {
     function sendRequest(uri: string, callback: IProgressCallback) {
         var request = new XMLHttpRequest();
         request.onload = callback;
-        request.onerror = handleRequestError;
-        request.ontimeout = handleRequestTimeout;
+        request.onerror = function (e: ErrorEvent) {
+            console.error("Error while getting " + uri);
+            callback(null);
+        };
+        request.ontimeout = function () {
+            console.error("Timeout while getting " + uri);
+            callback(null);
+        };;
         request.open("GET", uri, true);
         try {
             request.send();
@@ -68,14 +74,8 @@ module Resource {
             } else {
                 console.error(exception);
             }
+            callback(null);
         }
-        function handleRequestError(event: ErrorEvent) {
-            console.error("Error while getting " + uri);
-        };
-
-        function handleRequestTimeout() {
-            console.error("Timeout while getting " + uri);
-        };
     }
     
     /**
@@ -102,20 +102,19 @@ module Resource {
                 $loader.load(function() {
                     callback($loader);
                 });
+                //TODO manage errors
                 break;
             case TypeEnum.MAP:
                 // Load text file
-                function parsePropertiesCallback(e: ProgressEvent) {
+                sendRequest(path, function(e: ProgressEvent) {
                     callback(this.responseText);
-                }
-
-                sendRequest(path, parsePropertiesCallback);
+                });
                 break;
             default:
                 console.error("Unexpected resource type");
                 console.trace();
+                callback(null);
         }
-
     }
     
     /**

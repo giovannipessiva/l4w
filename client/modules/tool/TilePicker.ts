@@ -10,11 +10,12 @@ module TilePicker {
         if (Utils.isEmpty(tilePicker)) {
             // Create a new instance
             new StaticGrid(canvas, function(grid: StaticGrid) {
-                var tmp = new TilePickerScene(grid);
-                registerReference(tmp);
-                initInput(canvas, tilePicker, grid);
-                tilePicker.start(canvas);
-                tilePicker.toggleEditorGrid(true);
+                new TilePickerScene(grid, function (scene: TilePickerScene) {
+                    registerReference(scene);
+                    initInput(canvas, tilePicker, grid);
+                    tilePicker.start(canvas);
+                    tilePicker.toggleEditorGrid(true);
+                });
             }, GridTypeEnum.tilePicker);
         } else {
             // Update current instance
