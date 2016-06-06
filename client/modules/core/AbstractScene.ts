@@ -70,7 +70,7 @@ class AbstractScene {
         var maxColumn = boundariesX.max;
         
         // Base rendering
-        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
+//        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn); //FIXME disabilatato per rilascio
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
