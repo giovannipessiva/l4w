@@ -19,8 +19,8 @@ class StaticScene extends AbstractScene {
         return true;
     }
 
-    protected mainGameLoop_post() {
-        super.mainGameLoop_post();
+    protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
+        super.mainGameLoop_post(boundariesX, boundariesY);
     }
 
     toggleEditorGrid(enable?: boolean) {

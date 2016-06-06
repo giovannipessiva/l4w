@@ -70,7 +70,7 @@ class AbstractScene {
         var maxColumn = boundariesX.max;
         
         // Base rendering
-//        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn); //FIXME disabilatato per rilascio
+        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
@@ -80,7 +80,7 @@ class AbstractScene {
         this.renderFocus();
         this.renderPointer();
 
-        this.mainGameLoop_post();
+        this.mainGameLoop_post(boundariesX, boundariesY);
     }
 
     protected mainGameLoop_pre(): boolean {
@@ -88,7 +88,7 @@ class AbstractScene {
         return true;
     }
 
-    protected mainGameLoop_post() {
+    protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
     }
 
     protected renderPointer() {
@@ -178,6 +178,12 @@ class AbstractScene {
        
     setMap(map: IMap, callback: { (scene: AbstractScene): void }) {
         (function(scene: AbstractScene) {
+            
+            if(Utils.isEmpty(map)) {
+                console.error("initialized map");
+                console.trace();
+            }
+            
             scene.map = map;
             scene.setTile(map.tileset.image, function(scene) {
                 callback(scene);

@@ -33,11 +33,6 @@ class DynamicScene extends AbstractScene {
             return false;
         }
 
-        //TODO rimuovere a regime
-        this.context.fillStyle = "#000000";
-        this.context.font = "bold 40px Arial";
-        this.context.fillText("(it's not ready yet)", 160, 260);
-
         var time = Time.getTime();
         EventManager.update(this.hero, time);
         if(!Utils.isEmpty(this.events)) {
@@ -49,9 +44,15 @@ class DynamicScene extends AbstractScene {
         return true;
     }
 
-    protected mainGameLoop_post() {
-        super.mainGameLoop_post();
-        this.renderFPS();
+    protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
+        super.mainGameLoop_post(boundariesX, boundariesY);
+        
+        //TODO rimuovere a regime
+        this.context.fillStyle = "#000000";
+        this.context.font = "bold 40px Arial";
+        this.context.fillText("(it's not ready yet)", 160, 260);
+        
+        this.renderFPS(boundariesX, boundariesY);
     }
 
     togglePause(pause?: boolean) {
@@ -70,7 +71,7 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    private renderFPS() {
+    private renderFPS(boundariesX: IRange, boundariesY: IRange) {
         var seconds = Math.floor(Time.getTime() / 1000);
         if (seconds === this.secondFPS) {
             this.countFPS++;
@@ -85,11 +86,11 @@ class DynamicScene extends AbstractScene {
                 this.FPS = Math.ceil(avg) + 2;
             }
         }
-
+        
         if (this.renderingConfiguration.showFPS) {
             this.context.fillStyle = Constant.Color.RED;
             this.context.font = "bold 18px Arial";
-            this.context.fillText("" + this.lastFPS, 10, 20);
+            this.context.fillText("" + this.lastFPS, boundariesX.min + 10, boundariesY.min + 20);
         }
     }
 }

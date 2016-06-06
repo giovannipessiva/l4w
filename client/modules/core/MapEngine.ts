@@ -29,7 +29,7 @@ class MapEngine {
                         var tilePoint = Utils.gIDToPoint(tileGID, map.tileset.imagewidth);
     
                         context.drawImage(tileImage,
-                            tilePoint.x * this.grid.cellW, tilePoint.y * this.grid.cellW, this.grid.cellW, this.grid.cellH,
+                            tilePoint.x * this.grid.cellW, tilePoint.y * this.grid.cellH, this.grid.cellW, this.grid.cellH,
                             x * this.grid.cellW, y * this.grid.cellH, this.grid.cellW, this.grid.cellH);
                     }
                 }

@@ -3,9 +3,15 @@
 /**
  * Module for common type structures and function interfaces
  */
+
 interface IPoint {
     x: number;
     y: number;
+};
+
+interface IRange {
+    min: number;
+    max: number;
 };
 
 interface IRectangle {

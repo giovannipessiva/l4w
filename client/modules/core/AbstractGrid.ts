@@ -119,27 +119,36 @@ class AbstractGrid {
         return { x: leftTopX, y: leftTopY };
     }
 
-    getBoundariesX(focusX: number): { min: number; max: number } {
+    /**
+     * Return min and max visible columns
+     */
+    getBoundariesX(focusX: number): IRange {
         var focusColumn = Math.round(focusX / this.cellW);
         var min = focusColumn - this.halfColumns;
         var max = focusColumn + this.halfColumns;
         return this.checkBoundariesLimit(min, max, this.columns - 1);
     }
 
-    getBoundariesY(focusY: number): { min: number; max: number } {
+    /**
+     * Return min and max visible rows
+     */
+    getBoundariesY(focusY: number): IRange {
         var focusRow = Math.round(focusY / this.cellH);
         var min = focusRow - this.halfRows;
         var max = focusRow + this.halfRows;
         return this.checkBoundariesLimit(min, max, this.rows - 1);
     }
 
-    private checkBoundariesLimit(min: number, max: number, maxLimit: number): { min: number; max: number } {
+    private checkBoundariesLimit(min: number, max: number, maxLimit: number): IRange {
         if (min < 0) {
             max -= min;
             min = 0;
         }
         if (max > maxLimit) {
             min -= (max - maxLimit);
+            if (min < 0) {
+                min = 0;
+            }
             max = maxLimit;
         }
         return {
