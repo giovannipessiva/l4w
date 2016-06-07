@@ -42,9 +42,6 @@ class AbstractScene {
         };
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
-        
-        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
-        this.setMap(MapEngine.getNewMap("stub"),callback);
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -187,7 +184,7 @@ class AbstractScene {
             scene.map = map;
             scene.setTile(map.tileset.image, function(scene) {
                 callback(scene);
-            })
+            });
         })(this);
     }
     

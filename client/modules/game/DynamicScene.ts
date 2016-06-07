@@ -23,6 +23,9 @@ class DynamicScene extends AbstractScene {
     constructor(grid: DynamicGrid, callback: { (scene: DynamicScene): void }) {
         super(grid, callback);
         this.hero = DataLoader.loadHero();
+        
+        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
+        this.setMap(MapEngine.getNewMap("stub"),callback);
     }
 
     protected mainGameLoop_pre() {

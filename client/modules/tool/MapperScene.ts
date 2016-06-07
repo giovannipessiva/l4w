@@ -12,6 +12,9 @@ class MapperScene extends StaticScene {
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid,callback);
         this.activeLayer = 0;
+ 
+        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
+        this.setMap(MapEngine.getNewMap("stub"),callback);
     }
 
     protected renderPointer() {
