@@ -10,7 +10,7 @@ class MapperScene extends StaticScene {
     private tilePicker: TilePickerScene;
     
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
-        super(grid,callback);
+        super(grid);
         this.activeLayer = 0;
  
         //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori

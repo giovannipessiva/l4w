@@ -122,34 +122,36 @@ class AbstractGrid {
     /**
      * Return min and max visible columns
      */
-    getBoundariesX(focusX: number): IRange {
+    getBoundariesX(focusX: number, columns: number): IRange {
         var focusColumn = Math.round(focusX / this.cellW);
         var min = focusColumn - this.halfColumns;
         var max = focusColumn + this.halfColumns;
-        return this.checkBoundariesLimit(min, max, this.columns - 1);
+        return this.checkBoundariesLimit(min, max, columns);
     }
 
     /**
      * Return min and max visible rows
      */
-    getBoundariesY(focusY: number): IRange {
+    getBoundariesY(focusY: number, rows: number): IRange {
         var focusRow = Math.round(focusY / this.cellH);
         var min = focusRow - this.halfRows;
         var max = focusRow + this.halfRows;
-        return this.checkBoundariesLimit(min, max, this.rows - 1);
+        return this.checkBoundariesLimit(min, max, rows);
     }
 
+    /**
+     * Adjust the values of min and max visible cells checking the grid limits,
+     * so that there is no scrolling near the border
+     */
     private checkBoundariesLimit(min: number, max: number, maxLimit: number): IRange {
         if (min < 0) {
             max -= min;
             min = 0;
-        }
-        if (max > maxLimit) {
-            min -= (max - maxLimit);
-            if (min < 0) {
-                min = 0;
+        } else {
+            if (max >= maxLimit) {
+                min -= (max - maxLimit + 1);
+                max = maxLimit - 1;
             }
-            max = maxLimit;
         }
         return {
             min: min,

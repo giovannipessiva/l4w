@@ -17,34 +17,36 @@ class MapEngine {
     }
 
     render(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        for (var layer of map.layers) {
-            if(!Utils.isEmpty(layer.data)) {
+        if (!Utils.isEmpty(map)) {
+            for (var layer of map.layers) {
+                if (!Utils.isEmpty(layer.data)) {
 
-                if(!Utils.isEmpty(layer.opacity)) {
-                    context.globalAlpha = layer.opacity;
-                }
-                
-                for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
-                    for (var x = minColumn; x <= maxColumn; x++) {
-                        var cellIndex = x + y * map.width;
-
-                        var tileGID = layer.data[cellIndex];
-                        if(tileGID === -1) {
-                            continue;    
-                        }
-
-                        var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
-
-                        context.drawImage(
-                            tileImage,
-                            Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
-                            Math.floor(x * this.grid.cellW), Math.floor(y * this.grid.cellH), this.grid.cellW, this.grid.cellH);
+                    if (!Utils.isEmpty(layer.opacity)) {
+                        context.globalAlpha = layer.opacity;
                     }
+
+                    for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
+                        for (var x = minColumn; x <= maxColumn; x++) {
+                            var cellIndex = x + y * map.width;
+
+                            var tileGID = layer.data[cellIndex];
+                            if (tileGID === -1) {
+                                continue;
+                            }
+
+                            var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
+
+                            context.drawImage(
+                                tileImage,
+                                Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
+                                Math.floor(x * this.grid.cellW), Math.floor(y * this.grid.cellH), this.grid.cellW, this.grid.cellH);
+                        }
+                    }
+                    context.globalAlpha = 1;
                 }
-                context.globalAlpha = 1;
+
+                //TODO manage events (layer.object array)
             }
-            
-            //TODO manage events (layer.object array)
         }
     }
 
@@ -132,6 +134,7 @@ class MapEngine {
         var map: IMap = {
             "name": name,
             "height": 20,
+            "width": 25,
             "layers": [
                 {
                     "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -176,8 +179,7 @@ class MapEngine {
                 "name": "Bosco",
                 "block": null,
                 "over": null
-            },
-            "width": 25
+            }
         };
         return map;
     }

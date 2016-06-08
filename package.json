@@ -9,7 +9,7 @@
   "dependencies": {
     "compression": "^1.6",
     "http-status-codes": "^1.0",
-    "pg": "^4.5",
+    "pg": "^5.0",
     "sequelize": "^3.23",
     "express": "^4.13",
     "express-session": "^1.13",

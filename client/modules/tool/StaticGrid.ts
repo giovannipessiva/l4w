@@ -73,14 +73,14 @@ class StaticGrid extends AbstractGrid {
         this.updateSizingDerivates();
     }
 
-    getBoundariesX(focusX: number): { min: number; max: number } {
-        //TODO seleziona solo il range che può essere cambiato
-        return super.getBoundariesX(focusX);
+    getBoundariesX(focusX: number, columns: number): IRange {
+        //TODO seleziona solo il range che puo' essere cambiato
+        return super.getBoundariesX(focusX, columns);
     }
 
-    getBoundariesY(focusY: number): { min: number; max: number } {
+    getBoundariesY(focusY: number, rows: number): IRange {
         //TODO seleziona solo il range che puo' essere cambiato
-        return super.getBoundariesY(focusY);
+        return super.getBoundariesY(focusY, rows);
     }
 
     refresh() {

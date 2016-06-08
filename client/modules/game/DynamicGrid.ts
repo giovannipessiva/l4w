@@ -24,7 +24,7 @@ class DynamicGrid extends AbstractGrid {
         var newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         /*
             Not sure why, but this works against white rumor at cells border
-            (the white rumor become visible when the scale is high)
+            (the white rumor become more visible when the scale is high)
             0.03125 = CELL_SIZE * 2^-10
         */
         this.scale = newScale - (newScale % 0.03125);

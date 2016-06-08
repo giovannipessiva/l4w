@@ -5,8 +5,8 @@
  */
 class StaticScene extends AbstractScene {
 
-    constructor(grid: StaticGrid, callback: { (scene: StaticScene): void }) {
-        super(grid, callback);
+    constructor(grid: StaticGrid) {
+        super(grid);
         this.renderingConfiguration.showEditorGrid = true;
         this.renderingConfiguration.enableSelection = true;
     }

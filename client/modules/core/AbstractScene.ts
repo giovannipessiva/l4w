@@ -32,7 +32,7 @@ class AbstractScene {
     grid: AbstractGrid;
     mapEngine: MapEngine;
 
-    constructor(grid: AbstractGrid, callback: { (scene: AbstractScene): void }) {
+    constructor(grid: AbstractGrid) {
         this.mapEngine = new MapEngine(grid);
         this.focus = {
             x: 0, y: 0
@@ -59,19 +59,20 @@ class AbstractScene {
             return;
         }
 
-        var boundariesY = this.grid.getBoundariesY(this.focus.y);
+        var boundariesY = this.grid.getBoundariesY(this.focus.y, this.getSceneHeight());
         var minRow = boundariesY.min;
         var maxRow = boundariesY.max;
-        var boundariesX = this.grid.getBoundariesX(this.focus.x);
+        var boundariesX = this.grid.getBoundariesX(this.focus.x, this.getSceneWidth());
         var minColumn = boundariesX.min;
         var maxColumn = boundariesX.max;
-        
+
         // Base rendering
-//        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn); //FIXME disabilatato per rilascio
+        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
         this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        
         this.mapEngine.renderGlobalUI(this.context, this.renderingConfiguration);
 
         this.renderFocus();
@@ -197,5 +198,13 @@ class AbstractScene {
                 callback(scene);
             });
         })(this);
+    }
+    
+    getSceneHeight() {
+        return this.map.height;
+    }
+    
+    getSceneWidth() {
+        return this.map.width;
     }
 }

@@ -10,7 +10,7 @@ module TilePicker {
         if (Utils.isEmpty(tilePicker)) {
             // Create a new instance
             new StaticGrid(canvas, function(grid: StaticGrid) {
-                new TilePickerScene(grid, function (scene: TilePickerScene) {
+                new TilePickerScene(grid, canvas.height, canvas.width, function (scene: TilePickerScene) {
                     registerReference(scene);
                     initInput(canvas, tilePicker, grid);
                     tilePicker.start(canvas);
