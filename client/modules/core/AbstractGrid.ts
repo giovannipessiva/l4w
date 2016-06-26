@@ -147,11 +147,10 @@ class AbstractGrid {
         if (min < 0) {
             max -= min;
             min = 0;
-        } else {
-            if (max >= maxLimit) {
-                min -= (max - maxLimit + 1);
-                max = maxLimit - 1;
-            }
+        }
+        if (max >= maxLimit) {
+            min -= (max - maxLimit + 1);
+            max = maxLimit - 1;
         }
         return {
             min: min,
