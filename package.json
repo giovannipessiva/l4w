@@ -9,7 +9,7 @@
   "dependencies": {
     "compression": "^1.6",
     "http-status-codes": "^1.0",
-    "pg": "^5.0",
+    "pg": "^6.0",
     "sequelize": "^3.23",
     "express": "^4.13",
     "express-session": "^1.13",
@@ -20,12 +20,12 @@
     "grunt-ts": "^5.5",
     "grunt-tslint": "^3.1",
     "typescript": "^1.8",
-    "tslint": "^3.10",
+    "tslint": "^3.12",
     "grunt": "^0.4",
 	"sequelize-auto": "^0.4"
   },
   "engines": {
-    "node": "6.1"
+    "node": "6.2"
   },
   "repository": {
     "type": "git",
