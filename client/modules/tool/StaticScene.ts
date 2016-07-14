@@ -77,12 +77,18 @@ class StaticScene extends AbstractScene {
         this.renderingConfiguration.selectPointEnd = null;
     }
 
+    /**
+     * Return the rectangular area currently selected in the scene.
+     * Both the top-left point (x1,y1) and the bottom-right point
+     * (x2, y2) are included in the area
+     */
     getSelectionArea(): IRectangle {
         if (Utils.isEmpty(this.renderingConfiguration.selectPointStart)) {
             return null;
         }
         var x1 = this.renderingConfiguration.selectPointStart.x;
         var y1 = this.renderingConfiguration.selectPointStart.y;
+   
         var x2;
         var y2;
         if (!Utils.isEmpty(this.renderingConfiguration.selectPointEnd)) {
@@ -102,6 +108,7 @@ class StaticScene extends AbstractScene {
             x2 = this.renderingConfiguration.selectPointStart.x;
             y2 = this.renderingConfiguration.selectPointStart.y;
         }
+                
         return {
             x1: x1,
             y1: y1,

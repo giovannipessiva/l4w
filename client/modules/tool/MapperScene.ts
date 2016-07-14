@@ -46,14 +46,15 @@ class MapperScene extends StaticScene {
         if(Utils.isEmpty(pickerArea)) {
            return;
         }
-        var tileColumns = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
-        var appliedTile = pickerArea.x1 + pickerArea.y1 * tileColumns;
-        var changedCell = x + y * this.map.layers[this.activeLayer].x;
+        
+        var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
+        var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
+        var changedCell: number = x + y * this.map.width;
 
-        for(var j=pickerArea.y1; j<pickerArea.y2-pickerArea.y1; j++) {
-            for(var i=pickerArea.x1; i<pickerArea.x2-pickerArea.x1; i++) {
-                var appliedTileOffset = i + j * this.map.layers[this.activeLayer].x;
-                var changedCellOffset = i + j * tileColumns;
+        for(var j=0; j<=pickerArea.y2-pickerArea.y1; j++) {
+            for(var i=0; i<=pickerArea.x2-pickerArea.x1; i++) {
+                var appliedTileOffset: number = i + j * tileColumns;
+                var changedCellOffset: number = i + j * this.map.width;
                 this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
             }
         }
