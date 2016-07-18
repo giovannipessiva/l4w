@@ -2,7 +2,7 @@
 /// <reference path="AbstractGrid.ts" />
 
 /**
- * Class for handling game maps
+ * Helper class for handling game maps
  */
 class MapEngine {
 
@@ -16,36 +16,22 @@ class MapEngine {
         //TODO save the map, sending the updated JSON to server
     }
 
-    render(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        if (!Utils.isEmpty(map)) {
-            for (var layer of map.layers) {
-                if (!Utils.isEmpty(layer.data)) {
+    renderLayer(map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
+            for (var x = minColumn; x <= maxColumn; x++) {
+                var cellIndex = x + y * map.width;
 
-                    if (!Utils.isEmpty(layer.opacity)) {
-                        context.globalAlpha = layer.opacity;
-                    }
-
-                    for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
-                        for (var x = minColumn; x <= maxColumn; x++) {
-                            var cellIndex = x + y * map.width;
-
-                            var tileGID = layer.data[cellIndex];
-                            if (tileGID === -1) {
-                                continue;
-                            }
-
-                            var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
-
-                            context.drawImage(
-                                tileImage,
-                                Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
-                                Math.floor(x * this.grid.cellW), Math.floor(y * this.grid.cellH), this.grid.cellW, this.grid.cellH);
-                        }
-                    }
-                    context.globalAlpha = 1;
+                var tileGID = layer.data[cellIndex];
+                if (tileGID === -1) {
+                    continue;
                 }
 
-                //TODO manage events (layer.object array)
+                var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
+
+                context.drawImage(
+                    tileImage,
+                    Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
+                    Math.floor(x * this.grid.cellW), Math.floor(y * this.grid.cellH), this.grid.cellW, this.grid.cellH);
             }
         }
     }

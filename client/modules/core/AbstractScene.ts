@@ -67,7 +67,7 @@ class AbstractScene {
         var maxColumn = boundariesX.max;
 
         // Base rendering
-        this.mapEngine.render(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
+        this.renderLayers(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
         // UI rendering
@@ -207,4 +207,30 @@ class AbstractScene {
     getSceneWidth() {
         return this.map.width;
     }
+    
+    renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        if (!Utils.isEmpty(map)) {
+            for (var i = 0; i<map.layers.length; i++) {
+                var layer = map.layers[i];
+                if (!Utils.isEmpty(layer.data)) {
+
+                    if (!Utils.isEmpty(layer.opacity)) {
+                        context.globalAlpha = layer.opacity;
+                    }
+              
+                    this.renderLayer(map, i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+                    
+                    context.globalAlpha = 1;
+                }
+
+                //TODO manage events (layer.object array)
+            }
+        }
+    }
+    
+    renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        var layer = map.layers[layerIndex];
+        this.mapEngine.renderLayer(map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+    }
+        
 }
