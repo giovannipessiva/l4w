@@ -13,7 +13,7 @@
     "express-session": "^1.14",
     "http-status-codes": "^1.0",
     "pg": "^6.0",
-    "sequelize": "^3.23"
+    "sequelize": "^4.0.0-0"
   },
   "devDependencies": {
   	"grunt": "^0.4",
