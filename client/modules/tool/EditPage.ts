@@ -3,7 +3,7 @@
 /// <reference path="../core/util/Resource.ts" />
 /// <reference path="../core/util/Commons.ts" />
 
-module EditPage {
+namespace EditPage {
 
     export function start() {
         $("#mapPanel").jstree({
@@ -21,6 +21,8 @@ module EditPage {
                 "dots": false
             }
         });
+        
+        var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
 
         $("#mapPanel").on("changed.jstree", function(e, data) {
             // Prevent double call at start
@@ -44,8 +46,6 @@ module EditPage {
             $("#toolsPanel").width(width);
         };
         Resource.loadProperties(resizerCallback);
-
-        var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
 
         loadTiles();
         

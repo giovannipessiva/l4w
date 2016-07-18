@@ -1,7 +1,7 @@
 /// <reference path="../core/util/Utils.ts" />
 /// <reference path="../core/util/Constant.ts" />
 
-module Mapper {
+namespace Mapper {
 
     export var mapper: MapperScene;
 

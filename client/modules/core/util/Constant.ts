@@ -1,7 +1,7 @@
 /**
  * Module con constants values
  */
-module Constant {
+namespace Constant {
 
     export var DOUBLE_PI = Math.PI * 2;
 

@@ -3,7 +3,7 @@
 /**
  * Module to handle an event
  */
-module EventManager {
+namespace EventManager {
 
     export function update(event: IEvent, time: number) {
         //TODO

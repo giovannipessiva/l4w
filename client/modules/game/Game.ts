@@ -7,7 +7,7 @@
 /**
  * Module for initializing and launching a game
  */
-module Game {
+namespace Game {
 
     export function start(canvas: HTMLCanvasElement) {
         new DynamicGrid(canvas, function(grid: DynamicGrid) {

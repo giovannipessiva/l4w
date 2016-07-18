@@ -4,7 +4,7 @@
 /**
  * Module to manage data assets loading and synchronization
  */
-module DataLoader {
+namespace DataLoader {
 
     export function loadEvent(): IEvent {
         //TODO

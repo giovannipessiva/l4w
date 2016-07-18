@@ -1,7 +1,7 @@
 /**
  * Module for time utils
  */
-module Time {
+namespace Time {
     export function getTime() {
         var d = new Date();
         return d.getTime();

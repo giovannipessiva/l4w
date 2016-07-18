@@ -1,6 +1,6 @@
 /// <reference path="../core/util/Utils.ts" />
 
-module TilePicker {
+namespace TilePicker {
 
     var tilePicker: TilePickerScene;
     

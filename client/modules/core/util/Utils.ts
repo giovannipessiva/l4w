@@ -3,7 +3,7 @@
 /**
  * Module for generic utility methods
  */
-module Utils {
+namespace Utils {
 
     export function isEmpty(obj: any): boolean {
         if (obj === null || typeof obj === "undefined") {

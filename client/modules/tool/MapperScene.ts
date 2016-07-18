@@ -77,7 +77,6 @@ class MapperScene extends StaticScene {
     }
 
     protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        var layer: IMapLayer = map.layers[layerIndex];
         if (layerIndex > this.activeLayer) {
             context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
         }

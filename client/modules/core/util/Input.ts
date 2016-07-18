@@ -8,7 +8,7 @@
  * - visibility change
  * - screen resize and rotation change
  */
-module Input {
+namespace Input {
 
     export class Keys {
         static UP = "38";

@@ -4,7 +4,7 @@
 /**
  * Module for resources loading
  */
-module Resource {
+namespace Resource {
 
     var dataFolder = "data/";
 
