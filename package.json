@@ -16,7 +16,7 @@
     "sequelize": "^4.0.0-0"
   },
   "devDependencies": {
-  	"grunt": "^0.4",
+  	"grunt": "^1.0",
     "grunt-contrib-uglify": "^1.0",
     "grunt-ts": "^5.5",
     "grunt-tslint": "^3.1",
