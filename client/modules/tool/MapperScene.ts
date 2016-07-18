@@ -5,7 +5,7 @@
  */
 class MapperScene extends StaticScene {
 
-    private activeLayer: number;
+    private activeLayer: Constant.MapLayer;
 
     private tilePicker: TilePickerScene;
 
@@ -13,10 +13,8 @@ class MapperScene extends StaticScene {
 
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
-        this.activeLayer = 0;
-
-        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
-        this.setMap(MapEngine.getNewMap("stub"), callback);
+        this.activeLayer = Constant.MapLayer.LOW;
+        callback(this);
     }
 
     protected renderPointer() {
@@ -48,6 +46,9 @@ class MapperScene extends StaticScene {
         if (Utils.isEmpty(pickerArea)) {
             return;
         }
+        if(Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
+            this.map.layers[this.activeLayer].data = [];   
+        }
 
         var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
         var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
@@ -75,11 +76,15 @@ class MapperScene extends StaticScene {
         this.tilePicker = tilePicker;
     }
 
-    renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         var layer: IMapLayer = map.layers[layerIndex];
         if (layerIndex > this.activeLayer) {
             context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
         }
         super.renderLayer(map, layerIndex, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+    }
+
+    setActiveLayer(activeLayer: Constant.MapLayer) {
+        this.activeLayer = activeLayer;
     }
 }

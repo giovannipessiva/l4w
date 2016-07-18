@@ -19,4 +19,11 @@ module Constant {
         LEFT,
         RIGHT
     }
+    
+    export enum MapLayer {
+        LOW,
+        MID,
+        TOP,
+        EVENTS
+    }
 }

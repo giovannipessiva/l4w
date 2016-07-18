@@ -70,7 +70,14 @@ function signOut() {
 		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td><td><button type="button">A3</button></td><td><button type="button">A4</button></td></tr>
 		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td><td><button type="button">B3</button></td><td><button type="button">B4</button></td></tr>
 		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td><td><button type="button">C3</button></td><td><button type="button">C4</button></td></tr>
-		<tr><td><button type="button">D1</button></td><td><button type="button">D2</button></td><td><button type="button">D3</button></td><td><button type="button">D4</button></td></tr>
+		</table>
+		<table>
+		<tr>
+		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
+		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
+		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>
+		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.EVENTS);">Events</button></td>
+		</tr>
 		</table>
 	</div>
 	<div id="tilePanel" style="border:1px solid black;position: relative;">

@@ -32,8 +32,10 @@ module EditPage {
             $("#mapSizeW").val(node.data.w + "");
             $("#mapSizeH").val(node.data.h + "");
             $("#tiles").val(node.data.tile);
-            TilePicker.loadTile(node.data.tile);
-            Mapper.loadMap(node);
+            TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
+                Mapper.start(canvas, tilePicker, node.id);
+            });
+            
         });
         
         // Resize the panel to match the tileset
@@ -44,7 +46,6 @@ module EditPage {
         Resource.loadProperties(resizerCallback);
 
         var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
-        Mapper.start(canvas);
 
         loadTiles();
         
@@ -96,8 +97,9 @@ module EditPage {
             contentType: "application/json",
             data: JSON.stringify(updatedData),
             success: function(result) {
-                TilePicker.loadTile(node.data.tile);
-                Mapper.changeTile(node.data.tile);
+                TilePicker.loadTile(node.data.tile,function() {
+                    Mapper.changeTile(node.data.tile);
+                });
             }
         });
     }

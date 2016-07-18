@@ -1,40 +1,46 @@
+/// <reference path="../core/util/Utils.ts" />
+/// <reference path="../core/util/Constant.ts" />
+
 module Mapper {
 
     export var mapper: MapperScene;
-    var tmpMap: IMap;
 
-    export function start(canvas: HTMLCanvasElement) {
-        new StaticGrid(canvas, function(grid: StaticGrid) {
-            new MapperScene(grid, function(mapper: MapperScene) {
-                initInput(canvas, mapper, grid);
-                initWidgets(canvas, mapper, grid);
-                injectScenes(mapper);
-                if (!Utils.isEmpty(tmpMap)) {
-                    mapper.setMap(tmpMap, function() {
+    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId : string) {
+        if(Utils.isEmpty(mapper)) {
+            new StaticGrid(canvas, function(grid: StaticGrid) {
+                new MapperScene(grid, function(scene: MapperScene) {
+                    initInput(canvas, scene, grid);
+                    initWidgets(canvas, scene, grid);
+                    TilePicker.setMapper(scene);
+                    scene.setTilePicker(tilePicker);
+                    mapper = scene;
+                    Mapper.loadMap(mapId,function() {
                         mapper.start(canvas);
                     });
-                } else {
-                    mapper.start(canvas);
-                }
-            });
-        }, GridTypeEnum.mapper);
+                });
+            }, GridTypeEnum.mapper);
+        }
     }
 
     export function changeTile(tile: string) {
         mapper.setTile(tile,function(scene){});
     }
 
-    export function loadMap(mapNode: JSTreeNode) {
-        Resource.load(mapNode.id, Resource.TypeEnum.MAP, function(resourceText: string) {
+    export function loadMap(mapId: string, callback: () => void) {
+        Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
-                console.error("Error while loading map: " + mapNode.id);
+                console.error("Error while loading map: " + mapId);
             } else {
                 try {
                     var map: IMap = JSON.parse(resourceText);
-                    injectMap(map);
+                    
+                    //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
+                    map = MapEngine.getNewMap("stub");
+
+                    mapper.setMap(map,callback);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
-                        console.error("Error while parsing map: " + mapNode.id);
+                        console.error("Error while parsing map: " + mapId);
                         console.error(exception.message);
                     } else {
                         console.error(exception);
@@ -42,20 +48,6 @@ module Mapper {
                 }
             }
         });
-    }
-
-    function injectScenes(mapper) {
-        TilePicker.injectReference(function(tilePicker: TilePickerScene) {
-            mapper.setTilePicker(tilePicker);
-            tilePicker.setMapper(mapper);
-        });
-    }
-
-    function injectMap(map: IMap) {
-        tmpMap = map;
-        if (!Utils.isEmpty(mapper)) {
-            mapper.setMap(map, function(){});
-        }
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
@@ -125,7 +117,7 @@ module Mapper {
             },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
-            );
+        );
     };
 
     function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
@@ -136,5 +128,8 @@ module Mapper {
             scene.updateContext(canvas);
         };
     };
-
+    
+    export function setActiveLayer(layerIndex: Constant.MapLayer) {
+        mapper.setActiveLayer(layerIndex);
+    }
 }

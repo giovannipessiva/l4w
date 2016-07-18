@@ -208,7 +208,7 @@ class AbstractScene {
         return this.map.width;
     }
     
-    renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
             for (var i = 0; i<map.layers.length; i++) {
                 var layer = map.layers[i];
@@ -228,7 +228,7 @@ class AbstractScene {
         }
     }
     
-    renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         var layer = map.layers[layerIndex];
         this.mapEngine.renderLayer(map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
