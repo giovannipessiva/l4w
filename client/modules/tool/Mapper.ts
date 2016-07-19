@@ -52,7 +52,17 @@ namespace Mapper {
     export function reloadMap() {
         var mapId = EditPage.getActiveMap();
         var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
-        loadMap(mapId, canvas, function(){});
+        loadMap(mapId, canvas, function(){
+            EditPage.toggleEditMark(false); 
+        });
+    }
+
+    export function saveMap() {
+        var mapId = EditPage.getActiveMap();
+      
+        //TODO Resource.save(JSON.stringify(map), Resource.TypeEnum.MAP, callback);
+        
+        EditPage.toggleEditMark(false);
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
@@ -89,7 +99,9 @@ namespace Mapper {
             function(x, y, mouseButton) {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    scene.apply(x, y);
+                    if(scene.apply(x, y)) {
+                        EditPage.toggleEditMark(true);
+                    }
                 } else {
                     scene.select(x, y);
                 }

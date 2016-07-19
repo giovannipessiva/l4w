@@ -4,6 +4,8 @@
 /// <reference path="../core/util/Commons.ts" />
 
 namespace EditPage {
+    
+    export var PAGE_TITLE = document.title;
 
     export function start() {
         $("#mapPanel").jstree({
@@ -110,5 +112,13 @@ namespace EditPage {
 
     function getSelectedNode(): JSTreeNode {
         return $("#mapPanel").jstree(true).get_selected(true)[0];
+    }
+    
+    export function toggleEditMark(edited: boolean) {
+        if(edited) {
+            document.title = PAGE_TITLE + "*";
+        } else {
+            document.title = PAGE_TITLE;
+        }
     }
 }
