@@ -44,17 +44,22 @@ function signOut() {
 </head>
 <body>
 <div style="float:left;position:relative;margin-left:auto;margin-right:auto;">
-	<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
-	Your browser does not support HTML5 Canvas!</canvas>
-		
-	<script type='text/javascript'>
-	var canvas = document.getElementById('canvas1');
-	var ctx = canvas.getContext('2d');
-	ctx.fillStyle='#000000';
-	ctx.font='38px Arial';
-	ctx.fillText("loading scripts...",10,40);
-	</script>
-
+	<div>
+		<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
+		Your browser does not support HTML5 Canvas!</canvas>
+			
+		<script type='text/javascript'>
+		var canvas = document.getElementById('canvas1');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle='#000000';
+		ctx.font='38px Arial';
+		ctx.fillText("loading scripts...",10,40);
+		</script>
+	</div>
+	<p>
+		Game: <a href="/">/</a><br/>
+		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Mapper">https://github.com/giovannipessiva/l4w/wiki/Mapper</a>
+	</p>
 </div>
 <div id="toolsPanel" style="float:right;position:relative;margin-right:0;width:256px">
 	<div style="border:1px solid black">
@@ -66,17 +71,19 @@ function signOut() {
 	-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
 	</div>
 	<div style="border:1px solid black">
+		<!--
 		<table>
 		<tr><td><button type="button">A1</button></td><td><button type="button">A2</button></td><td><button type="button">A3</button></td><td><button type="button">A4</button></td></tr>
 		<tr><td><button type="button">B1</button></td><td><button type="button">B2</button></td><td><button type="button">B3</button></td><td><button type="button">B4</button></td></tr>
 		<tr><td><button type="button">C1</button></td><td><button type="button">C2</button></td><td><button type="button">C3</button></td><td><button type="button">C4</button></td></tr>
 		</table>
+		-->
 		<table>
 		<tr>
 		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
 		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
 		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>
-		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.EVENTS);">Events</button></td>
+		<td><button type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.EVENTS);"><i>Events</i></button></td>
 		</tr>
 		</table>
 	</div>

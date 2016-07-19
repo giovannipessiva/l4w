@@ -9,7 +9,7 @@ class MapperScene extends StaticScene {
 
     private tilePicker: TilePickerScene;
 
-    public static UPPER_LEVEL_OPACITY: number = 0.4;
+    public static UPPER_LEVEL_OPACITY: number = 0.5;
 
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
@@ -56,9 +56,11 @@ class MapperScene extends StaticScene {
 
         for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
             for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
-                var appliedTileOffset: number = i + j * tileColumns;
-                var changedCellOffset: number = i + j * this.map.width;
-                this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+                if(x + i < this.map.width) {
+                    var appliedTileOffset: number = i + j * tileColumns;
+                    var changedCellOffset: number = i + j * this.map.width;
+                    this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+                }
             }
         }
         //TODO gestisci trascinamento del picker
