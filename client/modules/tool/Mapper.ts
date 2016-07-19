@@ -5,8 +5,8 @@ namespace Mapper {
 
     export var mapper: MapperScene;
 
-    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId : string) {
-        if(Utils.isEmpty(mapper)) {
+    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: string) {
+        if (Utils.isEmpty(mapper)) {
             new StaticGrid(canvas, function(grid: StaticGrid) {
                 new MapperScene(grid, function(scene: MapperScene) {
                     initInput(canvas, scene, grid);
@@ -14,7 +14,7 @@ namespace Mapper {
                     TilePicker.setMapper(scene);
                     scene.setTilePicker(tilePicker);
                     mapper = scene;
-                    Mapper.loadMap(mapId,function() {
+                    Mapper.loadMap(mapId, canvas, function() {
                         mapper.start(canvas);
                     });
                 });
@@ -23,28 +23,30 @@ namespace Mapper {
     }
 
     export function changeTile(tile: string) {
-        mapper.setTile(tile,function(scene){});
+        mapper.setTile(tile, function(scene) { });
     }
 
-    export function loadMap(mapId: string, callback: () => void) {
+    export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: () => void) {
         Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
             } else {
                 try {
                     var map: IMap = JSON.parse(resourceText);
-                    
+
                     //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
                     map = MapEngine.getNewMap("stub");
 
-                    mapper.setMap(map,callback);
+                    mapper.setMap(map, callback);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
                         console.error("Error while parsing map: " + mapId);
-                        console.error(exception.message);
+                    } else if (exception.name === "TypeError") {
+                        console.error("Error while reading map: " + mapId);
                     } else {
                         console.error(exception);
                     }
+                    mapper.showError(canvas.getContext("2d"));
                 }
             }
         });
@@ -121,14 +123,14 @@ namespace Mapper {
     };
 
     function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
-        var inputRange: HTMLInputElement = <HTMLInputElement> document.getElementById("zoom");
+        var inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         inputRange.onchange = function(e: Event) {
             grid.selectScale(+inputRange.value);
             grid.refresh();
             scene.updateContext(canvas);
         };
     };
-    
+
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
         mapper.setActiveLayer(layerIndex);
     }

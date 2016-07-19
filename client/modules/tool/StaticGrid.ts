@@ -13,12 +13,12 @@ class StaticGrid extends AbstractGrid {
     private overriddenProps: Map<string, number>;
 
     constructor(
-        cnvs: HTMLCanvasElement,
+        canvas: HTMLCanvasElement,
         onCompleted: { (grid: StaticGrid): void },
         gridType: GridTypeEnum,
         overriddenProperties?: Map<string, number>
         ) {
-        super(cnvs, onCompleted, gridType);
+        super(canvas, onCompleted, gridType);
         this.overriddenProps = overriddenProperties;
     }
 

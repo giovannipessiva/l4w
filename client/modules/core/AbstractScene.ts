@@ -232,5 +232,13 @@ class AbstractScene {
         var layer = map.layers[layerIndex];
         this.mapEngine.renderLayer(map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
-        
+     
+    showError(context: CanvasRenderingContext2D) {
+        if(!Utils.isEmpty(this.context) && !Utils.isEmpty(this.grid)) {
+            this.grid.clear(this.context);
+        }
+        context.fillStyle = "#000000";
+        context.font = "bold 40px Arial";
+        context.fillText("An error occurred :(", 160, 260);
+    }
 }

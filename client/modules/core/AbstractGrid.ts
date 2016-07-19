@@ -24,10 +24,10 @@ class AbstractGrid {
     scale: number;
 
     constructor(
-        cnvs: HTMLCanvasElement,
+        canvas: HTMLCanvasElement,
         onCompleted: { (grid: AbstractGrid): void },
         gridType: GridTypeEnum) {
-        this.canvas = cnvs;
+        this.canvas = canvas;
         this.currentTranslation = { x: 0, y: 0 };
         this.gridType = gridType;
 
