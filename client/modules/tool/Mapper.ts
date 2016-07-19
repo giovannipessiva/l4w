@@ -1,5 +1,6 @@
 /// <reference path="../core/util/Utils.ts" />
 /// <reference path="../core/util/Constant.ts" />
+/// <reference path="../core/util/Errors.ts" />
 
 namespace Mapper {
 
@@ -33,10 +34,6 @@ namespace Mapper {
             } else {
                 try {
                     var map: IMap = JSON.parse(resourceText);
-
-                    //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
-                    map = MapEngine.getNewMap("stub");
-
                     mapper.setMap(map, callback);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -46,10 +43,16 @@ namespace Mapper {
                     } else {
                         console.error(exception);
                     }
-                    mapper.showError(canvas.getContext("2d"));
+                    Errors.showError(canvas.getContext("2d"));
                 }
             }
         });
+    }
+    
+    export function reloadMap() {
+        var mapId = EditPage.getActiveMap();
+        var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
+        loadMap(mapId, canvas, function(){});
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {

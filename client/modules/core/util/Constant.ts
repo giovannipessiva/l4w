@@ -1,5 +1,5 @@
 /**
- * Module con constants values
+ * Module fon constants values
  */
 namespace Constant {
 

@@ -103,6 +103,10 @@ namespace EditPage {
             }
         });
     }
+    
+    export function getActiveMap() : string {
+        return getSelectedNode().id;
+    }
 
     function getSelectedNode(): JSTreeNode {
         return $("#mapPanel").jstree(true).get_selected(true)[0];
