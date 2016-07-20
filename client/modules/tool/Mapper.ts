@@ -48,12 +48,12 @@ namespace Mapper {
             }
         });
     }
-    
+
     export function reloadMap() {
         var mapId = EditPage.getActiveMap();
-        var canvas = <HTMLCanvasElement> document.getElementById("canvas1");
-        loadMap(mapId, canvas, function(){
-            EditPage.toggleEditMark(false); 
+        var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
+        loadMap(mapId, canvas, function() {
+            EditPage.toggleEditMark(false);
         });
     }
 
@@ -99,7 +99,7 @@ namespace Mapper {
             function(x, y, mouseButton) {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    if(scene.apply(x, y)) {
+                    if (scene.apply(x, y)) {
                         EditPage.toggleEditMark(true);
                     }
                 } else {
@@ -147,6 +147,11 @@ namespace Mapper {
     };
 
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
+        (<HTMLButtonElement>document.getElementById("layer0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("layer1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("layer2")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("layer3")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("layer" + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
     }
 }
