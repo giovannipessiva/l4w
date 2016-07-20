@@ -59,10 +59,12 @@ namespace Mapper {
 
     export function saveMap() {
         var mapId = EditPage.getActiveMap();
-      
-        //TODO Resource.save(JSON.stringify(map), Resource.TypeEnum.MAP, callback);
-        
-        EditPage.toggleEditMark(false);
+        var mapJSON = JSON.stringify(this.mapper.getMap());
+        Resource.save(mapId, mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
+            if(success) {
+                EditPage.toggleEditMark(false);
+            }
+        });
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {

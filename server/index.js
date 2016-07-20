@@ -116,9 +116,17 @@ app.get('/style/:type/:file', function(request, response) {
 });
 
 // Server logic
+//TODO da proteggere gli endpoint di edit
 app.post('/edit/maps', function(request, response) {
 	security.getBodyData(request,response,function(data){
         mapper.updateMaps(data, response);
+	});
+});
+
+app.post('/edit/map/:id', function(request, response) {
+	var mapId = request.params.id;
+	security.getBodyData(request,response,function(data){
+        mapper.updateMap(mapId, data, response);
 	});
 });
 

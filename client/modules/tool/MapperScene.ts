@@ -91,4 +91,8 @@ class MapperScene extends StaticScene {
     setActiveLayer(activeLayer: Constant.MapLayer) {
         this.activeLayer = activeLayer;
     }
+    
+    getMap(): IMap {
+        return this.map;    
+    }
 }

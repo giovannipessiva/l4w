@@ -78,6 +78,7 @@ namespace Input {
                 pauseCallback();
                 flagPause = true;
             }
+            e.preventDefault();
         };
         
         // Mouse events 

@@ -77,8 +77,6 @@ module.exports = {
 				id: file,
 				data: JSON.parse(data)
 			}).then(function(result) {
-				//FIXME perchè result è sempre false?
-				console.log("Maps updated: " + file);
 				response.status(HttpStatus.OK).send();
 			}, function(error) {
 				console.log(error);

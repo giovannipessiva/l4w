@@ -1,12 +1,15 @@
 ///<reference path="../../interfaces/jquery.d.ts" />
 ///<reference path="Commons.ts" />
+///<reference path="Constant.ts" />
 
 /**
  * Module for resources loading
  */
 namespace Resource {
 
-    var dataFolder = "data/";
+    var DATA_PATH = "data/";
+    var ASSET_PATH = "assets/";
+    var EDIT_PATH = "edit/";
 
     export enum TypeEnum {
         CHAR,
@@ -27,7 +30,7 @@ namespace Resource {
                 propertiesCache.set(file, props);
                 onLoadCallback(props);
             }
-            sendRequest(dataFolder + "properties/" + file + ".properties", parsePropertiesCallback);
+            sendGETRequest(DATA_PATH + "properties/" + file + ".properties", parsePropertiesCallback);
         }
     };
 
@@ -53,8 +56,16 @@ namespace Resource {
         }
         return props;
     };
+    
+    function sendGETRequest(uri: string, callback: IProgressCallback) {
+        sendRequest(Constant.RequestType.GET, null, uri, callback);
+    };
+    
+    function sendPOSTRequest(uri: string, data: string, callback: IProgressCallback) {
+        sendRequest(Constant.RequestType.POST, data, uri, callback);
+    };
 
-    function sendRequest(uri: string, callback: IProgressCallback) {
+    function sendRequest(requestType: string, data: string, uri: string, callback: IProgressCallback) {
         var request = new XMLHttpRequest();
         request.onload = callback;
         request.onerror = function (e: ErrorEvent) {
@@ -64,10 +75,14 @@ namespace Resource {
         request.ontimeout = function () {
             console.error("Timeout while getting " + uri);
             callback(null);
-        };;
-        request.open("GET", uri, true);
+        };
+        request.open(requestType, uri, true);
         try {
-            request.send();
+            if(!Utils.isEmpty(data) && requestType === Constant.RequestType.POST) {
+                request.send(data);
+            } else {
+                request.send();
+            }
         } catch (exception) {
             if (exception.name === "NetworkError") {
                 console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
@@ -82,13 +97,10 @@ namespace Resource {
      * Load an asset and call a callback
      */
     export function load(file: string, assetType: TypeEnum, callback: { (response: any): void }) {
-        
-        //TODO find out why sometimes a null file is loaded
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
         }
-
         var path = getResourcePath(file, assetType);
 
         switch (assetType) {
@@ -106,7 +118,7 @@ namespace Resource {
                 break;
             case TypeEnum.MAP:
                 // Load text file
-                sendRequest(path, function(e: ProgressEvent) {
+                sendGETRequest(path, function(e: ProgressEvent) {
                     callback(this.responseText);
                 });
                 break;
@@ -120,10 +132,16 @@ namespace Resource {
     /**
      * Save an asset to server
      */
-    export function save(file: string, assetType: TypeEnum, callback: IBooleanCallback) {  
-        var path = getResourcePath(file, assetType);
-        //TODO
-        callback(false);
+    export function save(id: string, data: string, assetType: TypeEnum, callback: IBooleanCallback) {  
+        var path = getEditPath(id, assetType);
+        sendPOSTRequest(path, data, function(e: ProgressEvent) {
+            if(this.status === 200) {
+                callback(true);
+            } else {
+                console.error(this.status + " - " + this.response);
+                callback(false);
+            }
+        });
     }
 
     function getResourcePath(file: string, assetType: TypeEnum): string {
@@ -133,7 +151,7 @@ namespace Resource {
             case TypeEnum.FACE:
             case TypeEnum.SKIN:
             case TypeEnum.TILE:
-                path = "assets/";
+                path = ASSET_PATH;
                 switch (assetType) {
                     case TypeEnum.CHAR:
                         path += "charset/";
@@ -153,7 +171,7 @@ namespace Resource {
                 };
                 break;
             case TypeEnum.MAP:
-                path = "data/";
+                path = DATA_PATH;
                 switch (assetType) {
                     case TypeEnum.MAP:
                         path += "map/";
@@ -167,7 +185,27 @@ namespace Resource {
                 console.error("Unexpected resource type");
                 console.trace();
         };
-
+        return path + file;
+    }
+    
+    function getEditPath(file: string, assetType: TypeEnum): string {
+        var path;
+        switch (assetType) {
+            case TypeEnum.MAP:
+                path = EDIT_PATH;
+                switch (assetType) {
+                    case TypeEnum.MAP:
+                        path += "map/";
+                        break;
+                    default:
+                        console.error("Unexpected resource type");
+                        console.trace();
+                };
+                break;
+            default:
+                console.error("Unexpected resource type");
+                console.trace();
+        };
         return path + file;
     }
 }

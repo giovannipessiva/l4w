@@ -1,5 +1,4 @@
 /// <reference path="../core/AbstractScene.ts" />
-/// <reference path="../core/DataLoader.ts" />
 /// <reference path="../core/manager/EventManager.ts" />
 /*
  * Scene implementation for managing dynamic rendering
@@ -22,7 +21,6 @@ class DynamicScene extends AbstractScene {
 
     constructor(grid: DynamicGrid, callback: { (scene: DynamicScene): void }) {
         super(grid);
-        this.hero = DataLoader.loadHero();
         
         //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
         this.setMap(MapEngine.getNewMap("stub"),callback);

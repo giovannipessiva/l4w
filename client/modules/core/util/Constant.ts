@@ -12,6 +12,11 @@ namespace Constant {
         static GREY = "grey";
         static BLACK = "black";
     }
+    
+    export class RequestType {
+        static GET = "GET";
+        static POST = "POST";
+    }
 
     export enum Direction {
         UP,

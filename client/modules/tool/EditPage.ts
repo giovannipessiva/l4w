@@ -71,7 +71,7 @@ namespace EditPage {
         });
     }
     
-    function  loadTiles() {
+    function loadTiles() {
         $.getJSON("data/resources/tiles.json", function(data) {
             var sel = $("#tiles");
             for (var i = 0; i < data.length; i++) {
