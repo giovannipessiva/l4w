@@ -2,6 +2,7 @@ var path = require('path');
 var express = require('express');
 var compression = require('compression');
 var https = require('https');
+var HttpStatus = require('http-status-codes');
 
 var mapper = require(__dirname + '/modules/mapper');
 var utils = require(__dirname + '/modules/utils');
@@ -19,7 +20,7 @@ app.get('/', function(request, response) {
     utils.sendFile(__dirname + '/views/', 'home.html', response);
 });
 app.get('/edit', function(request, response) {
-	if(utils.isEmpty(request.session.user)) {
+	if(!security.isAuthenticated(request)) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	} else {
 		database.logUserSessionAccess(request.session.user);
@@ -28,7 +29,7 @@ app.get('/edit', function(request, response) {
 });
 app.post('/edit', function(request, response) {
 
-	if(utils.isEmpty(request.session.user)) {
+	if(!security.isAuthenticated(request)) {
 		// No valid session, use post data to authenticate user
 		security.getBodyData(request,response,function(data){
 			var paramMap = utils.parseParameters(data);
@@ -116,18 +117,25 @@ app.get('/style/:type/:file', function(request, response) {
 });
 
 // Server logic
-//TODO da proteggere gli endpoint di edit
 app.post('/edit/maps', function(request, response) {
-	security.getBodyData(request,response,function(data){
-        mapper.updateMaps(data, response);
-	});
+	if(security.isAuthenticated(request)) {
+		security.getBodyData(request,response,function(data){
+	        mapper.updateMaps(data, response);
+		});
+	} else {
+		response.status(HttpStatus.FORBIDDEN).end();
+	}
 });
 
 app.post('/edit/map/:id', function(request, response) {
-	var mapId = request.params.id;
-	security.getBodyData(request,response,function(data){
-        mapper.updateMap(mapId, data, response);
-	});
+	if(security.isAuthenticated(request)) {
+		var mapId = request.params.id;
+		security.getBodyData(request,response,function(data){
+	        mapper.updateMap(mapId, data, response);
+		});
+	} else {
+		response.status(HttpStatus.FORBIDDEN).end();
+	}
 });
 
 app.get('/news', function(request, response) {

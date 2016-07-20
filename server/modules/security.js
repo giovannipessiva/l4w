@@ -76,6 +76,9 @@ module.exports = {
 		} else {
 			return true; // Cookies will work only with https
 		}
-	}
+	},
 	
+	isAuthenticated: function(request) {
+		return utils.isEmpty(request.session.user);
+	}
 }
