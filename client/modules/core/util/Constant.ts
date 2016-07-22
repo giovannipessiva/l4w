@@ -31,4 +31,9 @@ namespace Constant {
         TOP,
         EVENTS
     }
+    
+    export enum EditMode {
+        APPLY,
+        ERASE
+    }
 }

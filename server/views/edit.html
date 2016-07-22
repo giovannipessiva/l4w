@@ -79,6 +79,12 @@ function signOut() {
 		</table>
 		<table>
 		<tr>
+		<td><button id="mode0" type="button" onclick="Mapper.setMode(Constant.EditMode.APPLY);">Apply</button></td>
+		<td><button id="mode1" type="button" onclick="Mapper.setMode(Constant.EditMode.ERASE);">Erase</button></td>
+		</tr>
+		</table>
+		<table>
+		<tr>
 		<td><button id="layer0" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
 		<td><button id="layer1" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
 		<td><button id="layer2" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>

@@ -147,6 +147,13 @@ namespace Mapper {
             scene.updateContext(canvas);
         };
     };
+    
+    export function setMode(editMode: Constant.EditMode) {
+        (<HTMLButtonElement>document.getElementById("mode0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("mode1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById("mode" + editMode)).disabled = true;
+        mapper.setEditMode(editMode);
+    };
 
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
         (<HTMLButtonElement>document.getElementById("layer0")).disabled = false;
@@ -155,5 +162,5 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById("layer3")).disabled = false;
         (<HTMLButtonElement>document.getElementById("layer" + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
-    }
+    };
 }

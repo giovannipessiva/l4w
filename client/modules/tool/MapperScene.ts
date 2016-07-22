@@ -5,16 +5,19 @@
  */
 class MapperScene extends StaticScene {
 
+    public static UPPER_LEVEL_OPACITY: number = 0.5;
+
     private activeLayer: Constant.MapLayer;
+    private editMode: Constant.EditMode;
 
     private tilePicker: TilePickerScene;
-
-    public static UPPER_LEVEL_OPACITY: number = 0.5;
 
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
         this.activeLayer = Constant.MapLayer.MID;
+        this.editMode = Constant.EditMode.APPLY;
         (<HTMLButtonElement>document.getElementById("layer" + this.activeLayer)).disabled = true;
+        (<HTMLButtonElement>document.getElementById("mode" + this.editMode)).disabled = true;
         callback(this);
     }
 
@@ -46,23 +49,40 @@ class MapperScene extends StaticScene {
         var changed: boolean = false;
         var pickerArea: IRectangle = this.tilePicker.getSelectionArea();
         if (!Utils.isEmpty(pickerArea)) {
+            var changedCell: number = x + y * this.map.width;
             if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
                 this.map.layers[this.activeLayer].data = [];
             }
-
-            var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
-            var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
-            var changedCell: number = x + y * this.map.width;
-
-            for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
-                for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
-                    if (x + i < this.map.width) {
-                        changed = true;
-                        var appliedTileOffset: number = i + j * tileColumns;
-                        var changedCellOffset: number = i + j * this.map.width;
-                        this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+            switch (this.editMode) {
+                case Constant.EditMode.APPLY:
+                    var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
+                    var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
+                    for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
+                        for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                            if (x + i < this.map.width) {
+                                var appliedTileOffset: number = i + j * tileColumns;
+                                var changedCellOffset: number = i + j * this.map.width;
+                                if(this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
+                                    changed = true;
+                                    this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+                                }
+                            }
+                        }
                     }
-                }
+                    break;
+                case Constant.EditMode.ERASE:
+                    for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
+                        for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                            if (x + i < this.map.width) {
+                                var changedCellOffset: number = i + j * this.map.width;
+                                if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== null) {
+                                    changed = true;
+                                    this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = null;
+                                }
+                            }
+                        }
+                    }
+                    break;
             }
         }
         //TODO gestisci trascinamento del picker
@@ -91,8 +111,12 @@ class MapperScene extends StaticScene {
     setActiveLayer(activeLayer: Constant.MapLayer) {
         this.activeLayer = activeLayer;
     }
-    
+
+    setEditMode(editMode: Constant.EditMode) {
+        this.editMode = editMode;
+    }
+
     getMap(): IMap {
-        return this.map;    
+        return this.map;
     }
 }
