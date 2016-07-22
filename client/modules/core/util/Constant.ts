@@ -3,7 +3,7 @@
  */
 namespace Constant {
 
-    export var DOUBLE_PI = Math.PI * 2;
+    export const DOUBLE_PI = Math.PI * 2;
 
     export class Color {
         static YELLOW = "yellow";
@@ -18,7 +18,7 @@ namespace Constant {
         static POST = "POST";
     }
 
-    export enum Direction {
+    export const enum Direction {
         UP,
         DOWN,
         LEFT,

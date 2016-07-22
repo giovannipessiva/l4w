@@ -11,7 +11,7 @@ namespace Resource {
     var ASSET_PATH = "assets/";
     var EDIT_PATH = "edit/";
 
-    export enum TypeEnum {
+    export const enum TypeEnum {
         CHAR,
         FACE,
         SKIN,

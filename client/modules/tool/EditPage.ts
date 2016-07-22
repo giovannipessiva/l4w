@@ -5,7 +5,7 @@
 
 namespace EditPage {
     
-    export var PAGE_TITLE = document.title;
+    export const PAGE_TITLE = document.title;
 
     export function start() {
         $("#mapPanel").jstree({

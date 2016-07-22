@@ -11,15 +11,15 @@ interface IMap {
 };
 
 interface IMapLayer {
-    type: string; //"tilelayer", "objectgroup", or "imagelayer"
+    type: "tilelayer" | "objectgroup"| "imagelayer"
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
     objects?: IEvent[]; //Array of Objects. objectgroup only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
-    speedX?:number;
-    speedY?:number;
+    speedX?: number;
+    speedY?: number;
 };
 
 interface IMapTile {
