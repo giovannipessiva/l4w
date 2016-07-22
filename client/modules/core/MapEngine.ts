@@ -20,14 +20,14 @@ class MapEngine {
         for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
             for (var x = minColumn; x <= maxColumn; x++) {
                 var cellIndex = x + y * map.width;
-
+                if(layer.data.length < cellIndex) {
+                    return;    
+                }
                 var tileGID = layer.data[cellIndex];
-                if (tileGID === -1) {
+                if (tileGID === null) {
                     continue;
                 }
-
                 var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
-
                 context.drawImage(
                     tileImage,
                     Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
