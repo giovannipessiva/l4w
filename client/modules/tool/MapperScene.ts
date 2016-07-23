@@ -1,4 +1,5 @@
 /// <reference path="StaticScene.ts" />
+/// <reference path="EditPage.ts" />
 
 /**
  * Scene implementation for managing Mapper logics
@@ -16,8 +17,8 @@ class MapperScene extends StaticScene {
         super(grid);
         this.activeLayer = Constant.MapLayer.MID;
         this.editMode = Constant.EditMode.APPLY;
-        (<HTMLButtonElement>document.getElementById("layer" + this.activeLayer)).disabled = true;
-        (<HTMLButtonElement>document.getElementById("mode" + this.editMode)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + this.activeLayer)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + this.editMode)).disabled = true;
         callback(this);
     }
 

@@ -6,6 +6,8 @@
 namespace EditPage {
     
     export const PAGE_TITLE = document.title;
+    export const BUTTON_ID_MODE = "mode";
+    export const BUTTON_ID_LAYER = "layer";
 
     export function start() {
         $("#mapPanel").jstree({

@@ -1,6 +1,7 @@
 /// <reference path="../core/util/Utils.ts" />
 /// <reference path="../core/util/Constant.ts" />
 /// <reference path="../core/util/Errors.ts" />
+/// <reference path="EditPage.ts" />
 
 namespace Mapper {
 
@@ -61,7 +62,7 @@ namespace Mapper {
         var mapId = EditPage.getActiveMap();
         var mapJSON = JSON.stringify(this.mapper.getMap());
         Resource.save(mapId, mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
-            if(success) {
+            if (success) {
                 EditPage.toggleEditMark(false);
             }
         });
@@ -147,20 +148,20 @@ namespace Mapper {
             scene.updateContext(canvas);
         };
     };
-    
+
     export function setMode(editMode: Constant.EditMode) {
-        (<HTMLButtonElement>document.getElementById("mode0")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("mode1")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("mode" + editMode)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + "0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + "1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + editMode)).disabled = true;
         mapper.setEditMode(editMode);
     };
 
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
-        (<HTMLButtonElement>document.getElementById("layer0")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("layer1")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("layer2")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("layer3")).disabled = false;
-        (<HTMLButtonElement>document.getElementById("layer" + layerIndex)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "2")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "3")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
     };
 }

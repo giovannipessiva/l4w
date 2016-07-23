@@ -11,7 +11,7 @@ interface IMap {
 };
 
 interface IMapLayer {
-    type: "tilelayer" | "objectgroup"| "imagelayer";
+    type: "tilelayer" | "objectgroup" | "imagelayer";
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
