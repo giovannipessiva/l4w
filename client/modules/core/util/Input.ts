@@ -122,7 +122,6 @@ namespace Input {
             doubleClickCallback(position.x, position.y);
         });
         canvas.addEventListener("wheel", function(e) {
-            e.preventDefault();
             var position = mapEvent(e);
             wheelCallback(position.x, position.y);
         });
