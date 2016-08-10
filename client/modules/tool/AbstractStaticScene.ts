@@ -1,9 +1,9 @@
 /// <reference path="../core/AbstractScene.ts" />
 
 /**
- * Scene implementation for managing static rendering
+ * Abstract scene class for managing static rendering
  */
-class StaticScene extends AbstractScene {
+abstract class AbstractStaticScene extends AbstractScene {
 
     constructor(grid: StaticGrid) {
         super(grid);

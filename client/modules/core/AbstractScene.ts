@@ -17,7 +17,7 @@ var nextAnimationFrame =
 /**
  * Abstract class for handling rendering operations
  */
-class AbstractScene {
+abstract class AbstractScene {
 
     map: IMap;
     tileImage: HTMLImageElement;
@@ -70,8 +70,8 @@ class AbstractScene {
         this.renderLayers(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
         // Effects rendering
         this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
-        // UI rendering
-        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        // Top layer rendering
+        this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
         
         this.mapEngine.renderGlobalUI(this.context, this.renderingConfiguration);
 
@@ -235,7 +235,12 @@ class AbstractScene {
     }
     
     protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        this.renderInterLayerElements(layerIndex, minRow, maxRow, minColumn, maxColumn);
         var layer = map.layers[layerIndex];
         this.mapEngine.renderLayer(map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
+    
+    protected abstract renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number);
+    
+    protected abstract renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
 }

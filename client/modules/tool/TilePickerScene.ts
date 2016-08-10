@@ -1,11 +1,11 @@
-/// <reference path="StaticScene.ts" />
+/// <reference path="AbstractStaticScene.ts" />
 
 /**
  * Scene implementation for managing Tile Picker logics
  */
-class TilePickerScene extends StaticScene {
+class TilePickerScene extends AbstractStaticScene {
 
-    private mapper: StaticScene;
+    private mapper: MapperScene;
     private width: number;
     private height: number;
 
@@ -16,7 +16,7 @@ class TilePickerScene extends StaticScene {
         this.width = Math.floor(widthPx / grid.cellW);
     }
 
-    setMapper(mapper: StaticScene) {
+    setMapper(mapper: MapperScene) {
         this.mapper = mapper;
     }
 
@@ -38,5 +38,12 @@ class TilePickerScene extends StaticScene {
 
     getSceneWidth(): number {
         return this.width;
+    }
+      
+    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    }
+    
+    protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 }

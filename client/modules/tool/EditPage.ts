@@ -103,6 +103,7 @@ namespace EditPage {
             success: function(result) {
                 TilePicker.loadTile(node.data.tile,function() {
                     Mapper.changeTile(node.data.tile);
+                    toggleEditMark(false);
                 });
             }
         });

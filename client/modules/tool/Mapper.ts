@@ -142,7 +142,7 @@ namespace Mapper {
         );
     };
 
-    function initWidgets(canvas: HTMLCanvasElement, scene: StaticScene, grid: StaticGrid) {
+    function initWidgets(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
         var inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         inputRange.onchange = function(e: Event) {
             grid.selectScale(+inputRange.value);

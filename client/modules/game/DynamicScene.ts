@@ -94,4 +94,11 @@ class DynamicScene extends AbstractScene {
             this.context.fillText("" + this.lastFPS, boundariesX.min + 10, boundariesY.min + 20);
         }
     }
+    
+    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    }
+    
+    protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+    }
 }
