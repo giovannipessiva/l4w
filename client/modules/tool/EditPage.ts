@@ -122,5 +122,7 @@ namespace EditPage {
         } else {
             document.title = PAGE_TITLE;
         }
+        (<HTMLButtonElement>$("#saveButton")[0]).disabled=!edited;
+        (<HTMLButtonElement>$("#reloadButton")[0]).disabled=!edited;
     }
 }

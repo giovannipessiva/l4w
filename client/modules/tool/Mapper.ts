@@ -118,7 +118,9 @@ namespace Mapper {
             function(x, y, mouseButton) {
                 // Ongoing action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    scene.apply(x, y);
+                    if(scene.apply(x, y)) {
+                        EditPage.toggleEditMark(true);
+                    }
                 } else {
                     scene.selectEnd(x, y);
                 }
