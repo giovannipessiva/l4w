@@ -27,6 +27,10 @@ namespace Mapper {
         mapper.setTile(tile, function(scene) { });
         mapper.setTilePicker(tilePicker);
     }
+    
+    export function changeSize(rows: number, columns: number) {
+        mapper.resizeMap(rows, columns);
+    }
 
     export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: () => void) {
         Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {

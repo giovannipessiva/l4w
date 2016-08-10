@@ -20,8 +20,8 @@ class MapEngine {
         for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
             for (var x = minColumn; x <= maxColumn; x++) {
                 var cellIndex = x + y * map.width;
-                if(layer.data.length < cellIndex) {
-                    return;    
+                if (layer.data.length < cellIndex) {
+                    return;
                 }
                 var tileGID = layer.data[cellIndex];
                 if (tileGID === null) {
@@ -114,6 +114,59 @@ class MapEngine {
 
             }
         }
+    }
+
+    resizeMap(map: IMap, rows: number, columns: number) {
+        let oldWidth: number = map.width;
+        let newWidth: number = columns;
+        let oldHeight: number = map.height;
+        let newHeight: number = rows;
+        if ((oldWidth === newWidth && oldHeight === newHeight) || Utils.isEmpty(map)) {
+            return;
+        }
+        let referenceIndex: number = Math.min(oldWidth, newWidth);
+        if (newWidth < oldWidth) {
+            var removedColumns: number = oldWidth - newWidth;
+        } else {
+            var newColumns = [];
+            for (let n = 0; n < newWidth - oldWidth; n++) {
+                newColumns[n] = null;
+                
+            }
+        }
+
+        for (let i = 0; i < map.layers.length; i++) {
+            let layer = map.layers[i];
+            if (!Utils.isEmpty(layer.data)) {
+                // Correct existing rows
+                if (oldWidth !== newWidth) {
+                    for (let y = 0; y < oldHeight; y++) {
+                        if(!Utils.isEmpty(removedColumns)) {
+                            layer.data.splice(referenceIndex + y * newWidth, removedColumns);
+                        } else {
+                            Array.prototype.splice.apply(layer.data, [referenceIndex + y * newWidth, 0].concat(newColumns));
+                        }
+                    }
+                }
+                // Delete excessive rows
+                if (oldHeight > newHeight) {
+                    layer.data.length=newWidth*newHeight;
+                }
+                // Add more rows
+                if (oldHeight < newHeight) {
+                    let newData: number[] = [];
+                    for (let n = 0; n < newWidth - oldWidth; n++) {
+                        newData[n]=null;    
+                    }
+                    for (let i = oldWidth; i < newWidth; i++) {
+                        layer.data.concat(newData);
+                    }
+                }
+            }
+        }
+
+        map.height = rows;
+        map.width = columns;
     }
 
     static getNewMap(name: string): IMap {

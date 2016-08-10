@@ -69,9 +69,7 @@ namespace EditPage {
         var node = getSelectedNode();
         node.data.w = $("#mapSizeW").val();
         node.data.h = $("#mapSizeH").val();
-
-        //TODO applica modifica alla mappa
-        
+        Mapper.changeSize(node.data.h, node.data.w);
         changeEditState(true);
     }
     

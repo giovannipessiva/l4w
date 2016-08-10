@@ -121,6 +121,10 @@ class MapperScene extends AbstractStaticScene {
     
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
     }
+    
+    resizeMap(rows: number, columns: number) {
+        this.mapEngine.resizeMap(this.map, rows, columns);
+    }
 
     setTilePicker(tilePicker: TilePickerScene) {
         this.tilePicker = tilePicker;
