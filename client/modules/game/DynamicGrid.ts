@@ -6,7 +6,8 @@
 class DynamicGrid extends AbstractGrid {
 
     canvasRatio: number;
-    scaleStep: number; 
+    scaleStepX: number;
+    scaleStepY: number; 
 
     constructor(
         cnvs: HTMLCanvasElement,
@@ -17,7 +18,8 @@ class DynamicGrid extends AbstractGrid {
     deferredInit(props: Map<string, number>) {
         super.deferredInit(props);
         this.canvasRatio = props.get("canvasRatio");
-        this.scaleStep = this.cellH * Math.pow(2,-10);
+        this.scaleStepX = this.cellW * Math.pow(2,-10);
+        this.scaleStepY = this.cellH * Math.pow(2,-10);
     }
 
     refresh() {
@@ -29,7 +31,8 @@ class DynamicGrid extends AbstractGrid {
             (the white rumor become more visible when the scale is high)
             0.03125 = CELL_SIZE * 2^-10
         */
-        this.scale = newScale - (newScale % this.scaleStep);
+        this.scaleX = newScale - (newScale % this.scaleStepX);
+        this.scaleY = newScale - (newScale % this.scaleStepY);
         super.refresh();
     }
 

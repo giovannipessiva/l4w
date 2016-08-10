@@ -146,6 +146,7 @@ namespace Mapper {
             grid.selectScale(+inputRange.value);
             grid.refresh();
             scene.updateContext(canvas);
+            scene.resetTranslation();
         };
     };
 

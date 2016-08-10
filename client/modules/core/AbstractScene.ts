@@ -164,14 +164,20 @@ class AbstractScene {
             case Constant.Direction.DOWN: this.focus.y += +this.grid.cellH; break;
             case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
+            case Constant.Direction.NONE: break;
         }
-        var translationPoint: IPoint = this.grid.getTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
+        var translationPoint: IPoint = this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
-
+    
+    resetTranslation() {
+        var translationResetValue: IPoint = this.grid.getTranslationResetValue();
+        this.context.translate(translationResetValue.x, translationResetValue.y);
+    }
+    
     updateContext(canvas: HTMLCanvasElement) {
         this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
-        this.context.scale(this.grid.scale, this.grid.scale);
+        this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }
        
     setMap(map: IMap, callback: { (scene: AbstractScene): void }) {

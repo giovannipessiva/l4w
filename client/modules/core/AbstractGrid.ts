@@ -21,7 +21,8 @@ class AbstractGrid {
     protected halfColumns: number;
     private currentTranslation: IPoint;
     protected gridType: GridTypeEnum;
-    scale: number;
+    scaleX: number;
+    scaleY: number;
 
     constructor(
         canvas: HTMLCanvasElement,
@@ -57,8 +58,8 @@ class AbstractGrid {
     }
 
     refresh() {
-        this.canvas.height = this.baseH * this.scale;
-        this.canvas.width = this.baseW * this.scale;
+        this.canvas.width = this.baseW * this.scaleX;
+        this.canvas.height = this.baseH * this.scaleY;
     }
 
     clear(context: CanvasRenderingContext2D) {
@@ -75,8 +76,8 @@ class AbstractGrid {
      */
     mapPositionToGrid(position: IPoint): IPoint {
         var rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
-        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scale) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
-        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scale) + this.currentTranslation.y / this.cellH);
+        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
+        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
     }
     
@@ -93,7 +94,7 @@ class AbstractGrid {
     /**
      * Returns the translation (as cell numbers) applied to the canvas
      */
-    getTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): IPoint {
+    changeTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): IPoint {
         var leftTopX = focusX - (this.halfColumns * this.cellW);
         if (leftTopX < 0) {
             leftTopX = 0;
@@ -117,6 +118,13 @@ class AbstractGrid {
         leftTopY = this.currentTranslation.y - leftTopY;
         this.currentTranslation = newTranslation;
         return { x: leftTopX, y: leftTopY };
+    }
+    
+    getTranslationResetValue(): IPoint {
+        return {
+            x: -this.currentTranslation.x,
+            y: -this.currentTranslation.y
+        };    
     }
 
     /**
@@ -156,12 +164,5 @@ class AbstractGrid {
             min: min,
             max: max
         };
-    }
-
-    getOffsetX(focusX: number) {
-        return focusX % this.cellW;
-    }
-    getOffsetY(focusY: number) {
-        return focusY % this.cellH;
     }
 }

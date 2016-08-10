@@ -22,7 +22,8 @@ namespace Constant {
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        RIGHT,
+        NONE
     }
     
     export enum MapLayer {

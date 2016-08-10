@@ -73,6 +73,7 @@ namespace Game {
             function() {
                 grid.refresh();
                 scene.updateContext(canvas);
+                scene.resetTranslation();
             },
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },
