@@ -154,25 +154,26 @@ module.exports = {
 		});
 	},
 	
-	getNews: function(user,params,response) {
+	getNews: function(user,response) {
 		if(utils.isEmpty(user)) {
 			response.json({});
-		}
-		models.usr_event.findAll({
-			where: { user: user },
-			attributes: ['event'],
-		}).then(function(events) {
-			if(!utils.isEmpty(events)) {
-				var eventsArray = new Array;
-				for (var i = 0; i < events.length; i++) {
-					eventsArray.push(events[i].event);
+		} else {
+			models.usr_event.findAll({
+				where: { user: user },
+				attributes: ['event'],
+			}).then(function(events) {
+				if(!utils.isEmpty(events)) {
+					var eventsArray = new Array;
+					for (var i = 0; i < events.length; i++) {
+						eventsArray.push(events[i].event);
+					}
+					models.lst_event.findAll({ where: { event: eventsArray } }).then(function(datas) {
+						response.json(datas);
+					});
+				} else {
+					response.json({});
 				}
-				models.lst_event.findAll({ where: { event: eventsArray } }).then(function(datas) {
-					response.json(datas);
-				});
-			} else {
-				response.json({});
-			}
-		})
+			})
+		}
 	}
 };

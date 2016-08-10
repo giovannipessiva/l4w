@@ -139,7 +139,11 @@ app.post('/edit/map/:id', function(request, response) {
 });
 
 app.get('/news', function(request, response) {
-	database.getNews(request.session.user, request.params, response);
+	if(security.isAuthenticated(request)) {
+		database.getNews(request.session.user, response);
+	} else {
+		response.status(HttpStatus.FORBIDDEN).end();
+	}
 });
 
 // Initialize DB connection
