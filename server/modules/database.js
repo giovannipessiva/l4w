@@ -7,6 +7,7 @@ var HttpStatus = require('http-status-codes');
 var models = require(__dirname + "/models");
 var utils = require(__dirname + "/utils");
 var constants = require(__dirname + "/constants");
+var defaults = require(__dirname + "/defaults");
 
 function getDefaults(type,file) {
 	if(!utils.isEmpty(file)) {
@@ -60,11 +61,11 @@ module.exports = {
 				if(!utils.isEmpty(result)) {
 					response.json(result.data);
 				} else {
-					response.status(HttpStatus.NOT_FOUND).send("Not found");
+					response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultMap());
 				}
 			}, function(error) {
 				console.log(error);
-				response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("Error");
+				response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(defaults.getDefaultMap());
 			});
 		}
 	},

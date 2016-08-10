@@ -45,6 +45,14 @@ namespace EditPage {
             }
             $("#mapDetailPanel").show();
             var node: JSTreeNode = getSelectedNode();
+            if(Utils.isEmpty(node.data)) {
+                //TODO l'inizilizzazione va fatta da un'altra parte
+                node.data = {
+                    w: 25,
+                    h: 20,
+                    tile: "002-Woods01.png"  
+                };
+            }
             $("#mapSizeW").val(node.data.w + "");
             $("#mapSizeH").val(node.data.h + "");
             $("#tiles").val(node.data.tile);
