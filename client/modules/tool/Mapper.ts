@@ -8,20 +8,19 @@ namespace Mapper {
     export var mapper: MapperScene;
 
     export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: string) {
-        if (Utils.isEmpty(mapper)) {
-            new StaticGrid(canvas, function(grid: StaticGrid) {
-                new MapperScene(grid, function(scene: MapperScene) {
-                    initInput(canvas, scene, grid);
-                    initWidgets(canvas, scene, grid);
-                    TilePicker.setMapper(scene);
-                    scene.setTilePicker(tilePicker);
-                    mapper = scene;
-                    Mapper.loadMap(mapId, canvas, function() {
-                        mapper.start(canvas);
-                    });
+        mapper = null;
+        new StaticGrid(canvas, function(grid: StaticGrid) {
+            new MapperScene(grid, function(scene: MapperScene) {
+                initInput(canvas, scene, grid);
+                initWidgets(canvas, scene, grid);
+                TilePicker.setMapper(scene);
+                scene.setTilePicker(tilePicker);
+                mapper = scene;
+                Mapper.loadMap(mapId, canvas, function() {
+                    mapper.start(canvas);
                 });
-            }, GridTypeEnum.mapper);
-        }
+            });
+        }, GridTypeEnum.mapper);
     }
 
     export function changeTile(tile: string) {

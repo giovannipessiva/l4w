@@ -9,7 +9,7 @@ module.exports = {
     	database.write("map",mapId,mapData,response);
     },
 	updateMaps: function(mapData, response) {
-		updateMap(null,mapData,response);
+		module.exports.updateMap(null,mapData,response);
     },
     getTiles: function(response) {
     	var filePath = path.resolve(__dirname + '/../../client/data/resources/tiles.json');

@@ -3,26 +3,18 @@
 namespace TilePicker {
 
     var tilePicker: TilePickerScene;
-    
-    var injectionCallback : (tilePicker: TilePickerScene) => void;
 
-    export function start(canvas: HTMLCanvasElement, calback: (tilePicker: TilePickerScene) => void) {
-        injectionCallback = calback;
-        if (Utils.isEmpty(tilePicker)) {
-            // Create a new instance
-            new StaticGrid(canvas, function(grid: StaticGrid) {
-                new TilePickerScene(grid, canvas.height, canvas.width, function (scene: TilePickerScene) {
-                    tilePicker = scene;
-                    initInput(canvas, grid);
-                    tilePicker.start(canvas);
-                    tilePicker.toggleEditorGrid(true);
-                    injectionCallback(tilePicker);
-                });
-            }, GridTypeEnum.tilePicker);
-        } else {
-            // Update current instance
-            tilePicker.updateSize(canvas.height, canvas.width);
-        }
+    export function start(canvas: HTMLCanvasElement, callback: (tilePicker: TilePickerScene) => void) {
+        tilePicker = null;
+        new StaticGrid(canvas, function(grid: StaticGrid) {
+            new TilePickerScene(grid, canvas.height, canvas.width, function (scene: TilePickerScene) {
+                tilePicker = scene;
+                initInput(canvas, grid);
+                tilePicker.start(canvas);
+                tilePicker.toggleEditorGrid(true);
+                callback(tilePicker);
+            });
+        }, GridTypeEnum.tilePicker);
     }
 
     export function loadTile(tile: string, calback: (tilePicker: TilePickerScene) => void) {
