@@ -8,6 +8,9 @@ namespace EditPage {
     export const PAGE_TITLE = document.title;
     export const BUTTON_ID_MODE = "mode";
     export const BUTTON_ID_LAYER = "layer";
+    
+    let flagFirstLoad: boolean = true;
+    let flagEdited: boolean = false;
 
     export function start() {
         $("#mapPanel").jstree({
@@ -33,6 +36,13 @@ namespace EditPage {
             if (data.action === "ready") {
                 return;
             }
+            if(flagFirstLoad) {
+                flagFirstLoad = false;
+            }
+            if(flagEdited) {
+                alert("Prima di cambiare mappa e' necessario salvare");
+                return;
+            }
             $("#mapDetailPanel").show();
             var node: JSTreeNode = getSelectedNode();
             $("#mapSizeW").val(node.data.w + "");
@@ -41,7 +51,6 @@ namespace EditPage {
             TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
                 Mapper.start(canvas, tilePicker, node.id);
             });
-            
         });
         
         // Resize the panel to match the tileset
@@ -61,16 +70,9 @@ namespace EditPage {
         node.data.w = $("#mapSizeW").val();
         node.data.h = $("#mapSizeH").val();
 
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(updatedData),
-            success: function(result) {
-                console.log("Maps updated");
-            }
-        });
+        //TODO applica modifica alla mappa
+        
+        changeEditState(true);
     }
     
     function loadTiles() {
@@ -93,20 +95,30 @@ namespace EditPage {
     export function changeTile() {
         var node = $("#mapPanel").jstree(true).get_selected(true)[0];
         node.data.tile = $("#tiles").val();
-
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(updatedData),
-            success: function(result) {
-                TilePicker.loadTile(node.data.tile,function() {
-                    Mapper.changeTile(node.data.tile);
-                    toggleEditMark(false);
+        TilePicker.loadTile(node.data.tile,function() {
+            Mapper.changeTile(node.data.tile);
+        });
+        changeEditState(true);
+    }
+    
+    export function save() {
+        Mapper.saveMap(function(result1) {
+            if(result1) {
+                EditPage.changeEditState(false);
+                TilePicker.saveData(function(result2) {
+                    if(!result2) {
+                        console.error("Salvataggio fallito");
+                    }
                 });
+            } else {
+                console.error("Salvataggio fallito");
             }
         });
+    }
+            
+    export function reload() {
+        Mapper.reloadMap()
+        //TODO reload tree
     }
     
     export function getActiveMap() : string {
@@ -117,7 +129,8 @@ namespace EditPage {
         return $("#mapPanel").jstree(true).get_selected(true)[0];
     }
     
-    export function toggleEditMark(edited: boolean) {
+    export function changeEditState(edited: boolean) {
+        flagEdited = edited;
         if(edited) {
             document.title = PAGE_TITLE + "*";
         } else {
@@ -125,5 +138,24 @@ namespace EditPage {
         }
         (<HTMLButtonElement>$("#saveButton")[0]).disabled=!edited;
         (<HTMLButtonElement>$("#reloadButton")[0]).disabled=!edited;
+        
+        // Disable maps selection
+        var test = $("#mapPanel").jstree(true).get_json("#", {
+            "flat": true,
+            "no_state": false,
+            "no_id": false,
+            "no_children": false,
+            "no_data": false
+        });
+        $.each(test, function( key: string, node: JSTreeNode ) {
+            if (node.state.selected == false) {
+                if(edited) {
+                    $("#mapPanel").jstree("disable_node", node.id);
+                } else {
+                    $("#mapPanel").jstree("enable_node", node.id);
+                }
+            }
+        });
+        //TODO disabilitare il contextMenu
     }
 }

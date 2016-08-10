@@ -53,16 +53,16 @@ namespace Mapper {
         var mapId = EditPage.getActiveMap();
         var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         loadMap(mapId, canvas, function() {
-            EditPage.toggleEditMark(false);
+            EditPage.changeEditState(false);
         });
     }
 
-    export function saveMap() {
+    export function saveMap(callback: IBooleanCallback = null) {
         var mapId = EditPage.getActiveMap();
         var mapJSON = JSON.stringify(this.mapper.getMap());
         Resource.save(mapId, mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
-            if (success) {
-                EditPage.toggleEditMark(false);
+            if(callback !== null) {
+                callback(success);
             }
         });
     }
@@ -102,7 +102,7 @@ namespace Mapper {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
                     if (scene.apply(x, y)) {
-                        EditPage.toggleEditMark(true);
+                        EditPage.changeEditState(true);
                     }
                 } else {
                     scene.select(x, y);
@@ -118,7 +118,7 @@ namespace Mapper {
                 // Ongoing action
                 if (mouseButton === Input.MouseButtons.LEFT) {
                     if(scene.apply(x, y)) {
-                        EditPage.toggleEditMark(true);
+                        EditPage.changeEditState(true);
                     }
                 } else {
                     scene.selectEnd(x, y);
