@@ -95,8 +95,8 @@ namespace EditPage {
     export function changeTile() {
         var node = $("#mapPanel").jstree(true).get_selected(true)[0];
         node.data.tile = $("#tiles").val();
-        TilePicker.loadTile(node.data.tile,function() {
-            Mapper.changeTile(node.data.tile);
+        TilePicker.loadTile(node.data.tile,function(tilePicker: TilePickerScene) {
+            Mapper.changeTile(node.data.tile, tilePicker);
         });
         changeEditState(true);
     }

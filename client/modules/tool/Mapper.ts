@@ -23,8 +23,9 @@ namespace Mapper {
         }, GridTypeEnum.mapper);
     }
 
-    export function changeTile(tile: string) {
+    export function changeTile(tile: string, tilePicker: TilePickerScene) {
         mapper.setTile(tile, function(scene) { });
+        mapper.setTilePicker(tilePicker);
     }
 
     export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: () => void) {
