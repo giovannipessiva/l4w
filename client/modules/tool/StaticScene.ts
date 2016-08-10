@@ -45,14 +45,6 @@ class StaticScene extends AbstractScene {
         }
     }
     
-    /**
-     * Usato quando cambia la dimensione 
-     */
-    updateSize(height: number, width: number) {
-        var staticGrid: StaticGrid = <StaticGrid> this.grid;
-        staticGrid.updateSize(height, width);
-    }
-
     select(x: number, y: number) {
         if (x != null && y != null) {
             this.renderingConfiguration.selectPointStart = {

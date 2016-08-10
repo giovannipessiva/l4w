@@ -51,7 +51,8 @@ class StaticGrid extends AbstractGrid {
             case GridTypeEnum.tilePicker:
                 this.scaleX = 1;
                 this.scaleY = 1;
-                this.updateSizingDerivates();
+                // Use the canvas size, which have been set according to the tile
+                this.updateSize(this.canvas.width,this.canvas.height);
         }
     }
 
@@ -69,7 +70,7 @@ class StaticGrid extends AbstractGrid {
     /**
      * Usato quando cambia la dimensione 
      */
-    updateSize(height: number, width: number) {
+    updateSize(width: number,height: number) {
         this.rows = Math.floor(height / this.cellH);
         this.columns = Math.floor(width / this.cellW);
         this.updateSizingDerivates();
