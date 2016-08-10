@@ -123,7 +123,7 @@ namespace EditPage {
     }
             
     export function reload() {
-        Mapper.reloadMap()
+        Mapper.reloadMap();
         //TODO reload tree
     }
     
@@ -154,7 +154,7 @@ namespace EditPage {
             "no_data": false
         });
         $.each(test, function( key: string, node: JSTreeNode ) {
-            if (node.state.selected == false) {
+            if (node.state.selected === false) {
                 if(edited) {
                     $("#mapPanel").jstree("disable_node", node.id);
                 } else {

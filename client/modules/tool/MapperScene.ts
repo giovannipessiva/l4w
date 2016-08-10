@@ -77,7 +77,7 @@ class MapperScene extends AbstractStaticScene {
                 if (Utils.isEmpty(pickerArea)) {
                     pickerArea = {
                         x1:0, x2: 0, y1: 0, y2:0
-                    }
+                    };
                 }
                 for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
                     for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {

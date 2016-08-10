@@ -14,8 +14,6 @@ class DynamicScene extends AbstractScene {
     lastFPS = 0;
     fpsPerformance = [22, 21, 20];
 
-    paused = false;
-
     hero: IEvent;
     events: IEvent[];
 
@@ -27,9 +25,6 @@ class DynamicScene extends AbstractScene {
     }
 
     protected mainGameLoop_pre() {
-        if (this.paused) {
-            return false;
-        }
         if (!super.mainGameLoop_pre()) {
             return false;
         }
@@ -54,14 +49,6 @@ class DynamicScene extends AbstractScene {
         this.context.fillText("(it's not ready yet)", 160, 260);
         
         this.renderFPS(boundariesX, boundariesY);
-    }
-
-    togglePause(pause?: boolean) {
-        if (pause != null) {
-            this.paused = pause;
-        } else {
-            this.paused = !this.paused;
-        }
     }
 
     toggleFPS(enable?: boolean) {

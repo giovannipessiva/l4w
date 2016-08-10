@@ -8,7 +8,9 @@ namespace Mapper {
     export var mapper: MapperScene;
 
     export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: string) {
-        mapper = null;
+        if(!Utils.isEmpty(mapper)) {
+            mapper.togglePause(true);
+        }
         new StaticGrid(canvas, function(grid: StaticGrid) {
             new MapperScene(grid, function(scene: MapperScene) {
                 initInput(canvas, scene, grid);

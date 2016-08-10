@@ -31,6 +31,8 @@ abstract class AbstractScene {
     context: CanvasRenderingContext2D;
     grid: AbstractGrid;
     mapEngine: MapEngine;
+    
+    paused = false;
 
     constructor(grid: AbstractGrid) {
         this.mapEngine = new MapEngine(grid);
@@ -54,6 +56,10 @@ abstract class AbstractScene {
         nextAnimationFrame(function() {
             scene.mainGameLoop();
         });
+        
+        if (this.paused) {
+            return;
+        }
 
         if (this.mainGameLoop_pre() === false) {
             return;
@@ -243,4 +249,12 @@ abstract class AbstractScene {
     protected abstract renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number);
     
     protected abstract renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
+    
+    togglePause(pause?: boolean) {
+        if (pause != null) {
+            this.paused = pause;
+        } else {
+            this.paused = !this.paused;
+        }
+    }
 }
