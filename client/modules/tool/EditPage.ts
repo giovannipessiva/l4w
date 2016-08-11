@@ -31,8 +31,22 @@ namespace EditPage {
 
         var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
-        $("#mapPanel").on("changed.jstree", function(e, data) {
+        $("#mapPanel").on("create_node.jstree rename_node.jstree delete_node.jstree", function(e, data) {
+            switch (e.type) {
+                case "create_node":
+                    if (flagEdited) {
+                        $('#mapPanel').jstree(true).disable_node(data.node);
+                    }
+                case "rename_node":
+                case "delete_node":
+                    changeEditState(true,false);
+                    break;
+                default:
+                    console.log("Type: " + e.type);
+            }
+        });
 
+        $("#mapPanel").on("changed.jstree", function(e, data) {
             switch (data.action) {
                 case "ready":
                     // Prevent double call at start
@@ -46,10 +60,6 @@ namespace EditPage {
                 case "select_node":
                     if (flagFirstLoad) {
                         flagFirstLoad = false;
-                    }
-                    if (flagEdited) {
-                        alert("Prima di cambiare mappa e' necessario salvare");
-                        return;
                     }
                     $("#mapDetailPanel").show();
                     var node: JSTreeNode = getSelectedNode();
@@ -149,7 +159,7 @@ namespace EditPage {
         return $("#mapPanel").jstree(true).get_selected(true)[0];
     }
 
-    export function changeEditState(edited: boolean) {
+    export function changeEditState(edited: boolean, mapChanged: boolean = true) {
         flagEdited = edited;
         if (edited) {
             document.title = PAGE_TITLE + "*";
@@ -159,23 +169,22 @@ namespace EditPage {
         (<HTMLButtonElement>$("#saveButton")[0]).disabled = !edited;
         (<HTMLButtonElement>$("#reloadButton")[0]).disabled = !edited;
 
-        // Disable maps selection
-        var test = $("#mapPanel").jstree(true).get_json("#", {
-            "flat": true,
-            "no_state": false,
-            "no_id": false,
-            "no_children": false,
-            "no_data": false
-        });
-        $.each(test, function(key: string, node: JSTreeNode) {
-            if (node.state.selected === false) {
+        if (mapChanged) {
+            // Disable maps selection
+            var test = $("#mapPanel").jstree(true).get_json("#", {
+                "flat": true,
+                "no_state": false,
+                "no_id": false,
+                "no_children": false,
+                "no_data": false
+            });
+            $.each(test, function(key: string, node: JSTreeNode) {
                 if (edited) {
                     $("#mapPanel").jstree("disable_node", node.id);
                 } else {
                     $("#mapPanel").jstree("enable_node", node.id);
                 }
-            }
-        });
-        //TODO disabilitare il contextMenu
+            });
+        }
     }
 }
