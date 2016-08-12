@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('usr_role', {
+  return sequelize.define('usr_save', {
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -11,15 +11,24 @@ module.exports = function(sequelize, DataTypes) {
         key: 'user'
       }
     },
-    role: {
+    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'lst_role',
-        key: 'role'
-      }
+      primaryKey: true
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    name: {
+      type: DataTypes.CHAR,
+      allowNull: true
+    },
+    save: {
+      type: DataTypes.JSON,
+      allowNull: false
     }
   }, {
-    tableName: 'usr_role'
+    tableName: 'usr_save'
   });
 };

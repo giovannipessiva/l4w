@@ -4,4 +4,6 @@ rem $ npm install -g sequelize-auto
 
 rem The database tables must grant privileges to the user
 
-sequelize-auto -h localhost -d l4w -u l4w -x l4w -p 5432 -e postgres -o "./server/modules/models"
+sequelize-auto --host localhost --database l4w --user postgres --pass postgres --port 5432 --dialect postgres --output "./server/modules/models"
+
+pause
