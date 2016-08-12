@@ -61,22 +61,50 @@ function signOut() {
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Mapper">https://github.com/giovannipessiva/l4w/wiki/Mapper</a>
 	</p>
 </div>
-<div id="toolsPanel" style="background-color:white;float:right;position:relative;margin-right:0;width:256px">
+<div id="toolsPanel" style="background-color:white;float:right;position:relative;width:256px">
 	<div style="border:1px solid black">
-		<div id="news" />
+		<div id="news"></div>
 		<div style="display:none" class="g-signin2"></div>
 		<button onclick="signOut();">Sign out</button>
 	</div>
 	<div style="border:1px solid black">
-	-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
+		<table>
+			<tr>
+			<td><button id="saveButton" type="button" onclick="EditPage.save();" disabled="true">Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="EditPage.reload();" disabled="true">Reload</button></td>
+			</tr>
+		</table>
 	</div>
 	<div style="border:1px solid black">
 		<table>
-		<tr>
-		<td><button id="saveButton" type="button" onclick="EditPage.save();" disabled="true">Save</button></td>
-		<td><button id="reloadButton" type="button" onclick="EditPage.reload();" disabled="true">Reload</button></td>
-		</tr>
+			<tr><td id="mapPanel"></td>
 		</table>
+	</div>
+	<div id="mapDetailPanel" style="display:none;border:1px solid black">
+		<table>
+			<tr>
+				<td>Tile</td>
+				<td>
+					<select id="tiles" onchange="EditPage.changeTile();"></select>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td>Size</td>
+				<td>
+					<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
+					 x 
+					<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
+				</td>
+				<td>
+					<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div style="border:1px solid black">
+		-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
 		<table>
 		<tr>
 		<td><button id="mode0" type="button" onclick="Mapper.setMode(Constant.EditMode.APPLY);">Apply</button></td>
@@ -98,34 +126,6 @@ function signOut() {
 		
 		<canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
 		Your browser does not support HTML5 Canvas!</canvas>
-	</div>
-	<div style="border:1px solid black">
-		<table>
-		<tr><td id="mapPanel"></td>
-		</table>
-	</div>
-	<div id="mapDetailPanel" style="display:none;border:1px solid black">
-	<table>
-	<tr>
-		<td>Tile</td>
-		<td>
-			<select id="tiles" onchange="EditPage.changeTile();"></select>
-		</td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td>Size</td>
-		<td>
-			<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
-			 x 
-			<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
-		</td>
-		<td>
-			<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
-		</td>
-	</tr>
-	</table>
 	</div>
 </div>
 </body>
