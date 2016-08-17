@@ -13,6 +13,7 @@
     "express-session": "^1.14",
     "http-status-codes": "^1.0",
     "pg": "^6.1",
+    "terraformer-wkt-parser": "^1.1",
     "sequelize": "^3.24"
   },
   "devDependencies": {
