@@ -12,14 +12,14 @@
     "express": "^4.14",
     "express-session": "^1.14",
     "http-status-codes": "^1.0",
-    "pg": "^6.0",
-    "sequelize": "^3.23.6"
+    "pg": "^6.1",
+    "sequelize": "^3.24"
   },
   "devDependencies": {
-    "grunt": "^0.4",
+    "grunt": "^1.0",
     "grunt-contrib-uglify": "^2.0",
     "grunt-ts": "^5.5",
-    "grunt-tslint": "^3.1",
+    "grunt-tslint": "^3.2",
     "sequelize-auto": "^0.4",
     "tslint": "^3.14",
     "typescript": "^1.8"
