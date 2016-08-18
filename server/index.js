@@ -15,9 +15,27 @@ app.use(compression());
 app.use(session.init());
 app.set("port",(process.env.PORT || 5000));
 
+function doLogout(request,response,callback) {
+	request.session.destroy(function(){
+		request.session = null;
+        response.clearCookie(session.cookieName,{ path: '/' });
+        callback();
+    });
+};
+
 // Views redirection
 app.get('/', function(request, response) {
-    utils.sendFile(__dirname + '/views/', 'home.html', response);
+	if(!utils.isEmpty(request.query.logout) && request.query.logout === "1") {
+		doLogout(request,response,function() {
+			utils.sendFile(__dirname + '/views/', 'home.html', response);
+		});
+	} else {
+		if(!security.isAuthenticated(request)) {
+			utils.sendFile(__dirname + '/views/', 'home.html', response);
+		} else {
+			utils.sendFile(__dirname + '/views/', 'home-auth.html', response);
+		}
+	}
 });
 app.get('/edit', function(request, response) {
 	if(!security.isAuthenticated(request)) {
@@ -58,9 +76,7 @@ app.post('/edit', function(request, response) {
 });
 
 app.get('/logout', function(request, response) {
-	request.session.destroy(function(){
-		request.session = null;
-        response.clearCookie(session.cookieName,{ path: '/' });
+	doLogout(request,response,function() {
         utils.sendFile(__dirname + '/views/', 'auth.html', response);
     });
 });

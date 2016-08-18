@@ -35,11 +35,11 @@ namespace EditPage {
             switch (e.type) {
                 case "create_node":
                     if (flagEdited) {
-                        $('#mapPanel').jstree(true).disable_node(data.node);
+                        $("#mapPanel").jstree(true).disable_node(data.node);
                     }
                 case "rename_node":
                 case "delete_node":
-                    changeEditState(true,false);
+                    changeEditState(true, false);
                     break;
                 default:
                     console.log("Type: " + e.type);
@@ -53,8 +53,8 @@ namespace EditPage {
                     return;
                 case "delete_node":
                     // Select another node
-                    let previousNode = $('#mapPanel').jstree(true).get_prev_dom(data.node);
-                    $('#mapPanel').jstree(true).select_node(previousNode);
+                    let previousNode = $("#mapPanel").jstree(true).get_prev_dom(data.node);
+                    $("#mapPanel").jstree(true).select_node(previousNode);
                     return;
                 case "model":
                 case "select_node":
