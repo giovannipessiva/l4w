@@ -7,3 +7,4 @@ A TypeScript engine + web editor for HTML5 tile-based games
 [![GitHub version](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
 [![Dependencies](https://david-dm.org/giovannipessiva/l4w.svg)](https://david-dm.org/giovannipessiva/l4w)
 [![DevDependencies](https://david-dm.org/giovannipessiva/l4w/dev-status.svg)](https://david-dm.org/giovannipessiva/l4w#info=devDependencies)
+ 
