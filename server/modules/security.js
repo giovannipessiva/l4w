@@ -38,8 +38,7 @@ module.exports = {
 	        });
 
 	    } else {
-	        response.status(HttpStatus.METHOD_NOT_ALLOWED);
-	        response.end();
+	    	callback(null);
 	    }
 	},
 	
@@ -76,9 +75,5 @@ module.exports = {
 		} else {
 			return true; // Cookies will work only with https
 		}
-	},
-	
-	isAuthenticated: function(request) {
-		return utils.isEmpty(request.session.user);
 	}
 }

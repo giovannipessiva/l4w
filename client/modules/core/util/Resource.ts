@@ -16,7 +16,8 @@ namespace Resource {
         FACE,
         SKIN,
         TILE,
-        MAP
+        MAP,
+        SAVE
     }
 
     var propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
@@ -56,11 +57,11 @@ namespace Resource {
         }
         return props;
     };
-    
+
     function sendGETRequest(uri: string, callback: IProgressCallback) {
         sendRequest(Constant.RequestType.GET, null, uri, callback);
     };
-    
+
     function sendPOSTRequest(uri: string, data: string, callback: IProgressCallback) {
         sendRequest(Constant.RequestType.POST, data, uri, callback);
     };
@@ -68,17 +69,17 @@ namespace Resource {
     function sendRequest(requestType: string, data: string, uri: string, callback: IProgressCallback) {
         var request = new XMLHttpRequest();
         request.onload = callback;
-        request.onerror = function (e: ErrorEvent) {
+        request.onerror = function(e: ErrorEvent) {
             console.error("Error while getting " + uri);
             callback(null);
         };
-        request.ontimeout = function () {
+        request.ontimeout = function() {
             console.error("Timeout while getting " + uri);
             callback(null);
         };
         request.open(requestType, uri, true);
         try {
-            if(!Utils.isEmpty(data) && requestType === Constant.RequestType.POST) {
+            if (!Utils.isEmpty(data) && requestType === Constant.RequestType.POST) {
                 request.send(data);
             } else {
                 request.send();
@@ -92,7 +93,7 @@ namespace Resource {
             callback(null);
         }
     }
-    
+
     /**
      * Load an asset and call a callback
      */
@@ -117,6 +118,7 @@ namespace Resource {
                 //TODO manage errors
                 break;
             case TypeEnum.MAP:
+            case TypeEnum.SAVE:
                 // Load text file
                 sendGETRequest(path, function(e: ProgressEvent) {
                     callback(this.responseText);
@@ -128,14 +130,14 @@ namespace Resource {
                 callback(null);
         }
     }
-    
+
     /**
      * Save an asset to server
      */
-    export function save(id: string, data: string, assetType: TypeEnum, callback: IBooleanCallback) {  
+    export function save(id: string, data: string, assetType: TypeEnum, callback: IBooleanCallback) {
         var path = getEditPath(id, assetType);
         sendPOSTRequest(path, data, function(e: ProgressEvent) {
-            if(this.status === 200) {
+            if (this.status === 200) {
                 callback(true);
             } else {
                 console.error(this.status + " - " + this.response);
@@ -181,13 +183,16 @@ namespace Resource {
                         console.trace();
                 };
                 break;
+            case TypeEnum.SAVE:
+                path = DATA_PATH + "save/";
+                break;
             default:
                 console.error("Unexpected resource type");
                 console.trace();
         };
         return path + file;
     }
-    
+
     function getEditPath(file: string, assetType: TypeEnum): string {
         var path;
         switch (assetType) {

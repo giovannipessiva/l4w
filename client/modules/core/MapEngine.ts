@@ -15,6 +15,30 @@ class MapEngine {
     save() {
         //TODO save the map, sending the updated JSON to server
     }
+    
+    public static loadMap(mapId: string, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
+        Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {
+            if (Utils.isEmpty(resourceText)) {
+                console.error("Error while loading map: " + mapId);
+                callback(null);
+            } else {
+                try {
+                    var map: IMap = JSON.parse(resourceText);
+                    callback(map);
+                } catch (exception) {
+                    if (exception.name === "SyntaxError") {
+                        console.error("Error while parsing map: " + mapId);
+                    } else if (exception.name === "TypeError") {
+                        console.error("Error while reading map: " + mapId);
+                    } else {
+                        console.error(exception);
+                    }
+                    Errors.showError(canvas.getContext("2d"));
+                    callback(null);
+                }
+            }
+        });
+    }
 
     renderLayer(map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer

@@ -39,5 +39,9 @@ module.exports = {
                 "over": null
             }
         };
+	},
+
+	getDefaultSave: function() {
+		return "";
 	}
 };

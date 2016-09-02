@@ -13,6 +13,8 @@ namespace EditPage {
     let flagEdited: boolean = false;
 
     export function start() {
+        Compatibility.check(); 
+        
         $("#mapPanel").jstree({
             "core": {
                 "animation": 0,
@@ -147,8 +149,7 @@ namespace EditPage {
 
     export function reload() {
         Mapper.reloadMap();
-        //TODO reload tree
-        $('#mapPanel').jstree(true).refresh(false, false); //FIXME testare
+        $("#mapPanel").jstree(true).refresh(false, false);
     }
 
     export function getActiveMap(): string {

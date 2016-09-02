@@ -1,7 +1,6 @@
 var path = require('path');
 var express = require('express');
 var compression = require('compression');
-var https = require('https');
 var HttpStatus = require('http-status-codes');
 
 var mapper = require(__dirname + '/modules/mapper');
@@ -15,30 +14,30 @@ app.use(compression());
 app.use(session.init());
 app.set("port",(process.env.PORT || 5000));
 
-function doLogout(request,response,callback) {
-	request.session.destroy(function(){
-		request.session = null;
-        response.clearCookie(session.cookieName,{ path: '/' });
-        callback();
-    });
-};
-
 // Views redirection
 app.get('/', function(request, response) {
 	if(!utils.isEmpty(request.query.logout) && request.query.logout === "1") {
-		doLogout(request,response,function() {
+		session.doLogout(request,response,function() {
 			utils.sendFile(__dirname + '/views/', 'home.html', response);
 		});
 	} else {
-		if(!security.isAuthenticated(request)) {
-			utils.sendFile(__dirname + '/views/', 'home.html', response);
-		} else {
+		if(session.isAuthenticated(request)) {
+			database.logUserSessionAccess(request.session.user);
 			utils.sendFile(__dirname + '/views/', 'home-auth.html', response);
-		}
+		} else {
+			utils.sendFile(__dirname + '/views/', 'home.html', response);
+		};
 	}
 });
+app.post('/', function(request, response) {
+	session.doLogin(request,response,function() {
+		utils.sendFile(__dirname + '/views/', 'home-auth.html', response);
+	}, function() {
+		utils.sendFile(__dirname + '/views/', 'home.html', response);
+	});
+});
 app.get('/edit', function(request, response) {
-	if(!security.isAuthenticated(request)) {
+	if(!session.isAuthenticated(request)) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	} else {
 		database.logUserSessionAccess(request.session.user);
@@ -46,37 +45,15 @@ app.get('/edit', function(request, response) {
 	}
 });
 app.post('/edit', function(request, response) {
-
-	if(!security.isAuthenticated(request)) {
-		// No valid session, use post data to authenticate user
-		security.getBodyData(request,response,function(data){
-			var paramMap = utils.parseParameters(data);
-			https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res) {
-				res.on('data', function(buffer) {
-					var d = JSON.parse(buffer.toString("utf8"));
-					if(security.validateTokeninfoResponse(d)) {
-						database.logUser(d.email,request,response);
-						utils.sendFile(__dirname + '/views/', 'edit.html', response);
-					} else {
-						// Authentication failed
-						utils.sendFile(__dirname + '/views/', 'auth.html', response);
-					}
-				});
-			}).on('error', function(e) {
-				// Google API problem
-				console.error(e);
-				utils.sendFile(__dirname + '/views/', 'auth.html', response);
-			});
-		});
-	} else {
-		// Valid session found
-		database.logUserSessionAccess(request.session.user);
+	session.doLogin(request,response,function() {
 		utils.sendFile(__dirname + '/views/', 'edit.html', response);
-	}
+	}, function() {
+		utils.sendFile(__dirname + '/views/', 'auth.html', response);
+	});
 });
 
 app.get('/logout', function(request, response) {
-	doLogout(request,response,function() {
+	session.doLogout(request,response,function() {
         utils.sendFile(__dirname + '/views/', 'auth.html', response);
     });
 });
@@ -94,20 +71,26 @@ app.get('/lib/:script', function(request, response) {
 });
 app.get('/data/:type', function(request, response) {
 	var type = request.params.type;
-	database.read(type, null, response);
+	var user = null;
+	if(session.isAuthenticated(request)) {
+		user = request.session.user;
+	}
+	database.read(type, null, user, response);
 });
 app.get('/data/:type/:file', function(request, response) {
     var file = request.params.file;
     var type = request.params.type;
-    
 	// FIXME gestione temporanea, in attesa di passare tutto su DB
-	if (type !== "map") {
+	if (type !== "map" && type !== "save") {
 		var filePath = path.resolve(__dirname + '/../client/data/' + type);
 		utils.sendFile(filePath, file, response);
 		return;
 	}
-	database.read(type, file, response);
-
+	var user = null;
+	if(session.isAuthenticated(request)) {
+		user = request.session.user;
+	}
+	database.read(type, file, user, response);
 });
 app.get('/assets/:file', function(request, response) {
     var file = request.params.file;
@@ -134,7 +117,7 @@ app.get('/style/:type/:file', function(request, response) {
 
 // Server logic
 app.post('/edit/maps', function(request, response) {
-	if(security.isAuthenticated(request)) {
+	if(session.isAuthenticated(request)) {
 		security.getBodyData(request,response,function(data){
 	        mapper.updateMaps(data, response);
 		});
@@ -144,7 +127,7 @@ app.post('/edit/maps', function(request, response) {
 });
 
 app.post('/edit/map/:id', function(request, response) {
-	if(security.isAuthenticated(request)) {
+	if(session.isAuthenticated(request)) {
 		var mapId = request.params.id;
 		security.getBodyData(request,response,function(data){
 	        mapper.updateMap(mapId, data, response);
@@ -155,7 +138,7 @@ app.post('/edit/map/:id', function(request, response) {
 });
 
 app.get('/news', function(request, response) {
-	if(security.isAuthenticated(request)) {
+	if(session.isAuthenticated(request)) {
 		database.getNews(request.session.user, response);
 	} else {
 		response.status(HttpStatus.FORBIDDEN).end();

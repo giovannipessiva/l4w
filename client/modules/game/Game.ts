@@ -1,5 +1,7 @@
-/// <reference path="../core/AbstractGrid.ts" />
 /// <reference path="../core/util/Input.ts" />
+/// <reference path="../core/util/Compatibility.ts" />
+/// <reference path="../core/model/Save.ts" />
+/// <reference path="../core/AbstractGrid.ts" />
 /// <reference path="../core/AbstractScene.ts" />
 /// <reference path="DynamicScene.ts" />
 /// <reference path="DynamicGrid.ts" />
@@ -10,29 +12,58 @@
 namespace Game {
 
     export function start(canvas: HTMLCanvasElement) {
+        Compatibility.check();
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
-            new DynamicScene(grid, function(scene: DynamicScene) {
-                initInput(canvas, scene, grid);
-                scene.start(canvas);
+            let scene: DynamicScene = new DynamicScene(grid);
+            initInput(canvas, scene, grid);
+            loadSave(canvas, function(save: ISave) {
+                scene.loadSave(save, function() {
+                    scene.start(canvas);
+                });
+
             });
+        });
+    }
+
+    function loadSave(canvas: HTMLCanvasElement, callback: (save: ISave) => void) {
+        Resource.load("1", Resource.TypeEnum.SAVE, function(resourceText: any) {
+            if (Utils.isEmpty(resourceText)) {
+                callback(null);
+            } else {
+                try {
+                    let obj: Object = JSON.parse(resourceText);
+                    let save: ISave = <ISave>obj;
+                    callback(save);
+                } catch (exception) {
+                    if (exception.name === "SyntaxError") {
+                        console.error("Error while parsing save");
+                    } else if (exception.name === "TypeError") {
+                        console.error("Error while reading save");
+                    } else {
+                        console.error(exception);
+                    }
+                    Errors.showError(canvas.getContext("2d"));
+                    callback(null);
+                }
+            }
         });
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, grid: DynamicGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
-           scene.moveFocus(Constant.Direction.UP); 
+            scene.moveFocus(Constant.Direction.UP);
         };
         inputCallbackMap[Input.Keys.S] = function(e) {
-           scene.moveFocus(Constant.Direction.DOWN); 
+            scene.moveFocus(Constant.Direction.DOWN);
         };
         inputCallbackMap[Input.Keys.A] = function(e) {
-           scene.moveFocus(Constant.Direction.LEFT); 
+            scene.moveFocus(Constant.Direction.LEFT);
         };
         inputCallbackMap[Input.Keys.D] = function(e) {
-           scene.moveFocus(Constant.Direction.RIGHT); 
+            scene.moveFocus(Constant.Direction.RIGHT);
         };
-        
+
         inputCallbackMap[Input.Keys.F1] = function(e) {
             scene.toggleFPS();
         };
@@ -78,7 +109,7 @@ namespace Game {
             function() { console.log("rightClick"); },
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
-            );
+        );
     };
 
 }

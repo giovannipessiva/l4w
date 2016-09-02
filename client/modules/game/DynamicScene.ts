@@ -17,11 +17,8 @@ class DynamicScene extends AbstractScene {
     hero: IEvent;
     events: IEvent[];
 
-    constructor(grid: DynamicGrid, callback: { (scene: DynamicScene): void }) {
+    constructor(grid: DynamicGrid) {
         super(grid);
-        
-        //TODO da rimuovere questa inizializzazione, la mappa deve essere caricata da fuori
-        this.setMap(MapEngine.getNewMap("stub"),callback);
     }
 
     protected mainGameLoop_pre() {
@@ -31,7 +28,7 @@ class DynamicScene extends AbstractScene {
 
         var time = Time.getTime();
         EventManager.update(this.hero, time);
-        if(!Utils.isEmpty(this.events)) {
+        if (!Utils.isEmpty(this.events)) {
             for (var event of this.events) {
                 EventManager.update(event, time);
             }
@@ -42,12 +39,12 @@ class DynamicScene extends AbstractScene {
 
     protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
         super.mainGameLoop_post(boundariesX, boundariesY);
-        
+
         //TODO rimuovere a regime
         this.context.fillStyle = "#000000";
         this.context.font = "bold 40px Arial";
         this.context.fillText("(it's not ready yet)", 160, 260);
-        
+
         this.renderFPS(boundariesX, boundariesY);
     }
 
@@ -74,18 +71,33 @@ class DynamicScene extends AbstractScene {
                 this.FPS = Math.ceil(avg) + 2;
             }
         }
-        
+
         if (this.renderingConfiguration.showFPS) {
             this.context.fillStyle = Constant.Color.RED;
             this.context.font = "bold 18px Arial";
             this.context.fillText("" + this.lastFPS, boundariesX.min + 10, boundariesY.min + 20);
         }
     }
-    
+
     protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
     }
-    
+
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+    }
+
+    public loadSave(save: ISave, callback) {
+        if (Utils.isEmpty(save)) {
+            this.setMap(MapEngine.getNewMap("stub"), function() {
+                callback();
+            });
+        } else {
+            var scene = this;
+            MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {
+                scene.setMap(map, function() {
+                    callback();
+                });
+            });
+        }
     }
 }

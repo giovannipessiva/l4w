@@ -18,8 +18,10 @@ namespace Mapper {
                 TilePicker.setMapper(scene);
                 scene.setTilePicker(tilePicker);
                 mapper = scene;
-                Mapper.loadMap(mapId, canvas, function() {
-                    mapper.start(canvas);
+                MapEngine.loadMap(mapId, canvas, function(map: IMap) {
+                	mapper.setMap(map, function() {
+                    	mapper.start(canvas);
+                    });
                 });
             });
         }, GridTypeEnum.mapper);
@@ -33,34 +35,15 @@ namespace Mapper {
     export function changeSize(rows: number, columns: number) {
         mapper.resizeMap(rows, columns);
     }
-
-    export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: () => void) {
-        Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {
-            if (Utils.isEmpty(resourceText)) {
-                console.error("Error while loading map: " + mapId);
-            } else {
-                try {
-                    var map: IMap = JSON.parse(resourceText);
-                    mapper.setMap(map, callback);
-                } catch (exception) {
-                    if (exception.name === "SyntaxError") {
-                        console.error("Error while parsing map: " + mapId);
-                    } else if (exception.name === "TypeError") {
-                        console.error("Error while reading map: " + mapId);
-                    } else {
-                        console.error(exception);
-                    }
-                    Errors.showError(canvas.getContext("2d"));
-                }
-            }
-        });
-    }
-
+    
     export function reloadMap() {
         var mapId = EditPage.getActiveMap();
         var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        loadMap(mapId, canvas, function() {
-            EditPage.changeEditState(false);
+        
+        MapEngine.loadMap(mapId, canvas, function(map: IMap) {
+            mapper.setMap(map, function() {
+                EditPage.changeEditState(false);
+            });
         });
     }
 

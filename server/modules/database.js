@@ -9,12 +9,13 @@ var utils = require(__dirname + "/utils");
 var constants = require(__dirname + "/constants");
 var defaults = require(__dirname + "/defaults");
 
-function getDefaults(type,file) {
-	if(!utils.isEmpty(file)) {
+function getDefaults(type, file) {
+	if (!utils.isEmpty(file)) {
 		return file;
 	}
-	if("map" === type) {
-		//TODO ora c'è un record di default, dovrei fare l'upsert sul solo record interessato
+	if ("map" === type) {
+		// TODO ora c'è un record di default, dovrei fare l'upsert sul solo
+		// record interessato
 		return "%MAPS%";
 	}
 }
@@ -22,11 +23,11 @@ function getDefaults(type,file) {
 function logAccess(user) {
 	// User already known, log this access
 	models.log_access.update({
-		last_seen: new Date(),
-		access_counter: Sequelize.literal('access_counter + 1')
-	},{
-		where: {
-			user: user,
+		last_seen : new Date(),
+		access_counter : Sequelize.literal('access_counter + 1')
+	}, {
+		where : {
+			user : user,
 		}
 	}).then(function(r) {
 	}, function(error) {
@@ -38,45 +39,77 @@ module.exports = {
 	init : function() {
 		return new Promise(function(resolve, reject) {
 			// Test authentication
-			models.sequelize.authenticate().then(
-					function() {
-						resolve();
-					}, function(err) {
+			models.sequelize.authenticate().then(function() {
+				resolve();
+			}, function(err) {
 				console.error("Authentication on PostgreSQL failed: " + err);
 				reject();
 			});
 		});
 	},
-	
-	read: function(type, file, response){
-		file = getDefaults(type,file);
-		
-		if(type === "map") {
+
+	read : function(type, file, user, response) {
+		file = getDefaults(type, file);
+		switch (type) {
+		case "map":
+			console.log("map");
 			models.l4w_map.findOne({
-				where: {
-					id: file
+				where : {
+					id : file
 				},
-				attributes: ["data"]
-			}).then(function(result) {
-				if(!utils.isEmpty(result)) {
-					response.json(result.data);
-				} else {
-					response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultMap());
-				}
-			}, function(error) {
-				console.log(error);
-				response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(defaults.getDefaultMap());
-			});
-		}
+				attributes : [ "data" ]
+			}).then(
+					function(result) {
+						console.log(result);
+						if (!utils.isEmpty(result)) {
+							response.json(result.data);
+						} else {
+							response.status(HttpStatus.NOT_FOUND).send(
+									defaults.getDefaultMap());
+						}
+					},
+					function(error) {
+						console.log(error);
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
+								defaults.getDefaultMap());
+					});
+			break;
+		case "save":
+			if (!utils.isEmpty(user)) {
+				models.usr_save.findOne({
+					where : {
+						user : user,
+						id : file
+					},
+					attributes : [ "save" ]
+				}).then(
+						function(result) {
+							if (!utils.isEmpty(result)) {
+								response.json(result.save);
+							} else {
+								response.status(HttpStatus.NOT_FOUND).send(
+										defaults.getDefaultSave());
+							}
+						},
+						function(error) {
+							console.log(error);
+							response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+									.send(defaults.getDefaultSave());
+						});
+			} else {
+				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
+			}
+			break;
+		};
 	},
-	
-	write: function(type,file,data,response) {
-		file = getDefaults(type,file);
-		
-		if(type === "map") {
+
+	write : function(type, file, data, response) {
+		file = getDefaults(type, file);
+
+		if (type === "map") {
 			models.l4w_map.upsert({
-				id: file,
-				data: JSON.parse(data)
+				id : file,
+				data : JSON.parse(data)
 			}).then(function(result) {
 				response.status(HttpStatus.OK).send();
 			}, function(error) {
@@ -85,9 +118,9 @@ module.exports = {
 			});
 		}
 	},
-	
-	logUserSessionAccess: logAccess,
-	
+
+	logUserSessionAccess : logAccess,
+
 	logUser: function(mail, request, response) {
 		models.usr_list.findOne({
 			where: {
@@ -154,21 +187,27 @@ module.exports = {
 			response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
 		});
 	},
-	
-	getNews: function(user,response) {
-		if(utils.isEmpty(user)) {
+
+	getNews : function(user, response) {
+		if (utils.isEmpty(user)) {
 			response.json({});
 		} else {
 			models.usr_event.findAll({
-				where: { user: user },
-				attributes: ['event'],
+				where : {
+					user : user
+				},
+				attributes : [ 'event' ],
 			}).then(function(events) {
-				if(!utils.isEmpty(events)) {
+				if (!utils.isEmpty(events)) {
 					var eventsArray = new Array;
 					for (var i = 0; i < events.length; i++) {
 						eventsArray.push(events[i].event);
 					}
-					models.lst_event.findAll({ where: { event: eventsArray } }).then(function(datas) {
+					models.lst_event.findAll({
+						where : {
+							event : eventsArray
+						}
+					}).then(function(datas) {
 						response.json(datas);
 					});
 				} else {
