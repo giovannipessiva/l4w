@@ -3,7 +3,7 @@
  */
 namespace Compatibility {
 
-    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html"
+    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";
 
     export function check() {
         canvas();
@@ -13,14 +13,14 @@ namespace Compatibility {
     function canvas() {
         let elem = document.createElement("canvas");
         if (!(elem.getContext && elem.getContext("2d"))) {
-            console.error('HTML5 canvas is not supported');
+            console.error("HTML5 canvas is not supported");
         }
     }
 
     function thirdPartyCookies() {
         let receiveMessage = function(event) {
-            if (event.data === 'MM:3PCunsupported') {
-                console.error('Thid party cookies are not supported');
+            if (event.data === "MM:3PCunsupported") {
+                console.error("Thid party cookies are not supported");
             }
         };
         window.addEventListener("message", receiveMessage, false);

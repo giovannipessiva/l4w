@@ -19,8 +19,8 @@ namespace Mapper {
                 scene.setTilePicker(tilePicker);
                 mapper = scene;
                 MapEngine.loadMap(mapId, canvas, function(map: IMap) {
-                	mapper.setMap(map, function() {
-                    	mapper.start(canvas);
+                    mapper.setMap(map, function() {
+                        mapper.start(canvas);
                     });
                 });
             });
