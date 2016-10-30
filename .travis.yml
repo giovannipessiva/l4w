@@ -3,7 +3,7 @@ node_js:
 - '6.4'
 
 sudo:
-	required
+  required
 before_install:
 # Repo for newer Node.js versions
 - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
