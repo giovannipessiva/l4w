@@ -7,9 +7,6 @@
 
 var nextAnimationFrame =
     window.requestAnimationFrame ||
-    //window.mozRequestAnimationFrame ||
-    //window.webkitRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
     function(callback) {
         window.setTimeout(this.mainGameLoop, this.refreshInterval);
     };
