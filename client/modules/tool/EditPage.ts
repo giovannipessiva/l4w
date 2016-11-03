@@ -77,7 +77,7 @@ namespace EditPage {
                     $("#mapSizeH").val(node.data.h + "");
                     $("#tiles").val(node.data.tile);
                     TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
-                        Mapper.start(canvas, tilePicker, node.id);
+                        Mapper.start(canvas, tilePicker, parseInt(node.id));
                     });
                     break;
                 default:
@@ -152,8 +152,8 @@ namespace EditPage {
         $("#mapPanel").jstree(true).refresh(false, false);
     }
 
-    export function getActiveMap(): string {
-        return getSelectedNode().id;
+    export function getActiveMap(): number {
+        return parseInt(getSelectedNode().id);
     }
 
     function getSelectedNode(): JSTreeNode {

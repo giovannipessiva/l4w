@@ -174,8 +174,7 @@ abstract class AbstractScene {
     }
     
     resetTranslation() {
-        var translationResetValue: IPoint = this.grid.getTranslationResetValue();
-        this.context.translate(translationResetValue.x, translationResetValue.y);
+        this.grid.resetTranslation(this.context);
     }
     
     updateContext(canvas: HTMLCanvasElement) {

@@ -34,10 +34,10 @@
 	};
 </script>
 
-<script src="lib/require.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
 <script type='text/javascript'>
-requirejs(["lib/jquery"],function($){
-    requirejs(["lib/jquery-ui","js/l4w.min"],function(l4w){
+requirejs(["https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"],function($){
+    requirejs(["https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js","js/l4w.min"],function(l4w){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version

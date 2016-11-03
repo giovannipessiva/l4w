@@ -11,13 +11,15 @@
  */
 namespace Game {
 
+    var scene: DynamicScene;
+    
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
-            let scene: DynamicScene = new DynamicScene(grid);
+            scene = new DynamicScene(grid, canvas);
             initInput(canvas, scene, grid);
             loadSave(canvas, function(save: ISave) {
-                scene.loadSave(save, function() {
+                scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
                 });
 
@@ -25,15 +27,50 @@ namespace Game {
         });
     }
 
+    export function load() {
+        let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
+        loadSave(canvas, function(save: ISave) {
+            scene.loadSave(save, function(success: boolean) {
+                //scene.start(canvas);
+                if(success) {
+                    console.log("Save loaded successfully");
+                } else {
+                    console.log("Save not found");    
+                }
+            });
+
+        });
+    }
+
+    export function save() {
+        //TODO l'id del salvataggio va selezionato dal giocatore
+        let saveId: string = "0";
+        let currentState: ISave = scene.getSave();
+        if(!Utils.isEmpty(currentState)) {
+            saveId = currentState.id + "";
+        }
+        Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(success: boolean) {
+            if (success) {
+                console.log("Save saved successfully");
+            }
+        });
+    }
+
     function loadSave(canvas: HTMLCanvasElement, callback: (save: ISave) => void) {
-        Resource.load("1", Resource.TypeEnum.SAVE, function(resourceText: any) {
+        //TODO l'id del salvataggio va selezionato dal giocatore
+        let saveId: string = "0";
+        let currentState: ISave = scene.getSave()
+        if(!Utils.isEmpty(currentState)) {
+            saveId = currentState.id + "";
+        }
+        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: any) {
             if (Utils.isEmpty(resourceText)) {
                 callback(null);
             } else {
                 try {
-                    let obj: Object = JSON.parse(resourceText);
+                    let obj: Object = JSON.parse(<string>resourceText);  
                     let save: ISave = <ISave>obj;
-                    callback(save);
+                    callback(save); 
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
                         console.error("Error while parsing save");

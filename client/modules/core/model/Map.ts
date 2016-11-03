@@ -2,6 +2,7 @@
 /// <reference path="Event.ts" />
 
 interface IMap {
+    id: number; //Id of the map
     name: string; //Name of the map
     width: number; //Number of tile columns
     height: number; //Number of tile rows

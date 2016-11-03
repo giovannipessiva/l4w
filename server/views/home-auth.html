@@ -10,10 +10,10 @@
 <meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-<script src="lib/require.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
 <script type='text/javascript'>
-requirejs(["lib/jquery","https://apis.google.com/js/platform.js"],function($){
-    requirejs(["lib/jquery-ui","js/l4w.min"],function(l4w){
+requirejs(["https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js","https://apis.google.com/js/platform.js"],function($){
+    requirejs(["https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js","js/l4w.min"],function(l4w){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version
@@ -42,8 +42,8 @@ function signOut() {
 	<div style="text-align:center">
 		<div style="border:1px solid black;float:left;padding:1em;">
 			Bentornato!<br/>
-			<button onclick="signOut();">Sign out</button>
-			
+			<button onclick="signOut();">Sign out</button><br/>
+			<button onclick="Game.save()">Save</button><button onclick="Game.load()">Load</button>
 			<!-- The button is required for initialization purposes -->
 			<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
 		</div>

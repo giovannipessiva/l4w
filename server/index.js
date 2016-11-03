@@ -22,7 +22,7 @@ app.get('/', function(request, response) {
 		});
 	} else {
 		if(session.isAuthenticated(request)) {
-			database.logUserSessionAccess(request.session.user);
+			database.logUserSessionAccess(session.getUser(request));
 			utils.sendFile(__dirname + '/views/', 'home-auth.html', response);
 		} else {
 			utils.sendFile(__dirname + '/views/', 'home.html', response);
@@ -40,7 +40,7 @@ app.get('/edit', function(request, response) {
 	if(!session.isAuthenticated(request)) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	} else {
-		database.logUserSessionAccess(request.session.user);
+		database.logUserSessionAccess(session.getUser(request));
 		utils.sendFile(__dirname + '/views/', 'edit.html', response);
 	}
 });
@@ -73,7 +73,7 @@ app.get('/data/:type', function(request, response) {
 	var type = request.params.type;
 	var user = null;
 	if(session.isAuthenticated(request)) {
-		user = request.session.user;
+		user = session.getUser(request);
 	}
 	database.read(type, null, user, response);
 });
@@ -86,11 +86,7 @@ app.get('/data/:type/:file', function(request, response) {
 		utils.sendFile(filePath, file, response);
 		return;
 	}
-	var user = null;
-	if(session.isAuthenticated(request)) {
-		user = request.session.user;
-	}
-	database.read(type, file, user, response);
+	database.read(type, file, session.getUser(request), response);
 });
 app.get('/assets/:file', function(request, response) {
     var file = request.params.file;
@@ -119,18 +115,26 @@ app.get('/style/:type/:file', function(request, response) {
 app.post('/edit/maps', function(request, response) {
 	if(session.isAuthenticated(request)) {
 		security.getBodyData(request,response,function(data){
-	        mapper.updateMaps(data, response);
+	        mapper.updateMaps(data, session.getUser(request), response);
 		});
 	} else {
 		response.status(HttpStatus.FORBIDDEN).end();
 	}
 });
 
-app.post('/edit/map/:id', function(request, response) {
+app.post('/edit/:type/:id', function(request, response) {
 	if(session.isAuthenticated(request)) {
-		var mapId = request.params.id;
-		security.getBodyData(request,response,function(data){
-	        mapper.updateMap(mapId, data, response);
+		var fileId = request.params.id;
+		var type = request.params.type;
+		security.getBodyData(request, response, function(data){
+			switch(type) {
+			case "map":
+				mapper.updateMap(fileId, data, session.getUser(request), response);
+				break;
+			case "save":
+				database.write("save", fileId, data, session.getUser(request), response);
+				break;
+			}
 		});
 	} else {
 		response.status(HttpStatus.FORBIDDEN).end();
@@ -139,7 +143,7 @@ app.post('/edit/map/:id', function(request, response) {
 
 app.get('/news', function(request, response) {
 	if(session.isAuthenticated(request)) {
-		database.getNews(request.session.user, response);
+		database.getNews(session.getUser(request), response);
 	} else {
 		response.status(HttpStatus.FORBIDDEN).end();
 	}

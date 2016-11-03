@@ -28,11 +28,15 @@ module.exports = {
 			})
 		});
 	},
-
-	isAuthenticated: function(request) {
-		return !utils.isEmpty(request.session.user);
+	
+	getUser: function(request) {
+		return request.session.user;
 	},
 	
+	isAuthenticated: function(request) {
+		return !utils.isEmpty(module.exports.getUser(request));
+	},
+
 	doLogin: function(request, response, onSuccess, onFailure) {
 		if(!this.isAuthenticated(request)) {
 			// No valid session, use post data to authenticate user
@@ -56,7 +60,6 @@ module.exports = {
 						onFailure();
 					});
 				} else {
-					console.log("1");
 					onFailure();
 				}
 			});

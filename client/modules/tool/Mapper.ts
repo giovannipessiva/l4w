@@ -7,7 +7,7 @@ namespace Mapper {
 
     export var mapper: MapperScene;
 
-    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: string) {
+    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number) {
         if(!Utils.isEmpty(mapper)) {
             mapper.togglePause(true);
         }
@@ -37,9 +37,8 @@ namespace Mapper {
     }
     
     export function reloadMap() {
-        var mapId = EditPage.getActiveMap();
-        var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        
+        let mapId = EditPage.getActiveMap();
+        let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         MapEngine.loadMap(mapId, canvas, function(map: IMap) {
             mapper.setMap(map, function() {
                 EditPage.changeEditState(false);
@@ -50,7 +49,7 @@ namespace Mapper {
     export function saveMap(callback: IBooleanCallback = null) {
         var mapId = EditPage.getActiveMap();
         var mapJSON = JSON.stringify(this.mapper.getMap());
-        Resource.save(mapId, mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
+        Resource.save(mapId+"", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
             if(callback !== null) {
                 callback(success);
             }
