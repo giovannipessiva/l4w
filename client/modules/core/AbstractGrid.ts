@@ -172,6 +172,6 @@ class AbstractGrid {
         this.currentTranslation = {
             x: 0,
             y: 0
-        }
+        };
     }
 }

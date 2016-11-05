@@ -118,7 +118,7 @@ app.post('/edit/maps', function(request, response) {
 	        mapper.updateMaps(data, session.getUser(request), response);
 		});
 	} else {
-		response.status(HttpStatus.FORBIDDEN).end();
+		response.status(HttpStatus.FORBIDDEN).send("");
 	}
 });
 
@@ -137,7 +137,7 @@ app.post('/edit/:type/:id', function(request, response) {
 			}
 		});
 	} else {
-		response.status(HttpStatus.FORBIDDEN).end();
+		response.status(HttpStatus.FORBIDDEN).send("");
 	}
 });
 
@@ -145,7 +145,7 @@ app.get('/news', function(request, response) {
 	if(session.isAuthenticated(request)) {
 		database.getNews(session.getUser(request), response);
 	} else {
-		response.status(HttpStatus.FORBIDDEN).end();
+		response.status(HttpStatus.FORBIDDEN).send("");
 	}
 });
 

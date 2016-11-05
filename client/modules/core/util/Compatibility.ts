@@ -3,7 +3,8 @@
  */
 namespace Compatibility {
 
-    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";
+    //TODO usa su https, per evidare errore "Bloccato il caricamento di contenuto misto attivo (mixed active content)"
+//    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";
 
     export function check() {
         canvas();
@@ -18,16 +19,16 @@ namespace Compatibility {
     }
 
     function thirdPartyCookies() {
-        let receiveMessage = function(event) {
-            if (event.data === "MM:3PCunsupported") {
-                console.error("Thid party cookies are not supported");
-            }
-        };
-        window.addEventListener("message", receiveMessage, false);
-
-        let iframe: HTMLIFrameElement = document.createElement("iframe");
-        iframe.src = THIRDPARTY_COOKIE_CHECK_URL;
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
+//        let receiveMessage = function(event) {
+//            if (event.data === "MM:3PCunsupported") {
+//                console.error("Thid party cookies are not supported");
+//            }
+//        };
+//        window.addEventListener("message", receiveMessage, false);
+//
+//        let iframe: HTMLIFrameElement = document.createElement("iframe");
+//        iframe.src = THIRDPARTY_COOKIE_CHECK_URL;
+//        iframe.style.display = "none";
+//        document.body.appendChild(iframe);
     }
 }
