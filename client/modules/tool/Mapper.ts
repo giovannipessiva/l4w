@@ -135,7 +135,7 @@ namespace Mapper {
         inputRange.onchange = function(e: Event) {
             grid.selectScale(+inputRange.value);
             grid.refresh();
-            scene.updateContext(canvas);
+            scene.changeScale(canvas);
             scene.resetTranslation();
         };
     };

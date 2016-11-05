@@ -93,6 +93,9 @@ class DynamicScene extends AbstractScene {
             if (Utils.isEmpty(this.map)) {
                 // Load a stub map
                 this.setMap(MapEngine.getNewMap("stub"), function() {
+                    scene.resetTranslation();
+                    scene.focus.x = 0;
+                    scene.focus.y = 0;
                     callback(false);
                 });
             } else {
@@ -106,7 +109,6 @@ class DynamicScene extends AbstractScene {
                     scene.resetTranslation();
                     scene.focus.x = save.x;
                     scene.focus.y = save.y;
-                    scene.moveFocus(Constant.Direction.NONE);
                     callback(true);
                 });
             });

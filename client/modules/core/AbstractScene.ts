@@ -44,7 +44,7 @@ abstract class AbstractScene {
     }
 
     start(canvas: HTMLCanvasElement) {
-        this.updateContext(canvas);
+        this.changeScale(canvas);
         this.mainGameLoop();
     }
 
@@ -169,7 +169,7 @@ abstract class AbstractScene {
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
             case Constant.Direction.NONE: break;
         }
-        var translationPoint: IPoint = this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
+        let translationPoint: IPoint = this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
         this.context.translate(translationPoint.x, translationPoint.y);
     }
     
@@ -177,7 +177,7 @@ abstract class AbstractScene {
         this.grid.resetTranslation(this.context);
     }
     
-    updateContext(canvas: HTMLCanvasElement) {
+    changeScale(canvas: HTMLCanvasElement) {
         this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }

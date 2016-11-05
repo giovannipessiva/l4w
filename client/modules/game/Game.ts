@@ -21,6 +21,7 @@ namespace Game {
             loadSave(canvas, function(save: ISave) {
                 scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
+                    scene.moveFocus(Constant.Direction.NONE);
                 });
 
             });
@@ -31,7 +32,7 @@ namespace Game {
         let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
         loadSave(canvas, function(save: ISave) {
             scene.loadSave(save, function(success: boolean) {
-                //scene.start(canvas);
+                scene.moveFocus(Constant.Direction.NONE);
                 if(success) {
                     console.log("Save loaded successfully");
                 } else {
@@ -140,7 +141,7 @@ namespace Game {
             },
             function() {
                 grid.refresh();
-                scene.updateContext(canvas);
+                scene.changeScale(canvas);
                 scene.resetTranslation();
             },
             function() { console.log("rightClick"); },

@@ -23,13 +23,13 @@ class DynamicGrid extends AbstractGrid {
     }
 
     refresh() {
-        var ratioH = this.baseH / this.height();
-        var ratioW = this.baseW / this.width();
-        var newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+        let ratioH = this.baseH / this.height();
+        let ratioW = this.baseW / this.width();
+        let newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
         /*
             Not sure why, but this works against white rumor at cells border
             (the white rumor become more visible when the scale is high)
-            0.03125 = CELL_SIZE * 2^-10
+            SCALE_STEP = CELL_SIZE * 2^-10
         */
         this.scaleX = newScale - (newScale % this.scaleStepX);
         this.scaleY = newScale - (newScale % this.scaleStepY);
