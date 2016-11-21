@@ -22,11 +22,11 @@ interface IRectangle {
 };
 
 class RenderConfiguration {
-    showGrid: boolean = true; //FIXME
+    showGrid: boolean = false;
     showEditorGrid: boolean = false;
     showFPS: boolean = false;
     showCellNumbers: boolean = false;
-    showFocus: boolean = true; //FIXME
+    showFocus: boolean = false;
     enableSelection: boolean = false;
 
     fps: number = 0;
