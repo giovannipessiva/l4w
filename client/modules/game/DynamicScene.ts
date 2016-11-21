@@ -88,10 +88,7 @@ class DynamicScene extends AbstractScene {
     }
 
     public loadSave(save: ISave, callback: IBooleanCallback) {
-<<<<<<< HEAD
         var scene = this;
-=======
->>>>>>> branch 'master' of https://github.com/giovannipessiva/l4w.git
         if (Utils.isEmpty(save)) {
             // No map to load
             if (Utils.isEmpty(this.map)) {
@@ -107,11 +104,8 @@ class DynamicScene extends AbstractScene {
                 callback(false);
             }
         } else {
-<<<<<<< HEAD
-=======
             var scene = this;
->>>>>>> branch 'master' of https://github.com/giovannipessiva/l4w.git
-            MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {  
+			MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {  
                 scene.setMap(map, function() {
                     scene.resetTranslation();
                     scene.focus.x = save.x;
