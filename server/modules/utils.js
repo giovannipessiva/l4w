@@ -29,7 +29,7 @@ module.exports = {
                     	sendFile(path, placeholder, response);
                     } else {
                         console.log("utils.sendFile - " + err);
-                        response.status(err.status).end();
+                        response.status(err.status).send("");
                     }
                 }
             });

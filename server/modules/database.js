@@ -52,7 +52,6 @@ module.exports = {
 		file = getDefaults(type, file);
 		switch (type) {
 		case "map":
-			console.log("map");
 			models.l4w_map.findOne({
 				where : {
 					id : file
@@ -60,10 +59,10 @@ module.exports = {
 				attributes : [ "data" ]
 			}).then(
 					function(result) {
-						console.log(result);
 						if (!utils.isEmpty(result)) {
 							response.json(result.data);
 						} else {
+							console.log("Map "+ file + " not found, returning default");
 							response.status(HttpStatus.NOT_FOUND).send(
 									defaults.getDefaultMap());
 						}
@@ -83,19 +82,19 @@ module.exports = {
 					},
 					attributes : [ "save" ]
 				}).then(
-						function(result) {
-							if (!utils.isEmpty(result)) {
-								response.json(result.save);
-							} else {
-								response.status(HttpStatus.NOT_FOUND).send(
-										defaults.getDefaultSave());
-							}
-						},
-						function(error) {
-							console.log(error);
-							response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-									.send(defaults.getDefaultSave());
-						});
+					function(result) {
+						if (!utils.isEmpty(result)) {
+							response.send(result.dataValues.save);
+						} else {
+							response.status(HttpStatus.NOT_FOUND).send(
+									defaults.getDefaultSave());
+						}
+					},
+					function(error) {
+						console.log(error);
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+								.send(defaults.getDefaultSave());
+					});
 			} else {
 				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
 			}
@@ -103,18 +102,33 @@ module.exports = {
 		};
 	},
 
-	write : function(type, file, data, response) {
+	write : function(type, file, data, user, response) {
 		file = getDefaults(type, file);
 
-		if (type === "map") {
+		switch (type) {
+		case "map":
 			models.l4w_map.upsert({
 				id : file,
 				data : JSON.parse(data)
 			}).then(function(result) {
-				response.status(HttpStatus.OK).send();
+				response.status(HttpStatus.OK).send("");
 			}, function(error) {
 				console.log(error);
-				response.status(HttpStatus.BAD_REQUEST).send();
+				response.status(HttpStatus.BAD_REQUEST).send("");
+			});
+			break;
+		case "save":
+			models.usr_save.upsert({
+				user: user,
+				id : file,
+				date: new Date(),
+				name: null,
+				save : JSON.parse(data)
+			}).then(function(result) {
+				response.status(HttpStatus.OK).send("");
+			}, function(error) {
+				console.log(error);
+				response.status(HttpStatus.BAD_REQUEST).send("");
 			});
 		}
 	},
@@ -168,11 +182,11 @@ module.exports = {
 						}
 					}, function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
 					});
 				}, function(error) {
 					console.log(error);
-					response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+					response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
 				});
 			} else {
 				// Add user id to session
@@ -184,7 +198,7 @@ module.exports = {
 			}
 		}, function(error) {
 			console.log(error);
-			response.status(HttpStatus.INTERNAL_SERVER_ERROR).send();
+			response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
 		});
 	},
 

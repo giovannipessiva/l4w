@@ -34,22 +34,25 @@
 	};
 </script>
 
-<script src="lib/require.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js" async></script>
 <script type='text/javascript'>
-requirejs(["lib/jquery"],function($){
-    requirejs(["lib/jquery-ui","js/l4w.min"],function(l4w){
-        finishedLoading();
-    },function(err){
-        // If min version is unavailable, use the full version
-        requirejs(["js/l4w"],function(l4w){
-            finishedLoading();
-        });
-    });
-});
-
-function finishedLoading(){
-    Game.start(canvas);
-};
+window.onload = function(){
+	requirejs(["https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"],function($){
+	    requirejs(["https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js","js/l4w.min"],function(l4w){
+	        finishedLoading();
+	    },function(err){
+	        // If min version is unavailable, use the full version
+	        requirejs(["js/l4w"],function(l4w){
+	            finishedLoading();
+	        });
+	    });
+	});
+	
+	function finishedLoading(){
+		let canvas = document.getElementById("canvas1");
+	    Game.start(canvas);
+	};
+}
 </script>
 
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
@@ -64,8 +67,8 @@ function finishedLoading(){
 		<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
 		Your browser does not support HTML5 Canvas!</canvas>
 		<script type='text/javascript'>	
-			var canvas = document.getElementById("canvas1");
-			var ctx = canvas.getContext("2d");
+			let canvas = document.getElementById("canvas1");
+			let ctx = canvas.getContext("2d");
 			ctx.fillStyle='#000000';
 			ctx.font='38px Arial';
 		    ctx.fillText("loading scripts...",10,40);

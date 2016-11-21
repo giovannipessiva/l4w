@@ -17,8 +17,9 @@ class DynamicScene extends AbstractScene {
     hero: IEvent;
     events: IEvent[];
 
-    constructor(grid: DynamicGrid) {
+    constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
+        this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
     }
 
     protected mainGameLoop_pre() {
@@ -86,18 +87,51 @@ class DynamicScene extends AbstractScene {
         this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 
-    public loadSave(save: ISave, callback) {
+    public loadSave(save: ISave, callback: IBooleanCallback) {
+<<<<<<< HEAD
+        var scene = this;
+=======
+>>>>>>> branch 'master' of https://github.com/giovannipessiva/l4w.git
         if (Utils.isEmpty(save)) {
-            this.setMap(MapEngine.getNewMap("stub"), function() {
-                callback();
-            });
+            // No map to load
+            if (Utils.isEmpty(this.map)) {
+                // Load a stub map
+                this.setMap(MapEngine.getNewMap("stub"), function() {
+                    scene.resetTranslation();
+                    scene.focus.x = 0;
+                    scene.focus.y = 0;
+                    callback(false);
+                });
+            } else {
+                // Leave current map
+                callback(false);
+            }
         } else {
+<<<<<<< HEAD
+=======
             var scene = this;
-            MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {
+>>>>>>> branch 'master' of https://github.com/giovannipessiva/l4w.git
+            MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {  
                 scene.setMap(map, function() {
-                    callback();
+                    scene.resetTranslation();
+                    scene.focus.x = save.x;
+                    scene.focus.y = save.y;
+                    callback(true);
                 });
             });
+        }
+    }
+
+    public getSave(): ISave {
+        if (Utils.isEmpty(this.map) || Utils.isEmpty(this.focus)) {
+            return null;
+        } else {
+            return {
+                id: 0,
+                map: this.map.id,
+                x: this.focus.x,
+                y: this.focus.y
+            };
         }
     }
 }
