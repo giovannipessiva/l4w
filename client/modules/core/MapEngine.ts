@@ -16,8 +16,8 @@ class MapEngine {
         //TODO save the map, sending the updated JSON to server
     }
     
-    public static loadMap(mapId: string, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
-        Resource.load(mapId, Resource.TypeEnum.MAP, function(resourceText: string) {
+    public static loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
+        Resource.load(mapId+"", Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
                 callback(null);
@@ -195,6 +195,7 @@ class MapEngine {
 
     static getNewMap(name: string): IMap {
         var map: IMap = {
+            "id": null,
             "name": name,
             "height": 20,
             "width": 25,

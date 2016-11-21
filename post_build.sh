@@ -16,6 +16,7 @@ rm .project
 rm .travis.yml
 rm Gruntfile.js
 rm tslint.json
+rm yarn.lock
 rm *.md
 rm *.sh
 rm *.bat

@@ -29,7 +29,7 @@ module.exports = {
 	            if(queryData.length > 1e6) {
 	            	this.logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData);
 	                queryData = "";
-	                response.status(HttpStatus.REQUEST_TOO_LONG).end();
+	                response.status(HttpStatus.REQUEST_TOO_LONG).send("");
 	                request.connection.destroy();  
 	            }
 	        });

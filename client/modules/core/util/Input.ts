@@ -49,6 +49,7 @@ namespace Input {
         (e: KeyboardEvent): void;
     };
 
+    //TODO togli questa schifezza e metti tanti metodo "onQualcosa"
     export function init(
         canvas: HTMLCanvasElement,
         grid: AbstractGrid,

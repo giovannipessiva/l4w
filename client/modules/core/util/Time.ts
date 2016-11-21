@@ -2,6 +2,7 @@
  * Module for time utils
  */
 namespace Time {
+    
     export function getTime() {
         var d = new Date();
         return d.getTime();
@@ -11,12 +12,21 @@ namespace Time {
 
         private startTime: number = 0;
 
-        start() {
-            this.startTime = getTime();
+        /**
+         * Create a new timer, with an optional offset in the past
+         */
+        Timer(offset: number = 0) {
+            this.startTime = getTime() - offset;
         }
 
         getDiff(currentTime: number) {
             return currentTime - this.startTime;
+        }
+        
+        lapse() {
+            var t = getTime();
+            var diff = t - this.startTime;
+            return diff;
         }
 
         update() {
@@ -25,7 +35,7 @@ namespace Time {
             this.startTime = t;
             return diff;
         }
-
+        
         isActive() {
             return this.startTime !== 0;
         }

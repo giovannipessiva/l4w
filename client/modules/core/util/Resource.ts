@@ -71,6 +71,7 @@ namespace Resource {
         request.onload = callback;
         request.onerror = function(e: ErrorEvent) {
             console.error("Error while getting " + uri);
+            console.log(e);
             callback(null);
         };
         request.ontimeout = function() {
@@ -89,6 +90,7 @@ namespace Resource {
                 console.error("If you are working locally on Chrome, please launch it with option --allow-file-access-from-files");
             } else {
                 console.error(exception);
+                console.trace();
             }
             callback(null);
         }
@@ -194,18 +196,13 @@ namespace Resource {
     }
 
     function getEditPath(file: string, assetType: TypeEnum): string {
-        var path;
+        var path = EDIT_PATH;
         switch (assetType) {
             case TypeEnum.MAP:
-                path = EDIT_PATH;
-                switch (assetType) {
-                    case TypeEnum.MAP:
-                        path += "map/";
-                        break;
-                    default:
-                        console.error("Unexpected resource type");
-                        console.trace();
-                };
+                path += "map/";
+                break;
+            case TypeEnum.SAVE:
+                path += "save/";
                 break;
             default:
                 console.error("Unexpected resource type");

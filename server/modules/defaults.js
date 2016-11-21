@@ -2,6 +2,7 @@ module.exports = {
 
 	getDefaultMap: function(id) {
 		return {
+			"id": 3,
             "name": "Nuova mappa",
             "height": 20,
             "width": 25,

@@ -165,4 +165,13 @@ class AbstractGrid {
             max: max
         };
     }
+    
+    resetTranslation(context) {
+        var translationResetValue: IPoint = this.getTranslationResetValue();
+        context.translate(-translationResetValue.x, -translationResetValue.y);
+        this.currentTranslation = {
+            x: 0,
+            y: 0
+        };
+    }
 }
