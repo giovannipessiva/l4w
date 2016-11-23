@@ -3,45 +3,29 @@
  */
 namespace Time {
     
-    export function getTime() {
-        var d = new Date();
-        return d.getTime();
+    export function now() {
+        return (new Date()).getTime();
     };
 
     export class Timer {
 
-        private startTime: number = 0;
+        private savedTime: number = 0;
 
         /**
          * Create a new timer, with an optional offset in the past
          */
         Timer(offset: number = 0) {
-            this.startTime = getTime() - offset;
+            this.savedTime = now() - offset;
         }
 
-        getDiff(currentTime: number) {
-            return currentTime - this.startTime;
-        }
-        
+        /**
+         * Update the time and return the difference
+         */
         lapse() {
-            var t = getTime();
-            var diff = t - this.startTime;
+            var t = now();
+            var diff = t - this.savedTime;
+            this.savedTime = t;
             return diff;
-        }
-
-        update() {
-            var t = getTime();
-            var diff = t - this.startTime;
-            this.startTime = t;
-            return diff;
-        }
-        
-        isActive() {
-            return this.startTime !== 0;
-        }
-
-        stop() {
-            this.startTime = 0;
         }
     }
 }

@@ -22,7 +22,7 @@ abstract class AbstractScene {
     focus: IPoint;
     targetFocus: IPoint;
     speed: number;  // cell/sec
-    mSpeed: number; // cell/msec
+    mSpeed: number; // pixel/msec
     movementTimer: Time.Timer;
 
     flagRequestNewMovement;
@@ -41,22 +41,24 @@ abstract class AbstractScene {
 
     constructor(grid: AbstractGrid) {
         this.mapEngine = new MapEngine(grid);
-        this.focus = {
-            x: 0, y: 0
-        };
-        this.pointer = {
-            x: 0, y: 0
-        };
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
         this.flagRequestNewMovement = false;
-        this.setSpeed(1);
         this.paused = false;
+        
+        this.setSpeed(1);
+        this.focus = this.grid.mapCellToCanvas({
+            x:0, y: 0
+        });
+        this.pointer = {
+            x: 0, y: 0
+        };
     }
 
     setSpeed(speed: number) {
         this.speed = 1;  // cell/sec
-        this.mSpeed = this.speed / 1000; // cell/msec
+        //TODO usa due velocità diverse per le due direzioni
+        this.mSpeed = this.speed * this.grid.cellH / 1000; // cell/msec
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -132,8 +134,8 @@ abstract class AbstractScene {
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.BLACK;
             this.context.arc(
-                this.focus.x + Math.floor(this.grid.cellW / 2),
-                this.focus.y + Math.floor(this.grid.cellH / 2),
+                this.focus.x,
+                this.focus.y,
                 15,
                 0,
                 Constant.DOUBLE_PI);
@@ -270,13 +272,14 @@ abstract class AbstractScene {
     }
 
     startMovement(i: number, j: number) {
-        this.requestedFocus = {
+        this.requestedFocus = this.grid.mapCellToCanvas({
             x: i,
             y: j
-        };
+        });
         this.flagRequestNewMovement = true;
     }
 
+    //TODO gestice anche speed > 1?
     manageMovements(timeToMove: number = 0) {
         // If I am moving 
         if (!Utils.isEmpty(this.movementTimer)) {
@@ -292,28 +295,31 @@ abstract class AbstractScene {
                 // Stop movement
                 this.movementTimer = null;
                 this.targetFocus = null;
-
             } else {
-
                 //TODO pathfinding ftw
                 let movementX = 0;
                 let movementY = 0;
                 if (Math.abs(distX) > Math.abs(distY)) {
                     // Move horizontally
-                    movementX = Math.min(this.grid.cellW, this.mSpeed * timeToMove);
+                    movementX = Math.min(Math.abs(distX), this.mSpeed * timeToMove);
                     if(distX < 0) {
                         movementX *= -1;
                     }
-                    console.log("- " + movementX); //FIXME remove me //////////////////////////
                 } else {
                     // Move vertically
-                    movementY = Math.min(this.grid.cellH, this.mSpeed * timeToMove);
+                    movementY = Math.min(Math.abs(distY), this.mSpeed * timeToMove);
                     if(distY < 0) {
                         movementY *= -1;
                     }
-                    console.log("| " + movementY); //FIXME remove me //////////////////////////
                 }
+                
+                
+                //TODO fin qua, tutto bene
+                
                 let translationPoint: IPoint = this.grid.changeTranslation(this.focus.x + movementX, this.focus.y + movementY, this.map.width, this.map.height);
+                
+                //console.log(translationPoint.x + ","+ translationPoint.y); ////FIXME
+                
                 this.context.translate(translationPoint.x, translationPoint.y);
 
                 // Find out how much time is left after the movement
@@ -347,9 +353,6 @@ abstract class AbstractScene {
         
         // If I can start a new movement
         if (this.flagRequestNewMovement && Utils.isEmpty(this.movementTimer)) {
-
-            console.log("New movement"); //FIXME remove me //////////////////////////
-
             // Configure new movement
             this.flagRequestNewMovement = false;
             this.targetFocus = this.requestedFocus;

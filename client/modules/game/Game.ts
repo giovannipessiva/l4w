@@ -116,7 +116,6 @@ namespace Game {
         };
         var actionCallback = function(x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
-            console.log("action on:"+x+","+y);
             moveHero(x,y);
         };
 
@@ -155,8 +154,6 @@ namespace Game {
         );
         
         function moveHero(x: number, y: number) {
-            //TODO verifica, forse vanno convertiti x e y in i e j
-            console.log(x + "," + y);
             scene.startMovement(x, y);
         };
     };

@@ -27,7 +27,7 @@ class DynamicScene extends AbstractScene {
             return false;
         }
 
-        var time = Time.getTime();
+        var time = Time.now();
         EventManager.update(this.hero, time);
         if (!Utils.isEmpty(this.events)) {
             for (var event of this.events) {
@@ -58,7 +58,7 @@ class DynamicScene extends AbstractScene {
     }
 
     private renderFPS(boundariesX: IRange, boundariesY: IRange) {
-        var seconds = Math.floor(Time.getTime() / 1000);
+        var seconds = Math.floor(Time.now() / 1000);
         if (seconds === this.secondFPS) {
             this.countFPS++;
         } else {
