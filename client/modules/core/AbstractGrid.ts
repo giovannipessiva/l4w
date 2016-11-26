@@ -120,6 +120,10 @@ class AbstractGrid {
         this.currentTranslation = { x: leftTopX, y: leftTopY };
         return this.currentTranslation;
     }
+    
+    getCurrentTranslation() {
+        return this.currentTranslation;
+    }
 
     resetTranslation() {
         let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");

@@ -44,9 +44,9 @@ class DynamicScene extends AbstractScene {
         //TODO rimuovere a regime
         this.context.fillStyle = "#000000";
         this.context.font = "bold 40px Arial";
-        this.context.fillText("(it's not ready yet)", 160, 260);
+        this.context.fillText("(it's not ready yet)", this.grid.getCurrentTranslation().x + 160, this.grid.getCurrentTranslation().y + 260);
 
-        this.renderFPS(boundariesX, boundariesY);
+        this.renderFPS();
     }
 
     toggleFPS(enable?: boolean) {
@@ -57,7 +57,7 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    private renderFPS(boundariesX: IRange, boundariesY: IRange) {
+    private renderFPS() {
         var seconds = Math.floor(Time.now() / 1000);
         if (seconds === this.secondFPS) {
             this.countFPS++;
@@ -76,7 +76,7 @@ class DynamicScene extends AbstractScene {
         if (this.renderingConfiguration.showFPS) {
             this.context.fillStyle = Constant.Color.RED;
             this.context.font = "bold 18px Arial";
-            this.context.fillText("" + this.lastFPS, boundariesX.min + 10, boundariesY.min + 20);
+            this.context.fillText("" + this.lastFPS, this.grid.getCurrentTranslation().x + 10, this.grid.getCurrentTranslation().y + 20);
         }
     }
 
