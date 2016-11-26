@@ -80,51 +80,51 @@ class AbstractGrid {
         var j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
         return { x: i, y: j };
     }
-    
+
     /**
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
      * @param position : position in cell coordinates
      */
     mapCellToCanvas(position: IPoint): IPoint {
-        var x = (position.x + 0.5) * this.cellW;
-        var y = (position.y + 0.5) * this.cellH;
+        var x = position.x * this.cellW;
+        var y = position.y * this.cellH;
         return { x: x, y: y };
     }
 
     /**
-     * Returns the translation (as cell numbers) applied to the canvas
+     * Translate the context, using the new focus coordinates (as pixels)
      */
     changeTranslation(focusX: number, focusY: number, maxColumns: number, maxRows: number): IPoint {
-        var leftTopX = focusX - (this.halfColumns * this.cellW);
+        // Compute new left-top point
+        let leftTopX = focusX - (this.halfColumns * this.cellW);
         if (leftTopX < 0) {
             leftTopX = 0;
         } else {
-            var maxTranslationX = (maxColumns - this.columns) * this.cellW;
+            let maxTranslationX = (maxColumns - this.columns) * this.cellW;
             if (leftTopX > maxTranslationX) {
                 leftTopX = maxTranslationX;
             }
         }
-        var leftTopY = focusY - (this.halfRows * this.cellH);
+        let leftTopY = focusY - (this.halfRows * this.cellH);
         if (leftTopY < 0) {
             leftTopY = 0;
         } else {
-            var maxTranslationY = (maxRows - this.rows) * this.cellH;
+            let maxTranslationY = (maxRows - this.rows) * this.cellH;
             if (leftTopY > maxTranslationY) {
                 leftTopY = maxTranslationY;
             }
         }
-        var newTranslation = { x: leftTopX, y: leftTopY };
-        leftTopX = this.currentTranslation.x - leftTopX;
-        leftTopY = this.currentTranslation.y - leftTopY;
-        this.currentTranslation = newTranslation;
-        return { x: leftTopX, y: leftTopY };
+        // Translate the context, considering the currently applied translation
+        let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
+        context.translate(this.currentTranslation.x - leftTopX, this.currentTranslation.y - leftTopY);
+        this.currentTranslation = { x: leftTopX, y: leftTopY };
+        return this.currentTranslation;
     }
-    
-    getTranslationResetValue(): IPoint {
-        return {
-            x: -this.currentTranslation.x,
-            y: -this.currentTranslation.y
-        };    
+
+    resetTranslation() {
+        let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
+        context.translate(this.currentTranslation.x, this.currentTranslation.y);
+        this.currentTranslation = { x: 0, y: 0 };
     }
 
     /**
@@ -163,15 +163,6 @@ class AbstractGrid {
         return {
             min: min,
             max: max
-        };
-    }
-    
-    resetTranslation(context) {
-        var translationResetValue: IPoint = this.getTranslationResetValue();
-        context.translate(-translationResetValue.x, -translationResetValue.y);
-        this.currentTranslation = {
-            x: 0,
-            y: 0
         };
     }
 }

@@ -45,10 +45,10 @@ abstract class AbstractScene {
         this.grid = grid;
         this.flagRequestNewMovement = false;
         this.paused = false;
-        
+
         this.setSpeed(1);
         this.focus = this.grid.mapCellToCanvas({
-            x:0, y: 0
+            x: 0, y: 0
         });
         this.pointer = {
             x: 0, y: 0
@@ -116,8 +116,8 @@ abstract class AbstractScene {
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.arc(
-                mappedPointer.x,
-                mappedPointer.y,
+                mappedPointer.x + Math.floor(this.grid.cellW / 2),
+                mappedPointer.y + Math.floor(this.grid.cellW / 2),
                 18,
                 0,
                 Constant.DOUBLE_PI);
@@ -186,15 +186,15 @@ abstract class AbstractScene {
             case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
             case Constant.Direction.NONE: break;
         }
-        let translationPoint: IPoint = this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
-        this.context.translate(translationPoint.x, translationPoint.y);
+        this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
     }
 
     resetTranslation() {
-        this.grid.resetTranslation(this.context);
+        this.grid.resetTranslation();
     }
 
     changeScale(canvas: HTMLCanvasElement) {
+        //TODO sposta l'inizializzazione del context
         this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }
@@ -279,7 +279,10 @@ abstract class AbstractScene {
         this.flagRequestNewMovement = true;
     }
 
-    //TODO gestice anche speed > 1?
+    /**
+     * Move max 1 step at a time, and use the time left for a recursive call
+     * TODO manage speed > 1?
+     */
     manageMovements(timeToMove: number = 0) {
         // If I am moving 
         if (!Utils.isEmpty(this.movementTimer)) {
@@ -300,35 +303,33 @@ abstract class AbstractScene {
                 let movementX = 0;
                 let movementY = 0;
                 if (Math.abs(distX) > Math.abs(distY)) {
-                    // Move horizontally
-                    movementX = Math.min(Math.abs(distX), this.mSpeed * timeToMove);
-                    if(distX < 0) {
+                    // Move horizontally (max 1 cell)
+                    movementX = Math.min(this.grid.cellW, this.mSpeed * timeToMove);
+                    if (distX < 0) {
                         movementX *= -1;
                     }
                 } else {
-                    // Move vertically
-                    movementY = Math.min(Math.abs(distY), this.mSpeed * timeToMove);
-                    if(distY < 0) {
+                    // Move vertically (max 1 cell)
+                    movementY = Math.min(this.grid.cellH, this.mSpeed * timeToMove);
+                    if (distY < 0) {
                         movementY *= -1;
                     }
                 }
-                
-                
-                //TODO fin qua, tutto bene
-                
-                let translationPoint: IPoint = this.grid.changeTranslation(this.focus.x + movementX, this.focus.y + movementY, this.map.width, this.map.height);
-                
-                //console.log(translationPoint.x + ","+ translationPoint.y); ////FIXME
-                
-                this.context.translate(translationPoint.x, translationPoint.y);
 
-                // Find out how much time is left after the movement
-                timeToMove -= Math.max(timeToMove, Math.max(movementX, movementY) / this.mSpeed)
+                // Move the focus
+                this.grid.changeTranslation(this.focus.x + movementX, this.focus.y + movementY, this.map.width, this.map.height);
+
+                // Move the hero
+                //TODO
+
+                console.log(movementX + "," + movementY);
 
                 // If I have finished one step
                 if (movementX == this.grid.cellW || movementY == this.grid.cellH) {
-
                     console.log("step done."); //FIXME remove me //////////////////////////
+
+                    // Find out how much time is left after the movement
+                    timeToMove -= Math.max(movementX, movementY) / this.mSpeed;
 
                     // Update focus
                     this.focus.x += movementX;
@@ -350,7 +351,7 @@ abstract class AbstractScene {
                 }
             }
         }
-        
+
         // If I can start a new movement
         if (this.flagRequestNewMovement && Utils.isEmpty(this.movementTimer)) {
             // Configure new movement
