@@ -46,7 +46,7 @@ abstract class AbstractScene {
         this.flagRequestNewMovement = false;
         this.paused = false;
 
-        this.setSpeed(1);
+        this.setSpeed(6);
         this.focus = this.grid.mapCellToCanvas({
             x: 0, y: 0
         });
@@ -56,8 +56,8 @@ abstract class AbstractScene {
     }
 
     setSpeed(speed: number) {
-        this.speed = 1;  // cell/sec
-        //TODO usa due velocità diverse per le due direzioni
+        //TODO usa due velocita' diverse per le due direzioni
+        this.speed = speed;  // cell/sec
         this.mSpeed = this.speed * this.grid.cellH / 1000; // cell/msec
     }
 
@@ -327,6 +327,7 @@ abstract class AbstractScene {
 
                 // If I have finished one step
                 if (absMovement == this.grid.cellW) {
+                    this.movementTimer = new Time.Timer();
                     // Find out how much time is left after the movement
                     timeToMove -= absMovement / this.mSpeed;
 
