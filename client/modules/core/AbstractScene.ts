@@ -117,7 +117,7 @@ abstract class AbstractScene {
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.arc(
                 mappedPointer.x + Math.floor(this.grid.cellW / 2),
-                mappedPointer.y + Math.floor(this.grid.cellW / 2),
+                mappedPointer.y + Math.floor(this.grid.cellH / 2),
                 18,
                 0,
                 Constant.DOUBLE_PI);
@@ -134,8 +134,8 @@ abstract class AbstractScene {
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.BLACK;
             this.context.arc(
-                this.focus.x,
-                this.focus.y,
+                this.focus.x + Math.floor(this.grid.cellW / 2),
+                this.focus.y + Math.floor(this.grid.cellH / 2),
                 15,
                 0,
                 Constant.DOUBLE_PI);
@@ -302,15 +302,18 @@ abstract class AbstractScene {
                 //TODO pathfinding ftw
                 let movementX = 0;
                 let movementY = 0;
+                let absMovement;
                 if (Math.abs(distX) > Math.abs(distY)) {
                     // Move horizontally (max 1 cell)
                     movementX = Math.min(this.grid.cellW, this.mSpeed * timeToMove);
+                    absMovement = movementX;
                     if (distX < 0) {
                         movementX *= -1;
                     }
                 } else {
                     // Move vertically (max 1 cell)
                     movementY = Math.min(this.grid.cellH, this.mSpeed * timeToMove);
+                    absMovement = movementY;
                     if (distY < 0) {
                         movementY *= -1;
                     }
@@ -322,28 +325,17 @@ abstract class AbstractScene {
                 // Move the hero
                 //TODO
 
-                console.log(movementX + "," + movementY);
-
                 // If I have finished one step
-                if (movementX == this.grid.cellW || movementY == this.grid.cellH) {
-                    console.log("step done."); //FIXME remove me //////////////////////////
-
+                if (absMovement == this.grid.cellW) {
                     // Find out how much time is left after the movement
-                    timeToMove -= Math.max(movementX, movementY) / this.mSpeed;
+                    timeToMove -= absMovement / this.mSpeed;
 
                     // Update focus
                     this.focus.x += movementX;
                     this.focus.y += movementY;
 
-                    // Update target
-                    this.targetFocus.x -= movementX;
-                    this.targetFocus.y -= movementY;
-
                     // Check If I am arrived, or a new target has been requested
                     if (this.flagRequestNewMovement || this.focus.x == this.targetFocus.x && this.focus.y == this.targetFocus.y) {
-
-                        console.log("movement finished."); //FIXME remove me //////////////////////////
-
                         // Reset current movement
                         this.movementTimer = null;
                         this.targetFocus = null;
