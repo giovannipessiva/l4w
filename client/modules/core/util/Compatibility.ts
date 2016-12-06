@@ -3,7 +3,7 @@
  */
 namespace Compatibility {
 
-    //TODO usa su https, per evidare errore "Bloccato il caricamento di contenuto misto attivo (mixed active content)"
+    //TODO usa su https, per evitare errore "Bloccato il caricamento di contenuto misto attivo (mixed active content)"
 //    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";
 
     export function check() {

@@ -1,5 +1,5 @@
 /// <reference path="../core/AbstractScene.ts" />
-/// <reference path="../core/manager/EventManager.ts" />
+/// <reference path="../core/manager/ActorManager.ts" />
 /*
  * Scene implementation for managing dynamic rendering
  */
@@ -14,8 +14,8 @@ class DynamicScene extends AbstractScene {
     lastFPS = 0;
     fpsPerformance = [22, 21, 20];
 
-    hero: IEvent;
-    events: IEvent[];
+    hero: IActor;
+    events: IActor[];
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
@@ -28,10 +28,10 @@ class DynamicScene extends AbstractScene {
         }
 
         var time = Time.now();
-        EventManager.update(this.hero, time);
+        ActorManager.update(this.hero, time);
         if (!Utils.isEmpty(this.events)) {
             for (var event of this.events) {
-                EventManager.update(event, time);
+                ActorManager.update(event, time);
             }
         }
 
@@ -84,16 +84,16 @@ class DynamicScene extends AbstractScene {
     }
 
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderUI(this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 
     public loadSave(save: ISave, callback: IBooleanCallback) {
         var scene = this;
         if (Utils.isEmpty(save)) {
-            // No map to load
+            // Nothing to load
             if (Utils.isEmpty(this.map)) {
                 // Load a stub map
-                this.setMap(MapEngine.getNewMap("stub"), function() {
+                this.setMap(MapManager.getNewMap("stub"), function() {
                     scene.resetTranslation();
                     scene.focus.x = 0;
                     scene.focus.y = 0;
@@ -105,11 +105,12 @@ class DynamicScene extends AbstractScene {
             }
         } else {
             var scene = this;
-			MapEngine.loadMap(save.map, this.context.canvas, function(map: IMap) {  
+            this.hero = save.hero;
+			MapManager.loadMap(save.map, this.context.canvas, function(map: IMap) {  
                 scene.setMap(map, function() {
                     scene.resetTranslation();
-                    scene.focus.x = save.x;
-                    scene.focus.y = save.y;
+                    scene.focus.x = save.hero.x;
+                    scene.focus.y = save.hero.y;
                     callback(true);
                 });
             });
@@ -123,8 +124,7 @@ class DynamicScene extends AbstractScene {
             return {
                 id: 0,
                 map: this.map.id,
-                x: this.focus.x,
-                y: this.focus.y
+                hero: this.hero
             };
         }
     }

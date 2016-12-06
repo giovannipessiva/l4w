@@ -1,5 +1,5 @@
 /// <reference path="Tileset.ts" />
-/// <reference path="Event.ts" />
+/// <reference path="Actor.ts" />
 
 interface IMap {
     id: number; //Id of the map
@@ -16,7 +16,7 @@ interface IMapLayer {
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
-    objects?: IEvent[]; //Array of Objects. objectgroup only.
+    objects?: IActor[]; //Array of Objects. objectgroup only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
     speedX?: number;

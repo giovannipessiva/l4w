@@ -1,22 +1,16 @@
-/// <reference path="model/Map.ts" />
-/// <reference path="AbstractGrid.ts" />
+/// <reference path="../model/Map.ts" />
+/// <reference path="../AbstractGrid.ts" />
 
 /**
  * Helper class for handling game maps
  */
-class MapEngine {
+namespace MapManager {
 
-    private grid: AbstractGrid;
-
-    constructor(grid: AbstractGrid) {
-        this.grid = grid;
-    }
-
-    save() {
+    export function save() {
         //TODO save the map, sending the updated JSON to server
     }
     
-    public static loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
+    export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
         Resource.load(mapId+"", Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
@@ -40,7 +34,7 @@ class MapEngine {
         });
     }
 
-    renderLayer(map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
             for (var x = minColumn; x <= maxColumn; x++) {
                 var cellIndex = x + y * map.width;
@@ -51,20 +45,20 @@ class MapEngine {
                 if (tileGID === null) {
                     continue;
                 }
-                var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / this.grid.cellW)); //TODO ottimizzabile, precalcola
+                var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
                 context.drawImage(
                     tileImage,
-                    Math.floor(tilePoint.x * this.grid.cellW), Math.floor(tilePoint.y * this.grid.cellH), this.grid.cellW, this.grid.cellH,
-                    Math.floor(x * this.grid.cellW), Math.floor(y * this.grid.cellH), this.grid.cellW, this.grid.cellH);
+                    Math.floor(tilePoint.x * grid.cellW), Math.floor(tilePoint.y * grid.cellH), grid.cellW, grid.cellH,
+                    Math.floor(x * grid.cellW), Math.floor(y * grid.cellH), grid.cellW, grid.cellH);
             }
         }
     }
 
-    renderGlobalEffects(context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    export function renderGlobalEffects(grid: AbstractGrid, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
 
     }
 
-    renderUI(context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    export function renderUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         for (var y = minRow; y <= maxRow; y++) {
             for (var x = minColumn; x <= maxColumn; x++) {
 
@@ -72,20 +66,20 @@ class MapEngine {
                     if (renderingConfiguration.showGrid) {
                         context.strokeStyle = Constant.Color.RED;
                         context.strokeRect(
-                            x * this.grid.cellW,
-                            y * this.grid.cellH,
-                            this.grid.cellW,
-                            this.grid.cellH);
+                            x * grid.cellW,
+                            y * grid.cellH,
+                            grid.cellW,
+                            grid.cellH);
                     }
                     if (renderingConfiguration.showEditorGrid) {
                         context.save();
                         context.globalAlpha = 0.4;
                         context.strokeStyle = Constant.Color.GREY;
                         context.strokeRect(
-                            x * this.grid.cellW,
-                            y * this.grid.cellH,
-                            this.grid.cellW,
-                            this.grid.cellH);
+                            x * grid.cellW,
+                            y * grid.cellH,
+                            grid.cellW,
+                            grid.cellH);
                         context.restore();
                     }
                     if (renderingConfiguration.showCellNumbers) {
@@ -93,28 +87,28 @@ class MapEngine {
                         context.font = "bold 10px Arial";
                         context.fillText(
                             x + "," + y,
-                            x * this.grid.cellW + 1,
-                            y * this.grid.cellH + 10);
+                            x * grid.cellW + 1,
+                            y * grid.cellH + 10);
                     }
                 }
             }
         }
     }
 
-    renderGlobalUI(context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
+    export function renderGlobalUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
         if (!Utils.isEmpty(renderingConfiguration)) {
             if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectPointStart)) {
-                var x = renderingConfiguration.selectPointStart.x * this.grid.cellW;
-                var y = renderingConfiguration.selectPointStart.y * this.grid.cellH;
+                var x = renderingConfiguration.selectPointStart.x * grid.cellW;
+                var y = renderingConfiguration.selectPointStart.y * grid.cellH;
 
                 var w;
                 var h;
                 if (Utils.isEmpty(renderingConfiguration.selectPointEnd)) {
-                    h = this.grid.cellH;
-                    w = this.grid.cellW;
+                    h = grid.cellH;
+                    w = grid.cellW;
                 } else {
-                    var x2 = renderingConfiguration.selectPointEnd.x * this.grid.cellW;
-                    var y2 = renderingConfiguration.selectPointEnd.y * this.grid.cellH;
+                    var x2 = renderingConfiguration.selectPointEnd.x * grid.cellW;
+                    var y2 = renderingConfiguration.selectPointEnd.y * grid.cellH;
                     if (x > x2) {
                         w = x - x2;
                         x = x2;
@@ -127,8 +121,8 @@ class MapEngine {
                     } else {
                         h = y2 - y;
                     }
-                    w += this.grid.cellW;
-                    h += this.grid.cellH;
+                    w += grid.cellW;
+                    h += grid.cellH;
                 }
                 context.save();
                 context.strokeStyle = Constant.Color.RED;
@@ -140,7 +134,7 @@ class MapEngine {
         }
     }
 
-    resizeMap(map: IMap, rows: number, columns: number) {
+    export function resizeMap(map: IMap, rows: number, columns: number) {
         let oldWidth: number = map.width;
         let newWidth: number = columns;
         let oldHeight: number = map.height;
@@ -193,7 +187,7 @@ class MapEngine {
         map.width = columns;
     }
 
-    static getNewMap(name: string): IMap {
+    export function getNewMap(name: string): IMap {
         var map: IMap = {
             "id": null,
             "name": name,
@@ -229,7 +223,6 @@ class MapEngine {
                             "id": 1,
                             "name": "signor evento",
                             "rotation": 0,
-                            "type": "evento di tipo A",
                             "visible": true,
                             "width": 32,
                             "x": 128,

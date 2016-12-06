@@ -1,5 +1,5 @@
-/// <reference path="manager/EventManager.ts" />
-/// <reference path="MapEngine.ts" />
+/// <reference path="manager/ActorManager.ts" />
+/// <reference path="manager/MapManager.ts" />
 /// <reference path="AbstractGrid.ts" />
 /// <reference path="util/Constant.ts" />
 /// <reference path="util/Commons.ts" />
@@ -35,12 +35,10 @@ abstract class AbstractScene {
 
     context: CanvasRenderingContext2D;
     grid: AbstractGrid;
-    mapEngine: MapEngine;
 
     paused: boolean;
 
     constructor(grid: AbstractGrid) {
-        this.mapEngine = new MapEngine(grid);
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
         this.flagRequestNewMovement = false;
@@ -92,9 +90,9 @@ abstract class AbstractScene {
 
         // Rendering
         this.renderLayers(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
-        this.mapEngine.renderGlobalEffects(this.context, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
         this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
-        this.mapEngine.renderGlobalUI(this.context, this.renderingConfiguration);
+        MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
         this.renderFocus();
         this.renderPointer();
 
@@ -256,7 +254,7 @@ abstract class AbstractScene {
     protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         this.renderInterLayerElements(layerIndex, minRow, maxRow, minColumn, maxColumn);
         var layer = map.layers[layerIndex];
-        this.mapEngine.renderLayer(map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderLayer(this.grid, map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
 
     protected abstract renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number);

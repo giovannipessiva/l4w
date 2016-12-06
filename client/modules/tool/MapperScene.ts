@@ -115,7 +115,7 @@ class MapperScene extends AbstractStaticScene {
         //TODO disegna la grid dopo il primo livello
         if(layerIndex === Constant.MapLayer.MID) {
             // UI rendering
-            this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+            MapManager.renderUI(this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
         }
     }
     
@@ -123,7 +123,7 @@ class MapperScene extends AbstractStaticScene {
     }
     
     resizeMap(rows: number, columns: number) {
-        this.mapEngine.resizeMap(this.map, rows, columns);
+        MapManager.resizeMap(this.map, rows, columns);
     }
 
     setTilePicker(tilePicker: TilePickerScene) {

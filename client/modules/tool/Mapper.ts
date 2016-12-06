@@ -18,7 +18,7 @@ namespace Mapper {
                 TilePicker.setMapper(scene);
                 scene.setTilePicker(tilePicker);
                 mapper = scene;
-                MapEngine.loadMap(mapId, canvas, function(map: IMap) {
+                MapManager.loadMap(mapId, canvas, function(map: IMap) {
                     mapper.setMap(map, function() {
                         mapper.start(canvas);
                     });
@@ -39,7 +39,7 @@ namespace Mapper {
     export function reloadMap() {
         let mapId = EditPage.getActiveMap();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        MapEngine.loadMap(mapId, canvas, function(map: IMap) {
+        MapManager.loadMap(mapId, canvas, function(map: IMap) {
             mapper.setMap(map, function() {
                 EditPage.changeEditState(false);
             });

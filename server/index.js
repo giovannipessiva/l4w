@@ -153,10 +153,17 @@ app.get('/news', function(request, response) {
 database.init().then(
 	function() {
 		app.listen(app.get("port"), function() {
-			console.log('L4W is running on port', app.get('port'));
+			console.log("L4W is running on port", app.get("port"));
+		}).on("error", function(err) {
+			if(err.code === "EADDRINUSE") {
+				console.error("Another instance is already running on port " + err.port);
+			} else {
+				console.error(err);
+			}
+			process.exit();
 		});
 	},
 	function() {
-		exit();
+		process.exit();
 	}
 );

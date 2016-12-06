@@ -44,6 +44,6 @@ class TilePickerScene extends AbstractStaticScene {
     }
     
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        this.mapEngine.renderUI(this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderUI(this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 }
