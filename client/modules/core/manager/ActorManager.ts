@@ -1,3 +1,4 @@
+/// <reference path="../util/Commons.ts" />
 /// <reference path="../model/Actor.ts" />
 
 /**
@@ -9,8 +10,46 @@ namespace ActorManager {
         //TODO
     }
 
-    export function render(x: number, y: number) {
-        //TODO
+    export function render(a: IActor, x: number, y: number, context: CanvasRenderingContext2D) {
+        let image: HTMLImageElement;
+        if(!Utils.isEmpty(a.charaset)) {
+            image = Resource.loadImageFromCache(a.charaset, Resource.TypeEnum.CHAR); 
+        } else if (!Utils.isEmpty(a.gid)) {
+            //TODO gestisci actor con grafica da tile
+        }
+    
+        if(Utils.isEmpty(image)){
+            image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);     
+        }
+
+        if(!Utils.isEmpty(image)){
+            
+            //TODO calcola l'animazione
+            let charaWidth: number = Math.floor(image.width / 4);
+            let charaHeight: number = Math.floor(image.height / 4);
+            let charaX: number = 0; //TODO centra rispetto alla cell (+ cell/2, - chara/2)
+            let charaY: number = 0; //TODO metti coi piedi per terra (+ cell 3/2 - chara)
+            
+            
+            let globalAlpha = context.globalAlpha;
+            if (!Utils.isEmpty(a.opacity)) {
+                context.globalAlpha = a.opacity;
+            }
+ 
+            context.drawImage(
+                image, //     Specifies the image, canvas, or video element to use     
+                charaX, //  Optional. The x coordinate where to start clipping  
+                charaY, //  Optional. The y coordinate where to start clipping  
+                charaWidth, //  Optional. The width of the clipped image    
+                charaHeight, //     Optional. The height of the clipped image   
+                x, //   The x coordinate where to place the image on the canvas     
+                y, //   The y coordinate where to place the image on the canvas
+                charaWidth,
+                charaHeight
+            );
+            
+            context.globalAlpha = globalAlpha;
+        }
     }
 
     export function getNewActor(): IActor {

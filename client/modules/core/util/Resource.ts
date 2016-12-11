@@ -7,9 +7,14 @@
  */
 namespace Resource {
 
-    var DATA_PATH = "data/";
-    var ASSET_PATH = "assets/";
-    var EDIT_PATH = "edit/";
+    const DATA_PATH = "data/";
+    const ASSET_PATH = "assets/";
+    const EDIT_PATH = "edit/";
+    
+    const CACHE_SEPARATOR = "@";
+    const DEFAULT_NAME = "404.png";
+    
+    var resourceCache: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
 
     export const enum TypeEnum {
         CHAR,
@@ -112,10 +117,11 @@ namespace Resource {
             case TypeEnum.SKIN:
             case TypeEnum.TILE:
                 // Load image file
-                var $loader = $(document.createElement("img"));
-                $loader.attr("src", path);
-                $loader.load(function() {
-                    callback($loader);
+                var loader = $(document.createElement("img"));
+                loader.attr("src", path);
+                loader.load(function() {
+                    resourceCache.set(assetType + CACHE_SEPARATOR + file, <HTMLImageElement> loader[0]);
+                    callback(loader);
                 });
                 //TODO manage errors
                 break;
@@ -131,6 +137,23 @@ namespace Resource {
                 console.trace();
                 callback(null);
         }
+    }
+    
+    /**
+     * Return an already loaded asset
+     */
+    export function loadImageFromCache(file: string, assetType: TypeEnum) {
+        let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
+        if(Utils.isEmpty(image)) {
+            load(file, assetType, function(loader){
+                resourceCache.set(assetType + CACHE_SEPARATOR + file, <HTMLImageElement> loader[0]);
+            });
+        }
+        return image;
+    }
+    
+    export function loadDefaultImage(assetType: TypeEnum) {
+        return loadImageFromCache(DEFAULT_NAME, assetType);
     }
 
     /**

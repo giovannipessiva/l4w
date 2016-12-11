@@ -3,6 +3,8 @@ interface IActor {
     name: string; //String assigned to name field in editor
     i: number; //x coordinate in cells
     j: number; //y coordinate in cells
+    x?: number; //exact x coordinate in pixels
+    y?: number; //exact y coordinate in pixels
     visible?: boolean; //Whether Actor should be rendered
     opacity?: number; //Actor rendering opacity
     rotation?: number; //Angle in degrees clockwise

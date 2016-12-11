@@ -35,21 +35,23 @@ namespace MapManager {
     }
 
     export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
-            for (var x = minColumn; x <= maxColumn; x++) {
-                var cellIndex = x + y * map.width;
-                if (layer.data.length < cellIndex) {
-                    return;
+        if(!Utils.isEmpty(layer.data)) {
+            for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
+                for (var x = minColumn; x <= maxColumn; x++) {
+                    var cellIndex = x + y * map.width;
+                    if (layer.data.length < cellIndex) {
+                        return;
+                    }
+                    var tileGID = layer.data[cellIndex];
+                    if (tileGID === null) {
+                        continue;
+                    }
+                    var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
+                    context.drawImage(
+                        tileImage,
+                        Math.floor(tilePoint.x * grid.cellW), Math.floor(tilePoint.y * grid.cellH), grid.cellW, grid.cellH,
+                        Math.floor(x * grid.cellW), Math.floor(y * grid.cellH), grid.cellW, grid.cellH);
                 }
-                var tileGID = layer.data[cellIndex];
-                if (tileGID === null) {
-                    continue;
-                }
-                var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
-                context.drawImage(
-                    tileImage,
-                    Math.floor(tilePoint.x * grid.cellW), Math.floor(tilePoint.y * grid.cellH), grid.cellW, grid.cellH,
-                    Math.floor(x * grid.cellW), Math.floor(y * grid.cellH), grid.cellW, grid.cellH);
             }
         }
     }

@@ -84,13 +84,17 @@ class DynamicScene extends AbstractScene {
         if(layerIndex === Constant.MapLayer.EVENTS) {
             
             if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
-                //TODO render hero
+                ActorManager.render(this.hero, this.hero.x, this.hero.y, this.context);
             }
             
             if (!Utils.isEmpty(this.events)) {
-                for (var event of this.events) {
-                    if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
-                        //TODO render events
+                for (let actor of this.events) {
+                    if(ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {
+                        let position = this.grid.mapCellToCanvas({
+                            x: actor.i,
+                            y: actor.j
+                        });     
+                        ActorManager.render(actor, position.x, position.y, this.context);
                     }
                 }
             }  
@@ -145,9 +149,14 @@ class DynamicScene extends AbstractScene {
         }
     }
     
-    protected onFocusChange() {
+    protected onFocusCellChange() {
         let cellPosition = this.grid.mapCanvasToCell(this.focus);
         this.hero.i = cellPosition.x;
         this.hero.j = cellPosition.y;
+    }
+    
+    protected onFocusPixelChange(x: number, y: number) {
+        this.hero.x = x;
+        this.hero.y = y;
     }
 }

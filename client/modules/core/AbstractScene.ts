@@ -236,16 +236,13 @@ abstract class AbstractScene {
             for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.EVENTS; i++) {
                                 
                 var layer = map.layers[i];
-                if (!Utils.isEmpty(layer.data)) {
-
-                    if (!Utils.isEmpty(layer.opacity)) {
-                        context.globalAlpha = layer.opacity;
-                    }
-
-                    this.renderLayer(map, i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
-
-                    context.globalAlpha = 1;
+                if (!Utils.isEmpty(layer.opacity)) {
+                    context.globalAlpha = layer.opacity;
                 }
+
+                this.renderLayer(map, i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+
+                context.globalAlpha = 1;
             }
         }
     }
@@ -320,7 +317,7 @@ abstract class AbstractScene {
                 this.grid.changeTranslation(this.focus.x + movementX, this.focus.y + movementY, this.map.width, this.map.height);
 
                 // Move the hero
-                //TODO
+                this.onFocusPixelChange(this.focus.x + movementX, this.focus.y + movementY);
 
                 // If I have finished one step
                 if (absMovement == this.grid.cellW) {
@@ -333,7 +330,7 @@ abstract class AbstractScene {
                     this.focus.y += movementY;
                     
                     // Update hero position
-                    this.onFocusChange();
+                    this.onFocusCellChange();
 
                     // Check If I am arrived, or a new target has been requested
                     if (this.flagRequestNewMovement || this.focus.x == this.targetFocus.x && this.focus.y == this.targetFocus.y) {
@@ -357,6 +354,9 @@ abstract class AbstractScene {
         }
     }
     
-    protected onFocusChange() {
+    protected onFocusCellChange() {
+    }
+    
+    protected onFocusPixelChange(x: number, y: number) {
     }
 }
