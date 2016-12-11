@@ -90,6 +90,16 @@ class AbstractGrid {
         var y = position.y * this.cellH;
         return { x: x, y: y };
     }
+    
+    /**
+     * Convert a position on the map to a mal cell
+     * @param position : position in pixels
+     */
+    mapCanvasToCell(position: IPoint): IPoint {
+        var i = Math.floor(position.x / this.cellW);
+        var j = Math.floor(position.y / this.cellH);
+        return { x: i, y: j };
+    }
 
     /**
      * Translate the context, using the new focus coordinates (as pixels)

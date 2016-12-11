@@ -17,8 +17,8 @@ namespace ActorManager {
         let actor: IActor = {
             id: 0,
             name: "",
-            x: 0,
-            y: 0
+            i: 0,
+            j: 0
         };
         return actor;
     }
@@ -27,6 +27,16 @@ namespace ActorManager {
         let actor: IActor = getNewActor();
         actor.name = "Hero";
         return actor;
+    }
+    
+    export function isVisible(e: IActor, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        if(!Utils.isEmpty(e.visible) && !e.visible) {
+            return false;    
+        }
+        if(!Utils.isEmpty(e.opacity) && e.opacity === 0) {
+            return false;    
+        }
+        return e.i >= minColumn && e.i <= maxColumn && e.j >= minRow && e.i <=maxRow;
     }
 
 };

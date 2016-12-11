@@ -34,7 +34,7 @@ abstract class AbstractScene {
     layers: number;
 
     context: CanvasRenderingContext2D;
-    grid: AbstractGrid;
+    protected grid: AbstractGrid;
 
     paused: boolean;
 
@@ -230,10 +230,11 @@ abstract class AbstractScene {
     getSceneWidth() {
         return this.map.width;
     }
-
+    
     protected renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
-            for (var i = 0; i < map.layers.length; i++) {
+            for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.EVENTS; i++) {
+                                
                 var layer = map.layers[i];
                 if (!Utils.isEmpty(layer.data)) {
 
@@ -245,8 +246,6 @@ abstract class AbstractScene {
 
                     context.globalAlpha = 1;
                 }
-
-                //TODO manage events (layer.object array)
             }
         }
     }
@@ -332,6 +331,9 @@ abstract class AbstractScene {
                     // Update focus
                     this.focus.x += movementX;
                     this.focus.y += movementY;
+                    
+                    // Update hero position
+                    this.onFocusChange();
 
                     // Check If I am arrived, or a new target has been requested
                     if (this.flagRequestNewMovement || this.focus.x == this.targetFocus.x && this.focus.y == this.targetFocus.y) {
@@ -353,5 +355,8 @@ abstract class AbstractScene {
             // If I have some time left, use it to move
             this.manageMovements(timeToMove);
         }
+    }
+    
+    protected onFocusChange() {
     }
 }

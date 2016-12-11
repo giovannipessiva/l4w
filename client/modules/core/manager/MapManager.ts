@@ -225,8 +225,8 @@ namespace MapManager {
                             "rotation": 0,
                             "visible": true,
                             "width": 32,
-                            "x": 128,
-                            "y": 64
+                            "i": 4,
+                            "j": 2
                         }],
                     "opacity": 1,
                     "type": "objectgroup",

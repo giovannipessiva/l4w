@@ -80,7 +80,21 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {       
+        if(layerIndex === Constant.MapLayer.EVENTS) {
+            
+            if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
+                //TODO render hero
+            }
+            
+            if (!Utils.isEmpty(this.events)) {
+                for (var event of this.events) {
+                    if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
+                        //TODO render events
+                    }
+                }
+            }  
+        }
     }
 
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
@@ -109,8 +123,10 @@ class DynamicScene extends AbstractScene {
 			MapManager.loadMap(save.map, this.context.canvas, function(map: IMap) {  
                 scene.setMap(map, function() {
                     scene.resetTranslation();
-                    scene.focus.x = save.hero.x;
-                    scene.focus.y = save.hero.y;
+                    scene.focus = scene.grid.mapCellToCanvas({
+                        x: save.hero.i,
+                        y: save.hero.j
+                    });;
                     callback(true);
                 });
             });
@@ -127,5 +143,11 @@ class DynamicScene extends AbstractScene {
                 hero: this.hero
             };
         }
+    }
+    
+    protected onFocusChange() {
+        let cellPosition = this.grid.mapCanvasToCell(this.focus);
+        this.hero.i = cellPosition.x;
+        this.hero.j = cellPosition.y;
     }
 }
