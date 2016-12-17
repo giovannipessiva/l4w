@@ -27,14 +27,31 @@ class DynamicScene extends AbstractScene {
             return false;
         }
 
-        var time = Time.now();
-        ActorManager.update(this.hero, time);
+        let scene = this; 
+        let time = Time.now();
+        if(!Utils.isEmpty(this.hero)) {
+            ActorManager.update(this.hero, time);
+            function onCoordinatesChange(w: number, h: number) {
+                // Move the focus
+                scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
+            }
+            function onCellChange(w: number, h: number) {
+                // Update focus
+                scene.focus.x += w;
+                scene.focus.y += h;
+            }
+            ActorManager.manageMovements(this.grid, this.hero, onCoordinatesChange, onCellChange);
+        }
         if (!Utils.isEmpty(this.events)) {
-            for (var event of this.events) {
-                ActorManager.update(event, time);
+            for (let actor of this.events) {
+                ActorManager.update(actor, time);
+                ActorManager.manageMovements(this.grid, actor, function(){}, function(){});
             }
         }
-
+        
+        // Events logic
+        //this.manageMovements();
+        
         return true;
     }
 
@@ -84,17 +101,13 @@ class DynamicScene extends AbstractScene {
         if(layerIndex === Constant.MapLayer.EVENTS) {
             
             if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
-                ActorManager.render(this.hero, this.hero.x, this.hero.y, this.context, <DynamicGrid> this.grid);
+                ActorManager.render(this.grid, this.hero, this.context);
             }
             
             if (!Utils.isEmpty(this.events)) {
                 for (let actor of this.events) {
-                    if(ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {
-                        let position = this.grid.mapCellToCanvas({
-                            x: actor.i,
-                            y: actor.j
-                        });     
-                        ActorManager.render(actor, position.x, position.y, this.context, <DynamicGrid> this.grid);
+                    if(ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {    
+                        ActorManager.render(this.grid, actor, this.context);
                     }
                 }
             }  
@@ -107,6 +120,20 @@ class DynamicScene extends AbstractScene {
 
     public loadSave(save: ISave, callback: IBooleanCallback) {
         var scene = this;
+        
+        let callback2: IBooleanCallback = function(result) {
+            // Initialize every actor in the map
+            if(result && !Utils.isEmpty(scene.map.layers)) {
+
+                scene.events = MapManager.getActors(scene.map);
+                for(let i=0; i<scene.events.length; i++) {
+                    scene.events[i] = ActorManager.initTransientData(this.grid, scene.events[i]);   
+                }
+                console.log(scene.events);
+            }
+            callback(result);
+        }
+
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
@@ -123,13 +150,13 @@ class DynamicScene extends AbstractScene {
             }
         } else {
             var scene = this;
-            this.hero = save.hero;
+            this.hero = ActorManager.initTransientData(this.grid, save.hero);
 			MapManager.loadMap(save.map, this.context.canvas, function(map: IMap) {  
                 scene.setMap(map, function() {
                     scene.resetTranslation();
                     scene.focus = scene.grid.mapCellToCanvas({
-                        x: save.hero.i,
-                        y: save.hero.j
+                        i: save.hero.i,
+                        j: save.hero.j
                     });;
                     callback(true);
                 });
@@ -148,15 +175,8 @@ class DynamicScene extends AbstractScene {
             };
         }
     }
-    
-    protected onFocusCellChange() {
-        let cellPosition = this.grid.mapCanvasToCell(this.focus);
-        this.hero.i = cellPosition.x;
-        this.hero.j = cellPosition.y;
-    }
-    
-    protected onFocusPixelChange(x: number, y: number) {
-        this.hero.x = x;
-        this.hero.y = y;
+ 
+    startMovement(i: number, j: number) {
+        ActorManager.startMovement(this.grid, this.hero, i, j);    
     }
 }

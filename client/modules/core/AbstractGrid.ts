@@ -85,9 +85,9 @@ class AbstractGrid {
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
      * @param position : position in cell coordinates
      */
-    mapCellToCanvas(position: IPoint): IPoint {
-        var x = position.x * this.cellW;
-        var y = position.y * this.cellH;
+    mapCellToCanvas(position: ICell): ICoordinates {
+        var x = position.i * this.cellW;
+        var y = position.j * this.cellH;
         return { x: x, y: y };
     }
     

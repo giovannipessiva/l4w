@@ -6,7 +6,8 @@ namespace Time {
     export function now() {
         return (new Date()).getTime();
     };
-
+  
+    //Deprecata, non serve a niente
     export class Timer {
 
         private savedTime: number = 0;

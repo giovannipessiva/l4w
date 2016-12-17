@@ -19,16 +19,9 @@ abstract class AbstractScene {
     map: IMap;
     tileImage: HTMLImageElement;
 
-    focus: IPoint;
-    targetFocus: IPoint;
-    speed: number;  // cell/sec
-    mSpeed: number; // pixel/msec
-    movementTimer: Time.Timer;
+    focus: ICoordinates;
 
-    flagRequestNewMovement;
-    requestedFocus: IPoint;
-
-    pointer: IPoint;
+    pointer: ICell;
 
     renderingConfiguration: RenderConfiguration;
     layers: number;
@@ -41,22 +34,14 @@ abstract class AbstractScene {
     constructor(grid: AbstractGrid) {
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
-        this.flagRequestNewMovement = false;
         this.paused = false;
 
-        this.setSpeed(6);
         this.focus = this.grid.mapCellToCanvas({
-            x: 0, y: 0
+            i: 0, j: 0
         });
         this.pointer = {
-            x: 0, y: 0
+            i: 0, j: 0
         };
-    }
-
-    setSpeed(speed: number) {
-        //TODO usa due velocita' diverse per le due direzioni
-        this.speed = speed;  // cell/sec
-        this.mSpeed = this.speed * this.grid.cellH / 1000; // cell/msec
     }
 
     start(canvas: HTMLCanvasElement) {
@@ -77,9 +62,6 @@ abstract class AbstractScene {
         if (this.mainGameLoop_pre() === false) {
             return;
         }
-
-        // Events logic
-        this.manageMovements();
 
         let boundariesY = this.grid.getBoundariesY(this.focus.y, this.getSceneHeight());
         let minRow = boundariesY.min;
@@ -108,7 +90,7 @@ abstract class AbstractScene {
     }
 
     protected renderPointer() {
-        if (this.pointer.x != null && this.pointer.y != null) {
+        if (this.pointer.i != null && this.pointer.j != null) {
             var mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
             this.context.beginPath();
@@ -168,10 +150,10 @@ abstract class AbstractScene {
         }
     }
 
-    updatePointer(x: number, y: number) {
+    updatePointer(i: number, j: number) {
         this.pointer = {
-            x: x,
-            y: y
+            i: i,
+            j: j
         };
     }
 
@@ -208,7 +190,7 @@ abstract class AbstractScene {
             scene.map = map;
             scene.setTile(map.tileset.image, function(scene) {
                 callback(scene);
-            });
+            });  
         })(this);
     }
 
@@ -262,95 +244,6 @@ abstract class AbstractScene {
             this.paused = pause;
         } else {
             this.paused = !this.paused;
-        }
-    }
-
-    startMovement(i: number, j: number) {
-        this.requestedFocus = this.grid.mapCellToCanvas({
-            x: i,
-            y: j
-        });
-        this.flagRequestNewMovement = true;
-    }
-
-    /**
-     * Move max 1 step at a time, and use the time left for a recursive call
-     * TODO manage speed > 1?
-     */
-    manageMovements(timeToMove: number = 0) {
-        // If I am moving 
-        if (!Utils.isEmpty(this.movementTimer)) {
-
-            if (timeToMove == 0) {
-                // Check how much time do I have
-                timeToMove = this.movementTimer.lapse();
-            }
-
-            let distX = this.targetFocus.x - this.focus.x;
-            let distY = this.targetFocus.y - this.focus.y;
-            if (distX == 0 && distY == 0) {
-                // Stop movement
-                this.movementTimer = null;
-                this.targetFocus = null;
-            } else {
-                //TODO pathfinding ftw
-                let movementX = 0;
-                let movementY = 0;
-                let absMovement;
-                if (Math.abs(distX) > Math.abs(distY)) {
-                    // Move horizontally (max 1 cell)
-                    movementX = Math.min(this.grid.cellW, this.mSpeed * timeToMove);
-                    absMovement = movementX;
-                    if (distX < 0) {
-                        movementX *= -1;
-                    }
-                } else {
-                    // Move vertically (max 1 cell)
-                    movementY = Math.min(this.grid.cellH, this.mSpeed * timeToMove);
-                    absMovement = movementY;
-                    if (distY < 0) {
-                        movementY *= -1;
-                    }
-                }
-
-                // Move the focus
-                this.grid.changeTranslation(this.focus.x + movementX, this.focus.y + movementY, this.map.width, this.map.height);
-
-                // Move the hero
-                this.onFocusPixelChange(this.focus.x + movementX, this.focus.y + movementY);
-
-                // If I have finished one step
-                if (absMovement == this.grid.cellW) {
-                    this.movementTimer = new Time.Timer();
-                    // Find out how much time is left after the movement
-                    timeToMove -= absMovement / this.mSpeed;
-
-                    // Update focus
-                    this.focus.x += movementX;
-                    this.focus.y += movementY;
-                    
-                    // Update hero position
-                    this.onFocusCellChange();
-
-                    // Check If I am arrived, or a new target has been requested
-                    if (this.flagRequestNewMovement || this.focus.x == this.targetFocus.x && this.focus.y == this.targetFocus.y) {
-                        // Reset current movement
-                        this.movementTimer = null;
-                        this.targetFocus = null;
-                    }
-                }
-            }
-        }
-
-        // If I can start a new movement
-        if (this.flagRequestNewMovement && Utils.isEmpty(this.movementTimer)) {
-            // Configure new movement
-            this.flagRequestNewMovement = false;
-            this.targetFocus = this.requestedFocus;
-            this.movementTimer = new Time.Timer();
-
-            // If I have some time left, use it to move
-            this.manageMovements(timeToMove);
         }
     }
     

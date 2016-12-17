@@ -23,7 +23,7 @@ class MapperScene extends AbstractStaticScene {
     }
 
     protected renderPointer() {
-        if (this.pointer.x != null && this.pointer.y != null) {
+        if (this.pointer.i != null && this.pointer.j != null) {
             var selectionArea: IRectangle = this.getSelectionArea();
             if (Utils.isEmpty(selectionArea)) {
                 super.renderPointer();
@@ -33,8 +33,8 @@ class MapperScene extends AbstractStaticScene {
                 this.context.globalAlpha = 0.4;
                 this.context.fillStyle = Constant.Color.GREY;
                 this.context.fillRect(
-                    this.pointer.x * this.grid.cellW,
-                    this.pointer.y * this.grid.cellH,
+                    this.pointer.i * this.grid.cellW,
+                    this.pointer.j * this.grid.cellH,
                     (selectionArea.x2 - selectionArea.x1 + 1) * this.grid.cellW,
                     (selectionArea.y2 - selectionArea.y1 + 1) * this.grid.cellH);
                 this.context.restore();

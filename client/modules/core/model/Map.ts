@@ -12,11 +12,11 @@ interface IMap {
 };
 
 interface IMapLayer {
-    type: "tilelayer" | "objectgroup" | "imagelayer";
+    type: "tilelayer" | "objectgroup" | "imagelayer"; //TODO remove
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
-    objects?: IActor[]; //Array of Objects. objectgroup only.
+    objects?: IActorData[]; //Array of Objects. objectgroup only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
     speedX?: number;

@@ -32,13 +32,13 @@ abstract class AbstractStaticScene extends AbstractScene {
     }
 
     protected renderPointer() {
-        if (this.pointer.x != null && this.pointer.y != null) {
+        if (this.pointer.i != null && this.pointer.j != null) {
             this.context.save();
             this.context.globalAlpha = 0.4;
             this.context.fillStyle = Constant.Color.YELLOW;
             this.context.fillRect(
-                this.pointer.x * this.grid.cellW,
-                this.pointer.y * this.grid.cellH,
+                this.pointer.i * this.grid.cellW,
+                this.pointer.j * this.grid.cellH,
                 this.grid.cellW,
                 this.grid.cellH);
             this.context.restore();

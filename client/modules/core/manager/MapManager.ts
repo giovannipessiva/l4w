@@ -184,6 +184,19 @@ namespace MapManager {
         map.height = rows;
         map.width = columns;
     }
+    
+    export function getActors(map: IMap) {
+        let actors: IActor[] = new Array();
+        if(!Utils.isEmpty(map.layers)) {
+            for (let i = 0; i < map.layers.length; i++) {
+                let layer = map.layers[i];
+                if (!Utils.isEmpty(layer.objects)) {
+                    actors = actors.concat(layer.objects);
+                }
+            }
+        }
+        return actors;   
+    }
 
     export function getNewMap(name: string): IMap {
         var map: IMap = {

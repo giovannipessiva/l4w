@@ -153,8 +153,8 @@ namespace Game {
             function() { console.log("wheel"); }
         );
         
-        function moveHero(x: number, y: number) {
-            scene.startMovement(x, y);
+        function moveHero(i: number, j: number) {
+            scene.startMovement(i, j);
         };
     };
 }

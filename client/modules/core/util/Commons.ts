@@ -4,6 +4,7 @@
  * Module for common type structures and function interfaces
  */
 
+//Deprecato, usa ICoordinates o ICell
 interface IPoint {
     x: number;
     y: number;

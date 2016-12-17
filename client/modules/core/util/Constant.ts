@@ -1,5 +1,5 @@
 /**
- * Module fon constants values
+ * Module for constants values
  */
 namespace Constant {
 
@@ -18,6 +18,7 @@ namespace Constant {
         static POST = "POST";
     }
 
+    //Deprecated, use DirectionEnum
     export const enum Direction {
         UP,
         DOWN,
