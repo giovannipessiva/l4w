@@ -1,3 +1,4 @@
+/// <reference path="../core/model/Commons.ts" />
 /// <reference path="../core/util/Utils.ts" />
 /// <reference path="../core/util/Constant.ts" />
 /// <reference path="../core/util/Errors.ts" />
@@ -59,16 +60,16 @@ namespace Mapper {
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
         var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e) {
-            scene.moveFocus(Constant.Direction.UP);
+            scene.moveFocus(DirectionEnum.UP);
         };
         inputCallbackMap[Input.Keys.S] = function(e) {
-            scene.moveFocus(Constant.Direction.DOWN);
+            scene.moveFocus(DirectionEnum.DOWN);
         };
         inputCallbackMap[Input.Keys.A] = function(e) {
-            scene.moveFocus(Constant.Direction.LEFT);
+            scene.moveFocus(DirectionEnum.LEFT);
         };
         inputCallbackMap[Input.Keys.D] = function(e) {
-            scene.moveFocus(Constant.Direction.RIGHT);
+            scene.moveFocus(DirectionEnum.RIGHT);
         };
 
         inputCallbackMap[Input.Keys.F2] = function(e) {

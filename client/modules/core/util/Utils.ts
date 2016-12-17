@@ -18,6 +18,10 @@ namespace Utils {
         return false;
     }
     
+    export function now() {
+        return (new Date()).getTime();    
+    }
+    
     export function mergeMaps<T>(primary: Map<string, T>, secondary: Map<string, T>): Map<string, T> {
         var newMap: Map<string, T> = new Map<string, T>();
         function addToNewMap(value: T, index: string, map: Map<string, T>) {

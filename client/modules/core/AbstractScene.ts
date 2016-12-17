@@ -1,9 +1,10 @@
 /// <reference path="manager/ActorManager.ts" />
 /// <reference path="manager/MapManager.ts" />
 /// <reference path="AbstractGrid.ts" />
+/// <reference path="model/Commons.ts" />
 /// <reference path="util/Constant.ts" />
 /// <reference path="util/Commons.ts" />
-/// <reference path="util/Time.ts" />
+/// <reference path="util/Utils.ts" />
 
 var nextAnimationFrame =
     window.requestAnimationFrame ||
@@ -157,14 +158,14 @@ abstract class AbstractScene {
         };
     }
 
-    moveFocus(direction: Constant.Direction) {
-        //TODO class Movable
-        switch (direction) {
-            case Constant.Direction.UP: this.focus.y -= +this.grid.cellH; break;
-            case Constant.Direction.DOWN: this.focus.y += +this.grid.cellH; break;
-            case Constant.Direction.LEFT: this.focus.x -= +this.grid.cellW; break;
-            case Constant.Direction.RIGHT: this.focus.x += +this.grid.cellW; break;
-            case Constant.Direction.NONE: break;
+    moveFocus(direction: DirectionEnum = null) {
+        if(direction != null) {
+            switch (direction) {
+                case DirectionEnum.UP: this.focus.y -= +this.grid.cellH; break;
+                case DirectionEnum.DOWN: this.focus.y += +this.grid.cellH; break;
+                case DirectionEnum.LEFT: this.focus.x -= +this.grid.cellW; break;
+                case DirectionEnum.RIGHT: this.focus.x += +this.grid.cellW; break;
+            }
         }
         this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
     }

@@ -17,15 +17,6 @@ namespace Constant {
         static GET = "GET";
         static POST = "POST";
     }
-
-    //Deprecated, use DirectionEnum
-    export const enum Direction {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        NONE
-    }
     
     export enum MapLayer {
         LOW,

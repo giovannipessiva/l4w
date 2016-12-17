@@ -1,4 +1,5 @@
 /// <reference path="../util/Commons.ts" />
+/// <reference path="../util/Utils.ts" />
 /// <reference path="../model/Actor.ts" />
 
 /**
@@ -6,7 +7,8 @@
  */
 namespace ActorManager {
     
-    const DEFAULT_MSPEED = 5 * 32 / 1000;
+    const DEFAULT_MSPEED: number = 4 * 32 / 1000;
+    const DEFAULT_FREQUENCY: number = 6 / 1000;
 
     export function update(a: IActor, time: number) {
         //TODO
@@ -49,9 +51,27 @@ namespace ActorManager {
             let charaWidth: number = Math.floor(image.width / 4);
             let charaHeight: number = Math.floor(image.height / 4);
 
-			//TODO calcola l'animazione
             let charaX: number = 0;
-            
+            if(!Utils.isEmpty(a.target)) {
+                //If it's moving, change animation
+                if(a.animationStartTime === null) {
+                    a.animationStartTime = Utils.now();
+                }
+                let animationTime = Utils.now() - a.animationStartTime;
+                let frequency = DEFAULT_FREQUENCY;
+                if(!Utils.isEmpty(a.frequency)) {
+                    frequency = a.frequency;
+                }
+                let position = Math.floor((animationTime * frequency) % 4);                
+                switch(position) {
+                    case 1: charaX = charaWidth; break;
+                    case 2: charaX = charaWidth * 2; break;
+                    case 3: charaX = charaWidth * 3; break;
+                }
+            } else {
+                a.animationStartTime = null;    
+            }
+            // Face the right direction
             let charaY: number = 0;
             switch (a.direction) {
                 case DirectionEnum.LEFT: charaY = charaHeight; break;
@@ -119,7 +139,7 @@ namespace ActorManager {
 
             if (timeToMove === 0) {
                 // Check how much time do I have
-                timeToMove = Time.now() - a.movementStartTime;
+                timeToMove = Utils.now() - a.movementStartTime;
             }
             let distX = a.target.x - (a.i * grid.cellW);
             let distY = a.target.y - (a.j * grid.cellH);
@@ -162,7 +182,7 @@ namespace ActorManager {
                 // If I have finished one step
                 if (absMovement === grid.cellW) {
   
-                    a.movementStartTime = Time.now();
+                    a.movementStartTime = Utils.now();
                     // Find out how much time is left after the movement
                     timeToMove -= absMovement / getMSpeed(a);
 
@@ -187,7 +207,7 @@ namespace ActorManager {
             // Configure new movement
             a.target = a.newTarget;
             a.newTarget = null;
-            a.movementStartTime = Time.now();
+            a.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
             manageMovements(grid, a, onCoordinatesChange, onCellChange, timeToMove);
@@ -204,6 +224,7 @@ namespace ActorManager {
         if(!Utils.isEmpty(a.speed)) {
             this.setSpeed(a, a.speed);
         }
+        
         return a;
     }
     

@@ -9,7 +9,8 @@ interface IActorData {
     visible?: boolean; //Whether Actor should be rendered
     opacity?: number; //Actor rendering opacity
     rotation?: number; //Angle in degrees clockwise
-    speed?: number; //Default speed (cells/seconds)
+    speed?: number; //Movement speed (cells/seconds)
+    frequency?: number //Animation change speed (positions/mseconds)
     onTop?: boolean; //True if this Actor should be rendered on top
     charaset?: string; //Name of the charaset (alternative to GID)
     width?: number; //Width in pixels. Ignored if using a gid.
@@ -25,4 +26,5 @@ interface IActor extends IActorData {
     target?: ICoordinates; //Current destination in pixels
     newTarget?: ICoordinates; //New destination in pixels
     direction?: DirectionEnum; //Current direction
+    animationStartTime?: number; //ms since last animation change
 }

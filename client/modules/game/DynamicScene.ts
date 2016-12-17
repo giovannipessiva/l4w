@@ -28,7 +28,7 @@ class DynamicScene extends AbstractScene {
         }
 
         let scene = this; 
-        let time = Time.now();
+        let time = Utils.now();
         if(!Utils.isEmpty(this.hero)) {
             ActorManager.update(this.hero, time);
             function onCoordinatesChange(w: number, h: number) {
@@ -75,7 +75,7 @@ class DynamicScene extends AbstractScene {
     }
 
     private renderFPS() {
-        var seconds = Math.floor(Time.now() / 1000);
+        var seconds = Math.floor(Utils.now() / 1000);
         if (seconds === this.secondFPS) {
             this.countFPS++;
         } else {
@@ -137,6 +137,7 @@ class DynamicScene extends AbstractScene {
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
+                this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
                 // Load a stub map
                 this.setMap(MapManager.getNewMap("stub"), function() {
                     scene.resetTranslation();
