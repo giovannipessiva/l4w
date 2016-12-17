@@ -84,7 +84,7 @@ class DynamicScene extends AbstractScene {
         if(layerIndex === Constant.MapLayer.EVENTS) {
             
             if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
-                ActorManager.render(this.hero, this.hero.x, this.hero.y, this.context);
+                ActorManager.render(this.hero, this.hero.x, this.hero.y, this.context, <DynamicGrid> this.grid);
             }
             
             if (!Utils.isEmpty(this.events)) {
@@ -94,7 +94,7 @@ class DynamicScene extends AbstractScene {
                             x: actor.i,
                             y: actor.j
                         });     
-                        ActorManager.render(actor, position.x, position.y, this.context);
+                        ActorManager.render(actor, position.x, position.y, this.context, <DynamicGrid> this.grid);
                     }
                 }
             }  

@@ -10,7 +10,7 @@ namespace ActorManager {
         //TODO
     }
 
-    export function render(a: IActor, x: number, y: number, context: CanvasRenderingContext2D) {
+    export function render(a: IActor, x: number, y: number, context: CanvasRenderingContext2D, grid: DynamicGrid) {
         let image: HTMLImageElement;
         if(!Utils.isEmpty(a.charaset)) {
             image = Resource.loadImageFromCache(a.charaset, Resource.TypeEnum.CHAR); 
@@ -22,14 +22,16 @@ namespace ActorManager {
             image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);     
         }
 
-        if(!Utils.isEmpty(image)){
-            
-            //TODO calcola l'animazione
+        if(!Utils.isEmpty(image)){       
             let charaWidth: number = Math.floor(image.width / 4);
             let charaHeight: number = Math.floor(image.height / 4);
-            let charaX: number = 0; //TODO centra rispetto alla cell (+ cell/2, - chara/2)
-            let charaY: number = 0; //TODO metti coi piedi per terra (+ cell 3/2 - chara)
+
+			//TODO calcola l'animazione
+            let charaX: number = 0;
+            let charaY: number = 0;
             
+            x += Math.floor((grid.cellW - charaWidth) / 2); //In the middle
+            y += Math.floor(- charaHeight + charaWidth * 2 / 3); //Foots on the ground
             
             let globalAlpha = context.globalAlpha;
             if (!Utils.isEmpty(a.opacity)) {
@@ -75,7 +77,7 @@ namespace ActorManager {
         if(!Utils.isEmpty(e.opacity) && e.opacity === 0) {
             return false;    
         }
-        return e.i >= minColumn && e.i <= maxColumn && e.j >= minRow && e.i <=maxRow;
+        return e.i >= minColumn && e.i <= maxColumn && e.j >= minRow && e.j <=maxRow;
     }
 
 };

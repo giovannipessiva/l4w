@@ -5,10 +5,6 @@
  * Helper class for handling game maps
  */
 namespace MapManager {
-
-    export function save() {
-        //TODO save the map, sending the updated JSON to server
-    }
     
     export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
         Resource.load(mapId+"", Resource.TypeEnum.MAP, function(resourceText: string) {
