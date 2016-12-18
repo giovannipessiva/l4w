@@ -31,16 +31,14 @@ class DynamicScene extends AbstractScene {
         let time = Utils.now();
         if(!Utils.isEmpty(this.hero)) {
             ActorManager.update(this.hero, time);
-            function onCoordinatesChange(w: number, h: number) {
+            ActorManager.manageMovements(this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
-            }
-            function onCellChange(w: number, h: number) {
+            }, function(w: number, h: number) {
                 // Update focus
                 scene.focus.x += w;
                 scene.focus.y += h;
-            }
-            ActorManager.manageMovements(this.grid, this.hero, onCoordinatesChange, onCellChange);
+            });
         }
         if (!Utils.isEmpty(this.events)) {
             for (let actor of this.events) {

@@ -117,6 +117,8 @@ namespace ActorManager {
         let actor: IActor = getNewActor();
         actor.name = "Hero";
         actor.charaset = "fart.png";
+        actor.i = 0;
+        actor.j = 1;
         return actor;
     }
     
@@ -188,8 +190,8 @@ namespace ActorManager {
 
                     // Update  position
                     let cell = grid.mapCanvasToCell(a.position);
-                    a.i = cell.x;
-                    a.j = cell.y;
+                    a.i = cell.i;
+                    a.j = cell.j;
                     onCellChange(movementX, movementY);         
 
                     // Check If I am arrived, or a new target has been requested

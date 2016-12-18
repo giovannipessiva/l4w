@@ -20,7 +20,7 @@ abstract class AbstractScene {
     map: IMap;
     tileImage: HTMLImageElement;
 
-    focus: ICoordinates;
+    focus: IPoint;
 
     pointer: ICell;
 
@@ -92,7 +92,7 @@ abstract class AbstractScene {
 
     protected renderPointer() {
         if (this.pointer.i != null && this.pointer.j != null) {
-            var mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
+            let mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;

@@ -1,3 +1,4 @@
+/// <reference path="model/Commons.ts" />
 /// <reference path="util/Resource.ts" />
 /// <reference path="util/Commons.ts" />
 
@@ -74,31 +75,36 @@ class AbstractGrid {
      * Convert a position in the webpage to a position on the grid (cell coordinates)
      * @param position : position in pixels (absolute coordinates in the page)
      */
-    mapPositionToGrid(position: IPoint): IPoint {
-        var rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
-        var i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
-        var j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
-        return { x: i, y: j };
+    mapPositionToGrid(position: IPoint): ICell {
+        let rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
+        let i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
+        let j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
+        return {
+            i: i,
+            j: j
+        };
     }
 
     /**
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
      * @param position : position in cell coordinates
      */
-    mapCellToCanvas(position: ICell): ICoordinates {
-        var x = position.i * this.cellW;
-        var y = position.j * this.cellH;
-        return { x: x, y: y };
+    mapCellToCanvas(position: ICell): IPoint {
+        return {
+            x: position.i * this.cellW,
+            y: position.j * this.cellH
+        };
     }
-    
+
     /**
-     * Convert a position on the map to a mal cell
+     * Convert a position on the map to a map cell
      * @param position : position in pixels
      */
-    mapCanvasToCell(position: IPoint): IPoint {
-        var i = Math.floor(position.x / this.cellW);
-        var j = Math.floor(position.y / this.cellH);
-        return { x: i, y: j };
+    mapCanvasToCell(position: IPoint): ICell {
+        return {
+            i: Math.floor(position.x / this.cellW),
+            j: Math.floor(position.y / this.cellH)
+        };
     }
 
     /**
@@ -130,7 +136,7 @@ class AbstractGrid {
         this.currentTranslation = { x: leftTopX, y: leftTopY };
         return this.currentTranslation;
     }
-    
+
     getCurrentTranslation() {
         return this.currentTranslation;
     }

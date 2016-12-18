@@ -1,4 +1,4 @@
-interface ICoordinates {
+interface IPoint {
     x: number;
     y: number;
 };

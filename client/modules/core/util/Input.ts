@@ -86,25 +86,25 @@ namespace Input {
         var flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e) {
             var position = mapEvent(e);
-            actionCallback(position.x, position.y);
+            actionCallback(position.i, position.j);
         });
         canvas.addEventListener("mousemove", function(e) {
             var position = mapEvent(e);
             if (flagMouseDown) {
-                ongoingActionCallback(position.x, position.y, e.buttons);
+                ongoingActionCallback(position.i, position.j, e.buttons);
             } else {
-                hoverCallback(position.x, position.y);
+                hoverCallback(position.i, position.j);
             }
         });
         canvas.addEventListener("mousedown", function(e: PointerEvent) {
             flagMouseDown = true;
             var position = mapEvent(e);
-            startActionCallback(position.x, position.y, e.buttons);
+            startActionCallback(position.i, position.j, e.buttons);
         });
         canvas.addEventListener("mouseup", function(e: PointerEvent) {
             flagMouseDown = false;
             var position = mapEvent(e);
-            endActionCallback(position.x, position.y, e.buttons);
+            endActionCallback(position.i, position.j, e.buttons);
         });
         canvas.addEventListener("mouseout", function(e: PointerEvent) {
             if (flagMouseDown) {
@@ -116,36 +116,36 @@ namespace Input {
         canvas.addEventListener("contextmenu", function(e) {
             e.preventDefault();
             var position = mapEvent(e);
-            rightClickCallback(position.x, position.y);
+            rightClickCallback(position.i, position.j);
         });
         canvas.addEventListener("dblclick", function(e) {
             var position = mapEvent(e);
-            doubleClickCallback(position.x, position.y);
+            doubleClickCallback(position.i, position.j);
         });
         canvas.addEventListener("wheel", function(e) {
             var position = mapEvent(e);
-            wheelCallback(position.x, position.y);
+            wheelCallback(position.i, position.j);
         });
         
         // Touch events
         canvas.addEventListener("touchstart", function(e) {
             var position = mapEvent(e);
-            startActionCallback(position.x, position.y);
+            startActionCallback(position.i, position.j);
         });
         canvas.addEventListener("touchend", function(e) {
             var position = mapEvent(e);
             ongoingActionCallback(null, null);
-            endActionCallback(position.x, position.y);
+            endActionCallback(position.i, position.j);
 
         });
         canvas.addEventListener("touchcancel", function(e) {
             var position = mapEvent(e);
             ongoingActionCallback(null, null);
-            endActionCallback(position.x, position.y);
+            endActionCallback(position.i, position.j);
         });
         canvas.addEventListener("touchmove", function(e) {
             var position = mapEvent(e);
-            ongoingActionCallback(position.x, position.y);
+            ongoingActionCallback(position.i, position.j);
         });
         
         // Keyboard events
@@ -184,7 +184,7 @@ namespace Input {
         });
 
         function mapEvent(e) {
-            var position: IPoint = {
+            let position: IPoint = {
                 x: e.clientX,
                 y: e.clientY
             };

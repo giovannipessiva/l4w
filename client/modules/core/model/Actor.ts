@@ -20,11 +20,11 @@ interface IActorData {
 
 //Actor extended model (include transient data)
 interface IActor extends IActorData {
-    position?: ICoordinates; //exact coordinate in pixels
+    position?: IPoint; //exact coordinate in pixels
     mSpeed?: number; //Speed (as pixels/milliseconds)
     movementStartTime?: number; //ms since last step started
-    target?: ICoordinates; //Current destination in pixels
-    newTarget?: ICoordinates; //New destination in pixels
+    target?: IPoint; //Current destination in pixels
+    newTarget?: IPoint; //New destination in pixels
     direction?: DirectionEnum; //Current direction
     animationStartTime?: number; //ms since last animation change
 }
