@@ -132,35 +132,36 @@ class DynamicScene extends AbstractScene {
             callback(result);
         }
 
+        let mapId;
+        let hero: ICell;
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
-                this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
-                // Load a stub map
-                this.setMap(MapManager.getNewMap("stub"), function() {
-                    scene.resetTranslation();
-                    scene.focus.x = 0;
-                    scene.focus.y = 0;
-                    callback(false);
-                });
+                mapId = "0"; // Load first map
+                hero = {
+                    i: 0,
+                    j: 1
+                };
             } else {
                 // Leave current map
                 callback(false);
+                return
             }
         } else {
-            var scene = this;
-            this.hero = ActorManager.initTransientData(this.grid, save.hero);
-			MapManager.loadMap(save.map, this.context.canvas, function(map: IMap) {  
-                scene.setMap(map, function() {
-                    scene.resetTranslation();
-                    scene.focus = scene.grid.mapCellToCanvas({
-                        i: save.hero.i,
-                        j: save.hero.j
-                    });;
-                    callback(true);
-                });
-            });
+            // Load map from save
+            mapId = save.map;
+            hero = save.hero;
         }
+        
+        var scene = this;
+        this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
+        MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
+            scene.setMap(map, function() {
+                scene.resetTranslation();
+                scene.focus = scene.grid.mapCellToCanvas(hero);
+                callback(true);
+            });
+        });
     }
 
     public getSave(): ISave {
