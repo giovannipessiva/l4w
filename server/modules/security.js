@@ -10,6 +10,10 @@ module.exports = {
 		return "developement" === process.env.NODE_ENV;
 	},
 	
+	isAuthenticationDisabled: function() {
+		return module.exports.isDevEnv() && "true" === process.env.DISABLE_AUTHENTICATION;
+	},
+	
 	logSecurityEvent: function(event, info) {
 		if(utils.isEmpty(info)) {
 			info = "(empty)";

@@ -1,5 +1,5 @@
 onmessage = function(args) {
 	console.log("START worker");
-	//TDODO
+	//TODO
 	console.log("END worker");
 };

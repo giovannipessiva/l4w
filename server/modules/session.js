@@ -30,10 +30,16 @@ module.exports = {
 	},
 	
 	getUser: function(request) {
+		if(utils.isEmpty(request.session.user) && security.isAuthenticationDisabled()) {
+			return "-1";
+		}
 		return request.session.user;
 	},
 	
 	isAuthenticated: function(request) {
+		if(security.isAuthenticationDisabled()) {
+			return true;
+		}
 		return !utils.isEmpty(module.exports.getUser(request));
 	},
 
