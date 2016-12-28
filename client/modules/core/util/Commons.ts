@@ -24,6 +24,7 @@ class RenderConfiguration {
     showCellNumbers: boolean = false;
     showFocus: boolean = false;
     enableSelection: boolean = false;
+    showBlocks: boolean = false;
 
     fps: number = 0;
     selectPointStart: IPoint;

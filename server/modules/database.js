@@ -73,6 +73,28 @@ module.exports = {
 								defaults.getDefaultMap());
 					});
 			break;
+		case "tileset":
+			models.l4w_tileset.findOne({
+				where : {
+					image : file
+				},
+				attributes : [ "data" ]
+			}).then(
+					function(result) {
+						if (!utils.isEmpty(result)) {
+							response.json(result.data);
+						} else {
+							console.log("Tileset "+ file + " not found, returning default");
+							response.status(HttpStatus.NOT_FOUND).send(
+									defaults.getDefaultMap());
+						}
+					},
+					function(error) {
+						console.log(error);
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
+								defaults.getDefaultTileset());
+					});
+			break;
 		case "save":
 			if (!utils.isEmpty(user)) {
 				models.usr_save.findOne({
@@ -109,6 +131,17 @@ module.exports = {
 		case "map":
 			models.l4w_map.upsert({
 				id : file,
+				data : JSON.parse(data)
+			}).then(function(result) {
+				response.status(HttpStatus.OK).send("");
+			}, function(error) {
+				console.log(error);
+				response.status(HttpStatus.BAD_REQUEST).send("");
+			});
+			break;
+		case "tileset":
+			models.l4w_tileset.upsert({
+				image : file,
 				data : JSON.parse(data)
 			}).then(function(result) {
 				response.status(HttpStatus.OK).send("");

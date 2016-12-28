@@ -1,6 +1,7 @@
 /// <reference path="../util/Commons.ts" />
 /// <reference path="../util/Utils.ts" />
 /// <reference path="../model/Actor.ts" />
+/// <reference path="../manager/MapManager.ts" />
 
 /**
  * Module to handle an actor
@@ -135,7 +136,7 @@ namespace ActorManager {
     /**
      * Move max 1 step at a time, and use the time left for a recursive call
      */
-    export function manageMovements(grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, timeToMove: number = 0) {
+    export function manageMovements(map: IMap, grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, timeToMove: number = 0) {
         // If I am moving 
         if (!Utils.isEmpty(a.movementStartTime)) {
 
@@ -164,7 +165,12 @@ namespace ActorManager {
                     } else {
                         a.direction = DirectionEnum.RIGHT;
                     }
-                } else {
+                    
+                    if(MapManager.isDirectionBlocked(map, a.i, a.j, a.direction)) {
+                        movementX = 0;
+                    }
+                }
+                if(movementX === 0) {
                     // Move vertically (max 1 cell)
                     movementY = Math.min(grid.cellH, Math.floor(getMSpeed(a) * timeToMove));
                     absMovement = movementY;
@@ -174,7 +180,14 @@ namespace ActorManager {
                     } else {
                         a.direction = DirectionEnum.DOWN;
                     }
-                }
+                    
+                    if(MapManager.isDirectionBlocked(map, a.i, a.j, a.direction)) {
+                        movementY = 0;
+                        // Blocked: stop the movement
+                        a.movementStartTime = null;
+                        a.target = null;
+                    }
+                } 
 
                 // Move the hero
                 a.position.x = a.i * grid.cellW + movementX;
@@ -212,7 +225,7 @@ namespace ActorManager {
             a.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
-            manageMovements(grid, a, onCoordinatesChange, onCellChange, timeToMove);
+            manageMovements(map, grid, a, onCoordinatesChange, onCellChange, timeToMove);
         }
     }
     

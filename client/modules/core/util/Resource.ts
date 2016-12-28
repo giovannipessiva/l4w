@@ -22,7 +22,8 @@ namespace Resource {
         SKIN,
         TILE,
         MAP,
-        SAVE
+        SAVE,
+        TILESET
     }
 
     var propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
@@ -127,6 +128,7 @@ namespace Resource {
                 break;
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
+            case TypeEnum.TILESET:
                 // Load text file
                 sendGETRequest(path, function(e: ProgressEvent) {
                     callback(this.responseText);
@@ -190,7 +192,7 @@ namespace Resource {
                         path += "skin/";
                         break;
                     case TypeEnum.TILE:
-                        path += "tileset/";
+                        path += "tile/";
                         break;
                     default:
                         console.error("Unexpected resource type");
@@ -198,18 +200,23 @@ namespace Resource {
                 };
                 break;
             case TypeEnum.MAP:
+            case TypeEnum.SAVE:
+            case TypeEnum.TILESET:
                 path = DATA_PATH;
                 switch (assetType) {
                     case TypeEnum.MAP:
                         path += "map/";
                         break;
+                    case TypeEnum.SAVE:
+                        path += "save/";
+                        break;
+                    case TypeEnum.TILESET:
+                        path += "tileset/";
+                        break;
                     default:
                         console.error("Unexpected resource type");
                         console.trace();
                 };
-                break;
-            case TypeEnum.SAVE:
-                path = DATA_PATH + "save/";
                 break;
             default:
                 console.error("Unexpected resource type");
@@ -226,6 +233,9 @@ namespace Resource {
                 break;
             case TypeEnum.SAVE:
                 path += "save/";
+                break;
+            case TypeEnum.TILESET:
+                path += "tileset/";
                 break;
             default:
                 console.error("Unexpected resource type");

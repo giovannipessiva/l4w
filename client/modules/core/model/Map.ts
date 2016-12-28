@@ -1,14 +1,21 @@
 /// <reference path="Tileset.ts" />
 /// <reference path="Actor.ts" />
 
-interface IMap {
+//Map core model (only persistent data)
+interface IMapData {
     id: number; //Id of the map
+    tile: string; //Image of the tileset
     name: string; //Name of the map
     width: number; //Number of tile columns
     height: number; //Number of tile rows
     layers: IMapLayer[]; //Array of Layers 
-    tileset: ITileset; //Tileset
     nextobjectid: number; //Auto-increments for each placed 
+};
+
+//Map extended model (include transient data)
+interface IMap extends IMapData {
+    blocks?: number[]; //Array of codes representing the block attributes
+    tileset?: ITileset; //Tileset object for this map
 };
 
 interface IMapLayer {

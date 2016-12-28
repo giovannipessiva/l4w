@@ -1,3 +1,4 @@
+///<reference path="../model/Commons.ts" />
 ///<reference path="../../interfaces/collections.es6.d.ts" />
 
 /**
@@ -32,10 +33,23 @@ namespace Utils {
         return newMap;
     }
     
-    export function gIDToPoint(gid: number, width: number): IPoint {
+    export function gIDToCell(gid: number, width: number): ICell {
         return {
-            x: gid % width,
-            y: Math.floor(gid / width)
+            i: gid % width,
+            j: Math.floor(gid / width)
         };
+    }
+    
+    export function isBlocked(block: number, blockDirection: number): boolean {
+        return (block & blockDirection) === blockDirection;
+    }
+    
+    export function getBlock(up: boolean, down: boolean, left: boolean, right: boolean): number {
+        let block: number = 0;
+        block |= up? BlockDirection.UP : 0;
+        block |= down? BlockDirection.DOWN : 0;
+        block |= left? BlockDirection.LEFT : 0;
+        block |= right? BlockDirection.RIGHT : 0;
+        return block;
     }
 }

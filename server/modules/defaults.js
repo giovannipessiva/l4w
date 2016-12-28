@@ -41,6 +41,12 @@ module.exports = {
             }
         };
 	},
+	
+	getDefaultTileset: function () {
+		return {
+			image: "023-FarmVillage01.png"
+		};
+	},
 
 	getDefaultSave: function() {
 		return "";

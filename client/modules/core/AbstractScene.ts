@@ -18,7 +18,6 @@ var nextAnimationFrame =
 abstract class AbstractScene {
 
     map: IMap;
-    tileImage: HTMLImageElement;
 
     focus: IPoint;
 
@@ -72,7 +71,7 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        this.renderLayers(this.map, this.tileImage, this.context, minRow, maxRow, minColumn, maxColumn);
+        this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
         this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
@@ -83,7 +82,7 @@ abstract class AbstractScene {
     }
 
     protected mainGameLoop_pre(): boolean {
-        this.grid.clear(this.context); //TODO rimuovere a regime
+        this.grid.clear(this.context);
         return true;
     }
 
@@ -134,6 +133,17 @@ abstract class AbstractScene {
         }
 
     }
+    
+    toggleGridMode() {
+        if(!this.renderingConfiguration.showGrid) {
+            this.toggleGrid();
+        } else if (!this.renderingConfiguration.showBlocks) {
+           this.toggleBlocks(); 
+        } else {
+            this.toggleGrid();
+            this.toggleBlocks(); 
+        }
+    }
 
     toggleCellNumbering(enable?: boolean) {
         if (enable != null) {
@@ -148,6 +158,14 @@ abstract class AbstractScene {
             this.renderingConfiguration.showFocus = enable;
         } else {
             this.renderingConfiguration.showFocus = !this.renderingConfiguration.showFocus;
+        }
+    }
+    
+    toggleBlocks(enable?: boolean) {
+        if (enable != null) {
+            this.renderingConfiguration.showBlocks = enable;
+        } else {
+            this.renderingConfiguration.showBlocks = !this.renderingConfiguration.showBlocks;
         }
     }
 
@@ -176,34 +194,34 @@ abstract class AbstractScene {
 
     changeScale(canvas: HTMLCanvasElement) {
         //TODO sposta l'inizializzazione del context
-        this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
+        this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }
 
     setMap(map: IMap, callback: { (scene: AbstractScene): void }) {
-        (function(scene: AbstractScene) {
-
-            if (Utils.isEmpty(map)) {
-                console.error("initialized map");
-                console.trace();
-            }
-
-            scene.map = map;
-            scene.setTile(map.tileset.image, function(scene) {
-                callback(scene);
-            });  
-        })(this);
+        var scene: AbstractScene = this;
+        if (Utils.isEmpty(map)) {
+            console.error("initialized map");
+            console.trace();
+        }
+        scene.map = map;
+        scene.setTile(map.tile, function(scene) {
+            setTimeout(function() {
+                MapManager.loadBlocks(scene.map);
+            });
+            callback(scene);
+        });
     }
 
     setTile(tile: string, callback: { (scene: AbstractScene): void }) {
-        //TODO gestisci il caricamento dei metadati del tile
-        (function(scene: AbstractScene) {
+        var scene: AbstractScene = this;
+        TilesetManager.loadTileset(tile, this.context, function(json) {
+            scene.map.tileset = json;
             Resource.load(tile, Resource.TypeEnum.TILE, function(image) {
-                scene.tileImage = image[0];
-                scene.map.tileset.image = tile;
+                scene.map.tileset.imageData = image[0];
                 callback(scene);
             });
-        })(this);
+        });
     }
 
     getSceneHeight() {
@@ -223,17 +241,17 @@ abstract class AbstractScene {
                     context.globalAlpha = layer.opacity;
                 }
 
-                this.renderLayer(map, i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+                this.renderLayer(i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
 
                 context.globalAlpha = 1;
             }
         }
     }
 
-    protected renderLayer(map: IMap, layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         this.renderInterLayerElements(layerIndex, minRow, maxRow, minColumn, maxColumn);
-        var layer = map.layers[layerIndex];
-        MapManager.renderLayer(this.grid, map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+        var layer = this.map.layers[layerIndex];
+        MapManager.renderLayer(this.grid, this.map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
 
     protected abstract renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number);

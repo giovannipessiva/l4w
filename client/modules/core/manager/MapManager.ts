@@ -1,3 +1,4 @@
+/// <reference path="../util/Constant.ts" />
 /// <reference path="../model/Map.ts" />
 /// <reference path="../AbstractGrid.ts" />
 
@@ -13,7 +14,7 @@ namespace MapManager {
                 callback(null);
             } else {
                 try {
-                    var map: IMap = JSON.parse(resourceText);
+                    let map: IMap = JSON.parse(resourceText);
                     callback(map);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -32,20 +33,20 @@ namespace MapManager {
 
     export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if(!Utils.isEmpty(layer.data)) {
-            for (var y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
-                for (var x = minColumn; x <= maxColumn; x++) {
-                    var cellIndex = x + y * map.width;
+            for (let y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
+                for (let x = minColumn; x <= maxColumn; x++) {
+                    let cellIndex = x + y * map.width;
                     if (layer.data.length < cellIndex) {
                         return;
                     }
-                    var tileGID = layer.data[cellIndex];
+                    let tileGID = layer.data[cellIndex];
                     if (tileGID === null) {
                         continue;
                     }
-                    var tilePoint = Utils.gIDToPoint(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
+                    let tileCell: ICell = Utils.gIDToCell(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
                     context.drawImage(
                         tileImage,
-                        Math.floor(tilePoint.x * grid.cellW), Math.floor(tilePoint.y * grid.cellH), grid.cellW, grid.cellH,
+                        Math.floor(tileCell.i * grid.cellW), Math.floor(tileCell.j * grid.cellH), grid.cellW, grid.cellH,
                         Math.floor(x * grid.cellW), Math.floor(y * grid.cellH), grid.cellW, grid.cellH);
                 }
             }
@@ -56,16 +57,15 @@ namespace MapManager {
 
     }
 
-    export function renderUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        for (var y = minRow; y <= maxRow; y++) {
-            for (var x = minColumn; x <= maxColumn; x++) {
-
+    export function renderUI(map: IMap, grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        for (let i = minColumn; i <= maxColumn; i++) {
+            for (let j = minRow; j <= maxRow; j++) {
                 if (!Utils.isEmpty(renderingConfiguration)) {
                     if (renderingConfiguration.showGrid) {
                         context.strokeStyle = Constant.Color.RED;
                         context.strokeRect(
-                            x * grid.cellW,
-                            y * grid.cellH,
+                            i * grid.cellW,
+                            j * grid.cellH,
                             grid.cellW,
                             grid.cellH);
                     }
@@ -74,8 +74,8 @@ namespace MapManager {
                         context.globalAlpha = 0.4;
                         context.strokeStyle = Constant.Color.GREY;
                         context.strokeRect(
-                            x * grid.cellW,
-                            y * grid.cellH,
+                            i * grid.cellW,
+                            j * grid.cellH,
                             grid.cellW,
                             grid.cellH);
                         context.restore();
@@ -84,9 +84,53 @@ namespace MapManager {
                         context.fillStyle = Constant.Color.RED;
                         context.font = "bold 10px Arial";
                         context.fillText(
-                            x + "," + y,
-                            x * grid.cellW + 1,
-                            y * grid.cellH + 10);
+                            i + "," + j,
+                            i * grid.cellW + 1,
+                            j * grid.cellH + 10);
+                    }
+                    if (renderingConfiguration.showBlocks && !Utils.isEmpty(map.blocks)) {
+                        context.save();
+                        context.globalAlpha = 0.9;
+                        context.fillStyle = Constant.Color.YELLOW;
+                        let blockMarkSize = 6;
+                        let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
+                        let blockValue: number = map.blocks[j * map.width + i];
+                        
+                        if (blockValue > 0) {
+                            if(Utils.isBlocked(blockValue, BlockDirection.UP)) {
+                                context.fillRect(
+                                    (i + 0.5) * grid.cellW - blockMarkHalfSize,
+                                    j * grid.cellH,
+                                    blockMarkSize,
+                                    blockMarkSize
+                                );   
+                            }
+                            if(Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
+                                context.fillRect(
+                                    (i + 0.5) * grid.cellW - blockMarkHalfSize,
+                                    (j + 1) * grid.cellH - blockMarkSize,
+                                    blockMarkSize,
+                                    blockMarkSize
+                                );
+                            }
+                            if(Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
+                                context.fillRect(
+                                    i * grid.cellW,
+                                    (j + 0.5) * grid.cellH - blockMarkHalfSize,
+                                    blockMarkSize,
+                                    blockMarkSize
+                                );
+                            }
+                            if(Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
+                                context.fillRect(
+                                    (i + 1) * grid.cellW - blockMarkSize,
+                                    (j + 0.5) * grid.cellH - blockMarkHalfSize,
+                                    blockMarkSize,
+                                    blockMarkSize
+                                );
+                            }
+                        }
+                        context.restore();
                     }
                 }
             }
@@ -96,17 +140,16 @@ namespace MapManager {
     export function renderGlobalUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
         if (!Utils.isEmpty(renderingConfiguration)) {
             if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectPointStart)) {
-                var x = renderingConfiguration.selectPointStart.x * grid.cellW;
-                var y = renderingConfiguration.selectPointStart.y * grid.cellH;
-
-                var w;
-                var h;
+                let x = renderingConfiguration.selectPointStart.x * grid.cellW;
+                let y = renderingConfiguration.selectPointStart.y * grid.cellH;
+                let w;
+                let h;
                 if (Utils.isEmpty(renderingConfiguration.selectPointEnd)) {
                     h = grid.cellH;
                     w = grid.cellW;
                 } else {
-                    var x2 = renderingConfiguration.selectPointEnd.x * grid.cellW;
-                    var y2 = renderingConfiguration.selectPointEnd.y * grid.cellH;
+                    let x2 = renderingConfiguration.selectPointEnd.x * grid.cellW;
+                    let y2 = renderingConfiguration.selectPointEnd.y * grid.cellH;
                     if (x > x2) {
                         w = x - x2;
                         x = x2;
@@ -147,7 +190,6 @@ namespace MapManager {
             var newColumns = [];
             for (let n = 0; n < newWidth - oldWidth; n++) {
                 newColumns[n] = null;
-                
             }
         }
 
@@ -186,7 +228,7 @@ namespace MapManager {
     }
     
     export function getActors(map: IMap) {
-        let actors: IActor[] = new Array();
+        let actors: IActor[] = [];
         if(!Utils.isEmpty(map.layers)) {
             for (let i = 0; i < map.layers.length; i++) {
                 let layer = map.layers[i];
@@ -197,9 +239,48 @@ namespace MapManager {
         }
         return actors;   
     }
+    
+    /**
+     * Read the block in every map layer, and save them in the map.block array
+     */
+    export function loadBlocks(map: IMap) {
+        if(!Utils.isEmpty(map.layers) && !Utils.isEmpty(map.tileset.blocks)) {
+            map.blocks = [];
+            for (let j = 0; j < map.height * map.width; j++) {
+                map.blocks[j] = 0;
+            }
+            for (let i = 0; i < map.layers.length; i++) {
+                let layer = map.layers[i];
+                if (!Utils.isEmpty(layer.data)) {
+                    for (let j = 0; j < layer.data.length; j++) {
+                        let tileCell = layer.data[j];
+                        let blockValue = 0;
+                        if(tileCell !== null && tileCell < map.tileset.blocks.length) {
+                           blockValue = map.tileset.blocks[tileCell];
+                        }
+                        map.blocks[j] |= blockValue;
+                    }
+                }
+            }
+        }
+    }
+    
+    export function isDirectionBlocked(map: IMap, i: number, j: number, direction: DirectionEnum): boolean {
+        switch (direction) {
+            case DirectionEnum.UP:
+                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.UP) || Utils.isBlocked(map.blocks[(j - 1) * map.width + i], BlockDirection.DOWN);
+            case DirectionEnum.DOWN:
+                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.DOWN) || Utils.isBlocked(map.blocks[(j + 1) * map.width + i], BlockDirection.UP);
+            case DirectionEnum.LEFT:
+                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.LEFT) || Utils.isBlocked(map.blocks[j * map.width + i - 1], BlockDirection.RIGHT);
+            case DirectionEnum.RIGHT:
+                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.RIGHT) || Utils.isBlocked(map.blocks[j * map.width + i + 1], BlockDirection.LEFT);
+        };
+        return false;
+    }
 
     export function getNewMap(name: string): IMap {
-        var map: IMap = {
+        return {
             "id": null,
             "name": name,
             "height": 20,
@@ -245,17 +326,7 @@ namespace MapManager {
                     "y": 0
                 }],
             "nextobjectid": 2,
-            "tileset":
-            {
-                "firstgid": 1,
-                "image": "002-Woods01.png",
-                "imageheight": 800,
-                "imagewidth": 256,
-                "name": "Bosco",
-                "block": null,
-                "over": null
-            }
+            "tile": "002-Woods01.png"
         };
-        return map;
     }
 }

@@ -31,7 +31,7 @@ class DynamicScene extends AbstractScene {
         let time = Utils.now();
         if(!Utils.isEmpty(this.hero)) {
             ActorManager.update(this.hero, time);
-            ActorManager.manageMovements(this.grid, this.hero, function(w: number, h: number) {
+            ActorManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
             }, function(w: number, h: number) {
@@ -43,7 +43,7 @@ class DynamicScene extends AbstractScene {
         if (!Utils.isEmpty(this.events)) {
             for (let actor of this.events) {
                 ActorManager.update(actor, time);
-                ActorManager.manageMovements(this.grid, actor, function(){}, function(){});
+                ActorManager.manageMovements(this.map, this.grid, actor, function(){}, function(){});
             }
         }
         
@@ -113,7 +113,7 @@ class DynamicScene extends AbstractScene {
     }
 
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        MapManager.renderUI(this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 
     public loadSave(save: ISave, callback: IBooleanCallback) {

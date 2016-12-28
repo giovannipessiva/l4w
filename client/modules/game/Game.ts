@@ -107,7 +107,7 @@ namespace Game {
             scene.toggleFPS();
         };
         inputCallbackMap[Input.Keys.F2] = function(e) {
-            scene.toggleGrid();
+            scene.toggleGridMode();
         };
         inputCallbackMap[Input.Keys.F3] = function(e) {
             scene.toggleCellNumbering();

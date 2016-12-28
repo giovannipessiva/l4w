@@ -81,7 +81,7 @@ app.get('/data/:type/:file', function(request, response) {
     var file = request.params.file;
     var type = request.params.type;
 	// FIXME gestione temporanea, in attesa di passare tutto su DB
-	if (type !== "map" && type !== "save") {
+	if (type !== "map" && type !== "save" && type !== "tileset") {
 		var filePath = path.resolve(__dirname + '/../client/data/' + type);
 		utils.sendFile(filePath, file, response);
 		return;

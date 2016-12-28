@@ -31,7 +31,7 @@ class StaticGrid extends AbstractGrid {
 
         switch (this.gridType) {
             case GridTypeEnum.mapper:
-                this.canvasScales = new Array();
+                this.canvasScales = [];
                 this.canvasScales.push(props.get("canvasScaleD"));
                 this.canvasScales.push(props.get("canvasScaleC"));
                 this.canvasScales.push(props.get("canvasScaleB"));

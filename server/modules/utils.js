@@ -19,6 +19,8 @@ module.exports = {
             response.type('application/json');
         } else if (this.endsWith(file, ".properties")) {
             response.type("text/x-java-properties");
+        } else if (this.endsWith(file, ".js")) {
+            response.type("text/javascript");
         }
         response.sendFile(
             path + "/" + file,
