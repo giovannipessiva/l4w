@@ -41,15 +41,24 @@ app.get('/edit', function(request, response) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	} else {
 		database.logUserSessionAccess(session.getUser(request));
-		utils.sendFile(__dirname + '/views/', 'edit.html', response);
+		utils.sendFile(__dirname + '/views/', 'hub.html', response);
 	}
 });
 app.post('/edit', function(request, response) {
 	session.doLogin(request,response,function() {
-		utils.sendFile(__dirname + '/views/', 'edit.html', response);
+		utils.sendFile(__dirname + '/views/', 'hub.html', response);
 	}, function() {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	});
+});
+app.get('/edit/:editor', function(request, response) {
+	if(!session.isAuthenticated(request)) {
+		utils.sendFile(__dirname + '/views/', 'auth.html', response);
+	} else {
+		database.logUserSessionAccess(session.getUser(request));
+		let editor = request.params.editor;
+		utils.sendFile(__dirname + '/views/editor/', editor + ".html", response);
+	}
 });
 
 app.get('/logout', function(request, response) {

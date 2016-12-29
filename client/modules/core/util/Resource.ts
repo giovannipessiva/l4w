@@ -2,14 +2,16 @@
 ///<reference path="Commons.ts" />
 ///<reference path="Constant.ts" />
 
+declare var base_path: string;
+
 /**
  * Module for resources loading
  */
 namespace Resource {
 
-    const DATA_PATH = "data/";
-    const ASSET_PATH = "assets/";
-    const EDIT_PATH = "edit/";
+    const DATA_PATH = base_path + "data/";
+    const ASSET_PATH = base_path + "assets/";
+    const EDIT_PATH = base_path + "edit/";
     
     const CACHE_SEPARATOR = "@";
     const DEFAULT_NAME = "404.png";

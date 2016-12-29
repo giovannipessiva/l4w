@@ -3,6 +3,8 @@
 /// <reference path="../core/util/Resource.ts" />
 /// <reference path="../core/util/Commons.ts" />
 
+declare var base_path: string;
+
 namespace EditPage {
 
     export const PAGE_TITLE = document.title;
@@ -19,7 +21,7 @@ namespace EditPage {
             "core": {
                 "animation": 0,
                 "data": {
-                    "url": "data/map",
+                    "url": base_path + "data/map",
                     "dataType": "json"
                 },
                 "check_callback": true,
@@ -107,7 +109,7 @@ namespace EditPage {
     }
 
     function loadTiles() {
-        $.getJSON("data/resources/tiles.json", function(data) {
+        $.getJSON(base_path + "data/resources/tiles.json", function(data) {
             var sel = $("#tiles");
             for (var i = 0; i < data.length; i++) {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
@@ -117,7 +119,7 @@ namespace EditPage {
     }
 
     export function loadNews() {
-        $.getJSON("news", function(data) {
+        $.getJSON(base_path + "news", function(data) {
             var news = $("#news");
             //TODO manage json response
         });

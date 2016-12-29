@@ -71,7 +71,9 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
+        if(!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset)) {
+            this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
+        }
         MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
         this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);

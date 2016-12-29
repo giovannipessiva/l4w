@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>L4W Mapper</title>
+<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+<link rel='icon' href='style/favicon/edit.ico' />
+
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<script type='text/javascript'>
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+		window.location = "logout";
+    });
+}
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-18315891-3', 'auto');
+ga('send', 'pageview');
+</script>
+
+<link rel="stylesheet" type="text/css" href="../style/l4w.css">
+
+</head>
+<body>
+<div style="position:fixed;top:10px;left:10px;">
+    <a href="maps"><div class="editor">Map</div></a>
+    <a href="tilesets"><div class="editor">Tileset</div></a>
+</div>
+</body>
+</html>
