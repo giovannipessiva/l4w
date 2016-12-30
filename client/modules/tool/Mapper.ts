@@ -2,7 +2,7 @@
 /// <reference path="../core/util/Utils.ts" />
 /// <reference path="../core/util/Constant.ts" />
 /// <reference path="../core/util/Errors.ts" />
-/// <reference path="EditPage.ts" />
+/// <reference path="MapperPage.ts" />
 
 namespace Mapper {
 
@@ -38,17 +38,17 @@ namespace Mapper {
     }
     
     export function reloadMap() {
-        let mapId = EditPage.getActiveMap();
+        let mapId = MapperPage.getActiveMap();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         MapManager.loadMap(mapId, canvas, function(map: IMap) {
             mapper.setMap(map, function() {
-                EditPage.changeEditState(false);
+                MapperPage.changeEditState(false);
             });
         });
     }
 
     export function saveMap(callback: IBooleanCallback = null) {
-        var mapId = EditPage.getActiveMap();
+        var mapId = MapperPage.getActiveMap();
         var mapJSON = JSON.stringify(this.mapper.getMap());
         Resource.save(mapId+"", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
             if(callback !== null) {
@@ -92,7 +92,7 @@ namespace Mapper {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
                     if (scene.apply(x, y)) {
-                        EditPage.changeEditState(true);
+                        MapperPage.changeEditState(true);
                     }
                 } else {
                     scene.select(x, y);
@@ -108,7 +108,7 @@ namespace Mapper {
                 // Ongoing action
                 if (mouseButton === Input.MouseButtons.LEFT) {
                     if(scene.apply(x, y)) {
-                        EditPage.changeEditState(true);
+                        MapperPage.changeEditState(true);
                     }
                 } else {
                     scene.selectEnd(x, y);
@@ -142,18 +142,18 @@ namespace Mapper {
     };
 
     export function setMode(editMode: Constant.EditMode) {
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + "0")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + "1")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_MODE + editMode)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + editMode)).disabled = true;
         mapper.setEditMode(editMode);
     };
 
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "0")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "1")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "2")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + "3")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(EditPage.BUTTON_ID_LAYER + layerIndex)).disabled = true;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "0")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "2")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "3")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
     };
 }

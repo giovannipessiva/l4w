@@ -29,7 +29,7 @@ requirejs([base_path + "lib/jquery.min.js"],function($){
 });
 
 function finishedLoading(){
-    EditPage.start();
+    MapperPage.start();
 };
 
 function signOut() {
@@ -80,8 +80,8 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="EditPage.save();" disabled="true">Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="EditPage.reload();" disabled="true">Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="MapperPage.save();" disabled="true">Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="MapperPage.reload();" disabled="true">Reload</button></td>
 			</tr>
 		</table>
 	</div>
@@ -95,7 +95,7 @@ ga('send', 'pageview');
 			<tr>
 				<td>Tile</td>
 				<td>
-					<select id="tiles" onchange="EditPage.changeTile();"></select>
+					<select id="tiles" onchange="MapperPage.changeTile();"></select>
 				</td>
 				<td>
 				</td>
@@ -108,7 +108,7 @@ ga('send', 'pageview');
 					<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
 				</td>
 				<td>
-					<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
+					<button type="submit" onclick="MapperPage.changeSize();">&#8634;</button>
 				</td>
 			</tr>
 		</table>

@@ -14,6 +14,17 @@ app.use(compression());
 app.use(session.init());
 app.set("port",(process.env.PORT || 5000));
 
+// Middleware
+app.use(function(req, res, next) {
+	// Remove trailing slash
+    if (req.path.substr(-1) === "/" && req.path.length > 1) {
+        var query = req.url.slice(req.path.length);
+        res.redirect(301, req.path.slice(0, -1) + query);
+    } else {
+        next();
+    }
+});
+
 // Views redirection
 app.get('/', function(request, response) {
 	if(!utils.isEmpty(request.query.logout) && request.query.logout === "1") {

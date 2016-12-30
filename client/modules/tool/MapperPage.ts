@@ -5,7 +5,7 @@
 
 declare var base_path: string;
 
-namespace EditPage {
+namespace MapperPage {
 
     export const PAGE_TITLE = document.title;
     export const BUTTON_ID_MODE = "mode";
@@ -137,7 +137,7 @@ namespace EditPage {
     export function save() {
         Mapper.saveMap(function(result1) {
             if (result1) {
-                EditPage.changeEditState(false);
+                MapperPage.changeEditState(false);
                 TilePicker.saveData(function(result2) {
                     if (!result2) {
                         console.error("Salvataggio fallito");

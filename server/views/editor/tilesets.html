@@ -15,21 +15,19 @@
 var base_path = "../";
 
 requirejs([base_path + "lib/jquery.min.js"],function($){
-    requirejs([base_path + "lib/jstree.min.js"],function(jstree){
-        requirejs([base_path + "js/l4w.min"],function(l4w){
+    requirejs([base_path + "js/l4w.min"],function(l4w){
+        finishedLoading();
+    },function(err){
+        // If min version is unavailable, use the full version
+        console.log("Minified version unavailable, using full script");
+        requirejs([base_path + "js/l4w"],function(l4w){
             finishedLoading();
-        },function(err){
-            // If min version is unavailable, use the full version
-            console.log("Minified version unavailable, using full script");
-            requirejs([base_path + "js/l4w"],function(l4w){
-                finishedLoading();
-            });
         });
     });
 });
 
 function finishedLoading(){
-    EditPage.start();
+    TilesetterPage.start();
 };
 
 function signOut() {
@@ -48,7 +46,6 @@ ga('create', 'UA-18315891-3', 'auto');
 ga('send', 'pageview');
 </script>
 
-<link rel="stylesheet" type="text/css" href="../style/jstree/style.min.css">
 <link rel="stylesheet" type="text/css" href="../style/l4w.css">
 
 </head>
@@ -72,47 +69,21 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="EditPage.save();" disabled="true">Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="EditPage.reload();" disabled="true">Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="TilesetterPage.save();" disabled="true">Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="TilesetterPage.reload();" disabled="true">Reload</button></td>
 			</tr>
 		</table>
 	</div>
-	<div style="border:1px solid black">
-		<table>
-			<tr><td id="mapPanel"></td>
-		</table>
-	</div>
-	<div id="mapDetailPanel" style="display:none;border:1px solid black">
+	<div id="mapDetailPanel" style="border:1px solid black">
 		<table>
 			<tr>
 				<td>Tile</td>
 				<td>
-					<select id="tiles" onchange="EditPage.changeTile();"></select>
+					<select id="tiles" onchange="TilesetterPage.changeTile();"></select>
 				</td>
 				<td>
 				</td>
 			</tr>
-			<tr>
-				<td>Size</td>
-				<td>
-					<input id="mapSizeW" type="number" name="width" min="21" max="999" step="1" style="width:3em">
-					 x 
-					<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
-				</td>
-				<td>
-					<button type="submit" onclick="EditPage.changeSize();">&#8634;</button>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div style="border:1px solid black">
-		<table>
-		<tr>
-		<td><button id="layer0" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
-		<td><button id="layer1" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
-		<td><button id="layer2" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>
-		<td><button id="layer3" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.EVENTS);"><i>Events</i></button></td>
-		</tr>
 		</table>
 	</div>
 </div>
