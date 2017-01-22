@@ -4,17 +4,9 @@ node_js:
 
 sudo:
   required
-before_install:
-# Repo for newer Node.js versions
-- curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-# Repo for Yarn
-- sudo apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
-- echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-- sudo apt-get update -qq
-- sudo apt-get install -y -qq yarn
+
 cache:
-  directories:
-  - $HOME/.yarn-cache
+  yarn: true
 
 install:
 - yarn add grunt
@@ -22,14 +14,19 @@ install:
 - yarn add typescript
 - yarn add grunt-ts
 - yarn install
+
 script:
 - grunt travis
+
 after_success:
 - bash post_build.sh
+
 after_failure:
 - cat client/l4w.js
+
 env:
   global:
     secure: "GNWofqQuYRtxa2ckxIBnWj8OaVJ190Ip4D/3Hqg3VD7w6wmtLgnbsXfidUMdZrLjN20FwGzCMF30H23yPt1AUIOJ4kQVJl9/sD4As99IAxlmOr5c7UhaOBjjyZKfQ3Q0TEkdpQggS1PuRB11kUpGHqPCa1QBKNfPb5Z+2PygAF3/NN/FYyrrlKJ5q3fl2ZwOYmreXC7dn6Yzr83QmfdS0SGGsCD5svaXOMCKz6kZInW/98scgbZj2iTxvcmNrusaZZYn/2ib6uCWDIwdQkmknXVS2d5qr4CnBBBPW0mEIEPU4UMbEy9a6PyVtWCqWETKcoy+k6Wo4jb7DowD1/bJLLhyvPSG6laH5en5CGMj0kSUBi0bKTWTO/3ntj1rcEun5bl5Ki/4WtUcA5eXHqLN6VdWCDER+q5HKiewrvralazMAXhfevw0zIxJe6RSwFMxdpls2SjGiEJXfu2DpfI0rE/Cvg6AkBm+wmn3mUbEKKF/Ly4h4PCkXor4RM/EL14ucBJrYlqryayP/CVheqGDXVSvZB7pvC6tBS7MccjyIG87WHd6mwZsfQ0W/LuSsz8gM8RrFm84ayjf7Zk3YhZ6/dwWsFJa8ComPxkrJIhhm9lOfB+QCvLJEFb8UHeYkmNqbRoz2uDk3y6/GQz/0DHNF0E3FhdrHtbH6RPcduP+xDs="
+
 notifications:
   email: false
