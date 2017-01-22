@@ -8,12 +8,12 @@ sudo:
 cache:
   yarn: true
 
-install:
-- yarn install
+before-script:
 - yarn add grunt
 - yarn add grunt-cli
 - yarn add typescript
 - yarn add grunt-ts
+- yarn install
 
 script:
 - grunt travis
