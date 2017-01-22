@@ -9,12 +9,10 @@ namespace TilesetterPage {
     export const BUTTON_ID_MODE = "mode";
     export const BUTTON_ID_LAYER = "layer";
 
-    let flagFirstLoad: boolean = true;
     let flagEdited: boolean = false;
 
     export function start() {
         Compatibility.check(); 
-        var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         
         // Resize the panel to match the tileset
         var resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {

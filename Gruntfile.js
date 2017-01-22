@@ -19,7 +19,7 @@ module.exports = function(grunt) {
                 options: {
                     target: "es5",
                     sourceMap: false,
-                    fast: "never"
+                    additionalFlags: "--noUnusedParameters --noUnusedLocals"
                 }
             }
         },

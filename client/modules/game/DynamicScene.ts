@@ -130,7 +130,7 @@ class DynamicScene extends AbstractScene {
                 console.log(scene.events);
             }
             callback(result);
-        }
+        };
 
         let mapId;
         let hero: ICell;
@@ -145,7 +145,7 @@ class DynamicScene extends AbstractScene {
             } else {
                 // Leave current map
                 callback(false);
-                return
+                return;
             }
         } else {
             // Load map from save
@@ -153,7 +153,6 @@ class DynamicScene extends AbstractScene {
             hero = save.hero;
         }
         
-        var scene = this;
         this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
         MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
             scene.setMap(map, function() {

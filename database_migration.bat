@@ -1,6 +1,6 @@
 @echo off
 
-echo Staring migration...
+echo Starting migration from Production to localhost...
 
 set local_db=l4w
 set local_user=postgres
