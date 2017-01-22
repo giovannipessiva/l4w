@@ -9,11 +9,11 @@ cache:
   yarn: true
 
 install:
+- yarn install
 - yarn add grunt
 - yarn add grunt-cli
 - yarn add typescript
 - yarn add grunt-ts
-- yarn install
 
 script:
 - grunt travis
