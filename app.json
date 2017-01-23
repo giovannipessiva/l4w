@@ -1,6 +1,17 @@
 {
   "name": "L4W",
   "description": "It's not ready yet",
+  "keywords": [
+    "game",
+    "game engine",
+    "game editor",
+    "rpg"
+    "canvas",
+    "HTML5",
+    "typescript",
+    "node.js"
+  ],
+  "website": "https://l4w.herokuapp.com",
   "repository": "https://github.com/giovannipessiva/l4w",
-  "keywords": ["game"]
+  "image": "heroku/nodejs"
 }
