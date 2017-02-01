@@ -1,5 +1,5 @@
 # l4w :cyclone: 
-A TypeScript engine + web editor for HTML5 tile-based games  
+A TypeScript engine + web editor for tile-based games
 (it's not ready yet)   
 
 [![Travis Build](https://travis-ci.org/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.org/giovannipessiva/l4w)
