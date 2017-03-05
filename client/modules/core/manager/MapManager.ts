@@ -61,34 +61,7 @@ namespace MapManager {
         for (let i = minColumn; i <= maxColumn; i++) {
             for (let j = minRow; j <= maxRow; j++) {
                 if (!Utils.isEmpty(renderingConfiguration)) {
-                    if (renderingConfiguration.showGrid) {
-                        context.strokeStyle = Constant.Color.RED;
-                        context.strokeRect(
-                            i * grid.cellW,
-                            j * grid.cellH,
-                            grid.cellW,
-                            grid.cellH);
-                    }
-                    if (renderingConfiguration.showEditorGrid) {
-                        context.save();
-                        context.globalAlpha = 0.4;
-                        context.strokeStyle = Constant.Color.GREY;
-                        context.strokeRect(
-                            i * grid.cellW,
-                            j * grid.cellH,
-                            grid.cellW,
-                            grid.cellH);
-                        context.restore();
-                    }
-                    if (renderingConfiguration.showCellNumbers) {
-                        context.fillStyle = Constant.Color.RED;
-                        context.font = "bold 10px Arial";
-                        context.fillText(
-                            i + "," + j,
-                            i * grid.cellW + 1,
-                            j * grid.cellH + 10);
-                    }
-                    if (renderingConfiguration.showBlocks && !Utils.isEmpty(map.blocks)) {
+                    if (renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
                         context.save();
                         context.globalAlpha = 0.9;
                         context.fillStyle = Constant.Color.YELLOW;
@@ -131,6 +104,33 @@ namespace MapManager {
                             }
                         }
                         context.restore();
+                    }
+                    if (renderingConfiguration.showGrid) {
+                        context.strokeStyle = Constant.Color.RED;
+                        context.strokeRect(
+                            i * grid.cellW,
+                            j * grid.cellH,
+                            grid.cellW,
+                            grid.cellH);
+                    }
+                    if (renderingConfiguration.showEditorGrid) {
+                        context.save();
+                        context.globalAlpha = 0.4;
+                        context.strokeStyle = Constant.Color.GREY;
+                        context.strokeRect(
+                            i * grid.cellW,
+                            j * grid.cellH,
+                            grid.cellW,
+                            grid.cellH);
+                        context.restore();
+                    }
+                    if (renderingConfiguration.showCellNumbers) {
+                        context.fillStyle = Constant.Color.RED;
+                        context.font = "bold 10px Arial";
+                        context.fillText(
+                            i + "," + j,
+                            i * grid.cellW + 1,
+                            j * grid.cellH + 10);
                     }
                 }
             }

@@ -115,6 +115,10 @@ namespace Game {
         inputCallbackMap[Input.Keys.F4] = function(e) {
             scene.toggleFocus();
         };
+        inputCallbackMap[Input.Keys.F5] = function(e: KeyboardEvent) {
+            scene.toggleBlocks();
+            e.preventDefault(); // Avoid page reloading
+        };
         var actionCallback = function(x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
             moveHero(x,y);
