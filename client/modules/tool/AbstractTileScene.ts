@@ -1,29 +1,21 @@
 /// <reference path="AbstractStaticScene.ts" />
 
 /**
- * Scene implementation for managing Tile Picker logics
+ * Abstract scene for managing Tileset logics
  */
-class TilePickerScene extends AbstractStaticScene {
+abstract class AbstractTileScene extends AbstractStaticScene {
 
-    private mapper: MapperScene;
     private width: number;
     private height: number;
 
-    constructor(grid: StaticGrid, heightPx: number, widthPx: number, callback: { (scene: TilePickerScene): void }) {
+    constructor(grid: StaticGrid, heightPx: number, widthPx: number) {
         super(grid);
-        callback(this);
         this.height = Math.floor(heightPx / grid.cellH);
         this.width = Math.floor(widthPx / grid.cellW);
-    }
-
-    setMapper(mapper: MapperScene) {
-        this.mapper = mapper;
+        this.renderingConfiguration.showBlocks = true;
     }
 
     select(x: number, y: number) {
-        if (!Utils.isEmpty(this.mapper)) {
-            this.mapper.cleanSelection();
-        }
         super.select(x, y);
     }
 

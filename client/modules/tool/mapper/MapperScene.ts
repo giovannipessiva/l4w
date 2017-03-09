@@ -1,4 +1,4 @@
-/// <reference path="AbstractStaticScene.ts" />
+/// <reference path="../AbstractStaticScene.ts" />
 /// <reference path="MapperPage.ts" />
 
 /**

@@ -1,5 +1,5 @@
-/// <reference path="../core/util/Resource.ts" />
-/// <reference path="../core/util/Commons.ts" />
+/// <reference path="../../core/util/Resource.ts" />
+/// <reference path="../../core/util/Commons.ts" />
 
 declare var base_path: string;
 
@@ -46,9 +46,15 @@ namespace TilesetterPage {
 
     export function changeTile() {
         let tile = $("#tiles").val();
-        TilePicker.loadTile(tile, function(tilePicker: TilePickerScene) {
+        Tilesetter.loadTile(tile, function(tilesetter: TilesetterScene) {
+            tilesetter.toggleBlocks(true);
         });
         changeEditState(true);
+    }
+    
+    export function changeTileEditMode() {
+        let editMode = $("#editModes").val();
+        //TODO trasforma in enum
     }
 
     export function save() {

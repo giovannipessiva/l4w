@@ -1,7 +1,7 @@
-/// <reference path="../interfaces/jstree.d.ts" />
-/// <reference path="../interfaces/jstree.d.extended.ts" />
-/// <reference path="../core/util/Resource.ts" />
-/// <reference path="../core/util/Commons.ts" />
+/// <reference path="../../interfaces/jstree.d.ts" />
+/// <reference path="../../interfaces/jstree.d.extended.ts" />
+/// <reference path="../../core/util/Resource.ts" />
+/// <reference path="../../core/util/Commons.ts" />
 
 declare var base_path: string;
 

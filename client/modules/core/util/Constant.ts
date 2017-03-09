@@ -29,4 +29,9 @@ namespace Constant {
         APPLY,
         ERASE
     }
+    
+    export enum TileEditMode {
+        NONE,
+        BLOCKS
+    }
 }
