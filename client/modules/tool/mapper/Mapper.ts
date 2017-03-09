@@ -20,7 +20,7 @@ namespace Mapper {
                 scene.setTilePicker(tilePicker);
                 mapper = scene;
                 MapManager.loadMap(mapId, canvas, function(map: IMap) {
-                    mapper.setMap(map, function() {
+                    mapper.changeMap(map, function() {
                         mapper.start(canvas);
                     });
                 });
@@ -29,7 +29,7 @@ namespace Mapper {
     }
 
     export function changeTile(tile: string, tilePicker: TilePickerScene) {
-        mapper.setTile(tile, function(scene) { });
+        mapper.changeTile(tile, function(scene) { });
         mapper.setTilePicker(tilePicker);
     }
     
@@ -41,7 +41,7 @@ namespace Mapper {
         let mapId = MapperPage.getActiveMap();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         MapManager.loadMap(mapId, canvas, function(map: IMap) {
-            mapper.setMap(map, function() {
+            mapper.changeMap(map, function() {
                 MapperPage.changeEditState(false);
             });
         });

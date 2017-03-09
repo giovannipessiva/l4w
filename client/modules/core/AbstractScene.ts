@@ -200,14 +200,14 @@ abstract class AbstractScene {
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }
 
-    setMap(map: IMap, callback: { (scene: AbstractScene): void }) {
+    changeMap(map: IMap, callback: { (scene: AbstractScene): void }) {
         var scene: AbstractScene = this;
         if (Utils.isEmpty(map)) {
             console.error("initialized map");
             console.trace();
         }
         scene.map = map;
-        scene.setTile(map.tile, function(scene) {
+        scene.changeTile(map.tile, function(scene) {
             setTimeout(function() {
                 MapManager.loadBlocks(scene.map);
             });
@@ -215,7 +215,7 @@ abstract class AbstractScene {
         });
     }
 
-    setTile(tile: string, callback: { (scene: AbstractScene): void }) {
+    changeTile(tile: string, callback: { (scene: AbstractScene): void }) {
         var scene: AbstractScene = this;
         TilesetManager.loadTileset(tile, this.context, function(json) {
             scene.map.tileset = json;

@@ -11,6 +11,11 @@ class TilesetterScene extends AbstractTileScene {
         super(grid, heightPx, widthPx);
         callback(this);
         this.changeTileEditMode(tileEditMode);
+        
+        // Init the map for rendering blocks
+        this.map.width = this.getSceneWidth();
+        this.map.height = this.getSceneHeight();
+        this.map.blocks = [];
     }
 
     changeTileEditMode(tileEditMode: Constant.TileEditMode) {

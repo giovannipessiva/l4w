@@ -155,7 +155,7 @@ class DynamicScene extends AbstractScene {
         
         this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
         MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
-            scene.setMap(map, function() {
+            scene.changeMap(map, function() {
                 scene.resetTranslation();
                 scene.focus = scene.grid.mapCellToCanvas(hero);
                 callback(true);

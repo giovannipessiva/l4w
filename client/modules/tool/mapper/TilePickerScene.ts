@@ -10,7 +10,6 @@ class TilePickerScene extends AbstractTileScene {
     constructor(grid: StaticGrid, heightPx: number, widthPx: number, callback: { (scene: TilePickerScene): void }) {
         super(grid, heightPx, widthPx);
         callback(this);
-        this.renderingConfiguration.showBlocks = true;
     }
 
     setMapper(mapper: MapperScene) {
