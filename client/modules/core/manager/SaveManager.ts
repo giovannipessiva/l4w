@@ -6,7 +6,7 @@
  */
 namespace SaveManager {
 
-	export function getNewSave(name: string): ISave {
+    export function getNewSave(name: string): ISave {
         var save: ISave = {
             id: 0,
             map: 0,
