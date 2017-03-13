@@ -7,7 +7,7 @@ var utils = require(__dirname + "/utils");
 module.exports = {
 		
 	isDevEnv: function() {
-		return "developement" === process.env.NODE_ENV;
+		return "development" === process.env.NODE_ENV;
 	},
 	
 	isAuthenticationDisabled: function() {
