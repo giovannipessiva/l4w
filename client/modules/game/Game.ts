@@ -20,13 +20,10 @@ namespace Game {
         Compatibility.check();
         
         // Register service worker
-        window.addEventListener("load", function() {
-            console.log("Registering ServiceWorker...");
-            navigator.serviceWorker.register(Workers.WORKER_URL).then(function(registration) {
-                console.log("ServiceWorker registration successful with scope: ", registration.scope);
-            }, function(err) {
-                console.warn("ServiceWorker registration failed: ", err);
-            });
+        navigator.serviceWorker.register(Workers.WORKER_URL).then(function(registration) {
+            console.log("ServiceWorker registration successful with scope: ", registration.scope);
+        }, function(err) {
+            console.warn("ServiceWorker registration failed: ", err);
         });
         
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
