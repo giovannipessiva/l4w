@@ -138,6 +138,12 @@ app.get('/style/:type/:file', function(request, response) {
     var filePath = path.resolve(__dirname + '/../server/views/style/'+type);
     utils.sendFile(filePath, file, response);
 });
+app.get("/workers/:script", function(request, response) {
+    var file = request.params.script;
+    var filePath = path.resolve(__dirname + "/../workers");
+    response.set("Service-Worker-Allowed", "..")
+    utils.sendFile(filePath, file, response);
+});
 
 // Server logic
 app.post('/edit/maps', function(request, response) {
@@ -149,7 +155,6 @@ app.post('/edit/maps', function(request, response) {
 		response.status(HttpStatus.FORBIDDEN).send("");
 	}
 });
-
 app.post('/edit/:type/:id', function(request, response) {
 	if(session.isAuthenticated(request)) {
 		var fileId = request.params.id;
@@ -168,7 +173,6 @@ app.post('/edit/:type/:id', function(request, response) {
 		response.status(HttpStatus.FORBIDDEN).send("");
 	}
 });
-
 app.get('/news', function(request, response) {
 	if(session.isAuthenticated(request)) {
 		database.getNews(session.getUser(request), response);

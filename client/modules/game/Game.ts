@@ -5,7 +5,6 @@
 /// <reference path="../core/model/Save.ts" />
 /// <reference path="../core/AbstractGrid.ts" />
 /// <reference path="../core/AbstractScene.ts" />
-/// <reference path="../interfaces/service-worker.d.ts" />
 /// <reference path="DynamicScene.ts" />
 /// <reference path="DynamicGrid.ts" />
 
@@ -18,13 +17,7 @@ namespace Game {
     
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
-        
-        // Register service worker
-        navigator.serviceWorker.register(Workers.WORKER_URL).then(function(registration) {
-            console.log("ServiceWorker registration successful with scope: ", registration.scope);
-        }, function(err) {
-            console.warn("ServiceWorker registration failed: ", err);
-        });
+        Workers.registerServiceWorker();
         
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
             scene = new DynamicScene(grid, canvas);

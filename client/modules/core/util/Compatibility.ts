@@ -9,6 +9,7 @@ namespace Compatibility {
     export function check() {
         canvas();
         serviceWorker();
+        webWorker();
         thirdPartyCookies();
     }
 
@@ -22,6 +23,12 @@ namespace Compatibility {
     function serviceWorker() {
         if (!("serviceWorker" in navigator)) {
             console.error("Service Workers are not supported");
+        }
+    }
+    
+    function webWorker() {
+        if(!("Worker" in window)) {
+            console.error("Web Workers are not supported");
         }
     }
 
