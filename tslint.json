@@ -13,7 +13,6 @@
         "no-use-before-declare": true,
         "no-var-keyword": false,
         "no-var-requires": true,
-        "promise-function-async": true,
         "quotemark": [true, "double"],
         "semicolon": true,
         "triple-equals": [true, "allow-null-check"],
