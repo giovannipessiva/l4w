@@ -1,9 +1,11 @@
 /// <reference path="../core/model/Commons.ts" />
 /// <reference path="../core/util/Input.ts" />
 /// <reference path="../core/util/Compatibility.ts" />
+/// <reference path="../core/util/Workers.ts" />
 /// <reference path="../core/model/Save.ts" />
 /// <reference path="../core/AbstractGrid.ts" />
 /// <reference path="../core/AbstractScene.ts" />
+/// <reference path="../interfaces/service-worker.d.ts" />
 /// <reference path="DynamicScene.ts" />
 /// <reference path="DynamicGrid.ts" />
 
@@ -16,6 +18,16 @@ namespace Game {
     
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
+        
+        // Register service worker
+        window.addEventListener("load", function() {
+            navigator.serviceWorker.register(Workers.WORKER_URL).then(function(registration) {
+                console.log("ServiceWorker registration successful with scope: ", registration.scope);
+            }).catch(function(err) {
+                console.warn("ServiceWorker registration failed: ", err);
+            });
+        });
+        
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
             scene = new DynamicScene(grid, canvas);
             initInput(canvas, scene, grid);

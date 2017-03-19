@@ -70,7 +70,7 @@ app.post('/edit', function(request, response) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	});
 });
-app.get('/edit/:editor', function(request, response) {
+app.get("/edit/:editor", function(request, response) {
 	if(!session.isAuthenticated(request)) {
 		utils.sendFile(__dirname + '/views/', 'auth.html', response);
 	} else {

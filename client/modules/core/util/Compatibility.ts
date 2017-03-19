@@ -8,6 +8,7 @@ namespace Compatibility {
 
     export function check() {
         canvas();
+        serviceWorker();
         thirdPartyCookies();
     }
 
@@ -15,6 +16,12 @@ namespace Compatibility {
         let elem = document.createElement("canvas");
         if (!(elem.getContext && elem.getContext("2d"))) {
             console.error("HTML5 canvas is not supported");
+        }
+    }
+    
+    function serviceWorker() {
+        if (!("serviceWorker" in navigator)) {
+            console.error("Service Workers are not supported");
         }
     }
 

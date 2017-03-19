@@ -1,4 +1,4 @@
-﻿// Type definitions for jsTree v3.0.9 
+// Type definitions for jsTree v3.0.9 
 // Project: http://www.jstree.com/
 // Definitions by: Adam Pluciński <https://github.com/adaskothebeast>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
