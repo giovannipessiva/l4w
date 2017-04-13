@@ -87,12 +87,12 @@ abstract class AbstractStaticScene extends AbstractScene {
             x2 = this.renderingConfiguration.selectPointEnd.x;
             y2 = this.renderingConfiguration.selectPointEnd.y;
             if (x1 > x2) {
-                var tmp = x1;
+                let tmp = x1;
                 x1 = x2;
                 x2 = tmp;
             }
             if (y1 > y2) {
-                var tmp = y1;
+                let tmp = y1;
                 y1 = y2;
                 y2 = tmp;
             }

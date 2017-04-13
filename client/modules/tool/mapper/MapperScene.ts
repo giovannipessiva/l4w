@@ -60,11 +60,11 @@ class MapperScene extends AbstractStaticScene {
                 }
                 var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
                 var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
-                for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
-                    for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
+                    for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
                         if (x + i < this.map.width) {
-                            var appliedTileOffset: number = i + j * tileColumns;
-                            var changedCellOffset: number = i + j * this.map.width;
+                            let appliedTileOffset: number = i + j * tileColumns;
+                            let changedCellOffset: number = i + j * this.map.width;
                             if(this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
                                 changed = true;
                                 this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
@@ -79,10 +79,10 @@ class MapperScene extends AbstractStaticScene {
                         x1:0, x2: 0, y1: 0, y2:0
                     };
                 }
-                for (var j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
-                    for (var i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
+                    for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
                         if (x + i < this.map.width) {
-                            var changedCellOffset: number = i + j * this.map.width;
+                            let changedCellOffset: number = i + j * this.map.width;
                             if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== null) {
                                 changed = true;
                                 this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = null;

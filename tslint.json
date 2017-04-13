@@ -10,11 +10,9 @@
         "no-internal-module": true,
         "no-require-imports": true,
         "no-string-literal": false,
-        "no-use-before-declare": true,
         "no-var-keyword": false,
         "no-var-requires": true,
         "quotemark": [true, "double"],
-        "semicolon": true,
         "triple-equals": [true, "allow-null-check"],
         "variable-name": true
     }
