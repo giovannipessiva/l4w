@@ -170,6 +170,26 @@ abstract class AbstractScene {
             this.renderingConfiguration.showBlocks = !this.renderingConfiguration.showBlocks;
         }
     }
+    
+    toggleAntialiasing(enable?: boolean) {
+        if (enable != null) {
+            this.renderingConfiguration.enableAntialiasing = enable;
+        } else {
+            this.renderingConfiguration.enableAntialiasing = !this.renderingConfiguration.enableAntialiasing;
+        }
+        if("mozImageSmoothingEnabled" in this.context) {
+            this.context["mozImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
+        }
+        if("webkitImageSmoothingEnabled" in this.context) {
+            this.context["webkitImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
+        }
+        if("msImageSmoothingEnabled" in this.context) {
+            this.context["msImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
+        }
+        if("imageSmoothingEnabled" in this.context) {
+            this.context["imageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
+        }
+    }
 
     updatePointer(i: number, j: number) {
         this.pointer = {

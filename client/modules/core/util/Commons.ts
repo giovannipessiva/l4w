@@ -25,6 +25,7 @@ class RenderConfiguration {
     showFocus: boolean = false;
     enableSelection: boolean = false;
     showBlocks: boolean = false;
+    enableAntialiasing: boolean = true;
 
     fps: number = 0;
     selectPointStart: IPoint;

@@ -122,6 +122,10 @@ namespace Game {
             scene.toggleBlocks();
             e.preventDefault(); // Avoid page reloading
         };
+        inputCallbackMap[Input.Keys.F6] = function(e: KeyboardEvent) {
+            scene.toggleAntialiasing();
+            e.preventDefault(); // Avoid focusing URL bar
+        };
         var actionCallback = function(x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
             moveHero(x,y);

@@ -32,6 +32,7 @@ namespace Input {
         static F3 = "114";
         static F4 = "115";
         static F5 = "116";
+        static F6 = "117";
     }
 
     export class MouseButtons {
