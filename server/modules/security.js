@@ -100,6 +100,9 @@ module.exports = {
 		res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.google.com https://*.google-analytics.com");
 		// Random referrer policy
 		res.setHeader("Referrer-Policy", "origin-when-cross-origin");
+		// Reduce information exposure
+		res.removeHeader("Server");
+		res.removeHeader("X-Powered-By");
 		next();
 	}
 }
