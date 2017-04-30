@@ -79,5 +79,22 @@ module.exports = {
 		} else {
 			return true; // Cookies will work only with https
 		}
+	},
+	
+	requestFilter: function(req, res, next) {
+		// Always redirect to https
+		if (!req.secure && req.get("x-forwarded-proto") !== "https"
+				&& process.env.NODE_ENV !== "development") {
+			// The 'x-forwarded-proto' check is for Heroku
+			return res.redirect("https://" + req.get("host") + req.url);
+		}
+		// Enable browser XSS protection
+		res.setHeader("X-XSS-Protection","1;mode=block");
+		// Prevent MIME-sniffing attacks
+		res.setHeader("X-Content-Type-Options","nosniff");
+		// Allow framing only from trusted sources
+		res.setHeader("X-Frame-Options", "ALLOW-FROM http://rpt.altervista.org");
+		//TODO configure CSP
+		next();
 	}
 }
