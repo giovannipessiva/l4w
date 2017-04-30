@@ -88,13 +88,18 @@ module.exports = {
 			// The 'x-forwarded-proto' check is for Heroku
 			return res.redirect("https://" + req.get("host") + req.url);
 		}
+		// Explicitly force HTTPS
+		res.setHeader("Strict-Transport-Security","max-age=31536000");
 		// Enable browser XSS protection
 		res.setHeader("X-XSS-Protection","1;mode=block");
-		// Prevent MIME-sniffing attacks
+		// Prevent MIME-sniffing attacks (definitely not useless)
 		res.setHeader("X-Content-Type-Options","nosniff");
 		// Allow framing only from trusted sources
 		res.setHeader("X-Frame-Options", "ALLOW-FROM http://rpt.altervista.org");
-		//TODO configure CSP
+		// Very basic CSP
+		res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.google.com https://*.google-analytics.com");
+		// Random referrer policy
+		res.setHeader("Referrer-Policy", "origin-when-cross-origin");
 		next();
 	}
 }
