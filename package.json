@@ -12,20 +12,20 @@
     "express": "^4.15",
     "express-session": "^1.15",
     "http-status-codes": "^1.1",
-    "pg": "^6.1",
+    "pg": "^6.2",
     "sequelize": "^3.30"
   },
   "devDependencies": {
     "grunt": "^1.0",
-    "grunt-contrib-uglify": "^2.3",
+    "grunt-contrib-uglify": "^3.0",
     "grunt-ts": "^5.5",
     "grunt-tslint": "^5.0",
     "sequelize-auto": "^0.4",
-    "tslint": "^5.1",
-    "typescript": "^2.2"
+    "tslint": "^5.2",
+    "typescript": "^2.3"
   },
   "engines": {
-    "node": "7.7"
+    "node": "7.9"
   },
   "repository": {
     "type": "git",
