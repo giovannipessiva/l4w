@@ -1,12 +1,18 @@
 {
   "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "name": "L4W",
   "short_name": "L4W",
   "display": "fullscreen",
   "icons": [
     {
-      "src": "favicon/mobile-icon.png",
+      "src": "favicon/mobile-icon_144.png",
       "sizes": "144x144",
+      "type": "image/png"
+    },
+	{
+      "src": "favicon/mobile-icon_192.png",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ],
