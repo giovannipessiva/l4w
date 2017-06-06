@@ -23,4 +23,4 @@ rm *.bat
 
 git add . --all
 git commit -m "Travis build"
-git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy
+git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy | sed -e 's/\/\/.*@github/\/\/[double secured]/g'
