@@ -51,10 +51,14 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-tslint");
 	
-	grunt.registerTask("optionalTasks", "tasks that can fail", function () {
+	grunt.registerTask("task_lint", "Execute tslint (can fail)", function () {
 	    grunt.option("force", true);
 	    grunt.task.run(["tslint"]);
 	});
-	grunt.registerTask("requiredTasks", ["ts:dev","uglify"]);
-	grunt.registerTask("travis", ["optionalTasks","requiredTasks"]);
+	grunt.registerTask("task_compile", "Execute ts (cannot fail)", "ts:dev");
+	grunt.registerTask("task_minify", "Execute uglify (can fail)", function () {
+	    grunt.option("force", true);
+	    grunt.task.run(["uglify"]);
+	});
+	grunt.registerTask("travis", ["task_lint","task_compile","task_minify"]);
 };
