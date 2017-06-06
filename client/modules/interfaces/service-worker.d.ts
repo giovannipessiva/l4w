@@ -15,8 +15,6 @@
  * @email tiernanc@gmail.com
  * @license: ISC
  */
-
-///<reference path="collections.es6.d.ts" />
  
 interface Navigator {
     serviceWorker: ServiceWorkerContainer;

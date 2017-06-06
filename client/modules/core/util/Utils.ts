@@ -1,5 +1,4 @@
 ///<reference path="../model/Commons.ts" />
-///<reference path="../../interfaces/collections.es6.d.ts" />
 
 /**
  * Module for generic utility methods
