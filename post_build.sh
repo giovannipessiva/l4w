@@ -23,4 +23,6 @@ rm *.bat
 
 git add . --all
 git commit -m "Travis build"
-git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy | sed -e 's/\/\/.*@github/\/\/[double secured]/g'
+git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy > git.log 2>&1
+echo git.log | sed -e 's/\/\/.*@github/\/\/[double secured]/'
+rm git.log
