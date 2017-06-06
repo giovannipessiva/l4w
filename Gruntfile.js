@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 src: ["client/modules/**/*.ts"],
                 out: "client/<%= pkg.name %>.js",
                 options: {
-                    target: "es5",
+                    target: "es6",
                     sourceMap: false,
                     additionalFlags: "--noUnusedParameters --noUnusedLocals"
                 }
