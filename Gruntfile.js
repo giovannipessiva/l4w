@@ -23,6 +23,17 @@ module.exports = function(grunt) {
                 }
             }
         },
+		
+		babel: {
+			options: {
+				presets: ['es2015']
+			},
+			dist: {
+				files: {
+					"client/<%= pkg.name %>.es5.js": "client/<%= pkg.name %>.js"
+				}
+			}
+		},
 	
 		uglify: {
 			options: {
@@ -50,6 +61,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-ts");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-tslint");
+	grunt.loadNpmTasks("grunt-babel");
 	
 	grunt.registerTask("task_lint", "Execute tslint (can fail)", function () {
 	    grunt.option("force", true);
@@ -58,7 +70,7 @@ module.exports = function(grunt) {
 	grunt.registerTask("task_compile", "Execute ts (cannot fail)", "ts:dev");
 	grunt.registerTask("task_minify", "Execute uglify (can fail)", function () {
 	    grunt.option("force", true);
-	    grunt.task.run(["uglify"]);
+	    grunt.task.run(["babel","uglify"]);
 	});
 	grunt.registerTask("travis", ["task_lint","task_compile","task_minify"]);
 };
