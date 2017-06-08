@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "grunt": "^1.0",
+    "grunt-babel": "^6.0",
     "grunt-contrib-uglify": "^3.0",
     "grunt-ts": "^5.5",
     "grunt-tslint": "^5.0",
