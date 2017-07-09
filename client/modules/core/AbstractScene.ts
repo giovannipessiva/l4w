@@ -71,7 +71,8 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        if(!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset)) {
+        if(!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset) && !Utils.isEmpty(this.map.tileset.imageData)) {
+            // Dont render if data is not initialized
             this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
         }
         MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
@@ -272,7 +273,7 @@ abstract class AbstractScene {
 
     protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         this.renderInterLayerElements(layerIndex, minRow, maxRow, minColumn, maxColumn);
-        var layer = this.map.layers[layerIndex];
+        let layer = this.map.layers[layerIndex];
         MapManager.renderLayer(this.grid, this.map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
     }
 

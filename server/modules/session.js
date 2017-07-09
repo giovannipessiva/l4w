@@ -15,6 +15,7 @@ module.exports = {
 		return Session({
 			cookie: {
 				secure: security.getSecureCookieSetting(),
+				sameSite: "lax",
 				maxAge: null
 			},
 			name: this.cookieName,
@@ -30,8 +31,12 @@ module.exports = {
 	},
 	
 	getUser: function(request) {
-		if(utils.isEmpty(request.session.user) && security.isAuthenticationDisabled()) {
-			return "-1";
+		if(utils.isEmpty(request.session.user)) {
+			if(security.isAuthenticationDisabled()) {
+				// Nel caso l'autenticazione sia disabilitata, forza l'utente 0
+				return "0";
+			}
+			return undefined;
 		}
 		return request.session.user;
 	},

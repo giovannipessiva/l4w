@@ -133,15 +133,12 @@ class DynamicScene extends AbstractScene {
         };
 
         let mapId;
-        let hero: ICell;
+        let hero: IActor;
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
                 mapId = "0"; // Load first map
-                hero = {
-                    i: 0,
-                    j: 1
-                };
+                hero = ActorManager.getNewHero();
             } else {
                 // Leave current map
                 callback(false);
@@ -153,7 +150,8 @@ class DynamicScene extends AbstractScene {
             hero = save.hero;
         }
         
-        this.hero = ActorManager.initTransientData(this.grid, ActorManager.getNewHero());
+        this.hero = ActorManager.initTransientData(this.grid, hero);
+
         MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
             scene.changeMap(map, function() {
                 scene.resetTranslation();
@@ -162,7 +160,8 @@ class DynamicScene extends AbstractScene {
             });
         });
     }
-
+    
+    //TODO move to SaveManager
     public getSave(): ISave {
         if (Utils.isEmpty(this.map) || Utils.isEmpty(this.focus)) {
             return null;
