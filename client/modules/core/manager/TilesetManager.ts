@@ -12,7 +12,7 @@ namespace TilesetManager {
                 callback(null);
             } else {
                 try {
-                    var tileset: ITileset = JSON.parse(resourceText);
+                    let tileset: ITileset = JSON.parse(resourceText);
                     callback(tileset);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {

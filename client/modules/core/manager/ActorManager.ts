@@ -70,7 +70,7 @@ namespace ActorManager {
                     case 3: charaX = charaWidth * 3; break;
                 }
             } else {
-                a.animationStartTime = null;    
+                a.animationStartTime = undefined;    
             }
             // Face the right direction
             let charaY: number = 0;
@@ -148,8 +148,8 @@ namespace ActorManager {
             let distY = a.target.y - (a.j * grid.cellH);
             if (distX === 0 && distY === 0) {
                 // Stop movement
-                a.movementStartTime = null;
-                a.target = null;
+                a.movementStartTime = undefined;
+                a.target = undefined;
             } else {
                 //TODO pathfinding ftw
                 let movementX = 0;
@@ -184,8 +184,8 @@ namespace ActorManager {
                     if(MapManager.isDirectionBlocked(map, a.i, a.j, a.direction)) {
                         movementY = 0;
                         // Blocked: stop the movement
-                        a.movementStartTime = null;
-                        a.target = null;
+                        a.movementStartTime = undefined;
+                        a.target = undefined;
                     }
                 } 
 
@@ -210,8 +210,8 @@ namespace ActorManager {
                     // Check If I am arrived, or a new target has been requested
                     if (!Utils.isEmpty(a.newTarget) || (a.position.x === a.target.x && a.position.y === a.target.y)) {
                         // Reset current movement
-                        a.movementStartTime = null;
-                        a.target = null;
+                        a.movementStartTime = undefined;
+                        a.target = undefined;
                     }
                 }
             }
@@ -221,7 +221,7 @@ namespace ActorManager {
         if (!Utils.isEmpty(a.newTarget) && Utils.isEmpty(a.movementStartTime)) {
             // Configure new movement
             a.target = a.newTarget;
-            a.newTarget = null;
+            a.newTarget = undefined;
             a.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
