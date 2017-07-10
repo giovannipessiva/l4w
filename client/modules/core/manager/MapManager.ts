@@ -1,14 +1,16 @@
 /// <reference path="../util/Constant.ts" />
 /// <reference path="../model/Map.ts" />
 /// <reference path="../AbstractGrid.ts" />
+/// <reference path="../manager/ActorManager.ts" />
 
 /**
  * Helper class for handling game maps
  */
 namespace MapManager {
     
-    export enum Pathfinder {
-        BASIC
+    export enum PathfinderEnum {
+        BASIC,
+        D_STAR_LITE
     }
     
     export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
@@ -283,9 +285,9 @@ namespace MapManager {
         return false;
     }
     
-    export function pathFinder(map: IMap, start: ICell, target: ICell, pathfinder: Pathfinder = Pathfinder.BASIC): DirectionEnum {
-        let distI = target.i - start.i;
-        let distJ = target.j - start.j;
+    export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.BASIC): DirectionEnum {
+        let distI = target.i - actor.i;
+        let distJ = target.j - actor.j;
         if (distI === 0 && distJ === 0) {
             // Stop
             return DirectionEnum.NONE;
@@ -293,8 +295,8 @@ namespace MapManager {
             let direction: DirectionEnum;
             //TODO more advanced pathfinding algorithms
             switch (pathfinder) {
-                case Pathfinder.BASIC:
-                    // Basic pathfinder, stop when it collides with blocks
+                case PathfinderEnum.BASIC:
+                    // Basic pathfinder
                     {
                         // Find out the first direction to check (the longest)
                         if (Math.abs(distI) > Math.abs(distJ)) {
@@ -304,14 +306,12 @@ namespace MapManager {
                                 direction = DirectionEnum.LEFT;
                             }
                             // If first direction is blocked, try second
-                            if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                            if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
                                 if (distJ > 0) {
                                     direction = DirectionEnum.DOWN;
                                 } else {
                                     direction = DirectionEnum.UP;
                                 }
-                            } else {
-                                return direction;
                             }
                         } else {
                             if (distJ > 0) {
@@ -320,22 +320,34 @@ namespace MapManager {
                                 direction = DirectionEnum.UP;
                             }
                             // If first direction is blocked, try second
-                            if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                            if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
                                 if (distI > 0) {
                                     direction = DirectionEnum.RIGHT;
                                 } else {
                                     direction = DirectionEnum.LEFT;
                                 }
-                            } else {
-                                return direction;
                             }
                         }
-                        // If second direction is blocked too, you are fucked
-                        if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                        if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
+                            // If second direction is blocked too, you are fucked
                             direction = DirectionEnum.NONE;
+                        } else {
+                            // Save direction in the path
+                            ActorManager.addDirectionToPath(actor, direction, 3);
+                            // Check if the pathfinder is in loop
+                            if(actor.path.length == 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0],actor.path[1])) {
+                                // If a block is detected, stop
+                                direction = DirectionEnum.NONE;    
+                            }
                         }
                     }
                     break;
+                case PathfinderEnum.D_STAR_LITE:
+                    // Advanced pathfinder
+                    {
+                        //TODO :-)
+
+                    }
             }
             return direction;
         }

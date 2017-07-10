@@ -25,4 +25,5 @@ interface IActor extends IActorData {
     newTarget?: IPoint; //New destination in pixels
     direction?: DirectionEnum; //Current direction
     animationStartTime?: number; //ms since last animation change
+    path?: DirectionEnum[]; //Path computed for current target
 }

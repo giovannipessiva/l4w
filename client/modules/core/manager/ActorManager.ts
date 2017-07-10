@@ -150,7 +150,7 @@ namespace ActorManager {
                 j: a.target.y / grid.cellH
                 
             };
-            let direction = MapManager.pathFinder(map, a, target);
+            let direction = MapManager.pathFinder(map, a, target); //FIXME il pathfinder va chiamato ad ogni nuovo passo
             let movementX = 0;
             let movementY = 0;
             let absMovement;
@@ -179,8 +179,7 @@ namespace ActorManager {
                     break;
                 case DirectionEnum.NONE:
                     // Stop movement
-                    a.movementStartTime = undefined;
-                    a.target = undefined;
+                    stopMovement(a);
                     break;
             };
             
@@ -207,8 +206,7 @@ namespace ActorManager {
                     // Check If I am arrived, or a new target has been requested
                     if (!Utils.isEmpty(a.newTarget) || (a.position.x === a.target.x && a.position.y === a.target.y)) {
                         // Reset current movement
-                        a.movementStartTime = undefined;
-                        a.target = undefined;
+                        stopMovement(a);
                     }
                 }
             }
@@ -226,6 +224,12 @@ namespace ActorManager {
         }
     }
     
+    function stopMovement(actor: IActor) {
+        actor.path = undefined;
+        actor.movementStartTime = undefined;
+        actor.target = undefined;
+    }
+    
     export function initTransientData(grid: AbstractGrid, a: IActor) : IActor {
         if(Utils.isEmpty(a.position)) {
             a.position = {
@@ -240,4 +244,16 @@ namespace ActorManager {
         return a;
     }
     
+    export function addDirectionToPath(a: IActor, direction: DirectionEnum, stackLimit?: number) {
+        if(a.path === undefined) {
+            a.path = [];    
+        }
+        // Salva solo i cambi di direzione
+        if(a.path[a.path.length - 1] !== direction) {
+            a.path.push(direction);
+        }
+        if(!Utils.isEmpty(stackLimit) && a.path.length > stackLimit) {
+            a.path.shift();    
+        }
+    }
 };
