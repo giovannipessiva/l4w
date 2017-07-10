@@ -144,52 +144,49 @@ namespace ActorManager {
                 // Check how much time do I have
                 timeToMove = Utils.now() - a.movementStartTime;
             }
-            let distX = a.target.x - (a.i * grid.cellW);
-            let distY = a.target.y - (a.j * grid.cellH);
-            if (distX === 0 && distY === 0) {
-                // Stop movement
-                a.movementStartTime = undefined;
-                a.target = undefined;
-            } else {
-                //TODO pathfinding ftw
-                let movementX = 0;
-                let movementY = 0;
-                let absMovement;
-                if (Math.abs(distX) > Math.abs(distY)) {
+            
+            let target: ICell = {
+                i: a.target.x / grid.cellW,
+                j: a.target.y / grid.cellH
+                
+            };
+            let direction = MapManager.pathFinder(map, a, target);
+            let movementX = 0;
+            let movementY = 0;
+            let absMovement;
+            switch (direction) {
+                case DirectionEnum.LEFT:
                     // Move horizontally (max 1 cell)
                     movementX = Math.min(grid.cellW, Math.floor(getMSpeed(a) * timeToMove));
                     absMovement = movementX;
-                    if (distX < 0) {
-                        movementX *= -1;
-                        a.direction = DirectionEnum.LEFT;
-                    } else {
-                        a.direction = DirectionEnum.RIGHT;
-                    }
-                    
-                    if(MapManager.isDirectionBlocked(map, a.i, a.j, a.direction)) {
-                        movementX = 0;
-                    }
-                }
-                if(movementX === 0) {
+                    movementX *= -1;
+                    break;
+                case DirectionEnum.RIGHT:
+                    // Move horizontally (max 1 cell)
+                    movementX = Math.min(grid.cellW, Math.floor(getMSpeed(a) * timeToMove));
+                    absMovement = movementX;
+                    break;
+                case DirectionEnum.UP:
                     // Move vertically (max 1 cell)
                     movementY = Math.min(grid.cellH, Math.floor(getMSpeed(a) * timeToMove));
                     absMovement = movementY;
-                    if (distY < 0) {
-                        movementY *= -1;
-                        a.direction = DirectionEnum.UP;
-                    } else {
-                        a.direction = DirectionEnum.DOWN;
-                    }
-                    
-                    if(MapManager.isDirectionBlocked(map, a.i, a.j, a.direction)) {
-                        movementY = 0;
-                        // Blocked: stop the movement
-                        a.movementStartTime = undefined;
-                        a.target = undefined;
-                    }
-                } 
-
+                    movementY *= -1;
+                    break;
+                case DirectionEnum.DOWN:
+                    // Move vertically (max 1 cell)
+                    movementY = Math.min(grid.cellH, Math.floor(getMSpeed(a) * timeToMove));
+                    absMovement = movementY;
+                    break;
+                case DirectionEnum.NONE:
+                    // Stop movement
+                    a.movementStartTime = undefined;
+                    a.target = undefined;
+                    break;
+            };
+            
+            if(direction !== DirectionEnum.NONE) {
                 // Move the hero
+                a.direction = direction;
                 a.position.x = a.i * grid.cellW + movementX;
                 a.position.y = a.j * grid.cellH + movementY;
                 onCoordinatesChange(movementX, movementY);

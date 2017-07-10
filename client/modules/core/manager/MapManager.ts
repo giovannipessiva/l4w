@@ -7,6 +7,10 @@
  */
 namespace MapManager {
     
+    export enum Pathfinder {
+        BASIC
+    }
+    
     export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
         Resource.load(mapId+"", Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
@@ -277,6 +281,64 @@ namespace MapManager {
                 return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.RIGHT) || Utils.isBlocked(map.blocks[j * map.width + i + 1], BlockDirection.LEFT);
         };
         return false;
+    }
+    
+    export function pathFinder(map: IMap, start: ICell, target: ICell, pathfinder: Pathfinder = Pathfinder.BASIC): DirectionEnum {
+        let distI = target.i - start.i;
+        let distJ = target.j - start.j;
+        if (distI === 0 && distJ === 0) {
+            // Stop
+            return DirectionEnum.NONE;
+        } else {
+            let direction: DirectionEnum;
+            //TODO more advanced pathfinding algorithms
+            switch (pathfinder) {
+                case Pathfinder.BASIC:
+                    // Basic pathfinder, stop when it collides with blocks
+                    {
+                        // Find out the first direction to check (the longest)
+                        if (Math.abs(distI) > Math.abs(distJ)) {
+                            if (distI > 0) {
+                                direction = DirectionEnum.RIGHT;
+                            } else {
+                                direction = DirectionEnum.LEFT;
+                            }
+                            // If first direction is blocked, try second
+                            if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                                if (distJ > 0) {
+                                    direction = DirectionEnum.DOWN;
+                                } else {
+                                    direction = DirectionEnum.UP;
+                                }
+                            } else {
+                                return direction;
+                            }
+                        } else {
+                            if (distJ > 0) {
+                                direction = DirectionEnum.DOWN;
+                            } else {
+                                direction = DirectionEnum.UP;
+                            }
+                            // If first direction is blocked, try second
+                            if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                                if (distI > 0) {
+                                    direction = DirectionEnum.RIGHT;
+                                } else {
+                                    direction = DirectionEnum.LEFT;
+                                }
+                            } else {
+                                return direction;
+                            }
+                        }
+                        // If second direction is blocked too, you are fucked
+                        if (MapManager.isDirectionBlocked(map, start.i, start.j, direction)) {
+                            direction = DirectionEnum.NONE;
+                        }
+                    }
+                    break;
+            }
+            return direction;
+        }
     }
 
     export function getNewMap(name: string): IMap {

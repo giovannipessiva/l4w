@@ -12,7 +12,8 @@ const enum DirectionEnum {
     UP,
     DOWN,
     LEFT,
-    RIGHT
+    RIGHT,
+    NONE
 };
 
 class BlockDirection {
