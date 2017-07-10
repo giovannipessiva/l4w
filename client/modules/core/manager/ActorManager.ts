@@ -55,7 +55,7 @@ namespace ActorManager {
             let charaX: number = 0;
             if(!Utils.isEmpty(a.target)) {
                 //If it's moving, change animation
-                if(a.animationStartTime === null) {
+                if(Utils.isEmpty(a.animationStartTime)) {
                     a.animationStartTime = Utils.now();
                 }
                 let animationTime = Utils.now() - a.animationStartTime;
@@ -63,7 +63,7 @@ namespace ActorManager {
                 if(!Utils.isEmpty(a.frequency)) {
                     frequency = a.frequency;
                 }
-                let position = Math.floor((animationTime * frequency) % 4);                
+                let position = Math.floor((animationTime * frequency) % 4);
                 switch(position) {
                     case 1: charaX = charaWidth; break;
                     case 2: charaX = charaWidth * 2; break;
