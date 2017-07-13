@@ -27,7 +27,7 @@
     "typescript": "^2.4"
   },
   "engines": {
-    "node": "8.1"
+    "node": "8.1.4"
   },
   "repository": {
     "type": "git",
