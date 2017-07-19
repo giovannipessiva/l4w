@@ -13,23 +13,29 @@ namespace Compatibility {
         thirdPartyCookies();
     }
 
-    function canvas() {
+    function canvas(): boolean {
         let elem = document.createElement("canvas");
         if (!(elem.getContext && elem.getContext("2d"))) {
             console.error("HTML5 canvas is not supported");
+            return false;
         }
+        return true;
     }
     
-    function serviceWorker() {
+    export function serviceWorker(): boolean {
         if (!("serviceWorker" in navigator)) {
             console.error("Service Workers are not supported");
+            return false;
         }
+        return true;
     }
     
-    function webWorker() {
+    export function webWorker(): boolean {
         if(!("Worker" in window)) {
             console.error("Web Workers are not supported");
+            return false;
         }
+        return true;
     }
 
     function thirdPartyCookies() {
