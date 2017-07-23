@@ -58,17 +58,17 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks("grunt-ts");
-    grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-tslint");
+    grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-babel");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
     
     grunt.registerTask("task_lint", "Execute tslint (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["tslint"]);
     });
     grunt.registerTask("task_compile", "Execute ts (cannot fail)", "ts:dev");
-    grunt.registerTask("task_minify", "Execute uglify (can fail)", function () {
+    grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);
     });

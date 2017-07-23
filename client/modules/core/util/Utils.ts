@@ -53,29 +53,17 @@ namespace Utils {
     }
     
     export function isDirectionsOpposed(d1: DirectionEnum, d2: DirectionEnum) {
-        switch (d1) {
-            case DirectionEnum.UP:
-                if (d2 === DirectionEnum.DOWN) {
-                    return true;
-                }
-                break;
-            case DirectionEnum.DOWN:
-                if (d2 === DirectionEnum.UP) {
-                    return true;
-                }
-                break;
-            case DirectionEnum.LEFT:
-                if (d2 === DirectionEnum.RIGHT) {
-                    return true;
-                }
-                break;
-            case DirectionEnum.RIGHT:
-                if (d2 === DirectionEnum.LEFT) {
-                    return true;
-                }
-                break;
+        return getOpposedDirections(d1) === d2;
+    }
+    
+    export function getOpposedDirections(d: DirectionEnum): DirectionEnum {
+        switch (d) {
+            case DirectionEnum.UP: return DirectionEnum.DOWN;
+            case DirectionEnum.DOWN: return DirectionEnum.UP;
+            case DirectionEnum.LEFT: return DirectionEnum.RIGHT;
+            case DirectionEnum.RIGHT: return DirectionEnum.LEFT;
         }
-        return false;
+        return DirectionEnum.NONE;
     }
     
     export function getRandomBoolean(): boolean {
