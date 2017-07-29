@@ -32,11 +32,15 @@ namespace Utils {
         return newMap;
     }
     
-    export function gIDToCell(gid: number, width: number): ICell {
+    export function gidToCell(gid: number, width: number): ICell {
         return {
             i: gid % width,
             j: Math.floor(gid / width)
         };
+    }
+     
+    export function cellToGid(cell: ICell, width: number): number  {
+        return cell.i + cell.j * width;
     }
     
     export function isBlocked(block: number, blockDirection: number): boolean {
