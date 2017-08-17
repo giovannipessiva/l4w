@@ -334,7 +334,7 @@ namespace MapManager {
                             // Save direction in the path
                             ActorManager.addDirectionToPath(actor, direction, 3);
                             // Check if the pathfinder is in loop
-                            if(actor.path.length == 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0],actor.path[1])) {
+                            if(actor.path.length === 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0],actor.path[1])) {
                                 // If a block is detected, stop
                                 direction = DirectionEnum.NONE;
                             }

@@ -150,7 +150,7 @@ namespace ActorManager {
                 j: a.target.y / grid.cellH
                 
             };
-            let direction = MapManager.pathFinder(map, a, target); //FIXME il pathfinder va chiamato ad ogni nuovo passo
+            let direction = MapManager.pathFinder(map, a, target); //FIXME il pathfinder va chiamato solamente ad ogni nuovo passo
             let movementX = 0;
             let movementY = 0;
             let absMovement;

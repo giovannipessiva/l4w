@@ -16,6 +16,8 @@ class TilesetterScene extends AbstractTileScene {
         this.map.width = this.getSceneWidth();
         this.map.height = this.getSceneHeight();
         this.map.blocks = [];
+        
+        //TODO carica in questa scene una mappa corrispondente ai blocchi di questo tileset
     }
 
     changeTileEditMode(tileEditMode: Constant.TileEditMode) {
