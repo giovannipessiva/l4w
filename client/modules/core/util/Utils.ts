@@ -70,6 +70,29 @@ namespace Utils {
         return DirectionEnum.NONE;
     }
     
+    /** Return the direction from start to target */
+    export function getDirection(target: ICell, start: ICell) {
+        let distI = target.i - start.i;
+        let distJ = target.j - start.j;
+        let direction: DirectionEnum;
+        if (Math.abs(distI) > Math.abs(distJ)) {
+            if (distI > 0) {
+                direction = DirectionEnum.RIGHT;
+            } else {
+                direction = DirectionEnum.LEFT;
+            }
+        } else {
+            if (distJ > 0) {
+                direction = DirectionEnum.DOWN;
+            } else if (distJ < 0) {
+                direction = DirectionEnum.UP;
+            } else {
+                direction = DirectionEnum.NONE;
+            }
+        }
+        return direction;
+    }
+    
     export function getRandomBoolean(): boolean {
         return Math.random() >= 0.5;
     }

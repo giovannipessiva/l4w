@@ -345,13 +345,15 @@ namespace MapManager {
                 case PathfinderEnum.D_STAR_LITE:
                     // Advanced pathfinder
                     {
-                        var S: IVertex[]; // List of all vertex
-                        var U: IVertex[]; // Priority queue of vertexs, ordered by key value
-                        var _g: number[];
-                        var _rhs: number[];
+                        var S: IVertex[]; // List of all vertices
+                        var U: IVertex[]; // Priority queue of vertices, ordered by key value
+                        var _g: number[]; // Estimate of the start distance of the vertices
+                        var _rhs: number[];  // One step lookahead estimate of g
+                        
                         const MAX = 9999; // Approximation of infinity
                         var s_start: IVertex;// Start vertex
                         var s_goal: IVertex; // Target vertex
+                        var s_last: IVertex;
                         let km; // Assuming constant edge costs, this will always be 0
 
                         var width = map.width;
@@ -362,38 +364,24 @@ namespace MapManager {
                         s_goal = {
                             cell: target
                         };
+                        
+                        // If the target has changed, flush cached data
+                        if (!Utils.isEmpty(map.dstarlitecache) && !isVertexEqual(map.dstarlitecache.s_goal, s_goal)) {
+                            map.dstarlitecache = undefined;
+                        }
 
-                        // Check if initial data has already been computed
+                        // Check if initial data has already been computed and cached
                         if (!Utils.isEmpty(map.dstarlitecache)) {
-                            // If the target has changed, flush data
-                            if (!isVertexEqual(map.dstarlitecache.s_goal, s_goal)) {
-                                map.dstarlitecache = undefined;
-                            }
                             S = map.dstarlitecache.S;
                             U = map.dstarlitecache.U;
                             _g = map.dstarlitecache.g;
                             _rhs = map.dstarlitecache.rhs;
                         } else {
-                            let s_last = s_start;
-                            S = [];
-                            // Populate S with a complete list of vertex (even blocked)
-                            for (let j = 0; j < map.height; j++) {
-                                for (let i = 0; i < map.width; i++) {
-                                    let v: IVertex = {
-                                        cell: {
-                                            i: i,
-                                            j: j
-                                        }
-                                    }
-                                    S.push(v);
-                                }
-                            }
-                            _g = [];
-                            _rhs = [];
                             initialize();
                             computeShortestPath();
                         }
                         
+                        // Find the successor vetex with lowes g value
                         // If (rhs(s_start) === MAX) then there is no known path */
                         let s_min;
                         let s_min_c;
@@ -407,22 +395,7 @@ namespace MapManager {
                         s_start = s_min;
 
                         // Move to s_start
-                        let distI = s_start.cell.i - actor.i;
-                        let distJ = s_start.cell.j - actor.j;
-                        let direction: DirectionEnum;
-                        if (Math.abs(distI) > Math.abs(distJ)) {
-                            if (distI > 0) {
-                                direction = DirectionEnum.RIGHT;
-                            } else {
-                                direction = DirectionEnum.LEFT;
-                            }
-                        } else {
-                            if (distJ > 0) {
-                                direction = DirectionEnum.DOWN;
-                            } else {
-                                direction = DirectionEnum.UP;
-                            }
-                        }
+                        let direction = Utils.getDirection(s_start.cell, actor);
                         
                         // Assuming constant edge costs, this part is not needed
                         /*
@@ -455,7 +428,7 @@ namespace MapManager {
                         }
                         */
                         
-                        // Save data
+                        // Cache data
                         map.dstarlitecache.S = S;
                         map.dstarlitecache.U = U;
                         map.dstarlitecache.s_goal = s_goal;
@@ -467,14 +440,29 @@ namespace MapManager {
                         };
                         
                         function initialize() {
+                            s_last = s_start;
+                            S = [];
+                            // Populate S with a complete list of vertex (even blocked)
+                            for (let j = 0; j < map.height; j++) {
+                                for (let i = 0; i < map.width; i++) {
+                                    let v: IVertex = {
+                                        cell: {
+                                            i: i,
+                                            j: j
+                                        }
+                                    }
+                                    S.push(v);
+                                }
+                            }
+                            _g = [];
+                            _rhs = [];
                             U = [];
                             km = 0;
                             for(let s of S) {
                                 setG(s,MAX);
                                 setRhs(s,MAX);
                                 setRhs(s_goal,0);
-                                let vertex: IVertex;
-                                vertex = s_goal;
+                                let vertex = s_goal;
                                 vertex.key = [h(s_start,s_goal), 0];
                                 U.push(vertex);
                             }
