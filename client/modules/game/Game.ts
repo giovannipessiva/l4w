@@ -68,12 +68,12 @@ namespace Game {
         if(!Utils.isEmpty(currentState)) {
             saveId = currentState.id + "";
         }
-        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: any) {
+        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 callback(null);
             } else {
                 try {
-                    let obj: Object = JSON.parse(<string>resourceText);  
+                    let obj: Object = JSON.parse(resourceText);  
                     let save: ISave = <ISave>obj;
                     callback(save); 
                 } catch (exception) {

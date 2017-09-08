@@ -237,8 +237,8 @@ abstract class AbstractScene {
         var scene: AbstractScene = this;
         TilesetManager.loadTileset(tile, this.context, function(json) {
             scene.map.tileset = json;
-            Resource.load(tile, Resource.TypeEnum.TILE, function(image) {
-                scene.map.tileset.imageData = image[0];
+            Resource.load(tile, Resource.TypeEnum.TILE, function(image: HTMLImageElement) {
+                scene.map.tileset.imageData = image;
                 callback(scene);
             });
         });

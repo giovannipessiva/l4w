@@ -26,17 +26,17 @@ namespace Tilesetter {
         var canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.TypeEnum.TILE, function(element: JQuery) {
+        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage: HTMLImageElement) {
             // Resize the canvas
             var image = new Image();
-            image.src = element.attr("src");
+            image.src = tileImage.src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilesetter.height = image.naturalHeight;
             canvasTilesetter.width = image.naturalWidth;
             // Paint the img in the canvas
-            contextTile.drawImage(<HTMLImageElement>element[0], 0, 0);
+            contextTile.drawImage(tileImage, 0, 0);
             // Manage the tile selector canvas
             Tilesetter.start(canvasTilesetter, calback);
         });

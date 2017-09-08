@@ -107,12 +107,12 @@ namespace Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: TypeEnum, callback: { (response: any): void }) {
+    export function load(file: string, assetType: TypeEnum, callback: { (response: HTMLImageElement | string): void }) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
         }
-        var path = getResourcePath(file, assetType);
+        let path = getResourcePath(file, assetType);
 
         switch (assetType) {
             case TypeEnum.CHAR:
@@ -120,20 +120,19 @@ namespace Resource {
             case TypeEnum.SKIN:
             case TypeEnum.TILE:
                 // Load image file
-                var loader = $(document.createElement("img"));
-                loader.attr("src", path);
-                loader.load(function() {
-                    resourceCache.set(assetType + CACHE_SEPARATOR + file, <HTMLImageElement> loader[0]);
-                    callback(loader);
-                });
-                //TODO manage errors
+                let image = new Image();
+                image.onload = function() {
+                    resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+                    callback(image);
+                };
+                image.src = path;
                 break;
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
             case TypeEnum.TILESET:
                 // Load text file
                 sendGETRequest(path, function(e: ProgressEvent) {
-                    callback(this.responseText);
+                    callback(<string> this.responseText);
                 });
                 break;
             default:
@@ -149,8 +148,8 @@ namespace Resource {
     export function loadImageFromCache(file: string, assetType: TypeEnum) {
         let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
         if(Utils.isEmpty(image)) {
-            load(file, assetType, function(loader){
-                resourceCache.set(assetType + CACHE_SEPARATOR + file, <HTMLImageElement> loader[0]);
+            load(file, assetType, function(image: HTMLImageElement){
+                resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
             });
         }
         return image;
