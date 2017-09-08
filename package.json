@@ -12,8 +12,8 @@
     "express": "^4.15",
     "express-session": "^1.15",
     "http-status-codes": "^1.2",
-    "pg": "^7.2",
-    "sequelize": "^4.7"
+    "pg": "^7.3",
+    "sequelize": "^4.8"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24",
@@ -23,8 +23,8 @@
     "grunt-ts": "^5.5",
     "grunt-tslint": "^5.0",
     "sequelize-auto": "^0.4",
-    "tslint": "^5.6",
-    "typescript": "^2.4"
+    "tslint": "^5.7",
+    "typescript": "^2.5"
   },
   "engines": {
     "node": "8.2"
