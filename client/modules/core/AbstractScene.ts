@@ -178,9 +178,6 @@ abstract class AbstractScene {
         } else {
             this.renderingConfiguration.enableAntialiasing = !this.renderingConfiguration.enableAntialiasing;
         }
-        if("mozImageSmoothingEnabled" in this.context) {
-            this.context["mozImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
-        }
         if("webkitImageSmoothingEnabled" in this.context) {
             this.context["webkitImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
