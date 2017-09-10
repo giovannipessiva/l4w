@@ -156,6 +156,7 @@ namespace ActorManager {
             if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
                 // Decide next step
                 direction = MapManager.pathFinder(map, a, target);
+                console.log(a.name + " " + Utils.getDirectionName(direction));
             }
             let movementX = 0;
             let movementY = 0;
