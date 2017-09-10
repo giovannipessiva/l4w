@@ -14,11 +14,11 @@
 namespace Game {
 
     var scene: DynamicScene;
-    
+
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
         Workers.registerServiceWorker();
-        
+
         new DynamicGrid(canvas, function(grid: DynamicGrid) {
             scene = new DynamicScene(grid, canvas);
             initInput(canvas, scene, grid);
@@ -37,10 +37,10 @@ namespace Game {
         loadSave(canvas, function(save: ISave) {
             scene.loadSave(save, function(success: boolean) {
                 scene.moveFocus();
-                if(success) {
+                if (success) {
                     console.log("Save loaded successfully");
                 } else {
-                    console.log("Save not found");    
+                    console.log("Save not found");
                 }
             });
 
@@ -51,7 +51,7 @@ namespace Game {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
         let currentState: ISave = scene.getSave();
-        if(!Utils.isEmpty(currentState)) {
+        if (!Utils.isEmpty(currentState)) {
             saveId = currentState.id + "";
         }
         Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(success: boolean) {
@@ -65,7 +65,7 @@ namespace Game {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
         let currentState: ISave = scene.getSave();
-        if(!Utils.isEmpty(currentState)) {
+        if (!Utils.isEmpty(currentState)) {
             saveId = currentState.id + "";
         }
         Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: string) {
@@ -73,9 +73,8 @@ namespace Game {
                 callback(null);
             } else {
                 try {
-                    let obj: Object = JSON.parse(resourceText);  
-                    let save: ISave = <ISave>obj;
-                    callback(save); 
+                    let save: ISave = JSON.parse(resourceText);;
+                    callback(save);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
                         console.error("Error while parsing save");
@@ -128,7 +127,7 @@ namespace Game {
         };
         var actionCallback = function(x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
-            moveHero(x,y);
+            moveHero(x, y);
         };
 
         Input.init(
@@ -164,7 +163,7 @@ namespace Game {
             function() { console.log("doubleClick"); },
             function() { console.log("wheel"); }
         );
-        
+
         function moveHero(i: number, j: number) {
             scene.startMovement(i, j);
         };

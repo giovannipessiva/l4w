@@ -1,4 +1,3 @@
-///<reference path="../../interfaces/jquery.d.ts" />
 ///<reference path="Commons.ts" />
 ///<reference path="Constant.ts" />
 
@@ -12,10 +11,10 @@ namespace Resource {
     const DATA_PATH = base_path + "data/";
     const ASSET_PATH = base_path + "assets/";
     const EDIT_PATH = base_path + "edit/";
-    
+
     const CACHE_SEPARATOR = "@";
     const DEFAULT_NAME = "404.png";
-    
+
     var resourceCache: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
 
     export const enum TypeEnum {
@@ -132,7 +131,7 @@ namespace Resource {
             case TypeEnum.TILESET:
                 // Load text file
                 sendGETRequest(path, function(e: ProgressEvent) {
-                    callback(<string> this.responseText);
+                    callback(<string>this.responseText);
                 });
                 break;
             default:
@@ -141,20 +140,20 @@ namespace Resource {
                 callback(null);
         }
     }
-    
+
     /**
      * Return an already loaded asset
      */
     export function loadImageFromCache(file: string, assetType: TypeEnum) {
         let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
-        if(Utils.isEmpty(image)) {
-            load(file, assetType, function(image: HTMLImageElement){
+        if (Utils.isEmpty(image)) {
+            load(file, assetType, function(image: HTMLImageElement) {
                 resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
             });
         }
         return image;
     }
-    
+
     export function loadDefaultImage(assetType: TypeEnum) {
         return loadImageFromCache(DEFAULT_NAME, assetType);
     }
