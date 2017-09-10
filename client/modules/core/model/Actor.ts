@@ -21,6 +21,7 @@ interface IActor extends IActorData {
     position?: IPoint; //exact coordinate in pixels
     mSpeed?: number; //Speed (as pixels/milliseconds)
     movementStartTime?: number; //ms since last step started
+    movementDirection?: DirectionEnum; //Direction of current step
     target?: IPoint; //Current destination in pixels
     newTarget?: IPoint; //New destination in pixels
     direction?: DirectionEnum; //Current direction
