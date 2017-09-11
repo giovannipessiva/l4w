@@ -285,7 +285,7 @@ namespace MapManager {
         return false;
     }
     
-    export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.BASIC): DirectionEnum {
+    export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
         let distI = target.i - actor.i;
         let distJ = target.j - actor.j;
         if (distI === 0 && distJ === 0) {
@@ -370,79 +370,25 @@ namespace MapManager {
                             map.dstarlitecache = undefined;
                         }
 
-                        // Check if initial data has already been computed and cached
-                        if (!Utils.isEmpty(map.dstarlitecache)) {
-                            S = map.dstarlitecache.S;
-                            U = map.dstarlitecache.U;
-                            _g = map.dstarlitecache.g;
-                            _rhs = map.dstarlitecache.rhs;
-                        } else {
-                            initialize();
-                            computeShortestPath();
-                        }
-                        
-                        // Find the successor vetex with lowes g value
-                        // If (rhs(s_start) === MAX) then there is no known path */
-                        let s_min;
-                        let s_min_c;
-                        for (let s1 of succ(s_start)) {
-                            let tmp = c(s_start, s1) + g(s1);
-                            if (s_min_c === undefined || s_min_c > tmp) {
-                                s_min_c = tmp;
-                                s_min = s1;
-                            }
-                        }
-                        s_start = s_min;
-
-                        // Move to s_start
-                        let direction = Utils.getDirection(s_start.cell, actor);
-                        
-                        // Assuming constant edge costs, this part is not needed
-                        /*
-                        // Scan graph for changed edge costs
-                        if( *** If any edge costs changed *** ) { 
-                            km = km + h(s_last,s_start);
-                            s_last = s_start;
-                            for( *** For all directed edges (u,v) with changed edge costs ***) {
-                                c_old = c(u,v);
-                                // Update the edge cost c(u,v);
-                                if(c_old > c(u,v)) {
-                                    if(!isVertexEqual(u,s_goal)) {
-                                        setRhs(u,Math.min(rhs(u),c(u,v) + g(v)));
-                                    }
-                                } else if(rhs(u) === c_old + g(v)) {
-                                    if(!isVertexEqual(u,s_goal)) {
-                                        let min;
-                                        for(let s1 of succ(u)) {
-                                            let tmp = c(u,s1) + g(s1);
-                                            if(min === undefined || tmp < min) {
-                                                min = tmp;
-                                            }
-                                        }                                                
-                                        setRhs(u,min);
-                                    }
-                                }
-                                updateVertex(u);
-                            }
-                            computeShortestPath();
-                        }
-                        */
+                        direction = main();
                         
                         // Cache data
-                        map.dstarlitecache.S = S;
-                        map.dstarlitecache.U = U;
-                        map.dstarlitecache.s_goal = s_goal;
-                        map.dstarlitecache.g = _g;
-                        map.dstarlitecache.rhs = _rhs;
+                        map.dstarlitecache = {
+                            S: S,
+                            U: U,
+                            s_goal: s_goal,
+                            g: _g,
+                            rhs: _rhs
+                        };
                         
                         function calculateKey(s: IVertex): number[] {
                             return [ Math.min(g(s),rhs(s)) + h(s_start,s) + km , Math.min(g(s),rhs(s))];
                         };
                         
+                        /** Initialize values and data structures */
                         function initialize() {
-                            s_last = s_start;
-                            S = [];
                             // Populate S with a complete list of vertex (even blocked)
+                            S = [];
                             for (let j = 0; j < map.height; j++) {
                                 for (let i = 0; i < map.width; i++) {
                                     let v: IVertex = {
@@ -458,14 +404,15 @@ namespace MapManager {
                             _rhs = [];
                             U = [];
                             km = 0;
+                            // Initialize g(s) = rhs(s) = MAX for every vertex
                             for(let s of S) {
                                 setG(s,MAX);
                                 setRhs(s,MAX);
-                                setRhs(s_goal,0);
-                                let vertex = s_goal;
-                                vertex.key = [h(s_start,s_goal), 0];
-                                U.push(vertex);
                             }
+                            setRhs(s_goal,0);
+                            let vertex: IVertex = s_goal;
+                            vertex.key = [h(s_start,s_goal), 0];
+                            U.push(vertex);
                         };
                         
                         function updateVertex(u: IVertex) {
@@ -478,8 +425,8 @@ namespace MapManager {
                         };
                         
                         function computeShortestPath() {
-                            let uTop = queueTop();
-                            while(compareKeys(uTop.key,calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {
+                            while(compareKeys(queueTop().key,calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {  //FIXME ciclo infinito
+                                let uTop = queueTop();
                                 let u = uTop;
                                 let k_old = uTop.key;
                                 let k_new = calculateKey(u);
@@ -491,7 +438,7 @@ namespace MapManager {
                                     queueRemove(u);
                                     for(let s of pred(u)) {
                                         if(!isVertexEqual(s,s_goal)) {
-                                            setRhs(u,Math.min(rhs(s),c(s,u)+g(u)));
+                                            setRhs(s,Math.min(rhs(s),c(s,u)+g(u)));
                                         }
                                         updateVertex(s);
                                     }
@@ -501,11 +448,14 @@ namespace MapManager {
                                     let array: IVertex[] = pred(u);
                                     array.push(u);
                                     for(let s of array) {
-                                        if(rhs(s) === c(s,u) + g_old) {
+                                        if(rhs(s) === c(s,u) + g_old  || (rhs(s) === MAX && (c(s,u) === MAX || g_old === MAX))) {
                                             if(!isVertexEqual(s,s_goal)) {
                                                 let min;
                                                 for(let s1 of succ(s)) {
                                                     let tmpMin = c(s,s1)+g(s1);
+                                                    if(tmpMin > MAX){
+                                                        tmpMin = MAX; 
+                                                    }
                                                     if(min === undefined || min>tmpMin) {
                                                         min = tmpMin;
                                                     }
@@ -518,15 +468,84 @@ namespace MapManager {
                                 } 
                             }
                         };
+                        
+                        function main(): DirectionEnum {
+                            // Check if initial data has already been computed and cached
+                            if (!Utils.isEmpty(map.dstarlitecache) && false ) { //TODO disable cache for testing
+                                S = map.dstarlitecache.S;
+                                U = map.dstarlitecache.U;
+                                _g = map.dstarlitecache.g;
+                                _rhs = map.dstarlitecache.rhs;
+                            } else {
+                                s_last = s_start;
+                                initialize();
+                                computeShortestPath();
+                            }
+                            
+                            while(!isVertexEqual(s_start, s_goal)) {
+                                // Find the successor vetex with lowes g value
+                                // If (rhs(s_start) === MAX) then there is no known path */
+                                let s_min;
+                                let s_min_c;
+                                for (let s1 of succ(s_start)) {
+                                    let tmp = c(s_start, s1) + g(s1);
+                                    if (s_min_c === undefined || s_min_c > tmp) {
+                                        s_min_c = tmp;
+                                        s_min = s1;
+                                    }
+                                }
+                                s_start = s_min;
+        
+                                // Move to s_start
+                                return Utils.getDirection(s_start.cell, actor);
+                                
+                                // Assuming constant edge costs, this part is not needed
+                                /*
+                                // Scan graph for changed edge costs
+                                if( *** If any edge costs changed *** ) { 
+                                    km = km + h(s_last,s_start);
+                                    s_last = s_start;
+                                    for( *** For all directed edges (u,v) with changed edge costs ***) {
+                                        c_old = c(u,v);
+                                        // Update the edge cost c(u,v);
+                                        if(c_old > c(u,v)) {
+                                            if(!isVertexEqual(u,s_goal)) {
+                                                setRhs(u,Math.min(rhs(u),c(u,v) + g(v)));
+                                            }
+                                        } else if(rhs(u) === c_old + g(v)) {
+                                            if(!isVertexEqual(u,s_goal)) {
+                                                let min;
+                                                for(let s1 of succ(u)) {
+                                                    let tmp = c(u,s1) + g(s1);
+                                                    if(min === undefined || tmp < min) {
+                                                        min = tmp;
+                                                    }
+                                                }                                                
+                                                setRhs(u,min);
+                                            }
+                                        }
+                                        updateVertex(u);
+                                    }
+                                    computeShortestPath();
+                                }
+                                */
+                            }
+                        };
                       
                         /** Set g(u) to val */
                         function setG(u: IVertex, val: number) {
+                            if(val > MAX) {
+                                val = MAX;    
+                            }
                             let uid = Utils.cellToGid(u.cell, width);
                             _g[uid] = val; 
                         };
                         
                         /** Set rhs(u) to val */
                         function setRhs(u: IVertex, val: number) {
+                            if(val > MAX) {
+                                val = MAX;    
+                            }
                             let uid = Utils.cellToGid(u.cell, width);
                             _rhs[uid] = val; 
                         };
@@ -547,7 +566,7 @@ namespace MapManager {
                          * Returns a set of successors vertex of s
                          * Successors are vertex that can be reached from s
                          */
-                        function succ(s): IVertex[] {
+                        function succ(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
                             S.length
                             let succ: IVertex[] = [];
@@ -570,7 +589,7 @@ namespace MapManager {
                          * Returns a set of predecessors vertex of s
                          * Predecessors are vertex from which s can be reached
                          */
-                        function pred(s): IVertex[] {
+                        function pred(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
                             let pred: IVertex[] = [];
                             if(gid-1 > 0) {
@@ -592,7 +611,7 @@ namespace MapManager {
                          * Returns the cost of moving from vertex s1 to vertex s2
                          * s2 belongs to succ(s1)
                          */
-                        function c(s1,s2): number {
+                        function c(s1: IVertex, s2: IVertex): number {
                             // Check if movement to s2 is blocked
                             let block = map.blocks[s2.cell.i + s2.cell.j*map.width];
                             if(block !== 0) {
@@ -636,9 +655,9 @@ namespace MapManager {
                          * Heuristic that approximate the goal distance of vertex s1 to s2
                          * On a square grid that allows 4 directions of movement, use Manhattan distance
                          */
-                        function h(s1,s2): number { 
-                            let dx = Math.abs(s1.x - s2.x);
-                            let dy = Math.abs(s1.y - s2.y);
+                        function h(s1: IVertex, s2: IVertex): number { 
+                            let dx = Math.abs(s1.cell.i - s2.cell.i);
+                            let dy = Math.abs(s1.cell.j - s2.cell.j);
                             // since D = 1, there is no need to multiply it
                             return dx + dy;
                         };
@@ -659,6 +678,7 @@ namespace MapManager {
                             return s1.cell.i === s2.cell.i && s1.cell.j === s2.cell.j;    
                         }
                         
+                        /** Return true if the vertex (u) is in the queue (U) */
                         function queueContains(u: IVertex): boolean {
                             for(let u2 of U) {
                                 if(isVertexEqual(u, u2)) {

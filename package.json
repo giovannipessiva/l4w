@@ -11,7 +11,7 @@
     "connect-session-sequelize": "^4.1",
     "express": "^4.15",
     "express-session": "^1.15",
-    "http-status-codes": "^1.2",
+    "http-status-codes": "^1.3",
     "pg": "^7.3",
     "sequelize": "^4.8"
   },
