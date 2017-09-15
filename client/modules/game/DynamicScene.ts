@@ -19,7 +19,7 @@ class DynamicScene extends AbstractScene {
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
-        this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
+        this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
     }
 
     protected mainGameLoop_pre() {
@@ -27,10 +27,10 @@ class DynamicScene extends AbstractScene {
             return false;
         }
 
-        let scene = this; 
+        let scene = this;
         let time = Utils.now();
-        if(!Utils.isEmpty(this.hero)) {
-            ActorManager.update(this.hero, time);
+        if (!Utils.isEmpty(this.hero)) {
+            ActorManager.update(this.hero, time, this.pauseDuration);
             ActorManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
@@ -42,14 +42,18 @@ class DynamicScene extends AbstractScene {
         }
         if (!Utils.isEmpty(this.events)) {
             for (let actor of this.events) {
-                ActorManager.update(actor, time);
-                ActorManager.manageMovements(this.map, this.grid, actor, function(){}, function(){});
+                ActorManager.update(actor, time, this.pauseDuration);
+                ActorManager.manageMovements(this.map, this.grid, actor, function() { }, function() { });
             }
         }
-        
+        // Reset pause duration
+        if (!this.paused) {
+            this.pauseDuration = undefined;
+        }
+
         // Events logic
         //this.manageMovements();
-        
+
         return true;
     }
 
@@ -95,20 +99,20 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {       
-        if(layerIndex === Constant.MapLayer.EVENTS) {
-            
-            if(ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
+    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        if (layerIndex === Constant.MapLayer.EVENTS) {
+
+            if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
                 ActorManager.render(this.grid, this.hero, this.context);
             }
-            
+
             if (!Utils.isEmpty(this.events)) {
                 for (let actor of this.events) {
-                    if(ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {    
+                    if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {
                         ActorManager.render(this.grid, actor, this.context);
                     }
                 }
-            }  
+            }
         }
     }
 
@@ -118,14 +122,14 @@ class DynamicScene extends AbstractScene {
 
     public loadSave(save: ISave, callback: IBooleanCallback) {
         var scene = this;
-        
+
         let callback2: IBooleanCallback = function(result) {
             // Initialize every actor in the map
-            if(result && !Utils.isEmpty(scene.map.layers)) {
+            if (result && !Utils.isEmpty(scene.map.layers)) {
 
                 scene.events = MapManager.getActors(scene.map);
-                for(let i=0; i<scene.events.length; i++) {
-                    scene.events[i] = ActorManager.initTransientData(this.grid, scene.events[i]);   
+                for (let i = 0; i < scene.events.length; i++) {
+                    scene.events[i] = ActorManager.initTransientData(this.grid, scene.events[i]);
                 }
                 console.log(scene.events);
             }
@@ -149,7 +153,7 @@ class DynamicScene extends AbstractScene {
             mapId = save.map;
             hero = save.hero;
         }
-        
+
         this.hero = ActorManager.initTransientData(this.grid, hero);
 
         MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
@@ -160,7 +164,7 @@ class DynamicScene extends AbstractScene {
             });
         });
     }
-    
+
     //TODO move to SaveManager
     public getSave(): ISave {
         if (Utils.isEmpty(this.map) || Utils.isEmpty(this.focus)) {
@@ -173,8 +177,8 @@ class DynamicScene extends AbstractScene {
             };
         }
     }
- 
+
     startMovement(i: number, j: number) {
-        ActorManager.startMovement(this.grid, this.hero, i, j);    
+        ActorManager.startMovement(this.grid, this.hero, i, j);
     }
 }

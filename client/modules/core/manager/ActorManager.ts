@@ -11,8 +11,13 @@ namespace ActorManager {
     const DEFAULT_MSPEED: number = 4 * 32 / 1000;
     const DEFAULT_FREQUENCY: number = 6 / 1000;
 
-    export function update(a: IActor, time: number) {
+    export function update(a: IActor, time: number, pauseTimeOffset: number = 0) {
         //TODO
+        if (!Utils.isEmpty(a.movementStartTime)) {
+            // If the actor was moving, and there has been a pause,
+            // correct the movementStartTime
+            a.movementStartTime += pauseTimeOffset;
+        }
     }
 
     export function setSpeed(grid: AbstractGrid, a: IActor, speed: number) {

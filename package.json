@@ -19,7 +19,7 @@
     "babel-preset-es2015": "^6.24",
     "grunt": "^1.0",
     "grunt-babel": "^7.0",
-    "grunt-contrib-uglify": "^3.0",
+    "grunt-contrib-uglify": "^3.1",
     "grunt-ts": "^5.5",
     "grunt-tslint": "^5.0",
     "sequelize-auto": "^0.4",

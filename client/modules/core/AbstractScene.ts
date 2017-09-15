@@ -30,6 +30,8 @@ abstract class AbstractScene {
     protected grid: AbstractGrid;
 
     paused: boolean;
+    pauseStartTime: number;
+    pauseDuration: number;
 
     constructor(grid: AbstractGrid) {
         this.renderingConfiguration = new RenderConfiguration();
@@ -71,7 +73,7 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        if(!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset) && !Utils.isEmpty(this.map.tileset.imageData)) {
+        if (!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset) && !Utils.isEmpty(this.map.tileset.imageData)) {
             // Dont render if data is not initialized
             this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
         }
@@ -136,15 +138,15 @@ abstract class AbstractScene {
         }
 
     }
-    
+
     toggleGridMode() {
-        if(!this.renderingConfiguration.showGrid) {
+        if (!this.renderingConfiguration.showGrid) {
             this.toggleGrid();
         } else if (!this.renderingConfiguration.showBlocks) {
-           this.toggleBlocks(); 
+            this.toggleBlocks();
         } else {
             this.toggleGrid();
-            this.toggleBlocks(); 
+            this.toggleBlocks();
         }
     }
 
@@ -163,7 +165,7 @@ abstract class AbstractScene {
             this.renderingConfiguration.showFocus = !this.renderingConfiguration.showFocus;
         }
     }
-    
+
     toggleBlocks(enable?: boolean) {
         if (enable != null) {
             this.renderingConfiguration.showBlocks = enable;
@@ -171,20 +173,20 @@ abstract class AbstractScene {
             this.renderingConfiguration.showBlocks = !this.renderingConfiguration.showBlocks;
         }
     }
-    
+
     toggleAntialiasing(enable?: boolean) {
         if (enable != null) {
             this.renderingConfiguration.enableAntialiasing = enable;
         } else {
             this.renderingConfiguration.enableAntialiasing = !this.renderingConfiguration.enableAntialiasing;
         }
-        if("webkitImageSmoothingEnabled" in this.context) {
+        if ("webkitImageSmoothingEnabled" in this.context) {
             this.context["webkitImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
-        if("msImageSmoothingEnabled" in this.context) {
+        if ("msImageSmoothingEnabled" in this.context) {
             this.context["msImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
-        if("imageSmoothingEnabled" in this.context) {
+        if ("imageSmoothingEnabled" in this.context) {
             this.context["imageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
     }
@@ -197,7 +199,7 @@ abstract class AbstractScene {
     }
 
     moveFocus(direction: DirectionEnum = null) {
-        if(direction != null) {
+        if (direction != null) {
             switch (direction) {
                 case DirectionEnum.UP: this.focus.y -= +this.grid.cellH; break;
                 case DirectionEnum.DOWN: this.focus.y += +this.grid.cellH; break;
@@ -214,7 +216,7 @@ abstract class AbstractScene {
 
     changeScale(canvas: HTMLCanvasElement) {
         //TODO sposta l'inizializzazione del context
-        this.context = <CanvasRenderingContext2D> canvas.getContext("2d");
+        this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
     }
 
@@ -251,11 +253,11 @@ abstract class AbstractScene {
     getSceneWidth() {
         return this.map.width;
     }
-    
+
     protected renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
             for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.EVENTS; i++) {
-                                
+
                 var layer = map.layers[i];
                 if (!Utils.isEmpty(layer.opacity)) {
                     context.globalAlpha = layer.opacity;
@@ -284,11 +286,19 @@ abstract class AbstractScene {
         } else {
             this.paused = !this.paused;
         }
+        if (this.paused) {
+            // Save the pause start time
+            this.pauseStartTime = Utils.now();
+        } else {
+            // Save the pause total duration
+            this.pauseDuration = Utils.now() - this.pauseStartTime;
+            this.pauseStartTime = undefined;
+        }
     }
-    
+
     protected onFocusCellChange() {
     }
-    
+
     protected onFocusPixelChange(x: number, y: number) {
     }
 }

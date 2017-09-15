@@ -30,7 +30,10 @@ module.exports = {
                     if (response.statusCode == HttpStatus.NOT_FOUND && file !== placeholder) {
                     	sendFile(path, placeholder, response);
                     } else {
-                        console.log("utils.sendFile - " + err);
+                    	// Do not log 404 on mimified script
+                    	if(!file.includes("l4w.min.js")) {
+                    		console.log("utils.sendFile - " + err);
+                    	}
                         response.status(err.status).send("");
                     }
                 }
