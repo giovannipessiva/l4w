@@ -79,7 +79,7 @@ function drawMap() {
 	document.getElementById("map").innerHTML = map;
 };
 
-var stopMovement = false;
+var stopMovement;
 
 function pathfinding(){
 	let actorX = parseInt(document.getElementById("actorX").value);
@@ -99,6 +99,7 @@ function pathfinding(){
 	document.getElementById("height").disabled=true;
 	document.getElementById("find").disabled=true;
 	document.getElementById("stop").disabled=false;
+	stopMovement = false;
 	
 	// Recursice function to simulate Actor movement along the path towards Target
 	function moveActor(path, step) {
@@ -121,7 +122,6 @@ function pathfinding(){
 			document.getElementById("height").disabled=false;
 			document.getElementById("find").disabled=false;
 			document.getElementById("stop").disabled=true;
-			stop=false;
 		}
 	}
 	
