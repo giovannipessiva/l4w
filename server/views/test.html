@@ -34,12 +34,10 @@ window.onload = function(){
 }
 	
 function finishedLoading(){
-	console.log("ready");
 	drawMap();
 };
 
 function drawMap() {
-	console.log("Draw");
 	let actorX = parseInt(document.getElementById("actorX").value);
 	let actorY = parseInt(document.getElementById("actorY").value);
 	let targetX = parseInt(document.getElementById("targetX").value);
@@ -81,6 +79,8 @@ function drawMap() {
 	document.getElementById("map").innerHTML = map;
 };
 
+var stopMovement = false;
+
 function pathfinding(){
 	let actorX = parseInt(document.getElementById("actorX").value);
 	let actorY = parseInt(document.getElementById("actorY").value);
@@ -90,9 +90,47 @@ function pathfinding(){
 	let tableHeight = parseInt(document.getElementById("height").value);
 	let path = Tester.testPathfinding(tableWidth,tableHeight,actorX,actorY,targetX,targetY);
 	
-	//TODO show path
-	console.log(path);
+	// Disable all input fields
+	document.getElementById("actorX").disabled=true;
+	document.getElementById("actorY").disabled=true;
+	document.getElementById("targetX").disabled=true;
+	document.getElementById("targetY").disabled=true;
+	document.getElementById("width").disabled=true;
+	document.getElementById("height").disabled=true;
+	document.getElementById("find").disabled=true;
+	document.getElementById("stop").disabled=false;
+	
+	// Recursice function to simulate Actor movement along the path towards Target
+	function moveActor(path, step) {
+		if(step < path.length && !stopMovement) {
+			// Move actor by one step
+			document.getElementById("actorX").value = path[step].i;
+			document.getElementById("actorY").value = path[step].j;
+			drawMap();
+			setTimeout(function() {
+				moveActor(path, step + 1);
+			},300);
+		} else {
+			// End of the path!
+			// Enable all input fields
+			document.getElementById("actorX").disabled=false;
+			document.getElementById("actorY").disabled=false;
+			document.getElementById("targetX").disabled=false;
+			document.getElementById("targetY").disabled=false;
+			document.getElementById("width").disabled=false;
+			document.getElementById("height").disabled=false;
+			document.getElementById("find").disabled=false;
+			document.getElementById("stop").disabled=true;
+			stop=false;
+		}
+	}
+	
+	moveActor(path,0);	
 };
+
+function stop(){
+	stopMovement=true;
+}
 </script>
 
 <style type="text/css">
@@ -129,22 +167,23 @@ border:1px dotted black;
 <div class="framed">
 <h1>Pathfinding test</h1>
 Map size:
-<input type="number" value="4" id="width" min="1" max="50" onchange="drawMap();"/>
-<input type="number" value="4" id="height" min="1" max="50" onchange="drawMap();"/>
+<input id="width" type="number" value="15" min="1" max="50" onchange="drawMap();"/>
+<input id="height" type="number" value="15" min="1" max="50" onchange="drawMap();"/>
 <br/>
 <div class="cell actor"></div>&nbsp; Actor:
-<input type="number" value="0" id="actorX" min="0" max="49" onchange="drawMap();"/>
-<input type="number" value="0" id="actorY" min="0" max="49" onchange="drawMap();"/>
+<input id="actorX" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
+<input id="actorY" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
 <br/>
 <div class="cell target"></div>&nbsp; Target:
-<input type="number" value="3" id="targetX" min="0" max="49" onchange="drawMap();"/>
-<input type="number" value="1" id="targetY" min="0" max="49" onchange="drawMap();"/>
+<input id="targetX" type="number" value="14" min="0" max="49" onchange="drawMap();"/>
+<input id="targetY" type="number" value="12" min="0" max="49" onchange="drawMap();"/>
 <br/><br/>
 <select id="alg">
-<option selected>Basic</option>
-<option>D* Lite</option>
+<option>Basic</option>
+<option selected>D* Lite</option>
 </select>
-<input type="button" value="Find the path!" onclick="pathfinding();"/>
+<input id="find" type="button" value="Find the path!" onclick="pathfinding();"/>
+<input id="stop" type="button" value="Stop" onclick="stop();"/>
 <br/><br/>
 <div id="map">Loading...</div>
 </div>
