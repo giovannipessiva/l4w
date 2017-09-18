@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>L4W test page</title>
+<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+<link rel='icon' href='style/favicon/test.ico' />
+
+<meta name="theme-color" content="#ffffff">
+
+<script src="lib/require.min.js" async></script>
+<script type='text/javascript'>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-18315891-3', 'auto');
+ga('send', 'pageview');
+
+var base_path = "./";
+
+window.onload = function(){
+	requirejs(["lib/jquery3.min.js"],function($){
+	    requirejs(["lib/jquery-ui.min.js","js/l4w.min"],function(l4w){
+	        finishedLoading();
+	    },function(err){
+	        // If min version is unavailable, use the full version
+	        requirejs(["js/l4w"],function(l4w){
+	            finishedLoading();
+	        });
+	    });
+	});
+}
+	
+function finishedLoading(){
+	console.log("ready");
+	drawMap();
+};
+
+function drawMap() {
+	console.log("Draw");
+	let actorX = parseInt(document.getElementById("actorX").value);
+	let actorY = parseInt(document.getElementById("actorY").value);
+	let targetX = parseInt(document.getElementById("targetX").value);
+	let targetY = parseInt(document.getElementById("targetY").value);
+	let tableWidth = parseInt(document.getElementById("width").value);
+	let tableHeight = parseInt(document.getElementById("height").value);
+	
+	if(actorX >= tableWidth) {
+		actorX = tableWidth - 1;
+		document.getElementById("actorX").value = actorX;
+	}
+	if(targetX >= tableWidth) {
+		targetX = tableWidth - 1;
+		document.getElementById("targetX").value = targetX;
+	}
+	if(actorY >= tableHeight) {
+		actorY = tableHeight - 1;
+		document.getElementById("actorY").value = actorY;
+	}
+	if(targetY >= tableHeight) {
+		targetY = tableHeight - 1;
+		document.getElementById("targetY").value = targetY;
+	}
+	
+	let map = "";
+	for(let y=0; y<tableHeight; y++) {
+		for(let x=0; x<tableWidth; x++) {
+			let classes = "cell";
+			if(actorX==x && actorY==y) {
+				classes += " actor";
+			}
+			if(targetX==x && targetY==y) {
+				classes += " target";
+			}
+			map += "<div class='"+classes+"'></div>";
+		}
+		map += "<br style='clear:both;'/>";
+	}
+	document.getElementById("map").innerHTML = map;
+};
+
+function pathfinding(){
+	let actorX = parseInt(document.getElementById("actorX").value);
+	let actorY = parseInt(document.getElementById("actorY").value);
+	let targetX = parseInt(document.getElementById("targetX").value);
+	let targetY = parseInt(document.getElementById("targetY").value);
+	let tableWidth = parseInt(document.getElementById("width").value);
+	let tableHeight = parseInt(document.getElementById("height").value);
+	let path = Tester.testPathfinding(tableWidth,tableHeight,actorX,actorY,targetX,targetY);
+	
+	//TODO show path
+	console.log(path);
+};
+</script>
+
+<style type="text/css">
+input{
+width:3em;
+}
+div.framed{
+border:1px solid black;
+padding:1em;
+}
+div.cell{
+height:20px;
+width:20px;
+border:1px solid blue;
+float:left;
+}
+div.blocked{
+background-color:black;
+}
+div.actor{
+background-color:yellow;
+border:1px dotted black;
+}
+div.target{
+background-color:red;
+border:1px dotted black;
+}
+</style>
+
+<link rel="stylesheet" type="text/css" href="../style/l4w.css">
+
+</head>
+<body>
+<div class="framed">
+<h1>Pathfinding test</h1>
+Map size:
+<input type="number" value="4" id="width" min="1" max="50" onchange="drawMap();"/>
+<input type="number" value="4" id="height" min="1" max="50" onchange="drawMap();"/>
+<br/>
+<div class="cell actor"></div>&nbsp; Actor:
+<input type="number" value="0" id="actorX" min="0" max="49" onchange="drawMap();"/>
+<input type="number" value="0" id="actorY" min="0" max="49" onchange="drawMap();"/>
+<br/>
+<div class="cell target"></div>&nbsp; Target:
+<input type="number" value="3" id="targetX" min="0" max="49" onchange="drawMap();"/>
+<input type="number" value="1" id="targetY" min="0" max="49" onchange="drawMap();"/>
+<br/><br/>
+<select id="alg">
+<option selected>Basic</option>
+<option>D* Lite</option>
+</select>
+<input type="button" value="Find the path!" onclick="pathfinding();"/>
+<br/><br/>
+<div id="map">Loading...</div>
+</div>
+</body>
+</html>

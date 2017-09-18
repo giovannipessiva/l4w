@@ -92,6 +92,17 @@ namespace Utils {
         }
         return direction;
     }
+    
+    /** Move a cell in the direction */
+    export function moveToDirection(cell: ICell, direction: DirectionEnum) {
+        switch(direction) {
+            case DirectionEnum.UP: cell.j -= 1; break;
+            case DirectionEnum.DOWN: cell.j += 1; break;
+            case DirectionEnum.LEFT: cell.i -= 1; break;
+            case DirectionEnum.RIGHT: cell.i += 1; break;
+        }
+        return cell;
+    }
 
     export function getRandomBoolean(): boolean {
         return Math.random() >= 0.5;

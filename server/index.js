@@ -75,6 +75,10 @@ app.get("/edit/:editor", function(request, response) {
 	}
 });
 
+app.all('/test', function(request, response) {
+	utils.sendFile(__dirname + '/views/', 'test.html', response);
+});
+
 app.get('/logout', function(request, response) {
 	session.doLogout(request,response,function() {
         utils.sendFile(__dirname + '/views/', 'auth.html', response);

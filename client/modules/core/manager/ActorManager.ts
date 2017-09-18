@@ -153,7 +153,6 @@ namespace ActorManager {
             let target: ICell = {
                 i: a.target.x / grid.cellW,
                 j: a.target.y / grid.cellH
-
             };
 
             // Check if I am currently moving a step

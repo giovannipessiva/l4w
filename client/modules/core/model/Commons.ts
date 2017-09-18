@@ -17,6 +17,7 @@ const enum DirectionEnum {
 };
 
 class BlockDirection {
+    static NONE: number = 0;
     static UP: number = Math.pow(2, 0);
     static DOWN: number = Math.pow(2, 1);
     static LEFT: number = Math.pow(2, 2);
