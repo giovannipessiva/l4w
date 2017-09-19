@@ -122,15 +122,17 @@ function pathfinding(){
 				return str.substr(0, str.length-2);
 			};
 			
-			let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
-			stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
-			stepDetails += "<b>U</b>: " + printVertexes(path[step].cache.U, false) + "<br/>";
-			stepDetails += "<b>g</b>: " + JSON.stringify(path[step].cache.g) + "<br/>";
-			stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
-			stepDetails += "<br/>";
-			document.getElementById("log").innerHTML = stepDetails;
-
-			console.log(path[step].cache);///TODO test
+			if(path[step].cache !== undefined) {
+				let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
+				stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
+				stepDetails += "<b>U</b>: " + printVertexes(path[step].cache.U, false) + "<br/>";
+				stepDetails += "<b>g</b>: " + JSON.stringify(path[step].cache.g) + "<br/>";
+				stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
+				stepDetails += "<br/>";
+				document.getElementById("log").innerHTML += stepDetails;
+				console.log(path[step].cache);///TODO test
+			}
+			
 			drawMap();
 			setTimeout(function() {
 				moveActor(path, step + 1);
@@ -149,6 +151,7 @@ function pathfinding(){
 		}
 	}
 	
+	document.getElementById("log").innerHTML = "";
 	moveActor(path,0);	
 };
 
