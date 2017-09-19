@@ -430,7 +430,7 @@ namespace MapManager {
                                 let u = uTop;
                                 let k_old = uTop.key;
                                 let k_new = calculateKey(u);
-                                if(k_old < k_new) {
+                                if(compareKeys(k_old, k_new) < 0) {
                                     u.key = k_new;
                                     queueUpdate(u);
                                 } else if(g(u) > rhs(u)) {
@@ -568,15 +568,14 @@ namespace MapManager {
                          */
                         function succ(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
-                            S.length
                             let succ: IVertex[] = [];
-                            if(gid-1 > 0) {
+                            if(gid-1 >= 0) {
                                 succ.push(S[gid-1]);
                             }
                             if(gid+1 < S.length) {
                                 succ.push(S[gid+1]);
                             }
-                            if(gid-map.width > 0) {
+                            if(gid-map.width >= 0) {
                                 succ.push(S[gid-map.width]);
                             }
                             if(gid+map.width < S.length) {
@@ -592,13 +591,13 @@ namespace MapManager {
                         function pred(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
                             let pred: IVertex[] = [];
-                            if(gid-1 > 0) {
+                            if(gid-1 >= 0) {
                                 pred.push(S[gid-1]);
                             }
                             if(gid+1 < S.length) {
                                 pred.push(S[gid+1]);
                             }
-                            if(gid-map.width > 0) {
+                            if(gid-map.width >= 0) {
                                 pred.push(S[gid-map.width]);
                             }
                             if(gid+map.width < S.length) {
@@ -662,11 +661,11 @@ namespace MapManager {
                             return dx + dy;
                         };
                         
-                        function compareKeys(_k1: number [], _k2: number []): number {
-                            if(_k1[0] === _k2[0] && _k1[1] === _k2[1]) {
+                        function compareKeys(k1: number [], k2: number []): number {
+                            if(k1[0] === k2[0] && k1[1] === k2[1]) {
                                 return 0;    
                             }
-                            if(_k1[0] > _k1[0] || (_k1[0] === _k2[0] && _k1[1] > _k2[1])) {
+                            if(k1[0] > k2[0] || (k1[0] === k2[0] && k1[1] > k2[1])) {
                                 return 1;    
                             } else {
                                 return -1;

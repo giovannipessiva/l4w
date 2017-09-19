@@ -5,8 +5,13 @@
 /// <reference path="../../core/manager/MapManager.ts" />
 
 namespace Tester {
+    
+    interface IPathfinderTestResult {
+        cell: ICell,
+        cache: IDStarLiteCache
+    };
 
-    export function testPathfinding(width: number, height: number, actorI: number, actorJ: number, targetI: number,targetJ: number): ICell[] {  
+    export function testPathfinding(width: number, height: number, actorI: number, actorJ: number, targetI: number,targetJ: number): IPathfinderTestResult[] {  
         // Initialize map
         let map: IMap = {
             id: 0,
@@ -43,16 +48,19 @@ namespace Tester {
             pathfinder = MapManager.PathfinderEnum.D_STAR_LITE;
         }
         // Find path
-        let path: ICell[] = [];
+        let result: IPathfinderTestResult[] = [];
         let direction: DirectionEnum;
         let guard = 0;
         while (direction !== DirectionEnum.NONE) {
             direction = MapManager.pathFinder(map, actor, target, pathfinder);
             if(direction !== DirectionEnum.NONE) {
                 actor = <IActor> Utils.moveToDirection(actor, direction);
-                path.push({
-                    i:actor.i,
-                    j:actor.j   
+                result.push({
+                    cell:{
+                        i:actor.i,
+                        j:actor.j
+                    },
+                    cache:map.dstarlitecache
                 });
             }
             // Check guard to avoid infite loop
@@ -62,6 +70,6 @@ namespace Tester {
                 break;    
             }
         }
-        return path;
+        return result;
     };
 }

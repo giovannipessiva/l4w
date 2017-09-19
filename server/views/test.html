@@ -105,12 +105,36 @@ function pathfinding(){
 	function moveActor(path, step) {
 		if(step < path.length && !stopMovement) {
 			// Move actor by one step
-			document.getElementById("actorX").value = path[step].i;
-			document.getElementById("actorY").value = path[step].j;
+			document.getElementById("actorX").value = path[step].cell.i;
+			document.getElementById("actorY").value = path[step].cell.j;
+			
+			function printVertexes(vertexes,format) {
+				let str = "";
+				let tableWidth = parseInt(document.getElementById("width").value);
+				let lastJ = 0;
+				for(let v of vertexes) {
+					if(format && v.cell.j > lastJ) {
+						str += "<br/>";
+						lastJ = v.cell.j;
+					}
+					str += (v.cell.i + v.cell.j*tableWidth) + ":" + JSON.stringify(v.key) + ", ";
+				}
+				return str.substr(0, str.length-2);
+			};
+			
+			let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
+			stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
+			stepDetails += "<b>U</b>: " + printVertexes(path[step].cache.U, false) + "<br/>";
+			stepDetails += "<b>g</b>: " + JSON.stringify(path[step].cache.g) + "<br/>";
+			stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
+			stepDetails += "<br/>";
+			document.getElementById("log").innerHTML += stepDetails;
+
+			console.log(path[step].cache);///TODO test
 			drawMap();
 			setTimeout(function() {
 				moveActor(path, step + 1);
-			},300);
+			},200);
 		} else {
 			// End of the path!
 			// Enable all input fields
@@ -141,11 +165,21 @@ div.framed{
 border:1px solid black;
 padding:1em;
 }
+div.dynamic{
+border:1px dashed black;
+background-color:AliceBlue;
+}
+div.sector{
+padding:1em;
+margin:1em;
+float:left;
+}
 div.cell{
 height:20px;
 width:20px;
 border:1px solid blue;
 float:left;
+background-color:white;
 }
 div.blocked{
 background-color:black;
@@ -166,17 +200,18 @@ border:1px dotted black;
 <body>
 <div class="framed">
 <h1>Pathfinding test</h1>
+<div style="float:left;">
 Map size:
-<input id="width" type="number" value="15" min="1" max="50" onchange="drawMap();"/>
-<input id="height" type="number" value="15" min="1" max="50" onchange="drawMap();"/>
+<input id="width" type="number" value="4" min="1" max="50" onchange="drawMap();"/>
+<input id="height" type="number" value="2" min="1" max="50" onchange="drawMap();"/>
 <br/>
 <div class="cell actor"></div>&nbsp; Actor:
 <input id="actorX" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
 <input id="actorY" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
-<br style='clear:both;'/>
+<br style="clear:both;"/>
 <div class="cell target"></div>&nbsp; Target:
-<input id="targetX" type="number" value="14" min="0" max="49" onchange="drawMap();"/>
-<input id="targetY" type="number" value="12" min="0" max="49" onchange="drawMap();"/>
+<input id="targetX" type="number" value="2" min="0" max="49" onchange="drawMap();"/>
+<input id="targetY" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
 <br/><br/>
 <select id="alg">
 <option>Basic</option>
@@ -185,7 +220,18 @@ Map size:
 <input id="find" type="button" value="Find the path!" onclick="pathfinding();"/>
 <input id="stop" type="button" value="Stop" onclick="stop();"/>
 <br/><br/>
-<div id="map">Loading...</div>
+</div>
+<div class="dynamic sector">
+<div id="map" class="sector">
+Loading...
+</div>
+
+<div id="log" class="sector">
+</div>
+
+<br style="clear:both;"/>
+</div>
+<br style="clear:both;"/>
 </div>
 </body>
 </html>
