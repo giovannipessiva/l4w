@@ -22,11 +22,11 @@ var base_path = "./";
 
 window.onload = function(){
 	requirejs(["lib/jquery3.min.js"],function($){
-	    requirejs(["lib/jquery-ui.min.js","js/l4w.min"],function(l4w){
+	    requirejs(["lib/jquery-ui.min.js","js/l4w"],function(l4w){
 	        finishedLoading();
 	    },function(err){
-	        // If min version is unavailable, use the full version
-	        requirejs(["js/l4w"],function(l4w){
+	        // If full version version (better for test) is unavailable, use the minified
+	        requirejs(["js/l4w.min"],function(l4w){
 	            finishedLoading();
 	        });
 	    });

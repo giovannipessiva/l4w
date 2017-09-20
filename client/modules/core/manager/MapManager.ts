@@ -569,10 +569,10 @@ namespace MapManager {
                         function succ(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
                             let succ: IVertex[] = [];
-                            if(gid-1 >= 0) {
+                            if(s.cell.i !== 0) {
                                 succ.push(S[gid-1]);
                             }
-                            if(gid+1 < S.length) {
+                            if(s.cell.i < map.width-1) {
                                 succ.push(S[gid+1]);
                             }
                             if(gid-map.width >= 0) {
@@ -591,10 +591,10 @@ namespace MapManager {
                         function pred(s: IVertex): IVertex[] {
                             let gid = Utils.cellToGid(s.cell,map.width);
                             let pred: IVertex[] = [];
-                            if(gid-1 >= 0) {
+                            if(s.cell.i !== 0) {
                                 pred.push(S[gid-1]);
                             }
-                            if(gid+1 < S.length) {
+                            if(s.cell.i < map.width-1) {
                                 pred.push(S[gid+1]);
                             }
                             if(gid-map.width >= 0) {
