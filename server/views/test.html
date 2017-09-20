@@ -37,6 +37,10 @@ function finishedLoading(){
 	drawMap();
 };
 
+var stopMovement;
+var blocks;
+const BLOCK = 15;
+
 function drawMap() {
 	let actorX = parseInt(document.getElementById("actorX").value);
 	let actorY = parseInt(document.getElementById("actorY").value);
@@ -44,6 +48,10 @@ function drawMap() {
 	let targetY = parseInt(document.getElementById("targetY").value);
 	let tableWidth = parseInt(document.getElementById("width").value);
 	let tableHeight = parseInt(document.getElementById("height").value);
+	
+	if(blocks === undefined || blocks.length !== tableWidth * tableHeight) {
+		blocks = new Array(tableWidth * tableHeight).fill(0);
+	}
 	
 	if(actorX >= tableWidth) {
 		actorX = tableWidth - 1;
@@ -66,20 +74,22 @@ function drawMap() {
 	for(let y=0; y<tableHeight; y++) {
 		for(let x=0; x<tableWidth; x++) {
 			let classes = "cell";
-			if(actorX==x && actorY==y) {
-				classes += " actor";
-			}
+			let gid = x + y * tableWidth;
 			if(targetX==x && targetY==y) {
 				classes += " target";
 			}
-			map += "<div class='"+classes+"'></div>";
+			if(blocks[gid] === BLOCK) {
+				classes += " blocked";
+			}
+			if(actorX==x && actorY==y) {
+				classes += " actor";
+			}
+			map += "<div id='g"+ gid + "' class='"+classes+"' onclick='toggleBlock(" + gid + ")'></div>";
 		}
 		map += "<br style='clear:both;'/>";
 	}
 	document.getElementById("map").innerHTML = map;
 };
-
-var stopMovement;
 
 function pathfinding(){
 	let actorX = parseInt(document.getElementById("actorX").value);
@@ -88,8 +98,9 @@ function pathfinding(){
 	let targetY = parseInt(document.getElementById("targetY").value);
 	let tableWidth = parseInt(document.getElementById("width").value);
 	let tableHeight = parseInt(document.getElementById("height").value);
-	let path = Tester.testPathfinding(tableWidth,tableHeight,actorX,actorY,targetX,targetY);
 	
+	let path = Tester.testPathfinding(tableWidth,tableHeight,actorX,actorY,targetX,targetY,blocks);
+
 	// Disable all input fields
 	document.getElementById("actorX").disabled=true;
 	document.getElementById("actorY").disabled=true;
@@ -101,7 +112,7 @@ function pathfinding(){
 	document.getElementById("stop").disabled=false;
 	stopMovement = false;
 	
-	// Recursice function to simulate Actor movement along the path towards Target
+	// Recursive function to simulate Actor movement along the path towards Target
 	function moveActor(path, step) {
 		if(step < path.length && !stopMovement) {
 			// Move actor by one step
@@ -122,6 +133,7 @@ function pathfinding(){
 				return str.substr(0, str.length-2);
 			};
 			
+			// Log D* Lite pathfinding details
 			if(path[step].cache !== undefined) {
 				let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
 				stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
@@ -130,7 +142,7 @@ function pathfinding(){
 				stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
 				stepDetails += "<br/>";
 				document.getElementById("log").innerHTML += stepDetails;
-				console.log(path[step].cache);///TODO test
+				console.log(path[step].cache);
 			}
 			
 			drawMap();
@@ -157,7 +169,16 @@ function pathfinding(){
 
 function stop(){
 	stopMovement=true;
-}
+};
+
+function toggleBlock(gid) {
+	if(blocks[gid] === BLOCK) {
+		blocks[gid] = undefined;
+	} else {
+		blocks[gid] = BLOCK;
+	}
+	drawMap();
+};
 </script>
 
 <style type="text/css">
@@ -184,15 +205,15 @@ border:1px solid blue;
 float:left;
 background-color:white;
 }
+div.target{
+background-color:red;
+border:1px dotted black;
+}
 div.blocked{
 background-color:black;
 }
 div.actor{
 background-color:yellow;
-border:1px dotted black;
-}
-div.target{
-background-color:red;
 border:1px dotted black;
 }
 </style>
@@ -215,7 +236,9 @@ Map size:
 <div class="cell target"></div>&nbsp; Target:
 <input id="targetX" type="number" value="3" min="0" max="49" onchange="drawMap();"/>
 <input id="targetY" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
-<br/><br/>
+<br/>
+<p>Click on the cells to toggle blocks</p>
+<br/>
 <select id="alg">
 <option>Basic</option>
 <option selected>D* Lite</option>

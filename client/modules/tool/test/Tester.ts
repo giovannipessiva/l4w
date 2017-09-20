@@ -11,7 +11,7 @@ namespace Tester {
         cache: IDStarLiteCache
     };
 
-    export function testPathfinding(width: number, height: number, actorI: number, actorJ: number, targetI: number,targetJ: number): IPathfinderTestResult[] {  
+    export function testPathfinding(width: number, height: number, actorI: number, actorJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
         let map: IMap = {
             id: 0,
@@ -23,13 +23,8 @@ namespace Tester {
                 type:"tilelayer",
             }],
             nextobjectid: 0,
-            blocks:[]
+            blocks: blocks
         };
-        for(let j=0; j<height; j++) {
-            for(let i=0; i<width; i++) {
-                map.blocks[i + j*width] = BlockDirection.NONE;
-            }
-        }
         // Initialize actor and target
         let actor: IActor = {
             id:0,
