@@ -51,10 +51,10 @@ namespace Tilesetter {
             inputCallbackMap,
             function() { },
             function() { },
-            function(x, y, mouseButton) {
+            function(i, j, x, y, mouseButton) {
                 // Start action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilesetter.select(x, y);
+                    tilesetter.selectPrecisely(i, j, x, y);
                 }
             },
             function(x, y, mouseButton) {

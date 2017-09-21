@@ -38,4 +38,30 @@ class TilesetterScene extends AbstractTileScene {
                 break;
         };
     }
+    
+    selectPrecisely(i: number, j: number, x: number, y: number) {
+        super.select(i, j);
+        
+        // Identify click area
+        let posX = x % this.grid.cellW;
+        let posY = y % this.grid.cellH;
+        let up_left: boolean = posX + posY < this.grid.cellW;
+        let down_left: boolean = posX < posY;
+        let clickArea: DirectionEnum;
+        if(up_left && down_left) {
+            clickArea = DirectionEnum.LEFT;    
+        } else if(!up_left && !down_left) {
+            clickArea = DirectionEnum.RIGHT;
+        } else if(up_left && !down_left) {
+            clickArea = DirectionEnum.UP;
+        } else {
+            clickArea = DirectionEnum.DOWN;
+        }
+        
+        console.log(Utils.getDirectionName(clickArea));
+        
+        //TODO identify central click
+        
+        //TODO toggle directional block
+    }
 }

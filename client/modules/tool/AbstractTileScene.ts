@@ -15,8 +15,8 @@ abstract class AbstractTileScene extends AbstractStaticScene {
         this.renderingConfiguration.showBlocks = true;
     }
 
-    select(x: number, y: number) {
-        super.select(x, y);
+    select(i: number, j: number) {
+        super.select(i, j);
     }
 
     updateSize(heightPx: number, widthPx: number) {

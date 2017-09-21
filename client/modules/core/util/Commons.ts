@@ -27,8 +27,8 @@ class RenderConfiguration {
     enableAntialiasing: boolean = true;
 
     fps: number = 0;
-    selectPointStart: IPoint;
-    selectPointEnd: IPoint;
+    selectCellStart: ICell;
+    selectCellEnd: ICell;
 }
 
 interface IPropertiesCallback {

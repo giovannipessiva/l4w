@@ -45,28 +45,28 @@ abstract class AbstractStaticScene extends AbstractScene {
         }
     }
     
-    select(x: number, y: number) {
-        if (x != null && y != null) {
-            this.renderingConfiguration.selectPointStart = {
-                x: x,
-                y: y
+    select(i: number, j: number) {
+        if (i != null && j != null) {
+            this.renderingConfiguration.selectCellStart = {
+                i: i,
+                j: j
             };
-            this.renderingConfiguration.selectPointEnd = null;
+            this.renderingConfiguration.selectCellEnd = null;
         }
     }
 
-    selectEnd(x: number, y: number) {
-        if (x != null && y != null) {
-            this.renderingConfiguration.selectPointEnd = {
-                x: x,
-                y: y
+    selectEnd(i: number, j: number) {
+        if (i != null && j != null) {
+            this.renderingConfiguration.selectCellEnd = {
+                i: i,
+                j: j
             };
         }
     }
 
     cleanSelection() {
-        this.renderingConfiguration.selectPointStart = null;
-        this.renderingConfiguration.selectPointEnd = null;
+        this.renderingConfiguration.selectCellStart = null;
+        this.renderingConfiguration.selectCellEnd = null;
     }
 
     /**
@@ -75,17 +75,17 @@ abstract class AbstractStaticScene extends AbstractScene {
      * (x2, y2) are included in the area
      */
     getSelectionArea(): IRectangle {
-        if (Utils.isEmpty(this.renderingConfiguration.selectPointStart)) {
+        if (Utils.isEmpty(this.renderingConfiguration.selectCellStart)) {
             return null;
         }
-        var x1 = this.renderingConfiguration.selectPointStart.x;
-        var y1 = this.renderingConfiguration.selectPointStart.y;
+        var x1 = this.renderingConfiguration.selectCellStart.i;
+        var y1 = this.renderingConfiguration.selectCellStart.j;
    
         var x2;
         var y2;
-        if (!Utils.isEmpty(this.renderingConfiguration.selectPointEnd)) {
-            x2 = this.renderingConfiguration.selectPointEnd.x;
-            y2 = this.renderingConfiguration.selectPointEnd.y;
+        if (!Utils.isEmpty(this.renderingConfiguration.selectCellEnd)) {
+            x2 = this.renderingConfiguration.selectCellEnd.i;
+            y2 = this.renderingConfiguration.selectCellEnd.j;
             if (x1 > x2) {
                 let tmp = x1;
                 x1 = x2;
@@ -97,8 +97,8 @@ abstract class AbstractStaticScene extends AbstractScene {
                 y2 = tmp;
             }
         } else {
-            x2 = this.renderingConfiguration.selectPointStart.x;
-            y2 = this.renderingConfiguration.selectPointStart.y;
+            x2 = this.renderingConfiguration.selectCellStart.i;
+            y2 = this.renderingConfiguration.selectCellStart.j;
         }
                 
         return {

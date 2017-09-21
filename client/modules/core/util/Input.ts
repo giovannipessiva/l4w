@@ -42,7 +42,10 @@ namespace Input {
     }
 
     export interface IPositionCallback {
-        (x: number, y: number, mouseButton?: number): void;
+        (i: number, j: number, mouseButton?: number): void;
+    };
+    export interface IExactPositionCallback {
+        (i: number, j: number, x: number, y: number, mouseButton?: number): void;
     };
     export interface IEventCallback {
         (): void;
@@ -57,8 +60,8 @@ namespace Input {
         grid: AbstractGrid,
         inputCallbacks: Map<string, Input.IKeyboardCallback>,
         resetCallback: IEventCallback,
-        actionCallback: IPositionCallback,
-        startActionCallback: IPositionCallback,
+        actionCallback: IExactPositionCallback,
+        startActionCallback: IExactPositionCallback,
         endActionCallback: IPositionCallback,
         ongoingActionCallback: IPositionCallback,
         hoverCallback: IPositionCallback,
@@ -87,8 +90,8 @@ namespace Input {
         // Mouse events 
         var flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e) {
-            var position = mapEvent(e);
-            actionCallback(position.i, position.j);
+            let precisePosition: IExtendedCell = mapEvent(e);
+            actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
         });
         canvas.addEventListener("mousemove", function(e) {
             var position = mapEvent(e);
@@ -100,8 +103,8 @@ namespace Input {
         });
         canvas.addEventListener("mousedown", function(e: PointerEvent) {
             flagMouseDown = true;
-            var position = mapEvent(e);
-            startActionCallback(position.i, position.j, e.buttons);
+            let precisePosition = mapEvent(e);
+            startActionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y, e.buttons);
         });
         canvas.addEventListener("mouseup", function(e: PointerEvent) {
             flagMouseDown = false;
@@ -132,7 +135,7 @@ namespace Input {
         // Touch events
         canvas.addEventListener("touchstart", function(e) {
             var position = mapEvent(e);
-            startActionCallback(position.i, position.j);
+            startActionCallback(position.i, position.j, position.x, position.y);
         });
         canvas.addEventListener("touchend", function(e) {
             var position = mapEvent(e);
@@ -185,7 +188,7 @@ namespace Input {
             resizeCallback();
         });
 
-        function mapEvent(e) {
+        function mapEvent(e): IExtendedCell {
             let position: IPoint = {
                 x: e.clientX,
                 y: e.clientY

@@ -145,17 +145,17 @@ namespace MapManager {
 
     export function renderGlobalUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
         if (!Utils.isEmpty(renderingConfiguration)) {
-            if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectPointStart)) {
-                let x = renderingConfiguration.selectPointStart.x * grid.cellW;
-                let y = renderingConfiguration.selectPointStart.y * grid.cellH;
+            if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectCellStart)) {
+                let x = renderingConfiguration.selectCellStart.i * grid.cellW;
+                let y = renderingConfiguration.selectCellStart.j * grid.cellH;
                 let w;
                 let h;
-                if (Utils.isEmpty(renderingConfiguration.selectPointEnd)) {
+                if (Utils.isEmpty(renderingConfiguration.selectCellEnd)) {
                     h = grid.cellH;
                     w = grid.cellW;
                 } else {
-                    let x2 = renderingConfiguration.selectPointEnd.x * grid.cellW;
-                    let y2 = renderingConfiguration.selectPointEnd.y * grid.cellH;
+                    let x2 = renderingConfiguration.selectCellEnd.i * grid.cellW;
+                    let y2 = renderingConfiguration.selectCellEnd.j * grid.cellH;
                     if (x > x2) {
                         w = x - x2;
                         x = x2;

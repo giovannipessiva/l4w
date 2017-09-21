@@ -75,13 +75,18 @@ class AbstractGrid {
      * Convert a position in the webpage to a position on the grid (cell coordinates)
      * @param position : position in pixels (absolute coordinates in the page)
      */
-    mapPositionToGrid(position: IPoint): ICell {
+    mapPositionToGrid(position: IPoint): IExtendedCell {
         let rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
+        let x = Math.floor((position.x - rect.left) / this.scaleX + this.currentTranslation.x);
+        let y = Math.floor((position.y - rect.top) / this.scaleY + this.currentTranslation.y);
+        //TODO optimize        
         let i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
         let j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
         return {
             i: i,
-            j: j
+            j: j,
+            x: x,
+            y: y
         };
     }
 

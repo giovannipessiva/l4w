@@ -8,6 +8,9 @@ interface ICell {
     j: number;
 };
 
+interface IExtendedCell extends IPoint, ICell {
+};
+
 const enum DirectionEnum {
     UP,
     DOWN,
