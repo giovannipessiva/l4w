@@ -471,7 +471,7 @@ namespace MapManager {
                         
                         function main(): DirectionEnum {
                             // Check if initial data has already been computed and cached
-                            if (!Utils.isEmpty(map.dstarlitecache) && false ) { //TODO disable cache for testing
+                            if (!Utils.isEmpty(map.dstarlitecache)) {
                                 S = map.dstarlitecache.S;
                                 U = map.dstarlitecache.U;
                                 _g = map.dstarlitecache.g;

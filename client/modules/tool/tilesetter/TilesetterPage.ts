@@ -15,8 +15,8 @@ namespace TilesetterPage {
         Compatibility.check(); 
         
         // Resize the panel to match the tileset
-        var resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
-            var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
+        let resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
+            let width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
             $("#toolsPanel").width(width);
         };
         Resource.loadProperties(resizerCallback);
@@ -28,8 +28,8 @@ namespace TilesetterPage {
 
     function loadTiles() {
         $.getJSON(base_path + "data/resources/tiles.json", function(data) {
-            var sel = $("#tiles");
-            for (var i = 0; i < data.length; i++) {
+            let sel = $("#tiles");
+            for (let i = 0; i < data.length; i++) {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
                     + "</option>");
             }
@@ -39,7 +39,7 @@ namespace TilesetterPage {
 
     export function loadNews() {
         $.getJSON(base_path + "news", function(data) {
-            var news = $("#news");
+            let news = $("#news");
             //TODO manage json response
         });
     }

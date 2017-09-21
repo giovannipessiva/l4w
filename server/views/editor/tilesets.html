@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>L4W Mapper</title>
 <meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
-<link rel='icon' href='style/favicon/edit.ico' />
+<link rel='icon' href='../style/favicon/edit.ico' />
 
 <meta name="google-signin-scope" content="profile email">
 <meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
@@ -20,7 +20,6 @@ requirejs([base_path + "lib/jquery3.min.js"],function($){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version
-        console.log("Minified version unavailable, using full script");
         requirejs([base_path + "js/l4w"],function(l4w){
             finishedLoading();
         });
@@ -52,11 +51,11 @@ ga('send', 'pageview');
 </head>
 <body>
 <div style="position:fixed;top:10px;left:10px;">
-	<div id="tilePanel" style="border:1px solid black;position: relative;">
-        <canvas id="canvasTile" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0">
+	<div id="tilePanel" style="position: relative;">
+        <canvas id="canvasTile" width="256" height="800" style="border:1px solid black;position:absolute;left:0;top:0;z-index:0">
         Your browser does not support HTML5 Canvas!</canvas>
         
-        <canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
+        <canvas id="canvasSelector" width="256" height="800" style="border:1px solid black;position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
         Your browser does not support HTML5 Canvas!</canvas>
     </div>
 </div>
@@ -70,8 +69,8 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="TilesetterPage.save();" disabled="true">Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="TilesetterPage.reload();" disabled="true">Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="TilesetterPage.save();" disabled>Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="TilesetterPage.reload();" disabled>Reload</button></td>
 			</tr>
 		</table>
 	</div>
