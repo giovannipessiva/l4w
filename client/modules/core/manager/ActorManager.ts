@@ -155,12 +155,20 @@ namespace ActorManager {
                 j: a.target.y / grid.cellH
             };
 
-            // Check if I am currently moving a step
-            let direction = a.movementDirection;
-            if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
-                // Decide next step
-                direction = MapManager.pathFinder(map, a, target);
-                console.log(a.name + " " + Utils.getDirectionName(direction));
+            let direction;
+            // Check if target can be reached
+            let targetGui = Utils.cellToGid(target, map.width);
+            if(Utils.isBlocked(map.blocks[targetGui], BlockDirection.ALL)) {
+                // Target is blocked, stop
+                direction = DirectionEnum.NONE;
+            } else {
+                // Check if I am currently moving a step
+                direction = a.movementDirection;
+                if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
+                    // Decide next step
+                    direction = MapManager.pathFinder(map, a, target);
+                    console.log(a.name + " " + Utils.getDirectionName(direction));
+                }
             }
             let movementX = 0;
             let movementY = 0;

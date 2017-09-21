@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     data: {
       type: DataTypes.JSON,
-      allowNull: false
+      allowNull: true
     }
   }, {
     tableName: 'l4w_tileset'

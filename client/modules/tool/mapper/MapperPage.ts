@@ -102,8 +102,8 @@ namespace MapperPage {
 
     export function changeSize() {
         var node = getSelectedNode();
-        node.data.w = $("#mapSizeW").val();
-        node.data.h = $("#mapSizeH").val();
+        node.data.w = parseInt($("#mapSizeW").val());
+        node.data.h = parseInt($("#mapSizeH").val());
         Mapper.changeSize(node.data.h, node.data.w);
         changeEditState(true);
     }

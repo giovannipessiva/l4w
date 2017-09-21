@@ -901,9 +901,9 @@ fsevents@^0.3.8:
   dependencies:
     nan "^2.0.2"
 
-generic-pool@^3.1.6:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.1.7.tgz#dac22b2c7a7a04e41732f7d8d2d25a303c88f662"
+generic-pool@^3.1.8:
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.1.8.tgz#09844b6545bc9177ec218bd35d4ad894c65be271"
 
 generic-pool@2.4.2:
   version "2.4.2"
@@ -1981,16 +1981,16 @@ sequelize@^3.20.0:
     validator "^5.2.0"
     wkx "0.2.0"
 
-sequelize@^4.8:
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.8.2.tgz#d16a6e75e8b48303beab4787b946bf06f32f1a94"
+sequelize@^4.10:
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.10.0.tgz#23874a2405a14366045a2a785d247c030abec6e9"
   dependencies:
     bluebird "^3.4.6"
     cls-bluebird "^2.0.1"
     debug "^3.0.0"
     depd "^1.1.0"
     dottie "^2.0.0"
-    generic-pool "^3.1.6"
+    generic-pool "^3.1.8"
     inflection "1.12.0"
     lodash "^4.17.1"
     moment "^2.13.0"

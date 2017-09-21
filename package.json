@@ -1,6 +1,6 @@
 {
   "name": "l4w",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A TypeScript engine + web editor for tile-based games (it's not ready yet)",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "express-session": "^1.15",
     "http-status-codes": "^1.3",
     "pg": "^7.3",
-    "sequelize": "^4.8"
+    "sequelize": "^4.10"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24",
