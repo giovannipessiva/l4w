@@ -135,6 +135,7 @@ function pathfinding(){
 			
 			// Log D* Lite pathfinding details
 			if(path[step].cache !== undefined) {
+				/*
 				let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
 				stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
 				stepDetails += "<b>U</b>: " + printVertexes(path[step].cache.U, false) + "<br/>";
@@ -142,13 +143,14 @@ function pathfinding(){
 				stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
 				stepDetails += "<br/>";
 				document.getElementById("log").innerHTML += stepDetails;
+				*/
 				console.log(path[step].cache);
 			}
 			
 			drawMap();
 			setTimeout(function() {
 				moveActor(path, step + 1);
-			},200);
+			},100);
 		} else {
 			// End of the path!
 			// Enable all input fields
@@ -226,16 +228,16 @@ border:1px dotted black;
 <h1>Pathfinding test</h1>
 <div style="float:left;">
 Map size:
-<input id="width" type="number" value="4" min="1" max="50" onchange="drawMap();"/>
-<input id="height" type="number" value="3" min="1" max="50" onchange="drawMap();"/>
+<input id="width" type="number" value="40" min="1" max="50" onchange="drawMap();"/>
+<input id="height" type="number" value="40" min="1" max="50" onchange="drawMap();"/>
 <br/>
 <div class="cell actor"></div>&nbsp; Actor:
-<input id="actorX" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
-<input id="actorY" type="number" value="0" min="0" max="49" onchange="drawMap();"/>
+<input id="actorX" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
+<input id="actorY" type="number" value="2" min="0" max="49" onchange="drawMap();"/>
 <br style="clear:both;"/>
 <div class="cell target"></div>&nbsp; Target:
-<input id="targetX" type="number" value="3" min="0" max="49" onchange="drawMap();"/>
-<input id="targetY" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
+<input id="targetX" type="number" value="37" min="0" max="49" onchange="drawMap();"/>
+<input id="targetY" type="number" value="40" min="0" max="49" onchange="drawMap();"/>
 <br/>
 <p>Click on the cells to toggle blocks</p>
 <br/>
