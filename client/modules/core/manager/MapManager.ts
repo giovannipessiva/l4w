@@ -7,14 +7,14 @@
  * Helper class for handling game maps
  */
 namespace MapManager {
-    
+
     export enum PathfinderEnum {
         BASIC,
         D_STAR_LITE
     }
-    
+
     export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
-        Resource.load(mapId+"", Resource.TypeEnum.MAP, function(resourceText: string) {
+        Resource.load(mapId + "", Resource.TypeEnum.MAP, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
                 callback(null);
@@ -38,7 +38,7 @@ namespace MapManager {
     }
 
     export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        if(!Utils.isEmpty(layer.data)) {
+        if (!Utils.isEmpty(layer.data)) {
             for (let y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
                 for (let x = minColumn; x <= maxColumn; x++) {
                     let cellIndex = x + y * map.width;
@@ -72,37 +72,75 @@ namespace MapManager {
                         context.globalAlpha = 0.8;
                         context.fillStyle = Constant.Color.YELLOW;
                         context.strokeStyle = Constant.Color.GREY;
-                        context.lineWidth = 1;
+                        context.lineWidth = 2;
                         let blockMarkSize = 7;
                         let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
                         let blockValue: number = map.blocks[j * map.width + i];
-                        
+
                         let x, y;
-                        
+
+                        const blockStyleTriangle = true;
+
                         if (blockValue > 0) {
-                            if(Utils.isBlocked(blockValue, BlockDirection.UP)) {
-                                x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
-                                y = (j + 0.1) * grid.cellH;
-                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                            if (Utils.isBlocked(blockValue, BlockDirection.UP)) {
+                                if (!blockStyleTriangle) {
+                                    x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
+                                    y = (j + 0.1) * grid.cellH;
+                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                                } else {
+                                    context.beginPath();
+                                    context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
+                                    context.lineTo(i * grid.cellW, j * grid.cellH);
+                                    context.lineTo((i + 0.5) * grid.cellW, (j + 0.3) * grid.cellH);
+                                    context.fill();
+                                    context.stroke();
+                                }
                             }
-                            if(Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
-                                x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
-                                y = (j + 0.9) * grid.cellH - blockMarkSize;
-                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                            if (Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
+                                if (!blockStyleTriangle) {
+                                    x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
+                                    y = (j + 0.9) * grid.cellH - blockMarkSize;
+                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                                } else {
+                                    context.beginPath();
+                                    context.moveTo((i + 0.5) * grid.cellW, (j + 0.7) * grid.cellH);
+                                    context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
+                                    context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                                    context.fill();
+                                    context.stroke();
+                                }
                             }
-                            if(Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
-                                x = (i + 0.1) * grid.cellW;
-                                y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
-                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                            if (Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
+                                if (!blockStyleTriangle) {
+                                    x = (i + 0.1) * grid.cellW;
+                                    y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
+                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                                } else {
+                                    context.beginPath();
+                                    context.moveTo(i * grid.cellW, j * grid.cellH);
+                                    context.lineTo((i + 0.3) * grid.cellW, (j + 0.5) * grid.cellH);
+                                    context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
+                                    context.fill();
+                                    context.stroke();
+                                }
                             }
-                            if(Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
-                                x = (i + 0.9) * grid.cellW - blockMarkSize;
-                                y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
-                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                            if (Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
+                                if (!blockStyleTriangle) {
+                                    x = (i + 0.9) * grid.cellW - blockMarkSize;
+                                    y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
+                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
+                                } else {
+                                    context.beginPath();
+                                    context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
+                                    context.lineTo((i + 0.7) * grid.cellW, (j + 0.5) * grid.cellH);
+                                    context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                                    context.fill();
+                                    context.stroke();
+                                }
                             }
                         }
                         context.restore();
@@ -201,7 +239,7 @@ namespace MapManager {
                 // Correct existing rows
                 if (oldWidth !== newWidth) {
                     for (let y = 0; y < oldHeight; y++) {
-                        if(!Utils.isEmpty(removedColumns)) {
+                        if (!Utils.isEmpty(removedColumns)) {
                             layer.data.splice(referenceIndex + y * newWidth, removedColumns);
                         } else {
                             Array.prototype.splice.apply(layer.data, [referenceIndex + y * newWidth, 0].concat(newColumns));
@@ -210,13 +248,13 @@ namespace MapManager {
                 }
                 // Delete excessive rows
                 if (oldHeight > newHeight) {
-                    layer.data.length=newWidth*newHeight;
+                    layer.data.length = newWidth * newHeight;
                 }
                 // Add more rows
                 if (oldHeight < newHeight) {
                     let newData: number[] = [];
                     for (let n = 0; n < newWidth - oldWidth; n++) {
-                        newData[n]=null;    
+                        newData[n] = null;
                     }
                     for (let i = oldWidth; i < newWidth; i++) {
                         layer.data.concat(newData);
@@ -228,10 +266,10 @@ namespace MapManager {
         map.height = rows;
         map.width = columns;
     }
-    
+
     export function getActors(map: IMap) {
         let actors: IActor[] = [];
-        if(!Utils.isEmpty(map.layers)) {
+        if (!Utils.isEmpty(map.layers)) {
             for (let i = 0; i < map.layers.length; i++) {
                 let layer = map.layers[i];
                 if (!Utils.isEmpty(layer.objects)) {
@@ -239,14 +277,14 @@ namespace MapManager {
                 }
             }
         }
-        return actors;   
+        return actors;
     }
-    
+
     /**
      * Read the block in every map layer, and save them in the map.block array
      */
     export function loadBlocks(map: IMap) {
-        if(!Utils.isEmpty(map.layers) && !Utils.isEmpty(map.tileset.blocks)) {
+        if (!Utils.isEmpty(map.layers) && !Utils.isEmpty(map.tileset.blocks)) {
             map.blocks = [];
             for (let j = 0; j < map.height * map.width; j++) {
                 map.blocks[j] = 0;
@@ -257,8 +295,8 @@ namespace MapManager {
                     for (let j = 0; j < layer.data.length; j++) {
                         let tileCell = layer.data[j];
                         let blockValue = 0;
-                        if(tileCell !== null && tileCell < map.tileset.blocks.length) {
-                           blockValue = map.tileset.blocks[tileCell];
+                        if (tileCell !== null && tileCell < map.tileset.blocks.length) {
+                            blockValue = map.tileset.blocks[tileCell];
                         }
                         map.blocks[j] |= blockValue;
                     }
@@ -266,7 +304,7 @@ namespace MapManager {
             }
         }
     }
-    
+
     export function isDirectionBlocked(map: IMap, i: number, j: number, direction: DirectionEnum): boolean {
         switch (direction) {
             case DirectionEnum.UP:
@@ -280,7 +318,7 @@ namespace MapManager {
         };
         return false;
     }
-    
+
     export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
         let distI = target.i - actor.i;
         let distJ = target.j - actor.j;
@@ -330,14 +368,14 @@ namespace MapManager {
                             // Save direction in the path
                             ActorManager.addDirectionToPath(actor, direction, 3);
                             // Check if the pathfinder is in loop
-                            if(actor.path.length === 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0],actor.path[1])) {
+                            if (actor.path.length === 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0], actor.path[1])) {
                                 // If a block is detected, stop
                                 direction = DirectionEnum.NONE;
                             }
                         }
                     }
                     break;
-                    
+
                 case PathfinderEnum.D_STAR_LITE:
                     // Advanced pathfinder
                     {
@@ -345,7 +383,7 @@ namespace MapManager {
                         var U: IVertex[]; // Priority queue of vertices, ordered by key value
                         var _g: number[]; // Estimate of the start distance of the vertices
                         var _rhs: number[];  // One step lookahead estimate of g
-                        
+
                         const MAX = 9999; // Approximation of infinity
                         var s_start: IVertex;// Start vertex
                         var s_goal: IVertex; // Target vertex
@@ -360,14 +398,14 @@ namespace MapManager {
                         s_goal = {
                             cell: target
                         };
-                        
+
                         // If the target has changed, flush cached data
                         if (!Utils.isEmpty(map.dstarlitecache) && !isVertexEqual(map.dstarlitecache.s_goal, s_goal)) {
                             map.dstarlitecache = undefined;
                         }
 
                         direction = main();
-                        
+
                         // Cache data
                         map.dstarlitecache = {
                             S: S,
@@ -376,11 +414,11 @@ namespace MapManager {
                             g: _g,
                             rhs: _rhs
                         };
-                        
+
                         function calculateKey(s: IVertex): number[] {
-                            return [ Math.min(g(s),rhs(s)) + h(s_start,s) + km , Math.min(g(s),rhs(s))];
+                            return [Math.min(g(s), rhs(s)) + h(s_start, s) + km, Math.min(g(s), rhs(s))];
                         };
-                        
+
                         /** Initialize values and data structures */
                         function initialize() {
                             // Populate S with a complete list of vertex (even blocked)
@@ -401,40 +439,40 @@ namespace MapManager {
                             U = [];
                             km = 0;
                             // Initialize g(s) = rhs(s) = MAX for every vertex
-                            for(let s of S) {
-                                setG(s,MAX);
-                                setRhs(s,MAX);
+                            for (let s of S) {
+                                setG(s, MAX);
+                                setRhs(s, MAX);
                             }
-                            setRhs(s_goal,0);
+                            setRhs(s_goal, 0);
                             let vertex: IVertex = s_goal;
-                            vertex.key = [h(s_start,s_goal), 0];
+                            vertex.key = [h(s_start, s_goal), 0];
                             U.push(vertex);
                         };
-                        
+
                         function updateVertex(u: IVertex) {
-                            if(g(u) !== rhs(u)) {
+                            if (g(u) !== rhs(u)) {
                                 u.key = calculateKey(u);
                                 queueUpdate(u);
-                            } else if(queueContains(u)) {    
-                                queueRemove(u); 
+                            } else if (queueContains(u)) {
+                                queueRemove(u);
                             }
                         };
-                        
+
                         function computeShortestPath() {
-                            while(compareKeys(queueTop().key,calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {  //FIXME ciclo infinito
+                            while (compareKeys(queueTop().key, calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {  //FIXME ciclo infinito
                                 let uTop = queueTop();
                                 let u = uTop;
                                 let k_old = uTop.key;
                                 let k_new = calculateKey(u);
-                                if(compareKeys(k_old, k_new) < 0) {
+                                if (compareKeys(k_old, k_new) < 0) {
                                     u.key = k_new;
                                     queueUpdate(u);
-                                } else if(g(u) > rhs(u)) {
-                                    setG(u,rhs(u));
+                                } else if (g(u) > rhs(u)) {
+                                    setG(u, rhs(u));
                                     queueRemove(u);
-                                    for(let s of pred(u)) {
-                                        if(!isVertexEqual(s,s_goal)) {
-                                            setRhs(s,Math.min(rhs(s),c(s,u)+g(u)));
+                                    for (let s of pred(u)) {
+                                        if (!isVertexEqual(s, s_goal)) {
+                                            setRhs(s, Math.min(rhs(s), c(s, u) + g(u)));
                                         }
                                         updateVertex(s);
                                     }
@@ -443,28 +481,28 @@ namespace MapManager {
                                     setG(u, MAX);
                                     let array: IVertex[] = pred(u);
                                     array.push(u);
-                                    for(let s of array) {
-                                        if(rhs(s) === c(s,u) + g_old  || (rhs(s) === MAX && (c(s,u) === MAX || g_old === MAX))) {
-                                            if(!isVertexEqual(s,s_goal)) {
+                                    for (let s of array) {
+                                        if (rhs(s) === c(s, u) + g_old || (rhs(s) === MAX && (c(s, u) === MAX || g_old === MAX))) {
+                                            if (!isVertexEqual(s, s_goal)) {
                                                 let min;
-                                                for(let s1 of succ(s)) {
-                                                    let tmpMin = c(s,s1)+g(s1);
-                                                    if(tmpMin > MAX){
-                                                        tmpMin = MAX; 
+                                                for (let s1 of succ(s)) {
+                                                    let tmpMin = c(s, s1) + g(s1);
+                                                    if (tmpMin > MAX) {
+                                                        tmpMin = MAX;
                                                     }
-                                                    if(min === undefined || min>tmpMin) {
+                                                    if (min === undefined || min > tmpMin) {
                                                         min = tmpMin;
                                                     }
                                                 }
-                                                setRhs(s,min);  
+                                                setRhs(s, min);
                                             }
                                         }
                                         updateVertex(s);
                                     }
-                                } 
+                                }
                             }
                         };
-                        
+
                         function main(): DirectionEnum {
                             // Check if initial data has already been computed and cached
                             if (!Utils.isEmpty(map.dstarlitecache)) {
@@ -477,8 +515,8 @@ namespace MapManager {
                                 initialize();
                                 computeShortestPath();
                             }
-                            
-                            while(!isVertexEqual(s_start, s_goal)) {
+
+                            while (!isVertexEqual(s_start, s_goal)) {
                                 // Find the successor vetex with lowes g value
                                 // If (rhs(s_start) === MAX) then there is no known path */
                                 let s_min;
@@ -491,10 +529,10 @@ namespace MapManager {
                                     }
                                 }
                                 s_start = s_min;
-        
+
                                 // Move to s_start
                                 return Utils.getDirection(s_start.cell, actor);
-                                
+
                                 // Assuming constant edge costs, this part is not needed
                                 /*
                                 // Scan graph for changed edge costs
@@ -527,91 +565,91 @@ namespace MapManager {
                                 */
                             }
                         };
-                      
+
                         /** Set g(u) to val */
                         function setG(u: IVertex, val: number) {
-                            if(val > MAX) {
-                                val = MAX;    
+                            if (val > MAX) {
+                                val = MAX;
                             }
                             let uid = Utils.cellToGid(u.cell, width);
-                            _g[uid] = val; 
+                            _g[uid] = val;
                         };
-                        
+
                         /** Set rhs(u) to val */
                         function setRhs(u: IVertex, val: number) {
-                            if(val > MAX) {
-                                val = MAX;    
+                            if (val > MAX) {
+                                val = MAX;
                             }
                             let uid = Utils.cellToGid(u.cell, width);
-                            _rhs[uid] = val; 
+                            _rhs[uid] = val;
                         };
-                        
+
                         /** Returns an estimate of the start distance of the vertex u */
                         function g(u: IVertex): number {
                             let uid = Utils.cellToGid(u.cell, width);
                             return _g[uid];
                         };
-                        
+
                         /** Returns a one step lookahead value based on g(s) */
                         function rhs(u: IVertex): number {
                             let uid = Utils.cellToGid(u.cell, width);
                             return _rhs[uid];
                         };
-                        
+
                         /** 
                          * Returns a set of successors vertex of s
                          * Successors are vertex that can be reached from s
                          */
                         function succ(s: IVertex): IVertex[] {
-                            let gid = Utils.cellToGid(s.cell,map.width);
+                            let gid = Utils.cellToGid(s.cell, map.width);
                             let succ: IVertex[] = [];
-                            if(s.cell.i !== 0) {
-                                succ.push(S[gid-1]);
+                            if (s.cell.i !== 0) {
+                                succ.push(S[gid - 1]);
                             }
-                            if(s.cell.i < map.width-1) {
-                                succ.push(S[gid+1]);
+                            if (s.cell.i < map.width - 1) {
+                                succ.push(S[gid + 1]);
                             }
-                            if(gid-map.width >= 0) {
-                                succ.push(S[gid-map.width]);
+                            if (gid - map.width >= 0) {
+                                succ.push(S[gid - map.width]);
                             }
-                            if(gid+map.width < S.length) {
-                                succ.push(S[gid+map.width]);
+                            if (gid + map.width < S.length) {
+                                succ.push(S[gid + map.width]);
                             }
                             return succ;
                         };
-                        
+
                         /** 
                          * Returns a set of predecessors vertex of s
                          * Predecessors are vertex from which s can be reached
                          */
                         function pred(s: IVertex): IVertex[] {
-                            let gid = Utils.cellToGid(s.cell,map.width);
+                            let gid = Utils.cellToGid(s.cell, map.width);
                             let pred: IVertex[] = [];
-                            if(s.cell.i !== 0) {
-                                pred.push(S[gid-1]);
+                            if (s.cell.i !== 0) {
+                                pred.push(S[gid - 1]);
                             }
-                            if(s.cell.i < map.width-1) {
-                                pred.push(S[gid+1]);
+                            if (s.cell.i < map.width - 1) {
+                                pred.push(S[gid + 1]);
                             }
-                            if(gid-map.width >= 0) {
-                                pred.push(S[gid-map.width]);
+                            if (gid - map.width >= 0) {
+                                pred.push(S[gid - map.width]);
                             }
-                            if(gid+map.width < S.length) {
-                                pred.push(S[gid+map.width]);
+                            if (gid + map.width < S.length) {
+                                pred.push(S[gid + map.width]);
                             }
                             return pred;
                         };
-                        
+
                         /**
                          * Returns the cost of moving from vertex s1 to vertex s2
                          * s2 belongs to succ(s1)
                          */
                         function c(s1: IVertex, s2: IVertex): number {
                             // Check if movement to s2 is blocked
-                            let block = map.blocks[s2.cell.i + s2.cell.j*map.width];
-                            if(block !== 0) {
+                            let block = map.blocks[s2.cell.i + s2.cell.j * map.width];
+                            if (block !== 0) {
                                 let movementDirection: number;
-                                if(s1.cell.i > s2.cell.i) {
+                                if (s1.cell.i > s2.cell.i) {
                                     movementDirection = BlockDirection.RIGHT;
                                 } else if (s1.cell.i < s2.cell.i) {
                                     movementDirection = BlockDirection.LEFT;
@@ -620,16 +658,16 @@ namespace MapManager {
                                 } else {
                                     movementDirection = BlockDirection.UP;
                                 }
-                                if(Utils.isBlocked(block, movementDirection)) {
+                                if (Utils.isBlocked(block, movementDirection)) {
                                     // If movement to s2 is blocked, cost is infinite
                                     return MAX;
                                 }
                             }
                             // Check if movement from s1 is blocked
-                            block = map.blocks[s1.cell.i + s1.cell.j*map.width];
-                            if(block !== 0) {
+                            block = map.blocks[s1.cell.i + s1.cell.j * map.width];
+                            if (block !== 0) {
                                 let movementDirection: number;
-                                if(s1.cell.i > s2.cell.i) {
+                                if (s1.cell.i > s2.cell.i) {
                                     movementDirection = BlockDirection.LEFT;
                                 } else if (s1.cell.i < s2.cell.i) {
                                     movementDirection = BlockDirection.RIGHT;
@@ -638,87 +676,87 @@ namespace MapManager {
                                 } else {
                                     movementDirection = BlockDirection.DOWN;
                                 }
-                                if(Utils.isBlocked(block, movementDirection)) {
+                                if (Utils.isBlocked(block, movementDirection)) {
                                     // If movement from s1 is blocked, cost is infinite
                                     return MAX;
                                 }
                             }
-                            return 1;    
+                            return 1;
                         };
-                        
+
                         /**
                          * Heuristic that approximate the goal distance of vertex s1 to s2
                          * On a square grid that allows 4 directions of movement, use Manhattan distance
                          */
-                        function h(s1: IVertex, s2: IVertex): number { 
+                        function h(s1: IVertex, s2: IVertex): number {
                             let dx = Math.abs(s1.cell.i - s2.cell.i);
                             let dy = Math.abs(s1.cell.j - s2.cell.j);
                             // since D = 1, there is no need to multiply it
                             return dx + dy;
                         };
-                        
-                        function compareKeys(k1: number [], k2: number []): number {
-                            if(k1[0] === k2[0] && k1[1] === k2[1]) {
-                                return 0;    
+
+                        function compareKeys(k1: number[], k2: number[]): number {
+                            if (k1[0] === k2[0] && k1[1] === k2[1]) {
+                                return 0;
                             }
-                            if(k1[0] > k2[0] || (k1[0] === k2[0] && k1[1] > k2[1])) {
-                                return 1;    
+                            if (k1[0] > k2[0] || (k1[0] === k2[0] && k1[1] > k2[1])) {
+                                return 1;
                             } else {
                                 return -1;
                             }
                         };
-                        
+
                         /** Check if two vertex refers to the same cell */
                         function isVertexEqual(s1: IVertex, s2: IVertex): boolean {
-                            return s1.cell.i === s2.cell.i && s1.cell.j === s2.cell.j;    
+                            return s1.cell.i === s2.cell.i && s1.cell.j === s2.cell.j;
                         }
-                        
+
                         /** Return true if the vertex (u) is in the queue (U) */
                         function queueContains(u: IVertex): boolean {
-                            for(let u2 of U) {
-                                if(isVertexEqual(u, u2)) {
+                            for (let u2 of U) {
+                                if (isVertexEqual(u, u2)) {
                                     return true;
-                                }    
+                                }
                             }
                             return false;
                         }
-                        
+
                         /** Insert or update a vertex in the queue */
                         function queueUpdate(u: IVertex) {
-                            for(let u2 of U) {
-                                if(isVertexEqual(u, u2)) {
+                            for (let u2 of U) {
+                                if (isVertexEqual(u, u2)) {
                                     u2.key = u.key;
                                     return;
-                                }    
+                                }
                             }
                             U.push(u);
                         }
-                        
+
                         /** Remove a vertex from the queue */
                         function queueRemove(u: IVertex) {
                             let newU: IVertex[] = [];
-                            for(let u2 of U) {
-                                if(!isVertexEqual(u, u2)) {
+                            for (let u2 of U) {
+                                if (!isVertexEqual(u, u2)) {
                                     newU.push(u2);
-                                }    
+                                }
                             }
                             U = newU;
                         }
-                        
+
                         /** Returns a vertex with the smallest priority in the priority queue */
                         function queueTop(): IVertex {
                             let uMin: IVertex;
-                            for(let u2 of U) {
-                                if(uMin === undefined || compareKeys(u2.key, uMin.key) < 0) {
+                            for (let u2 of U) {
+                                if (uMin === undefined || compareKeys(u2.key, uMin.key) < 0) {
                                     uMin = u2;
-                                }    
+                                }
                             }
-                            if(uMin === undefined) {
+                            if (uMin === undefined) {
                                 // If U is empty, the TopKey is [ infinite, infinite ]
                                 // no need to define a cell, this is a fake vertex
                                 uMin = {
                                     cell: undefined,
-                                    key: [ MAX, MAX ]        
+                                    key: [MAX, MAX]
                                 };
                             }
                             return uMin;
