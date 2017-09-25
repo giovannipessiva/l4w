@@ -69,44 +69,40 @@ namespace MapManager {
                 if (!Utils.isEmpty(renderingConfiguration)) {
                     if (renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
                         context.save();
-                        context.globalAlpha = 0.9;
+                        context.globalAlpha = 0.8;
                         context.fillStyle = Constant.Color.YELLOW;
-                        let blockMarkSize = 6;
+                        context.strokeStyle = Constant.Color.GREY;
+                        context.lineWidth = 1;
+                        let blockMarkSize = 7;
                         let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
                         let blockValue: number = map.blocks[j * map.width + i];
                         
+                        let x, y;
+                        
                         if (blockValue > 0) {
                             if(Utils.isBlocked(blockValue, BlockDirection.UP)) {
-                                context.fillRect(
-                                    (i + 0.5) * grid.cellW - blockMarkHalfSize,
-                                    j * grid.cellH,
-                                    blockMarkSize,
-                                    blockMarkSize
-                                );   
+                                x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
+                                y = (j + 0.1) * grid.cellH;
+                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
                             }
                             if(Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
-                                context.fillRect(
-                                    (i + 0.5) * grid.cellW - blockMarkHalfSize,
-                                    (j + 1) * grid.cellH - blockMarkSize,
-                                    blockMarkSize,
-                                    blockMarkSize
-                                );
+                                x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
+                                y = (j + 0.9) * grid.cellH - blockMarkSize;
+                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
                             }
                             if(Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
-                                context.fillRect(
-                                    i * grid.cellW,
-                                    (j + 0.5) * grid.cellH - blockMarkHalfSize,
-                                    blockMarkSize,
-                                    blockMarkSize
-                                );
+                                x = (i + 0.1) * grid.cellW;
+                                y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
+                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
                             }
                             if(Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
-                                context.fillRect(
-                                    (i + 1) * grid.cellW - blockMarkSize,
-                                    (j + 0.5) * grid.cellH - blockMarkHalfSize,
-                                    blockMarkSize,
-                                    blockMarkSize
-                                );
+                                x = (i + 0.9) * grid.cellW - blockMarkSize;
+                                y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
+                                context.fillRect(x, y, blockMarkSize, blockMarkSize);
+                                context.strokeRect(x, y, blockMarkSize, blockMarkSize);
                             }
                         }
                         context.restore();
