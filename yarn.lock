@@ -1908,6 +1908,13 @@ retry-as-promised@^2.0.0:
     cross-env "^3.1.2"
     debug "^2.2.0"
 
+retry-as-promised@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/retry-as-promised/-/retry-as-promised-2.3.1.tgz#f75059183f9730771c09bad1eed57537931cbc9d"
+  dependencies:
+    bluebird "^3.4.6"
+    debug "^2.2.0"
+
 rimraf@^2.2.8, rimraf@~2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
@@ -1981,9 +1988,9 @@ sequelize@^3.20.0:
     validator "^5.2.0"
     wkx "0.2.0"
 
-sequelize@^4.10:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.10.0.tgz#23874a2405a14366045a2a785d247c030abec6e9"
+sequelize@^4.11:
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.11.0.tgz#0a75393aff97f4db584c88df8b76f38924cdc305"
   dependencies:
     bluebird "^3.4.6"
     cls-bluebird "^2.0.1"
@@ -1995,7 +2002,7 @@ sequelize@^4.10:
     lodash "^4.17.1"
     moment "^2.13.0"
     moment-timezone "^0.5.4"
-    retry-as-promised "^2.0.0"
+    retry-as-promised "^2.3.1"
     semver "^5.0.1"
     terraformer-wkt-parser "^1.1.2"
     toposort-class "^1.0.1"

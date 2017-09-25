@@ -19,6 +19,14 @@ const enum DirectionEnum {
     NONE
 };
 
+const enum SelectionAreaEnum {
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT,
+    CENTER
+};
+
 class BlockDirection {
     static NONE: number = 0;
     static UP: number = Math.pow(2, 0);

@@ -117,4 +117,15 @@ namespace Utils {
             default: return "  none";
         };
     }
+    
+    export function getSelectionAreaName(area: SelectionAreaEnum): string {
+        switch (area) {
+            case SelectionAreaEnum.TOP: return "\u2B12 up";
+            case SelectionAreaEnum.BOTTOM: return "\u2B13 down";
+            case SelectionAreaEnum.LEFT: return "\u25E7 left";
+            case SelectionAreaEnum.RIGHT: return "\u25E8 right";
+            case SelectionAreaEnum.CENTER: return "\u25A3 center";
+            default: return "  none";
+        };
+    }
 }

@@ -13,7 +13,7 @@
     "express-session": "^1.15",
     "http-status-codes": "^1.3",
     "pg": "^7.3",
-    "sequelize": "^4.10"
+    "sequelize": "^4.11"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24",

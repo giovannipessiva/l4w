@@ -42,25 +42,29 @@ class TilesetterScene extends AbstractTileScene {
     selectPrecisely(i: number, j: number, x: number, y: number) {
         super.select(i, j);
         
-        // Identify click area
+        // Identify click in lateral areas
         let posX = x % this.grid.cellW;
         let posY = y % this.grid.cellH;
         let up_left: boolean = posX + posY < this.grid.cellW;
         let down_left: boolean = posX < posY;
-        let clickArea: DirectionEnum;
+        let clickArea: SelectionAreaEnum;
         if(up_left && down_left) {
-            clickArea = DirectionEnum.LEFT;    
+            clickArea = SelectionAreaEnum.LEFT;    
         } else if(!up_left && !down_left) {
-            clickArea = DirectionEnum.RIGHT;
+            clickArea = SelectionAreaEnum.RIGHT;
         } else if(up_left && !down_left) {
-            clickArea = DirectionEnum.UP;
+            clickArea = SelectionAreaEnum.TOP;
         } else {
-            clickArea = DirectionEnum.DOWN;
+            clickArea = SelectionAreaEnum.BOTTOM;
         }
         
-        console.log(Utils.getDirectionName(clickArea));
-        
-        //TODO identify central click
+        // Identify click in the central area
+        if( posX > this.grid.cellW * 0.33 && posX < this.grid.cellW * 0.66 &&   //FIXME ottimizza i calcoli
+            posY > this.grid.cellH * 0.33 && posY < this.grid.cellH * 0.66) {
+            clickArea = SelectionAreaEnum.CENTER
+        }
+
+        console.log(Utils.getSelectionAreaName(clickArea));
         
         //TODO toggle directional block
     }
