@@ -69,78 +69,47 @@ namespace MapManager {
                 if (!Utils.isEmpty(renderingConfiguration)) {
                     if (renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
                         context.save();
-                        context.globalAlpha = 0.8;
+                        context.globalAlpha = 0.5;
                         context.fillStyle = Constant.Color.YELLOW;
-                        context.strokeStyle = Constant.Color.GREY;
+                        context.strokeStyle = Constant.Color.BLACK;
                         context.lineWidth = 2;
                         let blockMarkSize = 7;
                         let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
                         let blockValue: number = map.blocks[j * map.width + i];
-
                         let x, y;
-
-                        const blockStyleTriangle = true;
 
                         if (blockValue > 0) {
                             if (Utils.isBlocked(blockValue, BlockDirection.UP)) {
-                                if (!blockStyleTriangle) {
-                                    x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
-                                    y = (j + 0.1) * grid.cellH;
-                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
-                                } else {
-                                    context.beginPath();
-                                    context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
-                                    context.lineTo(i * grid.cellW, j * grid.cellH);
-                                    context.lineTo((i + 0.5) * grid.cellW, (j + 0.3) * grid.cellH);
-                                    context.fill();
-                                    context.stroke();
-                                }
+                                context.beginPath();
+                                context.moveTo(i * grid.cellW, j * grid.cellH);
+                                context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
+                                context.lineTo((i + 1) * grid.cellW, j * grid.cellH);
+                                context.fill();
+                                context.stroke();
                             }
                             if (Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
-                                if (!blockStyleTriangle) {
-                                    x = (i + 0.5) * grid.cellW - blockMarkHalfSize;
-                                    y = (j + 0.9) * grid.cellH - blockMarkSize;
-                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
-                                } else {
-                                    context.beginPath();
-                                    context.moveTo((i + 0.5) * grid.cellW, (j + 0.7) * grid.cellH);
-                                    context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
-                                    context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
-                                    context.fill();
-                                    context.stroke();
-                                }
+                                context.beginPath();
+                                context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
+                                context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
+                                context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                                context.fill();
+                                context.stroke();
                             }
                             if (Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
-                                if (!blockStyleTriangle) {
-                                    x = (i + 0.1) * grid.cellW;
-                                    y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
-                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
-                                } else {
-                                    context.beginPath();
-                                    context.moveTo(i * grid.cellW, j * grid.cellH);
-                                    context.lineTo((i + 0.3) * grid.cellW, (j + 0.5) * grid.cellH);
-                                    context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
-                                    context.fill();
-                                    context.stroke();
-                                }
+                                context.beginPath();
+                                context.moveTo(i * grid.cellW, j * grid.cellH);
+                                context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
+                                context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
+                                context.fill();
+                                context.stroke();
                             }
                             if (Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
-                                if (!blockStyleTriangle) {
-                                    x = (i + 0.9) * grid.cellW - blockMarkSize;
-                                    y = (j + 0.5) * grid.cellH - blockMarkHalfSize;
-                                    context.fillRect(x, y, blockMarkSize, blockMarkSize);
-                                    context.strokeRect(x, y, blockMarkSize, blockMarkSize);
-                                } else {
-                                    context.beginPath();
-                                    context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
-                                    context.lineTo((i + 0.7) * grid.cellW, (j + 0.5) * grid.cellH);
-                                    context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
-                                    context.fill();
-                                    context.stroke();
-                                }
+                                context.beginPath();
+                                context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
+                                context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
+                                context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                                context.fill();
+                                context.stroke();
                             }
                         }
                         context.restore();

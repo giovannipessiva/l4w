@@ -10,6 +10,11 @@ namespace TilesetterPage {
     export const BUTTON_ID_LAYER = "layer";
 
     let flagEdited: boolean = false;
+    
+    enum EditModeEnum {
+        BLOCKS,
+        ZINDEX    
+    };    
 
     export function start() {
         Compatibility.check(); 
@@ -52,17 +57,42 @@ namespace TilesetterPage {
         changeEditState(true);
     }
     
+    function getEditMode(): EditModeEnum {
+        let editModeStr : string = $("#editModes").val();
+        return EditModeEnum[editModeStr];
+        
+    }
+    
     export function changeTileEditMode() {
-        let editMode = $("#editModes").val();
-        //TODO trasforma in enum
+        //TODO gestisci edit mode "z index"
+    }
+    
+    function saveCallback(result: boolean) {
+        if (!result) {
+            console.error("Salvataggio fallito");
+        }
     }
 
     export function save() {
-        //TODO
+        switch (getEditMode()) {
+            case EditModeEnum.BLOCKS:
+                Tilesetter.saveBlocks(saveCallback);
+                break;
+            case EditModeEnum.ZINDEX:
+                //TODO
+                break;
+        };
     }
 
     export function reload() {
-        //TODO
+        switch (getEditMode()) {
+            case EditModeEnum.BLOCKS:
+                Tilesetter.loadBlocks(saveCallback);
+                break;
+            case EditModeEnum.ZINDEX:
+                //TODO
+                break;
+        };
     }
 
     export function changeEditState(edited: boolean, mapChanged: boolean = true) {

@@ -86,20 +86,28 @@ namespace Tilesetter {
         );
     };
 
-    export function saveData(callback: IBooleanCallback = null) {
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(updatedData),
-            success: function(result) {
-                console.log("Maps updated");
-                if(callback !== null) {
-                    //TODO come capire se il salvataggio è fallito?
-                    callback(true);
-                }
-            }
-        });
+    export function saveBlocks(callback: IBooleanCallback = null) {
+        
+        //TODO save blocks
+        
+//        var updatedData = $("#mapPanel").jstree(true).get_json("#");
+//        $.ajax({
+//            url: "edit/maps",
+//            type: "post",
+//            contentType: "application/json",
+//            data: JSON.stringify(updatedData),
+//            success: function(result) {
+//                console.log("Maps updated");
+//                if(callback !== null) {
+//                    //TODO come capire se il salvataggio è fallito?
+//                    callback(true);
+//                }
+//            }
+//        });
+    }
+    
+    export function loadBlocks(callback: IBooleanCallback = null) {
+        
+        //TODO load blocks
     }
 }
