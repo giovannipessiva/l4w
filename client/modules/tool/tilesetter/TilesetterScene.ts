@@ -11,6 +11,7 @@ class TilesetterScene extends AbstractTileScene {
         super(grid, heightPx, widthPx);
         callback(this);
         this.changeTileEditMode(tileEditMode);
+        this.toggleBlocks(true)
 
         // Init the map for rendering blocks
         this.map = {
@@ -110,5 +111,9 @@ class TilesetterScene extends AbstractTileScene {
                 break;
         };
         this.map.blocks[gid] = block;
+    }
+    
+    public setBlocks(blocks: number[]) {
+        this.map.blocks = blocks;    
     }
 }

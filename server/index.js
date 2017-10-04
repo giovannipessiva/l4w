@@ -164,7 +164,8 @@ app.post('/edit/:type/:id', function(request, response) {
 				mapper.updateMap(fileId, data, session.getUser(request), response);
 				break;
 			case "save":
-				database.write("save", fileId, data, session.getUser(request), response);
+			case "tileset":
+				database.write(type, fileId, data, session.getUser(request), response);
 				break;
 			}
 		});

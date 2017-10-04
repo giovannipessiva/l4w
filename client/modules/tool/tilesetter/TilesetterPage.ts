@@ -51,9 +51,7 @@ namespace TilesetterPage {
 
     export function changeTile() {
         let tile = $("#tiles").val();
-        Tilesetter.loadTile(tile, function(tilesetter: TilesetterScene) {
-            tilesetter.toggleBlocks(true);
-        });
+        Tilesetter.loadTile(tile);
         changeEditState(true);
     }
     
@@ -76,7 +74,7 @@ namespace TilesetterPage {
     export function save() {
         switch (getEditMode()) {
             case EditModeEnum.BLOCKS:
-                Tilesetter.saveBlocks(saveCallback);
+                Tilesetter.saveTilesetData(saveCallback);
                 break;
             case EditModeEnum.ZINDEX:
                 //TODO
@@ -87,7 +85,7 @@ namespace TilesetterPage {
     export function reload() {
         switch (getEditMode()) {
             case EditModeEnum.BLOCKS:
-                Tilesetter.loadBlocks(saveCallback);
+                Tilesetter.loadTilesetData(saveCallback);
                 break;
             case EditModeEnum.ZINDEX:
                 //TODO

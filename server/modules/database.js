@@ -35,6 +35,18 @@ function logAccess(user) {
 	});
 };
 
+function manageQueryError(response, error) {
+	if(error.message === "Cannot read property '0' of undefined") {
+		// Ignore this error, it's a Sequelize bug
+		// https://github.com/sequelize/sequelize/issues/8043
+		// https://github.com/sequelize/sequelize/issues/7998
+		response.status(HttpStatus.OK).send("");
+	} else {
+		console.error(error);
+		response.status(HttpStatus.BAD_REQUEST).send("");
+	}
+};
+
 module.exports = {
 	init : function() {
 		return new Promise(function(resolve, reject) {
@@ -135,8 +147,7 @@ module.exports = {
 			}).then(function(result) {
 				response.status(HttpStatus.OK).send("");
 			}, function(error) {
-				console.log(error);
-				response.status(HttpStatus.BAD_REQUEST).send("");
+				manageQueryError(response, error);
 			});
 			break;
 		case "tileset":
@@ -146,8 +157,7 @@ module.exports = {
 			}).then(function(result) {
 				response.status(HttpStatus.OK).send("");
 			}, function(error) {
-				console.log(error);
-				response.status(HttpStatus.BAD_REQUEST).send("");
+				manageQueryError(response, error);
 			});
 			break;
 		case "save":
@@ -160,8 +170,7 @@ module.exports = {
 			}).then(function(result) {
 				response.status(HttpStatus.OK).send("");
 			}, function(error) {
-				console.log(error);
-				response.status(HttpStatus.BAD_REQUEST).send("");
+				manageQueryError(response, error);
 			});
 		}
 	},

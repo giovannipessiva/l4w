@@ -88,8 +88,8 @@ namespace TilePicker {
         var updatedData = $("#mapPanel").jstree(true).get_json("#");
         $.ajax({
             url: "edit/maps",
-            type: "post",
-            contentType: "application/json",
+            type: Constant.RequestType.POST,
+            contentType: Constant.MimeType.JSON,
             data: JSON.stringify(updatedData),
             success: function(result) {
                 console.log("Maps updated");
