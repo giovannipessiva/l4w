@@ -9,7 +9,7 @@
 var nextAnimationFrame =
     window.requestAnimationFrame ||
     function(callback) {
-        window.setTimeout(this.mainGameLoop, 40);
+        window.setTimeout(callback, 40);
     };
 
 /**

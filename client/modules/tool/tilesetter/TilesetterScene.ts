@@ -9,7 +9,6 @@ class TilesetterScene extends AbstractTileScene {
 
     constructor(grid: StaticGrid, heightPx: number, widthPx: number, tileEditMode: Constant.TileEditMode, callback: { (scene: TilesetterScene): void }) {
         super(grid, heightPx, widthPx);
-        callback(this);
         this.changeTileEditMode(tileEditMode);
         this.toggleBlocks(true)
 
@@ -25,8 +24,8 @@ class TilesetterScene extends AbstractTileScene {
             height: this.getSceneHeight(),
             blocks: []
         };
-
-        //TODO carica in questa scene una mappa corrispondente ai blocchi di questo tileset
+        
+        callback(this);
     }
 
     changeTileEditMode(tileEditMode: Constant.TileEditMode) {

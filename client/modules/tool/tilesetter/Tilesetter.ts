@@ -6,26 +6,24 @@ namespace Tilesetter {
     var tilesetterScene: TilesetterScene;
     var tileset: ITilesetData;
 
-    export function start(canvas: HTMLCanvasElement, callback) {
-        tilesetterScene = null;
+    /**
+     * This funcion will be called only at the first page load
+     */
+    export function start(canvas: HTMLCanvasElement) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
             let select = <HTMLSelectElement>$("#editModes")[0];
             let tileEditMode = Constant.TileEditMode[select.value];
             new TilesetterScene(grid, canvas.height, canvas.width, tileEditMode, function(scene: TilesetterScene) {
-                if (Utils.isEmpty(tilesetterScene)) {
-                    //FIXME dovrei resettare gli event listener
-                    // e registrarli nuovamente
-                    initInput(canvas, grid);
-                }
+                initInput(canvas, grid);
                 tilesetterScene = scene;
+                tilesetterScene.setBlocks(tileset.blocks);
                 tilesetterScene.start(canvas);
                 tilesetterScene.toggleEditorGrid(true);
-                callback();
             });
         }, GridTypeEnum.tilePicker);
     }
 
-    export function loadTile(tile: string) {
+    export function loadTile(tile: string, callback) {
         // Clear the canvas
         var canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
         var contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
@@ -43,18 +41,15 @@ namespace Tilesetter {
             canvasTilesetter.width = image.naturalWidth;
             // Paint the img in the canvas
             contextTile.drawImage(tileImage, 0, 0);
-            // Manage the tile selector canvas
-            Tilesetter.start(canvasTilesetter, function() {
-                // Load tileset data
-                loadTilesetData(function(result) {
-                    console.log("Loaded"); //TODO    
-                });
+            // Load tileset data
+            loadTilesetData(function(result) {
+                callback(result);
             });
         });
     }
 
     function initInput(canvas: HTMLCanvasElement, grid: StaticGrid) {
-        var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
+        let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
 
         Input.init(
             canvas,
@@ -123,10 +118,12 @@ namespace Tilesetter {
             contentType: Constant.MimeType.JSON,
             success: function(result: ITilesetData) {
                 tileset = result;
-                if (tileset.blocks === undefined) {
-                    tileset.blocks = [];
+                if (!Utils.isEmpty(tilesetterScene)) {
+                    if (tileset.blocks === undefined) {
+                        tileset.blocks = [];
+                    }
+                    tilesetterScene.setBlocks(tileset.blocks);
                 }
-                tilesetterScene.setBlocks(tileset.blocks);
                 callback(true);
             },
             error: function(ajaxrequest, ajaxOptions, thrownError) {

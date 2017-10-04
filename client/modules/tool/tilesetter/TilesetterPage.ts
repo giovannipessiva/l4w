@@ -38,7 +38,10 @@ namespace TilesetterPage {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
                     + "</option>");
             }
-            changeTile();
+            let tile = $("#tiles").val();
+            Tilesetter.loadTile(tile, function(result) {
+                Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0]);
+            });
         });
     }
 
@@ -48,11 +51,12 @@ namespace TilesetterPage {
             //TODO manage json response
         });
     }
-
+    
     export function changeTile() {
         let tile = $("#tiles").val();
-        Tilesetter.loadTile(tile);
-        changeEditState(true);
+        Tilesetter.loadTile(tile, function(result) {
+            changeEditState(true);    
+        });
     }
     
     function getEditMode(): EditModeEnum {
