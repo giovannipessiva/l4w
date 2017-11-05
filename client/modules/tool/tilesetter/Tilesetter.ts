@@ -61,6 +61,7 @@ namespace Tilesetter {
                 // Start action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     tilesetterScene.selectPrecisely(i, j, x, y);
+                    TilesetterPage.changeEditState(true);
                 }
             },
             function(x, y, mouseButton) {

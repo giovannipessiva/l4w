@@ -14,6 +14,6 @@
         "no-var-requires": true,
         "quotemark": [true, "double"],
         "triple-equals": [true, "allow-null-check"],
-        "variable-name": [true, "check-format", "allow-leading-underscore"]
+        "variable-name": [true, "check-format", "allow-leading-underscore", "allow-snake-case"]
     }
 }

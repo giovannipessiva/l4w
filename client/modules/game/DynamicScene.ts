@@ -160,7 +160,7 @@ class DynamicScene extends AbstractScene {
             scene.changeMap(map, function() {
                 scene.resetTranslation();
                 scene.focus = scene.grid.mapCellToCanvas(hero);
-                callback(true);
+                callback2(true);
             });
         });
     }

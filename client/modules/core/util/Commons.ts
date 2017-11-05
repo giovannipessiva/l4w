@@ -40,5 +40,5 @@ interface IProgressCallback {
 };
 
 interface IBooleanCallback {
-    (result: boolean): void;
+    (success: boolean): void;
 };

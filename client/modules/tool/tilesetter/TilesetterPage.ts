@@ -54,8 +54,12 @@ namespace TilesetterPage {
     
     export function changeTile() {
         let tile = $("#tiles").val();
-        Tilesetter.loadTile(tile, function(result) {
-            changeEditState(true);    
+        Tilesetter.loadTile(tile, function(success: boolean) {
+            if(success) {
+                changeEditState(false);
+            } else {
+                console.error("Tile loading failed: " + tile);    
+            }
         });
     }
     
@@ -68,17 +72,17 @@ namespace TilesetterPage {
     export function changeTileEditMode() {
         //TODO gestisci edit mode "z index"
     }
-    
-    function saveCallback(result: boolean) {
-        if (!result) {
-            console.error("Salvataggio fallito");
-        }
-    }
-
+ 
     export function save() {
         switch (getEditMode()) {
             case EditModeEnum.BLOCKS:
-                Tilesetter.saveTilesetData(saveCallback);
+                Tilesetter.saveTilesetData(function(success: boolean) {
+                    if (success) {
+                        TilesetterPage.changeEditState(false);
+                    } else {
+                        console.error("Saving failed");
+                    }
+                });
                 break;
             case EditModeEnum.ZINDEX:
                 //TODO
@@ -89,7 +93,13 @@ namespace TilesetterPage {
     export function reload() {
         switch (getEditMode()) {
             case EditModeEnum.BLOCKS:
-                Tilesetter.loadTilesetData(saveCallback);
+                Tilesetter.loadTilesetData(function(success: boolean) {
+                    if (success) {
+                        TilesetterPage.changeEditState(false);
+                    } else {
+                        console.error("Loading failed");
+                    }
+                });
                 break;
             case EditModeEnum.ZINDEX:
                 //TODO
