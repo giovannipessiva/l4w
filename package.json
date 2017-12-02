@@ -7,27 +7,27 @@
     "start": "node server/index.js"
   },
   "dependencies": {
-    "compression": "^1.7",
-    "connect-session-sequelize": "^5.0",
-    "express": "^4.16",
-    "express-session": "^1.15",
-    "http-status-codes": "^1.3",
-    "pg": "^7.4",
-    "sequelize": "^4.22"
+    "compression": "1.7.1",
+    "connect-session-sequelize": "5.0.1",
+    "express": "4.16.2",
+    "express-session": "1.15.6",
+    "http-status-codes": "1.3.0",
+    "pg": "7.4.0",
+    "sequelize": "4.24.0"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.24",
-    "grunt": "^1.0",
-    "grunt-babel": "^7.0",
-    "grunt-contrib-uglify": "^3.1",
-    "grunt-ts": "^5.5",
-    "grunt-tslint": "^5.0",
-    "sequelize-auto": "^0.4",
-    "tslint": "^5.8",
-    "typescript": "^2.6"
+    "babel-preset-es2015": "6.24.1",
+    "grunt": "1.0.1",
+    "grunt-babel": "7.0.0",
+    "grunt-contrib-uglify": "3.2.1",
+    "grunt-ts": "5.5.1",
+    "grunt-tslint": "5.0.1",
+    "sequelize-auto": "0.4.29",
+    "tslint": "5.8.0",
+    "typescript": "2.6.2"
   },
   "engines": {
-    "node": "8.9"
+    "node": "9.2"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,8 @@
     "url": "https://github.com/giovannipessiva/l4w/issues"
   },
   "keywords": [
-    "game", "rpg"
+    "game",
+    "rpg"
   ],
   "license": "GPL-2.0"
 }

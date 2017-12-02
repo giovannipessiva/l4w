@@ -1,19 +1,19 @@
 language: node_js
 node_js:
-- '8.9'
+- '9.2'
 
 sudo:
   required
 
 cache:
-  yarn: true
+  npm: true
 
 before-script:
-- yarn add grunt
-- yarn add grunt-cli
-- yarn add typescript
-- yarn add grunt-ts
-- yarn install
+- npm add grunt
+- npm add grunt-cli
+- npm add typescript
+- npm add grunt-ts
+- npm install
 
 script:
 - grunt travis
