@@ -36,8 +36,8 @@ namespace TilesetManager {
             "imageheight": 800,
             "imagewidth": 256,
             "name": "Bosco",
-            "blocks": null,
-            "over": null
+            "blocks": [],
+            "onTop": []
         };
     }
 }
