@@ -258,19 +258,21 @@ namespace MapManager {
             for (let j = 0; j < map.height * map.width; j++) {
                 map.blocks[j] = 0;
             }
-            for (let i = 0; i < map.layers.length; i++) {
-                let layer = map.layers[i];
+            for (let l = 0; l < map.layers.length; l++) {
+                let layer = map.layers[l];
                 if (!Utils.isEmpty(layer.data)) {
-                    for (let j = 0; j < layer.data.length; j++) {
+                    for (let gid = 0; gid < layer.data.length; gid++) { 
                         //TODO ignore this cell, if its z-index is over the hero
-                        let tileCell = layer.data[j];
-                        let blockValue = 0;
-                        if (tileCell !== null && tileCell < map.tileset.blocks.length) {
-                            blockValue = map.tileset.blocks[tileCell];
+                        let tileCell = layer.data[gid];
+                        if (!Utils.isEmpty(tileCell) && tileCell < map.tileset.blocks.length) {                           
+                            let blockValue = map.tileset.blocks[tileCell];
+                            if(Utils.isEmpty(blockValue)) {
+                                blockValue = BlockDirection.NONE;  
+                            }
+                            // This will override a block if there's something over it that you can walk on
+                            // (the higher walkable cell wins)
+                            map.blocks[gid] = blockValue;
                         }
-                        // The higher walkable cell wins
-                        // (ignore a block if there's something over it that you can walk on)
-                        map.blocks[j] = blockValue;
                     }
                 }
             }

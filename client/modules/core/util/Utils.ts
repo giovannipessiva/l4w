@@ -118,6 +118,23 @@ namespace Utils {
         };
     }
     
+    export function getBlockName(block: number): string {
+        let name = "FREE!";
+        if(isBlocked(block, BlockDirection.UP)) {
+            name = getDirectionName(DirectionEnum.UP);    
+        }
+        if(isBlocked(block, BlockDirection.DOWN)) {
+            name += getDirectionName(DirectionEnum.DOWN);    
+        }
+        if(isBlocked(block, BlockDirection.LEFT)) {
+            name += getDirectionName(DirectionEnum.LEFT);    
+        }
+        if(isBlocked(block, BlockDirection.RIGHT)) {
+            name += getDirectionName(DirectionEnum.RIGHT);    
+        }
+        return name;
+    }
+    
     export function getSelectionAreaName(area: SelectionAreaEnum): string {
         switch (area) {
             case SelectionAreaEnum.TOP: return "\u2B12 up";
