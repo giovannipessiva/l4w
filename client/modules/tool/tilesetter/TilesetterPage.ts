@@ -39,7 +39,7 @@ namespace TilesetterPage {
                     + "</option>");
             }
             let tile = $("#tiles").val();
-            Tilesetter.loadTile(tile, function(result) {
+            Tilesetter.loadTile(tile, function(result, w, h) {
                 Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0]);
             });
         });
@@ -54,8 +54,9 @@ namespace TilesetterPage {
     
     export function changeTile() {
         let tile = $("#tiles").val();
-        Tilesetter.loadTile(tile, function(success: boolean) {
+        Tilesetter.loadTile(tile, function(success: boolean, w: number, h: number) {
             if(success) {
+                Tilesetter.updateSize(w, h);
                 changeEditState(false);
             } else {
                 console.error("Tile loading failed: " + tile);    

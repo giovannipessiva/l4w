@@ -32,7 +32,7 @@ namespace Tilesetter {
         // Load the tileset
         Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage: HTMLImageElement) {
             // Resize the canvas
-            var image = new Image();
+            let image = new Image();
             image.src = tileImage.src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
@@ -43,9 +43,13 @@ namespace Tilesetter {
             contextTile.drawImage(tileImage, 0, 0);
             // Load tileset data
             loadTilesetData(function(result) {
-                callback(result);
+                callback(result, image.naturalWidth, image.naturalHeight);
             });
         });
+    }
+    
+    export function updateSize(w: number, h: number) {
+        tilesetterScene.updateSize(w, h);
     }
 
     function initInput(canvas: HTMLCanvasElement, grid: StaticGrid) {

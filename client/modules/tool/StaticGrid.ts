@@ -70,9 +70,9 @@ class StaticGrid extends AbstractGrid {
     /**
      * Usato quando cambia la dimensione 
      */
-    updateSize(width: number,height: number) {
-        this.rows = Math.floor(height / this.cellH);
-        this.columns = Math.floor(width / this.cellW);
+    updateSize(widthPx: number, heightPx: number) {
+        this.rows = Math.floor(heightPx / this.cellH);
+        this.columns = Math.floor(widthPx / this.cellW);
         this.updateSizingDerivates();
     }
 

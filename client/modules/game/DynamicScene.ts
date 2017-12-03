@@ -131,7 +131,6 @@ class DynamicScene extends AbstractScene {
                 for (let i = 0; i < scene.events.length; i++) {
                     scene.events[i] = ActorManager.initTransientData(this.grid, scene.events[i]);
                 }
-                console.log(scene.events);
             }
             callback(result);
         };
