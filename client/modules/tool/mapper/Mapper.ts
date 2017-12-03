@@ -88,41 +88,41 @@ namespace Mapper {
             inputCallbackMap,
             function() { },
             function() { },
-            function(x, y, mouseButton) {
+            function(i, j, x, y, mouseButton) {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    if (scene.apply(x, y)) {
+                    if (scene.apply(i, j)) {
                         MapperPage.changeEditState(true);
                     }
                 } else {
-                    scene.select(x, y);
+                    scene.select(i, j);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 // End action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    scene.selectEnd(x, y);
+                    scene.selectEnd(i, j);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 // Ongoing action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    if(scene.apply(x, y)) {
+                    if(scene.apply(i, j)) {
                         MapperPage.changeEditState(true);
                     }
                 } else {
-                    scene.selectEnd(x, y);
+                    scene.selectEnd(i, j);
                 }
-                scene.updatePointer(x, y);
+                scene.updatePointer(i, j);
             },
-            function(x, y) {
+            function(i, j) {
                 //Hover
-                scene.updatePointer(x, y);
+                scene.updatePointer(i, j);
             },
             function() { },
             function() { },
             function() { },
-            function(x, y) {
+            function(i, j) {
                 //OnRightClick
                 scene.cleanSelection();
             },

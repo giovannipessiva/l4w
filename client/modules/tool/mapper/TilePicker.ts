@@ -49,33 +49,33 @@ namespace TilePicker {
             inputCallbackMap,
             function() { },
             function() { },
-            function(x, y, mouseButton) {
+            function(i, j, x, y, mouseButton) {
                 // Start action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilePicker.select(x, y);
+                    tilePicker.select(i, j);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 //End action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilePicker.selectEnd(x, y);
+                    tilePicker.selectEnd(i, j);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 //Ongoing
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilePicker.selectEnd(x, y);
+                    tilePicker.selectEnd(i, j);
                 }
-                tilePicker.updatePointer(x, y);
+                tilePicker.updatePointer(i, j);
             },
-            function(x, y) {
+            function(i, j) {
                 //Hover
-                tilePicker.updatePointer(x, y);
+                tilePicker.updatePointer(i, j);
             },
             function() { },
             function() { },
             function() { },
-            function(x, y) {
+            function(i, j) {
                 //OnRightClick
                 tilePicker.cleanSelection();
             },

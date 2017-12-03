@@ -16,10 +16,10 @@ class TilePickerScene extends AbstractTileScene {
         this.mapper = mapper;
     }
 
-    select(x: number, y: number) {
+    select(i: number, j: number) {
         if (!Utils.isEmpty(this.mapper)) {
             this.mapper.cleanSelection();
         }
-        super.select(x, y);
+        super.select(i, j);
     }
 }

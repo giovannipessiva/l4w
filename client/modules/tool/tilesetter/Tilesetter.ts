@@ -64,27 +64,27 @@ namespace Tilesetter {
                     TilesetterPage.changeEditState(true);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 //End action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilesetterScene.selectEnd(x, y);
+                    tilesetterScene.selectEnd(i, j);
                 }
             },
-            function(x, y, mouseButton) {
+            function(i, j, mouseButton) {
                 //Ongoing
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilesetterScene.selectEnd(x, y);
+                    tilesetterScene.selectEnd(i, j);
                 }
-                tilesetterScene.updatePointer(x, y);
+                tilesetterScene.updatePointer(i, j);
             },
-            function(x, y) {
+            function(i, j) {
                 //Hover
-                tilesetterScene.updatePointer(x, y);
+                tilesetterScene.updatePointer(i, j);
             },
             function() { },
             function() { },
             function() { },
-            function(x, y) {
+            function(i, j) {
                 //OnRightClick
                 tilesetterScene.cleanSelection();
             },

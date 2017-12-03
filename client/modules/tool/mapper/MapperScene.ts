@@ -42,14 +42,14 @@ class MapperScene extends AbstractStaticScene {
         }
     }
 
-    select(x: number, y: number) {
-        super.select(x, y);
+    select(i: number, j: number) {
+        super.select(i, j);
     }
 
-    apply(x: number, y: number): boolean {
+    apply(i_apply: number, j_apply: number): boolean {
         var changed: boolean = false;
         var pickerArea: IRectangle = this.tilePicker.getSelectionArea();
-        var changedCell: number = x + y * this.map.width;
+        var changedCell: number = i_apply + j_apply * this.map.width;
         if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
             this.map.layers[this.activeLayer].data = [];
         }
@@ -62,7 +62,7 @@ class MapperScene extends AbstractStaticScene {
                 var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
                 for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
                     for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
-                        if (x + i < this.map.width) {
+                        if (i_apply + i < this.map.width) {
                             let appliedTileOffset: number = i + j * tileColumns;
                             let changedCellOffset: number = i + j * this.map.width;
                             if(this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
@@ -81,7 +81,7 @@ class MapperScene extends AbstractStaticScene {
                 }
                 for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
                     for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
-                        if (x + i < this.map.width) {
+                        if (i_apply + i < this.map.width) {
                             let changedCellOffset: number = i + j * this.map.width;
                             if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== null) {
                                 changed = true;

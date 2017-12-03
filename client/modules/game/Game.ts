@@ -125,9 +125,9 @@ namespace Game {
             scene.toggleAntialiasing();
             e.preventDefault(); // Avoid focusing URL bar
         };
-        var actionCallback = function(x: number, y: number) {
+        var actionCallback = function(i: number, j: number, x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
-            moveHero(x, y);
+            moveHero(i, j);
         };
 
         Input.init(
@@ -138,13 +138,13 @@ namespace Game {
             actionCallback,
             function() { },
             function() { },
-            function(x, y) {
+            function(i, j) {
                 //Ongoing
-                scene.updatePointer(x, y);
+                scene.updatePointer(i, j);
             },
-            function(x, y) {
+            function(i, j) {
                 //Hover
-                scene.updatePointer(x, y);
+                scene.updatePointer(i, j);
             },
             function() {
                 console.log("pause");
