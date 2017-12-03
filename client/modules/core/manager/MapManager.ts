@@ -37,7 +37,7 @@ namespace MapManager {
         });
     }
 
-    export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
         if (!Utils.isEmpty(layer.data)) {
             for (let y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
                 for (let x = minColumn; x <= maxColumn; x++) {
@@ -46,9 +46,15 @@ namespace MapManager {
                         return;
                     }
                     let tileGID = layer.data[cellIndex];
-                    if (tileGID === null) {
+                    if (Utils.isEmpty(tileGID)) {
                         continue;
                     }
+                    
+                    // Dont render if the cell has not the correct onTop value
+                    if(Utils.isOnTop(tileGID,map) !== onTop) {
+                        continue;    
+                    }
+
                     let tileCell: ICell = Utils.gidToCell(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
                     context.drawImage(
                         tileImage,
@@ -262,17 +268,22 @@ namespace MapManager {
                 let layer = map.layers[l];
                 if (!Utils.isEmpty(layer.data)) {
                     for (let gid = 0; gid < layer.data.length; gid++) { 
-                        //TODO ignore this cell, if its z-index is over the hero
                         let tileCell = layer.data[gid];
-                        if (!Utils.isEmpty(tileCell) && tileCell < map.tileset.blocks.length) {                           
-                            let blockValue = map.tileset.blocks[tileCell];
-                            if(Utils.isEmpty(blockValue)) {
-                                blockValue = BlockDirection.NONE;  
-                            }
-                            // This will override a block if there's something over it that you can walk on
-                            // (the higher walkable cell wins)
-                            map.blocks[gid] = blockValue;
+                        // Ignore invalid cells
+                        if (Utils.isEmpty(tileCell) || tileCell<0 || tileCell >= map.tileset.blocks.length) {   
+                            continue;
                         }
+                        // Ignore cells onTop
+                        if(Utils.isOnTop(tileCell,map)) {
+                            continue;  
+                        }
+                        let blockValue = map.tileset.blocks[tileCell];
+                        if(Utils.isEmpty(blockValue)) {
+                            blockValue = BlockDirection.NONE;  
+                        }
+                        // This will override a block if there's something over it that you can walk on
+                        // (the higher walkable cell wins)
+                        map.blocks[gid] = blockValue;
                     }
                 }
             }

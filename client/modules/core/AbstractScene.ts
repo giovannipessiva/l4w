@@ -73,12 +73,12 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        if (!Utils.isEmpty(this.map) && !Utils.isEmpty(this.map.tileset) && !Utils.isEmpty(this.map.tileset.imageData)) {
-            // Dont render if data is not initialized
-            this.renderLayers(this.map, this.map.tileset.imageData, this.context, minRow, maxRow, minColumn, maxColumn);
+        
+        // Dont render if data is not initialized
+        if (!Utils.isEmpty(this.map)) {
+            this.renderLayers(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
         }
         MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
-        this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
         this.renderFocus();
         this.renderPointer();
@@ -254,30 +254,42 @@ abstract class AbstractScene {
         return this.map.width;
     }
 
-    protected renderLayers(map: IMap, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayers(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
-            for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.EVENTS; i++) {
+            
+            this.renderLayersOnTop(map, context, minRow, maxRow, minColumn, maxColumn, false);
+            
+            this.renderMiddleLayerElements(minRow, maxRow, minColumn, maxColumn);
 
-                var layer = map.layers[i];
-                if (!Utils.isEmpty(layer.opacity)) {
-                    context.globalAlpha = layer.opacity;
-                }
-
-                this.renderLayer(i, tileImage, context, minRow, maxRow, minColumn, maxColumn);
-
-                context.globalAlpha = 1;
+            this.renderLayersOnTop(map, context, minRow, maxRow, minColumn, maxColumn, true);
+            
+            this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
+        }
+    }
+    
+    protected renderLayersOnTop(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
+        if(Utils.isEmpty(map.tileset) || Utils.isEmpty(map.tileset.imageData)) {
+            return;
+        }
+        
+        let tileImage: HTMLImageElement = map.tileset.imageData;
+        for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.TOP; i++) {
+            var layer = map.layers[i];
+            if (!Utils.isEmpty(layer.opacity)) {
+                context.globalAlpha = layer.opacity;
             }
+            this.renderLayer(i, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
+            context.globalAlpha = 1;
         }
     }
 
-    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        this.renderInterLayerElements(layerIndex, minRow, maxRow, minColumn, maxColumn);
+    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
         let layer = this.map.layers[layerIndex];
-        MapManager.renderLayer(this.grid, this.map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn);
+        MapManager.renderLayer(this.grid, this.map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
     }
-
-    protected abstract renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number);
-
+        
+    protected abstract renderMiddleLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
+          
     protected abstract renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
 
     togglePause(pause?: boolean) {

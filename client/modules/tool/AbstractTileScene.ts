@@ -36,9 +36,6 @@ abstract class AbstractTileScene extends AbstractStaticScene {
     getSceneWidth(): number {
         return this.width;
     }
-      
-    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-    }
     
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);

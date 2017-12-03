@@ -104,19 +104,11 @@ class MapperScene extends AbstractStaticScene {
         }
     }
     
-    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
         if (layerIndex > this.activeLayer) {
             context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
         }
-        super.renderLayer(layerIndex, tileImage, context, minRow, maxRow, minColumn, maxColumn);
-    }
-    
-    protected renderInterLayerElements(layerIndex: number, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        //TODO disegna la grid dopo il primo livello
-        if(layerIndex === Constant.MapLayer.MID) {
-            // UI rendering
-            MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
-        }
+        super.renderLayer(layerIndex, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
     }
     
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {

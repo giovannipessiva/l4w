@@ -107,6 +107,14 @@ namespace Utils {
     export function getRandomBoolean(): boolean {
         return Math.random() >= 0.5;
     }
+    
+    export function isOnTop(tileGID: number, map: IMap): boolean {
+        let isOnTop: boolean = false;
+        if(!Utils.isEmpty(map.tileset.onTop) &&  !Utils.isEmpty(map.tileset.onTop[tileGID])) {
+            isOnTop = map.tileset.onTop[tileGID];
+        }
+        return isOnTop;
+    }
 
     export function getDirectionName(direction: DirectionEnum): string {
         switch (direction) {
