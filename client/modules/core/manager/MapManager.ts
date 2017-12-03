@@ -262,12 +262,15 @@ namespace MapManager {
                 let layer = map.layers[i];
                 if (!Utils.isEmpty(layer.data)) {
                     for (let j = 0; j < layer.data.length; j++) {
+                        //TODO ignore this cell, if its z-index is over the hero
                         let tileCell = layer.data[j];
                         let blockValue = 0;
                         if (tileCell !== null && tileCell < map.tileset.blocks.length) {
                             blockValue = map.tileset.blocks[tileCell];
                         }
-                        map.blocks[j] |= blockValue;
+                        // The higher walkable cell wins
+                        // (ignore a block if there's something over it that you can walk on)
+                        map.blocks[j] = blockValue;
                     }
                 }
             }
