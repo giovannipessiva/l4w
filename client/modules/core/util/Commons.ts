@@ -24,6 +24,7 @@ class RenderConfiguration {
     showFocus: boolean = false;
     enableSelection: boolean = false;
     showBlocks: boolean = false;
+    showOnTops: boolean = false;
     enableAntialiasing: boolean = true;
 
     fps: number = 0;

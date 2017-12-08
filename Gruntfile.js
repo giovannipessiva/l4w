@@ -18,8 +18,7 @@ module.exports = function(grunt) {
                 out: "client/<%= pkg.name %>.js",
                 options: {
                     target: "es6",
-                    sourceMap: false,
-                    additionalFlags: "--noUnusedParameters --noUnusedLocals"
+                    sourceMap: false
                 }
             }
         },

@@ -173,6 +173,14 @@ abstract class AbstractScene {
             this.renderingConfiguration.showBlocks = !this.renderingConfiguration.showBlocks;
         }
     }
+    
+    toggleOnTops(enable?: boolean) {
+        if (enable != null) {
+            this.renderingConfiguration.showOnTops = enable;
+        } else {
+            this.renderingConfiguration.showOnTops = !this.renderingConfiguration.showOnTops;
+        }
+    }
 
     toggleAntialiasing(enable?: boolean) {
         if (enable != null) {
