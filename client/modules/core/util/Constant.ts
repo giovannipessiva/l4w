@@ -11,6 +11,7 @@ namespace Constant {
         static WHITE = "white";
         static GREY = "grey";
         static BLACK = "black";
+        static AQUA = "aqua";
     }
     
     export class RequestType {
@@ -22,7 +23,7 @@ namespace Constant {
         static JSON = "application/json";
     }
     
-    export enum MapLayer {
+    export const enum MapLayer {
         LOW,
         MID,
         TOP,
@@ -35,7 +36,12 @@ namespace Constant {
     }
     
     export enum TileEditMode {
-        NONE,
-        BLOCKS
+        BLOCKS,
+        ONTOP
+    }
+    
+    export const enum Bool {
+        NO,
+        YES
     }
 }

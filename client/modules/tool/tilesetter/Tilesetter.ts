@@ -9,18 +9,19 @@ namespace Tilesetter {
     /**
      * This funcion will be called only at the first page load
      */
-    export function start(canvas: HTMLCanvasElement) {
+    export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
-            let select = <HTMLSelectElement>$("#editModes")[0];
-            let tileEditMode = Constant.TileEditMode[select.value];
-            new TilesetterScene(grid, canvas.height, canvas.width, tileEditMode, function(scene: TilesetterScene) {
+            new TilesetterScene(grid, canvas.height, canvas.width, editMode, function(scene: TilesetterScene) {
                 initInput(canvas, grid);
                 tilesetterScene = scene;
-                tilesetterScene.setBlocks(tileset.blocks);
                 tilesetterScene.start(canvas);
-                tilesetterScene.toggleEditorGrid(true);
+                setTileEditMode(editMode);
             });
         }, GridTypeEnum.tilePicker);
+    }
+    
+    export function setTileEditMode(editMode: Constant.TileEditMode) {
+        tilesetterScene.changeTileEditMode(editMode);
     }
 
     export function loadTile(tile: string, callback) {

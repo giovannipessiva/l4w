@@ -1,6 +1,6 @@
 {
   "name": "L4W",
-  "description": "It's not ready yet",
+  "description": "A TypeScript engine + web editor for tile-based games (it's not ready yet)",
   "keywords": [
     "game",
     "game engine",

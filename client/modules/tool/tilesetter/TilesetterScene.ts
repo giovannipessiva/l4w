@@ -4,13 +4,11 @@
  * Scene implementation for managing Tilesetter logics
  */
 class TilesetterScene extends AbstractTileScene {
-
-    private tileEditMode: Constant.TileEditMode;
-
+    
     constructor(grid: StaticGrid, heightPx: number, widthPx: number, tileEditMode: Constant.TileEditMode, callback: { (scene: TilesetterScene): void }) {
         super(grid, heightPx, widthPx);
+        this.renderingConfiguration.enableSelection = false;
         this.changeTileEditMode(tileEditMode);
-        this.toggleBlocks(true)
 
         // Init the map for rendering blocks
         this.map = {
@@ -22,20 +20,33 @@ class TilesetterScene extends AbstractTileScene {
 
             width: this.getSceneWidth(),
             height: this.getSceneHeight(),
-            blocks: []
+            blocks: [],
+            tileset: {
+                firstgid: -1,
+                image: "",
+                name: "",
+                imagewidth: this.getSceneWidth(),
+                imageheight: this.getSceneHeight(),
+                blocks: [],
+                onTop: []
+            }
         };
         
         callback(this);
     }
 
-    changeTileEditMode(tileEditMode: Constant.TileEditMode) {
+    public changeTileEditMode(tileEditMode: Constant.TileEditMode) {
         this.toggleBlocks(false);
+        this.toggleOnTops(false);
         switch (tileEditMode) {
-            case Constant.TileEditMode.NONE:
-                break;
             case Constant.TileEditMode.BLOCKS:
                 this.toggleBlocks(true);
                 break;
+            case Constant.TileEditMode.ONTOP:
+                this.toggleOnTops(true);
+                break;
+            default:
+                console.error("Unexpected case");
         };
     }
 
@@ -66,50 +77,62 @@ class TilesetterScene extends AbstractTileScene {
 
         console.log(Utils.getSelectionAreaName(clickArea));
 
-        // Apply block based on clicked area
+        // Do action (based on current edit mode) on the clicked area
         let gid = Utils.cellToGid({
             i: i,
             j: j
         }, this.map.width);
-        let block = this.map.blocks[gid];
-        switch (clickArea) {
-            case SelectionAreaEnum.TOP:
-                if(Utils.isBlocked(block, BlockDirection.UP)) {
-                    block ^= BlockDirection.UP;
-                } else {
-                    block |= BlockDirection.UP;
-                }
+        switch (TilesetterPage.getEditMode()) {
+            case Constant.TileEditMode.BLOCKS:
+                let block = this.map.blocks[gid];
+                switch (clickArea) {
+                    case SelectionAreaEnum.TOP:
+                        if (Utils.isBlocked(block, BlockDirection.UP)) {
+                            block ^= BlockDirection.UP;
+                        } else {
+                            block |= BlockDirection.UP;
+                        }
+                        break;
+                    case SelectionAreaEnum.BOTTOM:
+                        if (Utils.isBlocked(block, BlockDirection.DOWN)) {
+                            block ^= BlockDirection.DOWN;
+                        } else {
+                            block |= BlockDirection.DOWN;
+                        }
+                        break;
+                    case SelectionAreaEnum.LEFT:
+                        if (Utils.isBlocked(block, BlockDirection.LEFT)) {
+                            block ^= BlockDirection.LEFT;
+                        } else {
+                            block |= BlockDirection.LEFT;
+                        }
+                        break;
+                    case SelectionAreaEnum.RIGHT:
+                        if (Utils.isBlocked(block, BlockDirection.RIGHT)) {
+                            block ^= BlockDirection.RIGHT;
+                        } else {
+                            block |= BlockDirection.RIGHT;
+                        }
+                        break;
+                    case SelectionAreaEnum.CENTER:
+                        if (Utils.isBlocked(block, BlockDirection.ALL)) {
+                            block ^= BlockDirection.ALL;
+                        } else {
+                            block |= BlockDirection.ALL;
+                        }
+                        break;
+                     default:
+                        console.error("Unexpected case");
+                };
+                this.map.blocks[gid] = block;
                 break;
-            case SelectionAreaEnum.BOTTOM:
-                if(Utils.isBlocked(block, BlockDirection.DOWN)) {
-                    block ^= BlockDirection.DOWN;
-                } else {
-                    block |= BlockDirection.DOWN;
-                }
+            case Constant.TileEditMode.ONTOP:
+                let onTop = this.map.tileset.onTop[gid];
+                this.map.tileset.onTop[gid] = !onTop;
                 break;
-            case SelectionAreaEnum.LEFT:
-                if(Utils.isBlocked(block, BlockDirection.LEFT)) {
-                    block ^= BlockDirection.LEFT;
-                } else {
-                    block |= BlockDirection.LEFT;
-                }
-                break;
-            case SelectionAreaEnum.RIGHT:
-                if(Utils.isBlocked(block, BlockDirection.RIGHT)) {
-                    block ^= BlockDirection.RIGHT;
-                } else {
-                    block |= BlockDirection.RIGHT;
-                }
-                break;
-            case SelectionAreaEnum.CENTER:
-                if(Utils.isBlocked(block, BlockDirection.ALL)) {
-                    block ^= BlockDirection.ALL;
-                } else {
-                    block |= BlockDirection.ALL;
-                }
-                break;
-        };
-        this.map.blocks[gid] = block;
+            default:
+                console.error("Unexpected case");
+        }
     }
     
     public setBlocks(blocks: number[]) {

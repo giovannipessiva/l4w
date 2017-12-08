@@ -12,7 +12,6 @@ abstract class AbstractTileScene extends AbstractStaticScene {
         super(grid);
         this.height = Math.floor(heightPx / grid.cellH);
         this.width = Math.floor(widthPx / grid.cellW);
-        this.renderingConfiguration.showBlocks = true;
     }
 
     select(i: number, j: number) {
@@ -38,6 +37,5 @@ abstract class AbstractTileScene extends AbstractStaticScene {
     }
     
     protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
     }
 }

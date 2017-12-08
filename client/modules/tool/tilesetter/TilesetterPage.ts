@@ -10,11 +10,6 @@ namespace TilesetterPage {
     export const BUTTON_ID_LAYER = "layer";
 
     let flagEdited: boolean = false;
-    
-    enum EditModeEnum {
-        BLOCKS,
-        ZINDEX    
-    };    
 
     export function start() {
         Compatibility.check(); 
@@ -40,7 +35,7 @@ namespace TilesetterPage {
             }
             let tile = $("#tiles").val();
             Tilesetter.loadTile(tile, function(result, w, h) {
-                Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0]);
+                Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0], getEditMode());
             });
         });
     }
@@ -64,48 +59,34 @@ namespace TilesetterPage {
         });
     }
     
-    function getEditMode(): EditModeEnum {
+    export function getEditMode(): Constant.TileEditMode {
         let editModeStr : string = $("#editModes").val();
-        return EditModeEnum[editModeStr];
-        
+        return Constant.TileEditMode[editModeStr];
     }
     
     export function changeTileEditMode() {
-        //TODO gestisci edit mode "z index"
+        Tilesetter.setTileEditMode(getEditMode());
+        TilesetterPage.changeEditState(false);
     }
  
     export function save() {
-        switch (getEditMode()) {
-            case EditModeEnum.BLOCKS:
-                Tilesetter.saveTilesetData(function(success: boolean) {
-                    if (success) {
-                        TilesetterPage.changeEditState(false);
-                    } else {
-                        console.error("Saving failed");
-                    }
-                });
-                break;
-            case EditModeEnum.ZINDEX:
-                //TODO
-                break;
-        };
+        Tilesetter.saveTilesetData(function(success: boolean) {
+            if (success) {
+                TilesetterPage.changeEditState(false);
+            } else {
+                console.error("Saving failed");
+            }
+        });
     }
 
     export function reload() {
-        switch (getEditMode()) {
-            case EditModeEnum.BLOCKS:
-                Tilesetter.loadTilesetData(function(success: boolean) {
-                    if (success) {
-                        TilesetterPage.changeEditState(false);
-                    } else {
-                        console.error("Loading failed");
-                    }
-                });
-                break;
-            case EditModeEnum.ZINDEX:
-                //TODO
-                break;
-        };
+        Tilesetter.loadTilesetData(function(success: boolean) {
+            if (success) {
+                TilesetterPage.changeEditState(false);
+            } else {
+                console.error("Loading failed");
+            }
+        });
     }
 
     export function changeEditState(edited: boolean, mapChanged: boolean = true) {

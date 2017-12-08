@@ -11,7 +11,6 @@ namespace TilePicker {
                 tilePicker = scene;
                 initInput(canvas, grid);
                 tilePicker.start(canvas);
-                tilePicker.toggleEditorGrid(true);
                 callback(tilePicker);
             });
         }, GridTypeEnum.tilePicker);

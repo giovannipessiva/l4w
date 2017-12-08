@@ -19,8 +19,6 @@ var base_path = "./";
 
 	function onSignIn(googleUser) {
       	document.getElementById("login").style.display="none";
-        var profile = googleUser.getBasicProfile();
-        var url = "edit";
         
         var f = document.createElement("form");
 		f.setAttribute("method","post");

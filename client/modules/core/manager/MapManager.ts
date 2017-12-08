@@ -120,6 +120,23 @@ namespace MapManager {
                         }
                         context.restore();
                     }
+                    if (renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
+                        if(map.tileset.onTop[Utils.cellToGid({i: i, j:j},map.width)]) {
+                            context.save();
+                            context.globalAlpha = 0.6;
+                            context.beginPath();
+                            context.fillStyle = Constant.Color.AQUA;
+                            context.arc(
+                                Math.floor((i + 0.5) * grid.cellW),
+                                Math.floor((j + 0.5) * grid.cellH),
+                                10,
+                                0,
+                                Constant.DOUBLE_PI);
+                            context.closePath();
+                            context.fill();
+                            context.restore();
+                        }
+                    }
                     if (renderingConfiguration.showGrid) {
                         context.strokeStyle = Constant.Color.RED;
                         context.strokeRect(

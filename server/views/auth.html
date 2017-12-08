@@ -2,7 +2,7 @@
 <html>
   <head>
   	<meta charset="UTF-8">
-  	<title>L4W Mapper Login</title>
+  	<title>L4W Editor login</title>
 	<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
   	<link rel='icon' href='style/favicon/edit.ico' />
   	
@@ -14,9 +14,7 @@
 	<script>
       function onSignIn(googleUser) {
       	document.getElementById("login").style.display="none";
-        var profile = googleUser.getBasicProfile();
-        var url = "edit";
-        
+
         var f = document.createElement("form");
 		f.setAttribute("method","post");
 		f.setAttribute("action","edit");
