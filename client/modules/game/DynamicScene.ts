@@ -62,8 +62,8 @@ class DynamicScene extends AbstractScene {
 
         //TODO rimuovere a regime
         this.context.fillStyle = "#000000";
-        this.context.font = "bold 40px Arial";
-        this.context.fillText("(it's not ready yet)", this.grid.getCurrentTranslation().x + 160, this.grid.getCurrentTranslation().y + 260);
+        this.context.font = "bold 30px Arial";
+        this.context.fillText("(it's not ready yet)", this.grid.getCurrentTranslation().x + 20, this.grid.getCurrentTranslation().y + 40);
 
         this.renderFPS();
     }
@@ -99,15 +99,15 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j) {
-            
-        if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j)) {
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, onTop) {
+        // TODO render by position
+        if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, onTop)) {
             ActorManager.render(this.grid, this.hero, this.context);
         }
         
         if (!Utils.isEmpty(this.events)) {
             for (let actor of this.events) {
-                if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j)) {
+                if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, onTop)) {
                     ActorManager.render(this.grid, actor, this.context);
                 }
             }

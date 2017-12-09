@@ -109,6 +109,6 @@ abstract class AbstractStaticScene extends AbstractScene {
         };
     }
        
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j) {
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, onTop) {
     }
 }
