@@ -104,15 +104,15 @@ class MapperScene extends AbstractStaticScene {
         }
     }
     
-    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
+    protected applyLayerCustomizations(layerIndex: number) {
         if (layerIndex > this.activeLayer) {
-            context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
+            this.context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
         }
-        super.renderLayer(layerIndex, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
-    }
+    };
     
-    protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-    }
+    protected removeLayerCustomizations(layerIndex: number) {
+        this.context.globalAlpha = 1;
+    };
     
     resizeMap(rows: number, columns: number) {
         MapManager.resizeMap(this.map, rows, columns);

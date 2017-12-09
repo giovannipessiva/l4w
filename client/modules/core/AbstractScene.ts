@@ -73,11 +73,7 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        this.renderLayers(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
-        MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
-        MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
-        this.renderFocus();
-        this.renderPointer();
+        this.render(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
 
         this.mainGameLoop_post(boundariesX, boundariesY);
     }
@@ -258,43 +254,83 @@ abstract class AbstractScene {
         return this.map.width;
     }
 
-    protected renderLayers(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
-            this.renderLayersOnTop(map, context, minRow, maxRow, minColumn, maxColumn, false);
             
-            this.renderMiddleLayerElements(minRow, maxRow, minColumn, maxColumn);
+            
+            
+            for (let j = minRow; j <= maxRow; j++) {
+                for (let i = minColumn; i <= maxColumn; i++) {
+                    
+                    // j_real (where j_real <= j) is used to finds cells(i,j_real) that
+                    // require to be rendered at the same time of cells(i,j) because of their zindex
+                    for (let j_real = minRow; j_real <= j; j_real++) {
+                        let cellIndex = Utils.cellToGid({i:i,j:j_real},map.width);
+                        
+                        for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
+                            
+                            this.applyLayerCustomizations(layerIndex);
+                            
+                            let layer = this.map.layers[layerIndex];
 
-            this.renderLayersOnTop(map, context, minRow, maxRow, minColumn, maxColumn, true);
-            
-            this.renderTopLayerElements(minRow, maxRow, minColumn, maxColumn);
+                            if (layer.data.length < cellIndex) {
+                                continue;
+                            }
+                            let tileGID = layer.data[cellIndex];
+
+                            if (Utils.isEmpty(tileGID)) {
+                                continue;
+                            }
+                            // Check if it is the right time to render cell(i,j_real) (based on its z-index)
+                            let zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                            if(j_real + zindex === j) {
+                                if (!Utils.isEmpty(layer.opacity)) {
+                                    context.globalAlpha = layer.opacity;
+                                }
+                                this.renderCell(context, map.tileset, tileGID, i, j_real);
+                                context.globalAlpha = 1;  
+                            }
+                            
+                            this.removeLayerCustomizations(layerIndex);
+                        }
+                    }
+                    
+                    // Render UI base
+                    MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, i, j, false);        
+                }
+                // Second loop, so that the actor can move over right cells (TODO another solution?)
+                for (let i = minColumn; i <= maxColumn; i++) {
+                    // Render actors
+                    this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j);
+                }
+            }
+            for (let j = minRow; j <= maxRow; j++) {
+                for (let i = minColumn; i <= maxColumn; i++) {
+                    // Render UI global
+                    MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, i, j, true);       
+                }
+            }
+            this.renderFocus();
+            this.renderPointer();
         }
     }
     
-    protected renderLayersOnTop(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
-        if(Utils.isEmpty(map.tileset) || Utils.isEmpty(map.tileset.imageData)) {
-            return;
-        }
-        
-        let tileImage: HTMLImageElement = map.tileset.imageData;
-        for (var i = Constant.MapLayer.LOW; i <= Constant.MapLayer.TOP; i++) {
-            var layer = map.layers[i];
-            if (!Utils.isEmpty(layer.opacity)) {
-                context.globalAlpha = layer.opacity;
-            }
-            this.renderLayer(i, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
-            context.globalAlpha = 1;
-        }
+    private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {
+        let tileCell = Utils.gidToCell(tileGID, Math.floor(tileset.imagewidth / this.grid.cellW)); //TODO precalculate
+        context.drawImage(
+            tileset.imageData,
+            Math.floor(tileCell.i * this.grid.cellW), Math.floor(tileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,
+            Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }
+    
+    protected abstract renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i: number, j: number);
 
-    protected renderLayer(layerIndex: number, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
-        let layer = this.map.layers[layerIndex];
-        MapManager.renderLayer(this.grid, this.map, layer, tileImage, context, minRow, maxRow, minColumn, maxColumn, onTop);
+    protected applyLayerCustomizations(layerIndex: number) {
     }
-        
-    protected abstract renderMiddleLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
-          
-    protected abstract renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number);
-
+    
+    protected removeLayerCustomizations(layerIndex: number) {
+    }
+    
     togglePause(pause?: boolean) {
         if (pause != null) {
             this.paused = pause;

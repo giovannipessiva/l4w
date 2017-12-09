@@ -99,27 +99,21 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    private renderEventLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j) {
+            
+        if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j)) {
+            ActorManager.render(this.grid, this.hero, this.context);
+        }
+        
         if (!Utils.isEmpty(this.events)) {
             for (let actor of this.events) {
-                if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn)) {
+                if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j)) {
                     ActorManager.render(this.grid, actor, this.context);
                 }
             }
         }
     }
     
-    protected renderMiddleLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn)) {
-            ActorManager.render(this.grid, this.hero, this.context);
-        }
-        this.renderEventLayerElements(minRow, maxRow, minColumn, maxColumn, false);
-    }
-
-    protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        this.renderEventLayerElements(minRow, maxRow, minColumn, maxColumn, true);
-        MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);
-    }
 
     public loadSave(save: ISave, callback: IBooleanCallback) {
         var scene = this;

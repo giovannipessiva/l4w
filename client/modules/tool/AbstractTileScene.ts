@@ -35,7 +35,4 @@ abstract class AbstractTileScene extends AbstractStaticScene {
     getSceneWidth(): number {
         return this.width;
     }
-    
-    protected renderTopLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-    }
 }

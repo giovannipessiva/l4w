@@ -109,7 +109,6 @@ abstract class AbstractStaticScene extends AbstractScene {
         };
     }
        
-    protected renderMiddleLayerElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, minRow, maxRow, minColumn, maxColumn);   
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j) {
     }
 }

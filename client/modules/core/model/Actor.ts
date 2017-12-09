@@ -9,7 +9,7 @@ interface IActorData extends ICell {
     rotation?: number; //Angle in degrees clockwise
     speed?: number; //Movement speed (cells/seconds)
     frequency?: number; //Animation change speed (positions/mseconds)
-    onTop?: boolean; //True if this Actor should be rendered on top
+    onTop?: number; //True if this Actor should be rendered on top
     charaset?: string; //Name of the charaset (alternative to GID)
     width?: number; //Width in pixels. Ignored if using a gid.
     height?: number; //Height in pixels. Ignored if using a gid.

@@ -107,13 +107,12 @@ namespace Utils {
     export function getRandomBoolean(): boolean {
         return Math.random() >= 0.5;
     }
-    
-    export function isOnTop(tileGID: number, map: IMap): boolean {
-        let isOnTop = 0;
-        if(!Utils.isEmpty(map.tileset.onTop) &&  !Utils.isEmpty(map.tileset.onTop[tileGID]) && !Number.isNaN(map.tileset.onTop[tileGID])) {
-            isOnTop = map.tileset.onTop[tileGID];
+
+    export function normalizeZIndex(zindex: number): number {
+        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex)) {
+            return zindex;
         }
-        return isOnTop > Constant.ZIndex.MIN;
+        return Constant.ZIndex.MIN;
     }
 
     export function getDirectionName(direction: DirectionEnum): string {

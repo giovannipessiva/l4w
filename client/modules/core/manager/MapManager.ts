@@ -36,144 +36,125 @@ namespace MapManager {
             }
         });
     }
+    
+    export function renderUI(map: IMap, grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, i: number, j: number, onTop: boolean) { 
+        if(!onTop && !(
+            renderingConfiguration.showGrid ||
+            renderingConfiguration.showEditorGrid ||
+            renderingConfiguration.showFocus ||
+            renderingConfiguration.showBlocks ||
+            renderingConfiguration.showOnTops
+            ) || 
+          onTop && !(
+            renderingConfiguration.showFPS ||
+            renderingConfiguration.showCellNumbers ||
+            renderingConfiguration.showFocus ||
+            renderingConfiguration.enableSelection
+            )) {
+            // If there is no need to render UI, exit 
+            return;
+        }
 
-    export function renderLayer(grid: AbstractGrid, map: IMap, layer: IMapLayer, tileImage: HTMLImageElement, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
-        if (!Utils.isEmpty(layer.data)) {
-            for (let y = minRow; y <= maxRow; y++) { //TODO verifica che non siano necessari controlli rispetto alla dimensione del layer
-                for (let x = minColumn; x <= maxColumn; x++) {
-                    let cellIndex = x + y * map.width;
-                    if (layer.data.length < cellIndex) {
-                        return;
+        if (!Utils.isEmpty(renderingConfiguration)) {
+            if (!onTop && renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
+                context.save();
+                context.globalAlpha = 0.5;
+                context.fillStyle = Constant.Color.YELLOW;
+                context.strokeStyle = Constant.Color.BLACK;
+                context.lineWidth = 2;
+                let blockMarkSize = 7;
+                let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
+                let blockValue: number = map.blocks[j * map.width + i];
+                let x, y;
+
+                if (blockValue > 0) {
+                    if (Utils.isBlocked(blockValue, BlockDirection.UP)) {
+                        context.beginPath();
+                        context.moveTo(i * grid.cellW, j * grid.cellH);
+                        context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
+                        context.lineTo((i + 1) * grid.cellW, j * grid.cellH);
+                        context.fill();
+                        context.stroke();
                     }
-                    let tileGID = layer.data[cellIndex];
-                    if (Utils.isEmpty(tileGID)) {
-                        continue;
+                    if (Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
+                        context.beginPath();
+                        context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
+                        context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
+                        context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                        context.fill();
+                        context.stroke();
                     }
+                    if (Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
+                        context.beginPath();
+                        context.moveTo(i * grid.cellW, j * grid.cellH);
+                        context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
+                        context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
+                        context.fill();
+                        context.stroke();
+                    }
+                    if (Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
+                        context.beginPath();
+                        context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
+                        context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
+                        context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
+                        context.fill();
+                        context.stroke();
+                    }
+                }
+                context.restore();
+            }
+            if (!onTop && renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
+                let gid = Utils.cellToGid({i: i, j:j},map.width);
+                if(Utils.normalizeZIndex(map.tileset.onTop[gid]) > Constant.ZIndex.MIN) {
+                    context.save();
+                    context.globalAlpha = 0.6;
+                    context.beginPath();
+                    context.fillStyle = Constant.Color.AQUA;
+                    context.arc(
+                        Math.floor((i + 0.5) * grid.cellW),
+                        Math.floor((j + 0.5) * grid.cellH),
+                        10,
+                        0,
+                        Constant.DOUBLE_PI);
+                    context.closePath();
+                    context.fill();
                     
-                    // Dont render if the cell has not the correct onTop value
-                    if(Utils.isOnTop(tileGID,map) !== onTop) {
-                        continue;    
-                    }
-
-                    let tileCell: ICell = Utils.gidToCell(tileGID, Math.floor(map.tileset.imagewidth / grid.cellW)); //TODO ottimizzabile, precalcola
-                    context.drawImage(
-                        tileImage,
-                        Math.floor(tileCell.i * grid.cellW), Math.floor(tileCell.j * grid.cellH), grid.cellW, grid.cellH,
-                        Math.floor(x * grid.cellW), Math.floor(y * grid.cellH), grid.cellW, grid.cellH);
+                    context.fillStyle = Constant.Color.DARKBLUE;
+                    context.font = "bold 14px Arial";
+                    context.fillText(
+                        "" + map.tileset.onTop[gid],
+                        (i + 0.3) * grid.cellW,
+                        (j + 0.6) * grid.cellH);
+                    
+                    context.restore();
                 }
             }
-        }
-    }
-
-    export function renderGlobalEffects(grid: AbstractGrid, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-
-    }
-
-    export function renderUI(map: IMap, grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
-        for (let i = minColumn; i <= maxColumn; i++) {
-            for (let j = minRow; j <= maxRow; j++) {
-                if (!Utils.isEmpty(renderingConfiguration)) {
-                    if (renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
-                        context.save();
-                        context.globalAlpha = 0.5;
-                        context.fillStyle = Constant.Color.YELLOW;
-                        context.strokeStyle = Constant.Color.BLACK;
-                        context.lineWidth = 2;
-                        let blockMarkSize = 7;
-                        let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
-                        let blockValue: number = map.blocks[j * map.width + i];
-                        let x, y;
-
-                        if (blockValue > 0) {
-                            if (Utils.isBlocked(blockValue, BlockDirection.UP)) {
-                                context.beginPath();
-                                context.moveTo(i * grid.cellW, j * grid.cellH);
-                                context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
-                                context.lineTo((i + 1) * grid.cellW, j * grid.cellH);
-                                context.fill();
-                                context.stroke();
-                            }
-                            if (Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
-                                context.beginPath();
-                                context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
-                                context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
-                                context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
-                                context.fill();
-                                context.stroke();
-                            }
-                            if (Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
-                                context.beginPath();
-                                context.moveTo(i * grid.cellW, j * grid.cellH);
-                                context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
-                                context.lineTo(i * grid.cellW, (j + 1) * grid.cellH);
-                                context.fill();
-                                context.stroke();
-                            }
-                            if (Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
-                                context.beginPath();
-                                context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
-                                context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
-                                context.lineTo((i + 1) * grid.cellW, (j + 1) * grid.cellH);
-                                context.fill();
-                                context.stroke();
-                            }
-                        }
-                        context.restore();
-                    }
-                    if (renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
-                        let gid = Utils.cellToGid({i: i, j:j},map.width);
-                        if(Utils.isOnTop(gid,map)) {
-                            context.save();
-                            context.globalAlpha = 0.6;
-                            context.beginPath();
-                            context.fillStyle = Constant.Color.AQUA;
-                            context.arc(
-                                Math.floor((i + 0.5) * grid.cellW),
-                                Math.floor((j + 0.5) * grid.cellH),
-                                10,
-                                0,
-                                Constant.DOUBLE_PI);
-                            context.closePath();
-                            context.fill();
-                            
-                            context.fillStyle = Constant.Color.DARKBLUE;
-                            context.font = "bold 14px Arial";
-                            context.fillText(
-                                "" + map.tileset.onTop[gid],
-                                (i + 0.3) * grid.cellW,
-                                (j + 0.6) * grid.cellH);
-                            
-                            context.restore();
-                        }
-                    }
-                    if (renderingConfiguration.showGrid) {
-                        context.strokeStyle = Constant.Color.RED;
-                        context.strokeRect(
-                            i * grid.cellW,
-                            j * grid.cellH,
-                            grid.cellW,
-                            grid.cellH);
-                    }
-                    if (renderingConfiguration.showEditorGrid) {
-                        context.save();
-                        context.globalAlpha = 0.4;
-                        context.strokeStyle = Constant.Color.GREY;
-                        context.strokeRect(
-                            i * grid.cellW,
-                            j * grid.cellH,
-                            grid.cellW,
-                            grid.cellH);
-                        context.restore();
-                    }
-                    if (renderingConfiguration.showCellNumbers) {
-                        context.fillStyle = Constant.Color.RED;
-                        context.font = "bold 10px Arial";
-                        context.fillText(
-                            i + "," + j,
-                            i * grid.cellW + 1,
-                            j * grid.cellH + 10);
-                    }
-                }
+            if (!onTop && renderingConfiguration.showGrid) {
+                context.strokeStyle = Constant.Color.RED;
+                context.strokeRect(
+                    i * grid.cellW,
+                    j * grid.cellH,
+                    grid.cellW,
+                    grid.cellH);
+            }
+            if (!onTop && renderingConfiguration.showEditorGrid) {
+                context.save();
+                context.globalAlpha = 0.4;
+                context.strokeStyle = Constant.Color.GREY;
+                context.strokeRect(
+                    i * grid.cellW,
+                    j * grid.cellH,
+                    grid.cellW,
+                    grid.cellH);
+                context.restore();
+            }
+            if (!onTop && renderingConfiguration.showCellNumbers) {
+                context.fillStyle = Constant.Color.RED;
+                context.font = "bold 10px Arial";
+                context.fillText(
+                    i + "," + j,
+                    i * grid.cellW + 1,
+                    j * grid.cellH + 10);
             }
         }
     }
@@ -211,7 +192,6 @@ namespace MapManager {
                 context.lineWidth = 3;
                 context.strokeRect(x, y, w, h);
                 context.restore();
-
             }
         }
     }
@@ -300,7 +280,7 @@ namespace MapManager {
                             continue;
                         }
                         // Ignore cells onTop
-                        if(Utils.isOnTop(tileCell,map)) {
+                        if(Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.MIN) {
                             continue;  
                         }
                         let blockValue = map.tileset.blocks[tileCell];

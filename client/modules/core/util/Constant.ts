@@ -24,7 +24,7 @@ namespace Constant {
         static JSON = "application/json";
     }
     
-    export const enum MapLayer {
+    export enum MapLayer {
         LOW,
         MID,
         TOP,
