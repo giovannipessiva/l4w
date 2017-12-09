@@ -254,7 +254,7 @@ abstract class AbstractScene {
         return this.map.width;
     }
 
-    protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+    protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, renderOnTop: boolean = true) {
         if (!Utils.isEmpty(map)) {
             // Render base cells and events
             for (let j = minRow; j <= maxRow; j++) {
@@ -263,43 +263,35 @@ abstract class AbstractScene {
                     let cellIndex = Utils.cellToGid({i:i,j:j},map.width);
                     
                     for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
-                        
-                        this.applyLayerCustomizations(layerIndex);
-                        
-                        let layer = this.map.layers[layerIndex];
 
-                        if (layer.data.length < cellIndex) {
+                        let layer = this.map.layers[layerIndex];
+                        if (layer === undefined || layer.data.length < cellIndex) {
                             continue;
                         }
                         let tileGID = layer.data[cellIndex];
-
                         if (Utils.isEmpty(tileGID)) {
                             continue;
                         }
                         // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                         let zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
-                        if(zindex === Constant.ZIndex.MIN) {
+                        if(zindex === Constant.ZIndex.MIN || !renderOnTop) {
+                            this.applyLayerCustomizations(layerIndex);
                             if (!Utils.isEmpty(layer.opacity)) {
                                 context.globalAlpha = layer.opacity;
                             }
                             this.renderCell(context, map.tileset, tileGID, i, j);
-                            context.globalAlpha = 1;  
+                            context.globalAlpha = 1;
+                            this.removeLayerCustomizations(layerIndex);
                         }
-                        
-                        this.removeLayerCustomizations(layerIndex);
                     }
-                    
                     // Render UI base
                     MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, i, j, false);        
                 }
             }
             
-            // Render actors
-            this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, false);
-            
             // render onTop elements
             for (let j = minRow; j <= maxRow; j++) {
-                for (let i = minColumn; i <= maxColumn; i++) {
+                for (let i = minColumn; i <= maxColumn && renderOnTop; i++) {
                     // j_real (where j_real <= j) is used to finds cells(i,j_real) that
                     // require to be rendered at the same time of cells(i,j) because of their zindex
                     for (let j_real = minRow; j_real <= j; j_real++) {
@@ -307,44 +299,48 @@ abstract class AbstractScene {
                         
                         for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
                             
-                            this.applyLayerCustomizations(layerIndex);
-                            
                             let layer = this.map.layers[layerIndex];
-
-                            if (layer.data.length < cellIndex) {
+                            if (layer === undefined || layer.data.length < cellIndex) {
                                 continue;
                             }
                             let tileGID = layer.data[cellIndex];
-
                             if (Utils.isEmpty(tileGID)) {
                                 continue;
                             }
                             // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                             let zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
                             if(zindex > 0 && j_real + zindex === j) {
+                                this.applyLayerCustomizations(layerIndex);
                                 if (!Utils.isEmpty(layer.opacity)) {
                                     context.globalAlpha = layer.opacity;
                                 }
                                 this.renderCell(context, map.tileset, tileGID, i, j_real);
-                                context.globalAlpha = 1;  
+                                context.globalAlpha = 1;
+                                this.removeLayerCustomizations(layerIndex);
                             }
-                            this.removeLayerCustomizations(layerIndex);
                         }
                     }
                 }
-            }
-            
-            // Render onTop events
-            this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, true);
-            for (let j = minRow; j <= maxRow; j++) {
+                // Render actors
                 for (let i = minColumn; i <= maxColumn; i++) {
-                    // Render UI global
-                    MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, i, j, true);       
+                    this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, false);
                 }
             }
-            this.renderFocus();
-            this.renderPointer();
+            
+            
+            for (let j = minRow; j <= maxRow; j++) {
+                for (let i = minColumn; i <= maxColumn; i++) {
+                    // Render onTop events
+                    this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, true);
+                    
+                    // Render UI global
+                    MapManager.renderUI(this.map, this.grid, this.context, this.renderingConfiguration, i, j, true);
+                }
+            }
         }
+        MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
+        this.renderFocus();
+        this.renderPointer();
     }
     
     private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {
@@ -355,7 +351,7 @@ abstract class AbstractScene {
             Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }
     
-    protected abstract renderDynamicElements(minRow, maxRow, minColumn, maxColumn, onTop: boolean);
+    protected abstract renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i: number, j: number, onTop: boolean);
 
     protected applyLayerCustomizations(layerIndex: number) {
     }

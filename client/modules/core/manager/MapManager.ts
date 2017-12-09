@@ -48,8 +48,7 @@ namespace MapManager {
           onTop && !(
             renderingConfiguration.showFPS ||
             renderingConfiguration.showCellNumbers ||
-            renderingConfiguration.showFocus ||
-            renderingConfiguration.enableSelection
+            renderingConfiguration.showFocus
             )) {
             // If there is no need to render UI, exit 
             return;
@@ -123,8 +122,8 @@ namespace MapManager {
                     context.font = "bold 14px Arial";
                     context.fillText(
                         "" + map.tileset.onTop[gid],
-                        (i + 0.3) * grid.cellW,
-                        (j + 0.6) * grid.cellH);
+                        (i + 0.35) * grid.cellW,
+                        (j + 0.65) * grid.cellH);
                     
                     context.restore();
                 }

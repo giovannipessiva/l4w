@@ -14,10 +14,6 @@ abstract class AbstractTileScene extends AbstractStaticScene {
         this.width = Math.floor(widthPx / grid.cellW);
     }
 
-    select(i: number, j: number) {
-        super.select(i, j);
-    }
-
     updateSize(widthPx: number, heightPx: number) {
         this.width = Math.floor(widthPx / this.grid.cellW);
         this.height = Math.floor(heightPx / this.grid.cellH);

@@ -47,25 +47,25 @@ class MapperScene extends AbstractStaticScene {
     }
 
     apply(i_apply: number, j_apply: number): boolean {
-        var changed: boolean = false;
-        var pickerArea: IRectangle = this.tilePicker.getSelectionArea();
-        var changedCell: number = i_apply + j_apply * this.map.width;
+        let changed: boolean = false;
+        let pickerArea: IRectangle = this.tilePicker.getSelectionArea();
+        let changedCell: number = i_apply + j_apply * this.map.width;
         if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
             this.map.layers[this.activeLayer].data = [];
         }
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
                 if (Utils.isEmpty(pickerArea)) {
-                    return false;    
+                    return false;
                 }
-                var tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
-                var appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
+                let tileColumns: number = this.map.tileset.imagewidth / this.grid.cellW; //TODO questa non cambia mai, ottimizzabile
+                let appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
                 for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
                     for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
                         if (i_apply + i < this.map.width) {
                             let appliedTileOffset: number = i + j * tileColumns;
                             let changedCellOffset: number = i + j * this.map.width;
-                            if(this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
+                            if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
                                 changed = true;
                                 this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
                             }
@@ -76,7 +76,7 @@ class MapperScene extends AbstractStaticScene {
             case Constant.EditMode.ERASE:
                 if (Utils.isEmpty(pickerArea)) {
                     pickerArea = {
-                        x1:0, x2: 0, y1: 0, y2:0
+                        x1: 0, x2: 0, y1: 0, y2: 0
                     };
                 }
                 for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
@@ -91,6 +91,8 @@ class MapperScene extends AbstractStaticScene {
                     }
                 }
                 break;
+            default:
+                console.error("Unexpected case");
         }
         //TODO gestisci trascinamento del picker
         return changed;
@@ -103,24 +105,25 @@ class MapperScene extends AbstractStaticScene {
             return null;
         }
     }
-    
+
     protected applyLayerCustomizations(layerIndex: number) {
+        // Layers below the currently selected layer will be partially transparent
         if (layerIndex > this.activeLayer) {
             this.context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
         }
     };
-    
+
     protected removeLayerCustomizations(layerIndex: number) {
         this.context.globalAlpha = 1;
     };
-    
+
     resizeMap(rows: number, columns: number) {
         MapManager.resizeMap(this.map, rows, columns);
     }
 
     setTilePicker(tilePicker: TilePickerScene) {
         this.tilePicker = tilePicker;
-    }    
+    }
 
     setActiveLayer(activeLayer: Constant.MapLayer) {
         this.activeLayer = activeLayer;
@@ -128,9 +131,5 @@ class MapperScene extends AbstractStaticScene {
 
     setEditMode(editMode: Constant.EditMode) {
         this.editMode = editMode;
-    }
-
-    getMap(): IMap {
-        return this.map;
     }
 }

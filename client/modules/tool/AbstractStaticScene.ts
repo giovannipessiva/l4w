@@ -23,6 +23,10 @@ abstract class AbstractStaticScene extends AbstractScene {
         super.mainGameLoop_post(boundariesX, boundariesY);
     }
 
+    protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        super.render(map, context, minRow, maxRow, minColumn, maxColumn, false);
+    }
+
     toggleEditorGrid(enable?: boolean) {
         if (enable != null) {
             this.renderingConfiguration.showEditorGrid = enable;
@@ -46,7 +50,7 @@ abstract class AbstractStaticScene extends AbstractScene {
     }
     
     select(i: number, j: number) {
-        if (i != null && j != null) {
+        if (i !== null && j !== null) {
             this.renderingConfiguration.selectCellStart = {
                 i: i,
                 j: j
@@ -109,6 +113,6 @@ abstract class AbstractStaticScene extends AbstractScene {
         };
     }
        
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, onTop) {
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
     }
 }

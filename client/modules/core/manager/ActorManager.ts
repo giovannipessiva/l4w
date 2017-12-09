@@ -128,7 +128,11 @@ namespace ActorManager {
         return actor;
     }
 
-    export function isVisible(a: IActor, minRow: number, maxRow: number, minColumn: number, maxColumn: number, onTop: boolean) {
+    export function isVisible(a: IActor, minRow: number, maxRow: number, minColumn: number, maxColumn: number,  i: number, j: number, onTop: boolean) {
+        // Check if the posizion is correct
+        if(a.i !== i || a.j !== j) {
+            return false
+        }
         // Check if it is the right time to render this actor, based on its zindex
         if(onTop !== (Utils.normalizeZIndex(a.onTop) !== Constant.ZIndex.MIN)) {
             return false
