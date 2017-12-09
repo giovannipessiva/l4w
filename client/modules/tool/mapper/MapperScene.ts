@@ -132,4 +132,7 @@ class MapperScene extends AbstractStaticScene {
     setEditMode(editMode: Constant.EditMode) {
         this.editMode = editMode;
     }
+    getMap(): IMap {
+        return this.map;
+    }
 }
