@@ -65,10 +65,24 @@ namespace Tilesetter {
             function() { },
             function(i, j, x, y, mouseButton) {
                 // Start action
-                if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
-                    tilesetterScene.selectPrecisely(i, j, x, y);
-                    TilesetterPage.changeEditState(true);
-                }
+                switch (TilesetterPage.getEditMode()) {
+                    case Constant.TileEditMode.BLOCKS:
+                        if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                            tilesetterScene.selectPrecisely(i, j, x, y);
+                            TilesetterPage.changeEditState(true);
+                        }
+                        break;
+                    case Constant.TileEditMode.ONTOP:
+                        if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
+                            tilesetterScene.selectLeft(i, j);
+                        } else if (mouseButton === Input.MouseButtons.RIGHT)  {
+                            tilesetterScene.selectRight(i, j);
+                        }
+                        break;
+                    default:
+                        console.error("Unexpected case");
+
+                };
             },
             function(i, j, mouseButton) {
                 //End action

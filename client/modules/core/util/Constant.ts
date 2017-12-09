@@ -12,6 +12,7 @@ namespace Constant {
         static GREY = "grey";
         static BLACK = "black";
         static AQUA = "aqua";
+        static DARKBLUE = "darkblue";
     }
     
     export class RequestType {
@@ -38,6 +39,11 @@ namespace Constant {
     export enum TileEditMode {
         BLOCKS,
         ONTOP
+    }
+    
+    export class ZIndex {
+        public static MIN = 0;
+        public static MAX = 4;
     }
     
     export const enum Bool {

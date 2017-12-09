@@ -7,7 +7,7 @@ interface ITilesetData {
     imageheight: number; //Height of source image in pixels
     autotiles?: IAutoTile[]; //Array of Terrains (optional)
     blocks: number[]; //Array of codes representing the block attributes
-    onTop: boolean[]; //Array of flag for over-the-event positioning
+    onTop: number[]; //Array of z-index for over-the-event positioning
 };
 
 //Tileset extended model (include transient data)

@@ -109,11 +109,11 @@ namespace Utils {
     }
     
     export function isOnTop(tileGID: number, map: IMap): boolean {
-        let isOnTop: boolean = false;
-        if(!Utils.isEmpty(map.tileset.onTop) &&  !Utils.isEmpty(map.tileset.onTop[tileGID])) {
+        let isOnTop = 0;
+        if(!Utils.isEmpty(map.tileset.onTop) &&  !Utils.isEmpty(map.tileset.onTop[tileGID]) && !Number.isNaN(map.tileset.onTop[tileGID])) {
             isOnTop = map.tileset.onTop[tileGID];
         }
-        return isOnTop;
+        return isOnTop > Constant.ZIndex.MIN;
     }
 
     export function getDirectionName(direction: DirectionEnum): string {

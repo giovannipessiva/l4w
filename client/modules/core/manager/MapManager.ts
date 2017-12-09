@@ -121,7 +121,8 @@ namespace MapManager {
                         context.restore();
                     }
                     if (renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
-                        if(map.tileset.onTop[Utils.cellToGid({i: i, j:j},map.width)]) {
+                        let gid = Utils.cellToGid({i: i, j:j},map.width);
+                        if(Utils.isOnTop(gid,map)) {
                             context.save();
                             context.globalAlpha = 0.6;
                             context.beginPath();
@@ -134,6 +135,14 @@ namespace MapManager {
                                 Constant.DOUBLE_PI);
                             context.closePath();
                             context.fill();
+                            
+                            context.fillStyle = Constant.Color.DARKBLUE;
+                            context.font = "bold 14px Arial";
+                            context.fillText(
+                                "" + map.tileset.onTop[gid],
+                                (i + 0.3) * grid.cellW,
+                                (j + 0.6) * grid.cellH);
+                            
                             context.restore();
                         }
                     }
