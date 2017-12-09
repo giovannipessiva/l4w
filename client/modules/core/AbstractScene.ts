@@ -73,11 +73,7 @@ abstract class AbstractScene {
         let maxColumn = boundariesX.max;
 
         // Rendering
-        
-        // Dont render if data is not initialized
-        if (!Utils.isEmpty(this.map)) {
-            this.renderLayers(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
-        }
+        this.renderLayers(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalEffects(this.grid, this.context, minRow, maxRow, minColumn, maxColumn);
         MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
         this.renderFocus();
@@ -264,7 +260,6 @@ abstract class AbstractScene {
 
     protected renderLayers(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
         if (!Utils.isEmpty(map)) {
-            
             this.renderLayersOnTop(map, context, minRow, maxRow, minColumn, maxColumn, false);
             
             this.renderMiddleLayerElements(minRow, maxRow, minColumn, maxColumn);

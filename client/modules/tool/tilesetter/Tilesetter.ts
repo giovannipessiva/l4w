@@ -9,13 +9,14 @@ namespace Tilesetter {
     /**
      * This funcion will be called only at the first page load
      */
-    export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode) {
+    export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode, callback) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
             new TilesetterScene(grid, canvas.height, canvas.width, editMode, function(scene: TilesetterScene) {
                 initInput(canvas, grid);
                 tilesetterScene = scene;
                 tilesetterScene.start(canvas);
                 setTileEditMode(editMode);
+                callback();
             });
         }, GridTypeEnum.tilePicker);
     }
@@ -128,7 +129,10 @@ namespace Tilesetter {
                     if (tileset.blocks === undefined) {
                         tileset.blocks = [];
                     }
-                    tilesetterScene.setBlocks(tileset.blocks);
+                    if (tileset.onTop === undefined) {
+                        tileset.onTop = [];
+                    }
+                    tilesetterScene.setData(tileset);
                 }
                 callback(true);
             },

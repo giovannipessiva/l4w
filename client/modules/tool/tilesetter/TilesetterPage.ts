@@ -21,23 +21,19 @@ namespace TilesetterPage {
         };
         Resource.loadProperties(resizerCallback);
 
-        loadTiles();
-
-        loadNews();
-    }
-
-    function loadTiles() {
         $.getJSON(base_path + "data/resources/tiles.json", function(data) {
             let sel = $("#tiles");
             for (let i = 0; i < data.length; i++) {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
                     + "</option>");
             }
-            let tile = $("#tiles").val();
-            Tilesetter.loadTile(tile, function(result, w, h) {
-                Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0], getEditMode());
+            Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0], getEditMode(), function() {
+                let tile = $("#tiles").val();
+                Tilesetter.loadTile(tile, function(result, w, h) { });
             });
         });
+
+        loadNews();
     }
 
     export function loadNews() {

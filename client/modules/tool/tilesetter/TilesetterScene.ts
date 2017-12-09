@@ -75,8 +75,6 @@ class TilesetterScene extends AbstractTileScene {
             clickArea = SelectionAreaEnum.CENTER
         }
 
-        console.log(Utils.getSelectionAreaName(clickArea));
-
         // Do action (based on current edit mode) on the clicked area
         let gid = Utils.cellToGid({
             i: i,
@@ -128,6 +126,9 @@ class TilesetterScene extends AbstractTileScene {
                 break;
             case Constant.TileEditMode.ONTOP:
                 let onTop = this.map.tileset.onTop[gid];
+                if(onTop === undefined) {
+                    onTop = false;    
+                }
                 this.map.tileset.onTop[gid] = !onTop;
                 break;
             default:
@@ -135,7 +136,8 @@ class TilesetterScene extends AbstractTileScene {
         }
     }
     
-    public setBlocks(blocks: number[]) {
-        this.map.blocks = blocks;    
+    public setData(tileset: ITileset) {
+        this.map.blocks = tileset.blocks;
+        this.map.tileset= tileset;
     }
 }

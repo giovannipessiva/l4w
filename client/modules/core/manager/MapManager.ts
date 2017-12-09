@@ -296,7 +296,7 @@ namespace MapManager {
                         }
                         let blockValue = map.tileset.blocks[tileCell];
                         if(Utils.isEmpty(blockValue)) {
-                            blockValue = BlockDirection.NONE;  
+                            blockValue = BlockDirection.NONE;
                         }
                         // This will override a block if there's something over it that you can walk on
                         // (the higher walkable cell wins)
