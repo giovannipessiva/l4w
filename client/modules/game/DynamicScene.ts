@@ -15,7 +15,9 @@ class DynamicScene extends AbstractScene {
     fpsPerformance = [22, 21, 20];
 
     hero: IActor;
-    events: IActor[];
+    events: IEvent[];
+    
+    action: ICell;
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
@@ -41,10 +43,13 @@ class DynamicScene extends AbstractScene {
             });
         }
         if (!Utils.isEmpty(this.events)) {
-            for (let actor of this.events) {
-                ActorManager.update(actor, time, this.pauseDuration);
-                ActorManager.manageMovements(this.map, this.grid, actor, function() { }, function() { });
+            for (let event of this.events) {
+                EventManager.update(event, time, this.hero, this.action);
+                ActorManager.update(event, time, this.pauseDuration);
+                ActorManager.manageMovements(this.map, this.grid, event, function() { }, function() { });
             }
+            // Reset the action
+            this.action = undefined;
         }
         // Reset pause duration
         if (!this.paused) {
@@ -122,9 +127,9 @@ class DynamicScene extends AbstractScene {
             // Initialize every actor in the map
             if (result && !Utils.isEmpty(scene.map.layers)) {
 
-                scene.events = MapManager.getActors(scene.map);
+                scene.events = MapManager.getEvents(scene.map);
                 for (let i = 0; i < scene.events.length; i++) {
-                    scene.events[i] = ActorManager.initTransientData(this.grid, scene.events[i]);
+                    scene.events[i] = <IEvent> ActorManager.initTransientData(this.grid, scene.events[i]);
                 }
             }
             callback(result);
@@ -174,5 +179,9 @@ class DynamicScene extends AbstractScene {
 
     startMovement(i: number, j: number) {
         ActorManager.startMovement(this.grid, this.hero, i, j);
+    }
+    
+    registerAction(i: number, j: number) {
+        this.action = { i:i, j:j };
     }
 }

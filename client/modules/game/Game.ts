@@ -127,7 +127,7 @@ namespace Game {
         };
         var actionCallback = function(i: number, j: number, x: number, y: number) {
             //TODO distingui da celle evento e celle vuote dove spostarsi
-            moveHero(i, j);
+            doAction(i, j);
         };
 
         Input.init(
@@ -164,7 +164,8 @@ namespace Game {
             function() { console.log("wheel"); }
         );
 
-        function moveHero(i: number, j: number) {
+        function doAction(i: number, j: number) {
+            scene.registerAction(i, j);
             scene.startMovement(i, j);
         };
     };

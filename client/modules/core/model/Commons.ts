@@ -35,3 +35,10 @@ class BlockDirection {
     static RIGHT: number = Math.pow(2, 3);
     static ALL: number = BlockDirection.UP + BlockDirection.DOWN + BlockDirection.LEFT + BlockDirection.RIGHT;
 };
+
+enum ActivationActionEnum {
+    CLICK,
+    TOUCH,
+    OVER,
+    AUTO
+};

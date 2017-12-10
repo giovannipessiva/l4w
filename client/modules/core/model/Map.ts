@@ -37,7 +37,7 @@ interface IMapLayer {
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
-    objects?: IActorData[]; //Array of Objects. objectgroup only.
+    objects?: IEventData[]; //Array of Events. objectgroup only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
     speedX?: number;

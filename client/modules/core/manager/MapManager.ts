@@ -247,17 +247,17 @@ namespace MapManager {
         map.width = columns;
     }
 
-    export function getActors(map: IMap) {
-        let actors: IActor[] = [];
+    export function getEvents(map: IMap) {
+        let events: IEvent[] = [];
         if (!Utils.isEmpty(map.layers)) {
             for (let i = 0; i < map.layers.length; i++) {
                 let layer = map.layers[i];
                 if (!Utils.isEmpty(layer.objects)) {
-                    actors = actors.concat(layer.objects);
+                    events = events.concat(layer.objects);
                 }
             }
         }
-        return actors;
+        return events;
     }
 
     /**
@@ -787,17 +787,23 @@ namespace MapManager {
                 },
                 {
                     "objects": [
-                        {
-                            "gid": 6,
-                            "height": 32,
+                        { 
                             "id": 1,
-                            "name": "signor evento",
-                            "rotation": 0,
-                            "visible": true,
-                            "width": 32,
+                            "name": "Sign. Evento",
                             "i": 4,
-                            "j": 2
-                        }],
+                            "j": 2,
+                            memory: new Map<string,string>(),
+                            currentState: 0,
+                            states: [
+                                {
+                                    activationAction: ActivationActionEnum.AUTO,
+                                    activationCondition: function(event: IEvent){ return true; },
+                                    script: "Script1",
+                                    action: "testAction"
+                                }    
+                            ]
+                        }
+                    ],
                     "opacity": 1,
                     "type": "objectgroup",
                     "x": 0,
