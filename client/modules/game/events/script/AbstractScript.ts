@@ -13,22 +13,20 @@ namespace Script {
             this.grid = grid;
         }
     
-        protected dialog(message: string) {
+        protected dialog(message: string): boolean {
             // TODO dialogs
-            console.log(this.event.name + "> " + message); 
+            console.log(this.event.name + "> " + message);
+            return true;
         }
         
-        protected moveToTarget(target: ICell) {
-            ActorManager.startMovement(this.grid, this.event, target.i, target.j);    
+        protected moveToTarget(target: ICell): boolean {
+            ActorManager.startMovement(this.grid, this.event, target.i, target.j);
+            return true;  
         }
         
-        protected stepToDirection(direction: DirectionEnum) {
+        protected stepToDirection(direction: DirectionEnum): boolean {
             let target: ICell = Utils.moveToDirection(this.event, direction);
-            this.moveToTarget(target);
-        }
-        
-        protected moveToHero(hero: ICell) {
-            ActorManager.startMovement(this.grid, this.event,hero.i, hero.j);    
+            return this.moveToTarget(target);
         }
     }
     

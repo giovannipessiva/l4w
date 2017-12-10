@@ -16,6 +16,7 @@ class TilesetterScene extends AbstractTileScene {
             name: undefined,
             tile: undefined,
             layers: [],
+            events: [],
             nextobjectid: undefined,
 
             width: this.getSceneWidth(),

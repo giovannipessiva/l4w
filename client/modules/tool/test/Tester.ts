@@ -22,6 +22,7 @@ namespace Tester {
             layers: [{
                 type:"tilelayer",
             }],
+            events: [],
             nextobjectid: 0,
             blocks: blocks
         };

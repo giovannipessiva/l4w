@@ -8,7 +8,8 @@ interface IMapData {
     name: string; //Name of the map
     width: number; //Number of tile columns
     height: number; //Number of tile rows
-    layers: IMapLayer[]; //Array of Layers 
+    layers: IMapLayer[]; //Array of Layers
+    events: IEventData[]; //Events
     nextobjectid: number; //Auto-increments for each placed 
 };
 
@@ -33,11 +34,10 @@ interface IDStarLiteCache {
 }
 
 interface IMapLayer {
-    type: "tilelayer" | "objectgroup" | "imagelayer"; //TODO remove
+    type: "tilelayer" | "imagelayer"; //TODO remove
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: number[]; //Array of GIDs. tilelayer only.
-    objects?: IEventData[]; //Array of Events. objectgroup only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
     speedX?: number;

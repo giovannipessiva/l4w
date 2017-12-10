@@ -14,9 +14,7 @@ class DynamicScene extends AbstractScene {
     lastFPS = 0;
     fpsPerformance = [22, 21, 20];
 
-    hero: IActor;
-    events: IEvent[];
-    
+    hero: IActor;   
     action: ICell;
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
@@ -42,8 +40,8 @@ class DynamicScene extends AbstractScene {
                 scene.focus.y += h;
             });
         }
-        if (!Utils.isEmpty(this.events)) {
-            for (let event of this.events) {
+        if (!Utils.isEmpty(this.map.events)) {
+            for (let event of this.map.events) {
                 EventManager.update(event, time, this.hero, this.action);
                 ActorManager.update(event, time, this.pauseDuration);
                 ActorManager.manageMovements(this.map, this.grid, event, function() { }, function() { });
@@ -110,8 +108,8 @@ class DynamicScene extends AbstractScene {
             ActorManager.render(this.grid, this.hero, this.context);
         }
         
-        if (!Utils.isEmpty(this.events)) {
-            for (let actor of this.events) {
+        if (!Utils.isEmpty(this.map.events)) {
+            for (let actor of this.map.events) {
                 if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
                     ActorManager.render(this.grid, actor, this.context);
                 }
@@ -124,11 +122,9 @@ class DynamicScene extends AbstractScene {
 
         let callback2: IBooleanCallback = function(result) {
             // Initialize every actor in the map
-            if (result && !Utils.isEmpty(scene.map.layers)) {
-
-                scene.events = MapManager.getEvents(scene.map);
-                for (let i = 0; i < scene.events.length; i++) {
-                    scene.events[i] = <IEvent> ActorManager.initTransientData(this.grid, scene.events[i]);
+            if (result && !Utils.isEmpty(scene.map.events)) {
+                for (let i = 0; i < scene.map.events.length; i++) {
+                    scene.map.events[i] = <IEvent> ActorManager.initTransientData(this.grid, scene.map.events[i]);
                 }
             }
             callback(result);

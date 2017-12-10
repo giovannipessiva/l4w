@@ -49,7 +49,7 @@ namespace EventManager {
                 return;
             }
             //TODO activare the state 
-            Script.launchAction(event, activableState);
+            Script.launchAction(event, hero, activableState);
         }
     }
 }

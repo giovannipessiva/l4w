@@ -247,19 +247,6 @@ namespace MapManager {
         map.width = columns;
     }
 
-    export function getEvents(map: IMap) {
-        let events: IEvent[] = [];
-        if (!Utils.isEmpty(map.layers)) {
-            for (let i = 0; i < map.layers.length; i++) {
-                let layer = map.layers[i];
-                if (!Utils.isEmpty(layer.objects)) {
-                    events = events.concat(layer.objects);
-                }
-            }
-        }
-        return events;
-    }
-
     /**
      * Read the block in every map layer, and save them in the map.block array
      */
@@ -784,32 +771,27 @@ namespace MapManager {
                     "type": "tilelayer",
                     "x": 0,
                     "y": 0
-                },
-                {
-                    "objects": [
-                        { 
-                            "id": 1,
-                            "name": "Sign. Maiale",
-                            charaset: "155-Animal05.png",
-                            "i": 4,
-                            "j": 2,
-                            memory: new Map<string,string>(),
-                            currentState: 0,
-                            states: [
-                                {
-                                    activationAction: ActivationActionEnum.AUTO,
-                                    activationCondition: function(event: IEvent){ return true; },
-                                    script: "Script1",
-                                    action: "testAction"
-                                }    
-                            ]
-                        }
-                    ],
-                    "opacity": 1,
-                    "type": "objectgroup",
-                    "x": 0,
-                    "y": 0
-                }],
+                }
+            ],
+            events: [
+                { 
+                    "id": 1,
+                    "name": "Sign. Maiale",
+                    charaset: "155-Animal05.png",
+                    "i": 4,
+                    "j": 2,
+                    memory: new Map<string,string>(),
+                    currentState: 0,
+                    states: [
+                        {
+                            activationAction: ActivationActionEnum.AUTO,
+                            activationCondition: function(event: IEvent){ return true; },
+                            script: "Script1",
+                            action: "testAction"
+                        }    
+                    ]
+                }     
+            ],
             "nextobjectid": 2,
             "tile": "002-Woods01.png"
         };
