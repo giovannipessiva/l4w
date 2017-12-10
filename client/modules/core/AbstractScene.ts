@@ -326,8 +326,7 @@ abstract class AbstractScene {
                     this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, false);
                 }
             }
-            
-            
+                        
             for (let j = minRow; j <= maxRow; j++) {
                 for (let i = minColumn; i <= maxColumn; i++) {
                     // Render onTop events

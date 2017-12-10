@@ -789,7 +789,8 @@ namespace MapManager {
                     "objects": [
                         { 
                             "id": 1,
-                            "name": "Sign. Evento",
+                            "name": "Sign. Maiale",
+                            charaset: "155-Animal05.png",
                             "i": 4,
                             "j": 2,
                             memory: new Map<string,string>(),

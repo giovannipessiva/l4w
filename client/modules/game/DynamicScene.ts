@@ -119,7 +119,6 @@ class DynamicScene extends AbstractScene {
         }
     }
     
-
     public loadSave(save: ISave, callback: IBooleanCallback) {
         var scene = this;
 
