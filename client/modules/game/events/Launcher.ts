@@ -1,17 +1,19 @@
+/// <reference path="script/test/Script1.ts" />
+
 namespace Script {
 
-    export function launchAction(event: IEvent, hero: IActor, state: number, parameters?): boolean {
-        let result = launch(event, event.states[state].script, event.states[state].action, parameters);
+    export function launchAction(event: IEvent, grid: AbstractGrid, hero: IActor, state: number, parameters?): boolean {
+        let result: boolean = launch(event, grid, event.script, event.states[state].action, parameters);
         event.currentState = state;
         // On click action, turn to the hero
-        if (result && event.states[state].activationAction === ActivationActionEnum.CLICK) {
+        if (result && event.states[state].trigger === ActionTriggerEnum.CLICK) {
             event.direction = Utils.getOpposedDirections(hero.direction);
         }
         return result;
     }
 
-    function launch(event: IEvent, script: string, action: string, parameters?): boolean {
-        let scriptClass = new Script[script](event);
+    function launch(event: IEvent, grid: AbstractGrid, script: string, action: string, parameters?): boolean {
+        let scriptClass = new Script[script](event, grid);
         if (scriptClass === undefined) {
             console.error("Script \"" + script + "\" not found (event: " + event + ")");
             return false;

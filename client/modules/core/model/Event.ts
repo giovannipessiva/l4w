@@ -2,9 +2,11 @@
 
 // Event core model (only persistent data)
 interface IEventData extends IActorData {
-    currentState: number; // Index of current valid state
+    currentState?: number; // Index of current valid state
     states: IEventState[]; //Array of states of this Event
     memory: Map<string,string>; // Map of generic key -> value pairs
+    script: string; // Script Class which contains the methods used by this event
+    block?: boolean; // False if the event does not block movement (you can walk through it)
 }
 
 // Event extended model (include transient data)
@@ -13,8 +15,7 @@ interface IEvent extends IEventData, IActor {
 }
 
 interface IEventState {
-    activationAction: ActivationActionEnum,
-    activationCondition: (event: IEvent) => boolean;
-    script: string,
-    action: string
+    condition: string; // Function that returns true if this state can be active (see Activators.ts)
+    trigger: number; // Type of interaction which will start the action
+    action: string; // Method of the script that will be invoked by the trigger
 }

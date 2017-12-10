@@ -229,7 +229,7 @@ abstract class AbstractScene {
         scene.map = map;
         scene.changeTile(map.tile, function(scene) {
             setTimeout(function() {
-                MapManager.loadBlocks(scene.map);
+                MapManager.initTransientData(scene.map);
             });
             callback(scene);
         });

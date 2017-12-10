@@ -8,7 +8,7 @@ namespace Script {
         protected event: IEvent;
         protected grid: AbstractGrid;
         
-        AbstractScript(event: IEvent, grid: AbstractGrid) {
+        constructor(event: IEvent, grid: AbstractGrid) {
             this.event = event;
             this.grid = grid;
         }

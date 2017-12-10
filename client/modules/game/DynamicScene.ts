@@ -42,7 +42,7 @@ class DynamicScene extends AbstractScene {
         }
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
-                EventManager.update(event, time, this.hero, this.action);
+                EventManager.update(event, this.grid, this.hero, this.action);
                 ActorManager.update(event, time, this.pauseDuration);
                 ActorManager.manageMovements(this.map, this.grid, event, function() { }, function() { });
             }
@@ -124,7 +124,7 @@ class DynamicScene extends AbstractScene {
             // Initialize every actor in the map
             if (result && !Utils.isEmpty(scene.map.events)) {
                 for (let i = 0; i < scene.map.events.length; i++) {
-                    scene.map.events[i] = <IEvent> ActorManager.initTransientData(this.grid, scene.map.events[i]);
+                    scene.map.events[i] = <IEvent> ActorManager.initTransientData(scene.grid, scene.map.events[i]);
                 }
             }
             callback(result);

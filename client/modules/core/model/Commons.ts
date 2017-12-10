@@ -36,7 +36,7 @@ class BlockDirection {
     static ALL: number = BlockDirection.UP + BlockDirection.DOWN + BlockDirection.LEFT + BlockDirection.RIGHT;
 };
 
-enum ActivationActionEnum {
+const enum ActionTriggerEnum {
     CLICK,
     TOUCH,
     OVER,

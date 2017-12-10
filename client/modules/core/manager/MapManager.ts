@@ -246,11 +246,15 @@ namespace MapManager {
         map.height = rows;
         map.width = columns;
     }
+    
+    export function initTransientData(map) {
+        loadBlocks(map);
+    }
 
     /**
      * Read the block in every map layer, and save them in the map.block array
      */
-    export function loadBlocks(map: IMap) {
+    function loadBlocks(map: IMap) {
         if (!Utils.isEmpty(map.layers) && !Utils.isEmpty(map.tileset.blocks)) {
             map.blocks = [];
             for (let j = 0; j < map.height * map.width; j++) {
@@ -775,18 +779,17 @@ namespace MapManager {
             ],
             events: [
                 { 
-                    "id": 1,
-                    "name": "Sign. Maiale",
+                    id: 1,
+                    name: "Sig. Maiale",
                     charaset: "155-Animal05.png",
-                    "i": 4,
-                    "j": 2,
+                    script: "Script1",
+                    i: 4,
+                    j: 8,
                     memory: new Map<string,string>(),
-                    currentState: 0,
                     states: [
                         {
-                            activationAction: ActivationActionEnum.AUTO,
-                            activationCondition: function(event: IEvent){ return true; },
-                            script: "Script1",
+                            condition: "always",
+                            trigger: ActionTriggerEnum.CLICK,
                             action: "testAction"
                         }    
                     ]
