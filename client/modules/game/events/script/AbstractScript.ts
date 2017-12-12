@@ -45,14 +45,14 @@ namespace Script {
         /* im sorry */
         protected wait: (msec: number, timer?: boolean)=>Promise<boolean> = function(seconds: number, countdown: boolean = false): Promise<boolean> {
             let innerFn = function(msec: number, countdown: boolean = false): Promise<boolean> {
-                // Check is waiting is already finished
+                // Check if waiting is already finished
                 if (msec <= 0) {
                     return new Promise(function(resolve, reject) {
                         resolve(true);
                     });
                 }
                 if(!countdown) {
-                    // Simple wait
+                    // Just wait
                     return new Promise(function(resolve, reject) {
                         setTimeout(function() {
                             resolve(true);

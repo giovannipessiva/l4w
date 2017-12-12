@@ -13,7 +13,7 @@ namespace Script {
             let context = this;
             this.dialog("Leave me alone, little one");
             let script = this;
-            this.wait(1000, true).then(function(){
+            this.wait(1000).then(function(){
                 script.stepFromTarget(script.hero);
             });
             return true;

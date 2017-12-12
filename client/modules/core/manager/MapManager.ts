@@ -68,8 +68,8 @@ namespace MapManager {
                 let x, y;
 
                 if (blockValue > BlockDirection.NONE || dynamicBlockValue > BlockDirection.NONE) {
-                    if(blockValue === BlockDirection.NONE) {
-                        // Use different color for dynamic-only blocks
+                    if(dynamicBlockValue > BlockDirection.NONE) {
+                        // Use different color for dynamic blocks
                         context.fillStyle = Constant.Color.GREEN;
                     }
                     
