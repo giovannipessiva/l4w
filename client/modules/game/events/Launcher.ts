@@ -19,10 +19,14 @@ namespace Script {
             hero.direction = Utils.getDirection(event,hero);
             event.direction = Utils.getOpposedDirections(hero.direction);
         }
-        if (Utils.isEmpty(parameters)) {
-            return scriptClass[action]();
-        } else {
-            return scriptClass[action](parameters);
-        }
+        try {
+            if (Utils.isEmpty(parameters)) {
+                return scriptClass[action]();
+            } else {
+                return scriptClass[action](parameters);
+            }
+         } catch(e) {
+            console.error(e);
+         }
     };
 }

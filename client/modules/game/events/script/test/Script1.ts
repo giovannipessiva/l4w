@@ -11,9 +11,10 @@ namespace Script {
         
         public giantTest(): boolean {
             let context = this;
-            this.dialog("Leave me alone!");
-            this.wait(1, true).then(function() {
-                context.stepFromTarget(context.hero);
+            this.dialog("Leave me alone, little one");
+            let script = this;
+            this.wait(1000, true).then(function(){
+                script.stepFromTarget(script.hero);
             });
             return true;
         }

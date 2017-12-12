@@ -42,29 +42,36 @@ namespace Script {
             return this.stepToDirection(direction);  
         }
         
-        protected wait(seconds: number, timer?: boolean): Promise<any> {
-            if(Utils.isEmpty(timer) || !timer) {
-                // Simple wait
-                return new Promise(function(resolve, reject) {
-                    setTimeout(function() {
-                        resolve();
-                    }, seconds * 1000);
-                });
-            } else {
-                // Wait and log the timer every 1/10th of second
-                let timer = 0;
-                let timeout = seconds * 1000;
-                setTimeout(function() {
-                    timer += 100;
-                    console.log("TIMER: " + timer);
-                    if (100 >= timeout) {
-                        // Timeout reached!
-                        return new Promise(function(resolve, reject) {
-                            resolve();
+        /* im sorry */
+        protected wait: (msec: number, timer?: boolean)=>Promise<boolean> = function(seconds: number, countdown: boolean = false): Promise<boolean> {
+            let innerFn = function(msec: number, countdown: boolean = false): Promise<boolean> {
+                // Check is waiting is already finished
+                if (msec <= 0) {
+                    return new Promise(function(resolve, reject) {
+                        resolve(true);
+                    });
+                }
+                if(!countdown) {
+                    // Simple wait
+                    return new Promise(function(resolve, reject) {
+                        setTimeout(function() {
+                            resolve(true);
+                        }, msec);
+                    });
+                } else {
+                    // Wait and log the timer every 1/10th of second (recursively)
+                    return new Promise(function(resolve, reject) {
+                        innerFn(msec - 100, true).then(function(){
+                            setTimeout(function() {
+                                console.log("TIMER: " + msec);
+                                resolve(true);
+                            }, 97); // This timeout should be 100 ms
+                            // It is 97 because it takes into account some ms of processing time
                         });
-                    }
-                }, 100);
-            }
-        }
+                    });
+                }
+            };
+            return innerFn(seconds, countdown);
+        };
     }  
 }
