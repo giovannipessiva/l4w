@@ -4,7 +4,6 @@ namespace Script {
 
     export function launchAction(event: IEvent, grid: AbstractGrid, hero: IActor, state: number, parameters?): boolean {
         let result: boolean = launch(event, grid, event.script, event.states[state].action, parameters);
-        event.currentState = state;
         // On click action, the hero should face the event
         if (result && event.states[state].trigger === ActionTriggerEnum.CLICK) {
             hero.direction = Utils.getDirection(event,hero);
