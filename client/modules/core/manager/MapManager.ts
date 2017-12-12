@@ -55,7 +55,7 @@ namespace MapManager {
         }
 
         if (!Utils.isEmpty(renderingConfiguration)) {
-            if (!onTop && renderingConfiguration.showBlocks && !Utils.isEmpty(map) && !Utils.isEmpty(map.blocks)) {
+            if (!onTop && renderingConfiguration.showBlocks && !Utils.isEmpty(map) && (!Utils.isEmpty(map.blocks) || !Utils.isEmpty(map.dynamicBlocks))) {
                 context.save();
                 context.globalAlpha = 0.5;
                 context.fillStyle = Constant.Color.YELLOW;
@@ -63,11 +63,17 @@ namespace MapManager {
                 context.lineWidth = 2;
                 let blockMarkSize = 7;
                 let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
-                let blockValue: number = map.blocks[j * map.width + i];
+                let blockValue: number = Utils.isEmpty(map.blocks)? BlockDirection.NONE : map.blocks[j * map.width + i];
+                let dynamicBlockValue: number = Utils.isEmpty(map.dynamicBlocks)? BlockDirection.NONE : map.dynamicBlocks[j * map.width + i];
                 let x, y;
 
-                if (blockValue > 0) {
-                    if (Utils.isBlocked(blockValue, BlockDirection.UP)) {
+                if (blockValue > BlockDirection.NONE || dynamicBlockValue > BlockDirection.NONE) {
+                    if(blockValue === BlockDirection.NONE) {
+                        // Use different color for dynamic-only blocks
+                        context.fillStyle = Constant.Color.GREEN;
+                    }
+                    
+                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
@@ -75,7 +81,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue, BlockDirection.DOWN)) {
+                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
@@ -83,7 +89,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue, BlockDirection.LEFT)) {
+                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -91,7 +97,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue, BlockDirection.RIGHT)) {
+                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
                         context.beginPath();
                         context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -249,14 +255,19 @@ namespace MapManager {
     
     export function initTransientData(map) {
         loadBlocks(map);
+        loadDynamicBlocks(map);
+    }
+    
+    export function updateDynamicData(map) {
+        loadDynamicBlocks(map);
     }
 
     /**
      * Read the block in every map layer, and save them in the map.block array
      */
     function loadBlocks(map: IMap) {
+        map.blocks = [];
         if (!Utils.isEmpty(map.layers) && !Utils.isEmpty(map.tileset.blocks)) {
-            map.blocks = [];
             for (let j = 0; j < map.height * map.width; j++) {
                 map.blocks[j] = 0;
             }
@@ -285,19 +296,64 @@ namespace MapManager {
             }
         }
     }
+    
+    /**
+     * Read the block in every event, and save them in the map.dynamicBlock array
+     */
+    function loadDynamicBlocks(map: IMap) {
+        map.dynamicBlocks = [];
+        for (let j = 0; j < map.height * map.width; j++) {
+            map.dynamicBlocks[j] = 0;
+        }
+        if (!Utils.isEmpty(map.events)) {            
+            for (let e of map.events) {
+                if(Utils.isEmpty(e.block) || e.block) {
+                    let gid = Utils.cellToGid(e, map.width);
+                    map.dynamicBlocks[gid] = BlockDirection.ALL;
+                }
+            }
+        }
+    }
 
     export function isDirectionBlocked(map: IMap, i: number, j: number, direction: DirectionEnum): boolean {
+        let gid: number;
+        
+        // Check direction in current cell
+        gid = j * map.width + i;
+        let blockInCurrent: number = Utils.getMapBlock(map,gid);
+        
+        // Check inverse direction in target cell
+        let blockInTarget: number;
         switch (direction) {
             case DirectionEnum.UP:
-                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.UP) || Utils.isBlocked(map.blocks[(j - 1) * map.width + i], BlockDirection.DOWN);
+                gid = Utils.cellToGid({
+                    i: i,
+                    j: j - 1
+                }, map.width);
+                break;
             case DirectionEnum.DOWN:
-                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.DOWN) || Utils.isBlocked(map.blocks[(j + 1) * map.width + i], BlockDirection.UP);
+                gid = Utils.cellToGid({
+                    i: i,
+                    j: j + 1
+                }, map.width);
+                break;
             case DirectionEnum.LEFT:
-                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.LEFT) || Utils.isBlocked(map.blocks[j * map.width + i - 1], BlockDirection.RIGHT);
+                gid = Utils.cellToGid({
+                    i: i - 1,
+                    j: j
+                }, map.width);
+                break;
             case DirectionEnum.RIGHT:
-                return Utils.isBlocked(map.blocks[j * map.width + i], BlockDirection.RIGHT) || Utils.isBlocked(map.blocks[j * map.width + i + 1], BlockDirection.LEFT);
+                gid = Utils.cellToGid({
+                    i: i + 1,
+                    j: j
+                }, map.width);
+                break;
+            default:
+                console.error("Unexpected case: " + direction);
         };
-        return false;
+        blockInTarget = Utils.getMapBlock(map,gid);
+        return Utils.isBlocked(blockInCurrent, direction) || Utils.isBlocked(blockInTarget, Utils.getOpposedDirections(direction));
     }
 
     export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
@@ -627,8 +683,8 @@ namespace MapManager {
                          */
                         function c(s1: IVertex, s2: IVertex): number {
                             // Check if movement to s2 is blocked
-                            let block = map.blocks[s2.cell.i + s2.cell.j * map.width];
-                            if (block !== 0) {
+                            let block = Utils.getMapBlock(map,Utils.cellToGid(s2.cell, map.width));
+                            if (block !== BlockDirection.NONE) {
                                 let movementDirection: number;
                                 if (s1.cell.i > s2.cell.i) {
                                     movementDirection = BlockDirection.RIGHT;
@@ -645,8 +701,8 @@ namespace MapManager {
                                 }
                             }
                             // Check if movement from s1 is blocked
-                            block = map.blocks[s1.cell.i + s1.cell.j * map.width];
-                            if (block !== 0) {
+                            block = Utils.getMapBlock(map,Utils.cellToGid(s1.cell, map.width));
+                            if (block !== BlockDirection.NONE) {
                                 let movementDirection: number;
                                 if (s1.cell.i > s2.cell.i) {
                                     movementDirection = BlockDirection.LEFT;

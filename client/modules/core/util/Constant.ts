@@ -13,6 +13,7 @@ namespace Constant {
         static BLACK = "black";
         static AQUA = "aqua";
         static DARKBLUE = "darkblue";
+        static GREEN = "green";
     }
     
     export class RequestType {

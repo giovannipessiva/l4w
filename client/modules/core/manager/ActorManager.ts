@@ -166,7 +166,8 @@ namespace ActorManager {
             let direction;
             // Check if target can be reached
             let targetGui = Utils.cellToGid(target, map.width);
-            if(Utils.isBlocked(map.blocks[targetGui], BlockDirection.ALL)) {
+            let cellBlock = Utils.getMapBlock(map,targetGui);
+            if(Utils.isBlocked(cellBlock, BlockDirection.ALL)) {
                 // Target is blocked, stop
                 direction = DirectionEnum.NONE;
             } else {

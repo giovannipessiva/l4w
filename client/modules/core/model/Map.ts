@@ -15,7 +15,8 @@ interface IMapData {
 
 //Map extended model (include transient data)
 interface IMap extends IMapData {
-    blocks?: number[]; //Array of codes representing the block attributes
+    blocks?: number[]; //Array of codes representing the block attributes from layers
+    dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
     tileset?: ITileset; //Tileset object for this map
     dstarlitecache?: IDStarLiteCache; //Data for D* Lite pathfinder
 };

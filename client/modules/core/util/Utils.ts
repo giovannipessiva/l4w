@@ -55,6 +55,17 @@ namespace Utils {
         block |= right ? BlockDirection.RIGHT : 0;
         return block;
     }
+        
+    export function getMapBlock(map: IMap, gid: number): number {
+        let block: number = BlockDirection.NONE;
+        if(!Utils.isEmpty(map.blocks) && gid < map.blocks.length) {
+            block |= map.blocks[gid];
+        }
+        if(!Utils.isEmpty(map.dynamicBlocks) && gid < map.dynamicBlocks.length) {
+            block |= map.dynamicBlocks[gid];
+        }
+        return block;
+    }
 
     export function isDirectionsOpposed(d1: DirectionEnum, d2: DirectionEnum) {
         return getOpposedDirections(d1) === d2;

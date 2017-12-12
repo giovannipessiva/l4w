@@ -49,6 +49,10 @@ class DynamicScene extends AbstractScene {
             // Reset the action
             this.action = undefined;
         }
+        
+        // Update map transient data (TODO: call this method only when needed)
+        MapManager.updateDynamicData(this.map);        
+        
         // Reset pause duration
         if (!this.paused) {
             this.pauseDuration = undefined;
