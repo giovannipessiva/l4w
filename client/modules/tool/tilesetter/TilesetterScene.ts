@@ -81,7 +81,7 @@ class TilesetterScene extends AbstractTileScene {
             i: i,
             j: j
         }, this.map.width);
-        let block = Utils.getMapBlock(this.map,gid);
+        let block = Utils.getMapBlocks(this.map,gid);
         switch (clickArea) {
             case SelectionAreaEnum.TOP:
                 if (Utils.isBlocked(block, BlockDirection.UP)) {

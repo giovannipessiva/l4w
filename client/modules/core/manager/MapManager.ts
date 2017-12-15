@@ -320,7 +320,7 @@ namespace MapManager {
         
         // Check direction in current cell
         gid = j * map.width + i;
-        let blockInCurrent: number = Utils.getMapBlock(map,gid);
+        let blockInCurrent: number = Utils.getMapBlocks(map,gid);
         
         // Check inverse direction in target cell
         let blockInTarget: number;
@@ -352,10 +352,11 @@ namespace MapManager {
             default:
                 console.error("Unexpected case: " + direction);
         };
-        blockInTarget = Utils.getMapBlock(map,gid);
+        blockInTarget = Utils.getMapBlocks(map,gid);
         return Utils.isBlocked(blockInCurrent, direction) || Utils.isBlocked(blockInTarget, Utils.getOpposedDirections(direction));
     }
 
+    /** use an algorithm to decide the better step for Actor to reach Target. Target is always considered as unblocked */
     export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
         let distI = target.i - actor.i;
         let distJ = target.j - actor.j;
@@ -683,7 +684,7 @@ namespace MapManager {
                          */
                         function c(s1: IVertex, s2: IVertex): number {
                             // Check if movement to s2 is blocked
-                            let block = Utils.getMapBlock(map,Utils.cellToGid(s2.cell, map.width));
+                            let block = Utils.getMapBlocks(map,Utils.cellToGid(s2.cell, map.width));
                             if (block !== BlockDirection.NONE) {
                                 let movementDirection: number;
                                 if (s1.cell.i > s2.cell.i) {
@@ -701,7 +702,7 @@ namespace MapManager {
                                 }
                             }
                             // Check if movement from s1 is blocked
-                            block = Utils.getMapBlock(map,Utils.cellToGid(s1.cell, map.width));
+                            block = Utils.getMapBlocks(map,Utils.cellToGid(s1.cell, map.width));
                             if (block !== BlockDirection.NONE) {
                                 let movementDirection: number;
                                 if (s1.cell.i > s2.cell.i) {

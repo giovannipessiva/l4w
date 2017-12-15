@@ -44,7 +44,7 @@ namespace Utils {
     }
 
     export function isBlocked(block: number, blockDirection: number): boolean {
-        return (block & blockDirection) === blockDirection;
+        return (block & blockDirection) === blockDirection && blockDirection !== BlockDirection.NONE;
     }
 
     export function getBlock(up: boolean, down: boolean, left: boolean, right: boolean): number {
@@ -56,15 +56,31 @@ namespace Utils {
         return block;
     }
         
-    export function getMapBlock(map: IMap, gid: number): number {
+    /** return block value for static and dynamic blocks on gid */
+    function getMapBlocksSelective(map: IMap, gid: number, staticBlocks: boolean, dynamicBlocks: boolean): number {
         let block: number = BlockDirection.NONE;
-        if(!Utils.isEmpty(map.blocks) && gid < map.blocks.length) {
+        if(staticBlocks && !Utils.isEmpty(map.blocks) && gid < map.blocks.length) {
             block |= map.blocks[gid];
         }
-        if(!Utils.isEmpty(map.dynamicBlocks) && gid < map.dynamicBlocks.length) {
+        if(dynamicBlocks && !Utils.isEmpty(map.dynamicBlocks) && gid < map.dynamicBlocks.length) {
             block |= map.dynamicBlocks[gid];
         }
         return block;
+    }
+    
+    /** return block value for static and dynamic blocks on gid */
+    export function getMapBlocks(map: IMap, gid: number): number {
+        return getMapBlocksSelective(map, gid, true, true);
+    }
+    
+    /** return block value for only static blocks (ignore events) */
+    export function getMapStaticBlock(map: IMap, gid: number): number {
+        return getMapBlocksSelective(map, gid, true, false);
+    }
+    
+    /** return block value for only dynamic blocks (ignore environment) */
+    export function getMapDynamicBlock(map: IMap, gid: number): number {
+        return getMapBlocksSelective(map, gid, false, true);
     }
 
     export function isDirectionsOpposed(d1: DirectionEnum, d2: DirectionEnum) {
