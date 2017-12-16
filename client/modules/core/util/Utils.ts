@@ -70,8 +70,20 @@ namespace Utils {
     }
 
     /** check if block permit movement to directions */
-    export function isDirectionBlocked(block: number, directions: number): boolean {
-        return (block & directions) === directions && directions !== BlockDirection.NONE;
+    export function isBlockDirectionBlocked(block: number, blockDirection: number): boolean {
+        return (block & blockDirection) === blockDirection && blockDirection !== BlockDirection.NONE;
+    }
+    
+    /** check if block permit movement to directions */
+    export function isDirectionEnumBlocked(block: number, directionEnum: DirectionEnum): boolean {
+        let blockDirection = BlockDirection.NONE;
+        switch(directionEnum) {
+            case DirectionEnum.UP: blockDirection = BlockDirection.UP; break;
+            case DirectionEnum.DOWN: blockDirection = BlockDirection.DOWN; break;
+            case DirectionEnum.LEFT: blockDirection = BlockDirection.LEFT; break;
+            case DirectionEnum.RIGHT: blockDirection = BlockDirection.RIGHT; break;
+        }
+        return isBlockDirectionBlocked(block, blockDirection);
     }
     
     /** check if movement from (i,j) to direction is blocked */
@@ -79,7 +91,7 @@ namespace Utils {
         let gid: number;
         
         // Check direction in current cell
-        gid = j * map.width + i;
+        gid = cellToGid({ i: i, j: j }, map.width);
         let blockInCurrent: number;
         if(ignoreDynamicBlocks) {
             blockInCurrent = Utils.getMapStaticBlock(map,gid);
@@ -97,7 +109,7 @@ namespace Utils {
             blockInTarget = Utils.getMapBlocks(map,targetGID);
         }
         // Check both movements from start to target, and from target to start
-        return isDirectionBlocked(blockInCurrent, direction) || isDirectionBlocked(blockInTarget, getOpposedDirections(direction));
+        return isDirectionEnumBlocked(blockInCurrent, direction) || isDirectionEnumBlocked(blockInTarget, getOpposedDirections(direction));
     }
 
     export function getBlock(up: boolean, down: boolean, left: boolean, right: boolean): number {
@@ -140,8 +152,8 @@ namespace Utils {
         return getOpposedDirections(d1) === d2;
     }
 
-    export function getOpposedDirections(d: DirectionEnum): DirectionEnum {
-        switch (d) {
+    export function getOpposedDirections(direction: DirectionEnum): DirectionEnum {
+        switch (direction) {
             case DirectionEnum.UP: return DirectionEnum.DOWN;
             case DirectionEnum.DOWN: return DirectionEnum.UP;
             case DirectionEnum.LEFT: return DirectionEnum.RIGHT;
@@ -176,13 +188,17 @@ namespace Utils {
     
     /** Move a cell in the direction */
     export function moveToDirection(cell: ICell, direction: DirectionEnum) {
+        let target = {
+            i: cell.i,
+            j: cell.j
+        };
         switch(direction) {
-            case DirectionEnum.UP: cell.j -= 1; break;
-            case DirectionEnum.DOWN: cell.j += 1; break;
-            case DirectionEnum.LEFT: cell.i -= 1; break;
-            case DirectionEnum.RIGHT: cell.i += 1; break;
+            case DirectionEnum.UP: target.j -= 1; break;
+            case DirectionEnum.DOWN: target.j += 1; break;
+            case DirectionEnum.LEFT: target.i -= 1; break;
+            case DirectionEnum.RIGHT: target.i += 1; break;
         }
-        return cell;
+        return target;
     }
 
     export function getRandomBoolean(): boolean {
@@ -207,17 +223,17 @@ namespace Utils {
     }
     
     export function getBlockName(block: number): string {
-        let name = "FREE!";
-        if(isDirectionBlocked(block, BlockDirection.UP)) {
+        let name = "free";
+        if(isBlockDirectionBlocked(block, BlockDirection.UP)) {
             name = getDirectionName(DirectionEnum.UP);    
         }
-        if(isDirectionBlocked(block, BlockDirection.DOWN)) {
+        if(isBlockDirectionBlocked(block, BlockDirection.DOWN)) {
             name += getDirectionName(DirectionEnum.DOWN);    
         }
-        if(isDirectionBlocked(block, BlockDirection.LEFT)) {
+        if(isBlockDirectionBlocked(block, BlockDirection.LEFT)) {
             name += getDirectionName(DirectionEnum.LEFT);    
         }
-        if(isDirectionBlocked(block, BlockDirection.RIGHT)) {
+        if(isBlockDirectionBlocked(block, BlockDirection.RIGHT)) {
             name += getDirectionName(DirectionEnum.RIGHT);    
         }
         return name;

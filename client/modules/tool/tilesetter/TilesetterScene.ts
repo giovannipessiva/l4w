@@ -84,35 +84,35 @@ class TilesetterScene extends AbstractTileScene {
         let block = Utils.getMapBlocks(this.map,gid);
         switch (clickArea) {
             case SelectionAreaEnum.TOP:
-                if (Utils.isDirectionBlocked(block, BlockDirection.UP)) {
+                if (Utils.isBlockDirectionBlocked(block, BlockDirection.UP)) {
                     block ^= BlockDirection.UP;
                 } else {
                     block |= BlockDirection.UP;
                 }
                 break;
             case SelectionAreaEnum.BOTTOM:
-                if (Utils.isDirectionBlocked(block, BlockDirection.DOWN)) {
+                if (Utils.isBlockDirectionBlocked(block, BlockDirection.DOWN)) {
                     block ^= BlockDirection.DOWN;
                 } else {
                     block |= BlockDirection.DOWN;
                 }
                 break;
             case SelectionAreaEnum.LEFT:
-                if (Utils.isDirectionBlocked(block, BlockDirection.LEFT)) {
+                if (Utils.isBlockDirectionBlocked(block, BlockDirection.LEFT)) {
                     block ^= BlockDirection.LEFT;
                 } else {
                     block |= BlockDirection.LEFT;
                 }
                 break;
             case SelectionAreaEnum.RIGHT:
-                if (Utils.isDirectionBlocked(block, BlockDirection.RIGHT)) {
+                if (Utils.isBlockDirectionBlocked(block, BlockDirection.RIGHT)) {
                     block ^= BlockDirection.RIGHT;
                 } else {
                     block |= BlockDirection.RIGHT;
                 }
                 break;
             case SelectionAreaEnum.CENTER:
-                if (Utils.isDirectionBlocked(block, BlockDirection.ALL)) {
+                if (Utils.isBlockDirectionBlocked(block, BlockDirection.ALL)) {
                     block ^= BlockDirection.ALL;
                 } else {
                     block |= BlockDirection.ALL;

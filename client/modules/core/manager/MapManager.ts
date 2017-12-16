@@ -73,7 +73,7 @@ namespace MapManager {
                         context.fillStyle = Constant.Color.GREEN;
                     }
                     
-                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
+                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
@@ -81,7 +81,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
+                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
@@ -89,7 +89,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
+                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -97,7 +97,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
+                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
                         context.beginPath();
                         context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);

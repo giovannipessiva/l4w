@@ -64,9 +64,9 @@ namespace ActorManager {
                     a.animationStartTime = Utils.now();
                 }
                 let animationTime = Utils.now() - a.animationStartTime;
-                let frequency = DEFAULT_FREQUENCY;
+                let frequency: number = DEFAULT_FREQUENCY;
                 if (!Utils.isEmpty(a.frequency)) {
-                    frequency = a.frequency;
+                    frequency = parseFloat(a.frequency + "");
                 }
                 let position = Math.floor((animationTime * frequency) % 4);
                 switch (position) {
@@ -147,9 +147,10 @@ namespace ActorManager {
     }
 
     /**
-     * Move max 1 step at a time, and use the time left for a recursive call
+     * Move max 1 step at a time, return true if a step has been made
      */
-    export function manageMovements(map: IMap, grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, onTargetReached, timeToMove: number = 0) {
+    export function manageMovements(map: IMap, grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, onTargetReached, timeToMove: number = 0): boolean {
+        let stepCompleted: boolean = false;
         // If I am moving 
         if (!Utils.isEmpty(a.movementStartTime)) {
 
@@ -159,8 +160,8 @@ namespace ActorManager {
             }
 
             let target: ICell = {
-                i: a.target.x / grid.cellW,
-                j: a.target.y / grid.cellH
+                i: Math.floor(a.target.x / grid.cellW),
+                j: Math.floor(a.target.y / grid.cellH)
             };
 
             let direction;
@@ -168,7 +169,7 @@ namespace ActorManager {
             let targetGui = Utils.cellToGid(target, map.width);
             let cellStaticBlock = Utils.getMapStaticBlock(map,targetGui);
             let cellDynamicBlock = Utils.getMapDynamicBlock(map,targetGui);
-            if(Utils.isDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isDirectionBlocked(cellDynamicBlock, BlockDirection.ALL)) {
+            if(Utils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL)) {
                 // Target is blocked, and does not contain and event, so no movement needed
                 direction = DirectionEnum.NONE;
             } else {
@@ -181,7 +182,7 @@ namespace ActorManager {
                     // Check if target contains an event
                     let stepTargetGID = Utils.cellToGid(stepTarget, map.width);
                     let stepTargetBlock = Utils.getMapDynamicBlock(map,stepTargetGID);
-                    if(Utils.isDirectionBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
+                    if(Utils.isDirectionEnumBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
                         // I cant go further, stop now
                         direction = DirectionEnum.NONE;
                         if(stepTargetGID === targetGui) {
@@ -234,13 +235,13 @@ namespace ActorManager {
 
                 // If I have finished one step
                 if (absMovement === grid.cellW) {
-
+                    stepCompleted = true;
                     a.movementDirection = undefined;
                     a.movementStartTime = Utils.now();
                     // Find out how much time is left after the movement
-                    timeToMove -= absMovement / getMSpeed(a);
+                    timeToMove -= Math.floor(absMovement / getMSpeed(a));
 
-                    // Update  position
+                    // Update position
                     let cell = grid.mapCanvasToCell(a.position);
                     a.i = cell.i;
                     a.j = cell.j;
@@ -263,8 +264,9 @@ namespace ActorManager {
             a.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
-            manageMovements(map, grid, a, onCoordinatesChange, onCellChange, onTargetReached, timeToMove);
+            stepCompleted = stepCompleted || manageMovements(map, grid, a, onCoordinatesChange, onCellChange, onTargetReached, timeToMove);
         }
+        return stepCompleted;
     }
 
     function stopMovement(actor: IActor) {

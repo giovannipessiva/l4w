@@ -30,6 +30,7 @@ class DynamicScene extends AbstractScene {
         let scene = this;
         let time = Utils.now();
         let context: DynamicScene = this;
+        let movements: boolean = false;
         if (!Utils.isEmpty(this.hero)) {
             ActorManager.update(this.hero, time, this.pauseDuration);
             ActorManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
@@ -47,14 +48,16 @@ class DynamicScene extends AbstractScene {
             for (let event of this.map.events) {
                 EventManager.update(event, this.grid, this.hero, this.action);
                 ActorManager.update(event, time, this.pauseDuration);
-                ActorManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
+                movements = ActorManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
             }
             // Reset the action
             this.action = undefined;
         }
         
-        // Update map transient data (TODO: call this method only when needed)
-        MapManager.updateDynamicData(this.map);        
+        if(movements) {
+            // Update map transient data (only when events move)
+            MapManager.updateDynamicData(this.map);        
+        }
         
         // Reset pause duration
         if (!this.paused) {
@@ -97,7 +100,7 @@ class DynamicScene extends AbstractScene {
             if (this.autoFPS === true) {
                 this.fpsPerformance.shift();
                 this.fpsPerformance[2] = this.lastFPS;
-                var avg: number = (this.fpsPerformance[0] + this.fpsPerformance[1] + this.fpsPerformance[2]) / 3;
+                let avg: number = (this.fpsPerformance[0] + this.fpsPerformance[1] + this.fpsPerformance[2]) / 3;
                 this.FPS = Math.ceil(avg) + 2;
             }
         }

@@ -56,7 +56,7 @@ namespace Game {
         }
         Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(success: boolean) {
             if (success) {
-                console.log("Save saved successfully");
+                console.log("Game saved successfully");
             }
         });
     }
@@ -134,10 +134,10 @@ namespace Game {
             canvas,
             grid,
             inputCallbackMap,
-            function() { },
+            emptyFz,
             actionCallback,
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
             function(i, j) {
                 //Ongoing
                 scene.updatePointer(i, j);
@@ -159,9 +159,9 @@ namespace Game {
                 scene.changeScale(canvas);
                 scene.resetTranslation();
             },
-            function() { console.log("rightClick"); },
-            function() { console.log("doubleClick"); },
-            function() { console.log("wheel"); }
+            emptyFz,
+            emptyFz,
+            emptyFz
         );
 
         function doAction(i: number, j: number) {
