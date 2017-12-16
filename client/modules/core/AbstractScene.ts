@@ -92,10 +92,11 @@ abstract class AbstractScene {
             this.context.save();
             this.context.beginPath();
             this.context.fillStyle = Constant.Color.YELLOW;
+            this.context.scale(2, 1);
             this.context.arc(
-                mappedPointer.x + Math.floor(this.grid.cellW / 2),
-                mappedPointer.y + Math.floor(this.grid.cellH / 2),
-                18,
+                Math.floor((mappedPointer.x + this.grid.cellW / 2) / 2),
+                mappedPointer.y + this.grid.cellH - 4,
+                8,
                 0,
                 Constant.DOUBLE_PI);
             this.context.closePath();
@@ -289,6 +290,8 @@ abstract class AbstractScene {
                 }
             }
             
+            this.renderPointer();
+            
             // render onTop elements
             for (let j = minRow; j <= maxRow; j++) {
                 for (let i = minColumn; i <= maxColumn && renderOnTop; i++) {
@@ -339,7 +342,6 @@ abstract class AbstractScene {
         }
         MapManager.renderGlobalUI(this.grid, this.context, this.renderingConfiguration);
         this.renderFocus();
-        this.renderPointer();
     }
     
     private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {

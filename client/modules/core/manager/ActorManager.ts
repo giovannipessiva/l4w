@@ -41,7 +41,7 @@ namespace ActorManager {
         });
     }
 
-    export function render(grid: AbstractGrid, a: IActor, context: CanvasRenderingContext2D) {
+    export function render(grid: AbstractGrid, a: IActor, context: CanvasRenderingContext2D, pointer?: ICell) {
         let image: HTMLImageElement;
         if (!Utils.isEmpty(a.charaset)) {
             image = Resource.loadImageFromCache(a.charaset, Resource.TypeEnum.CHAR);
@@ -88,9 +88,17 @@ namespace ActorManager {
             let x = a.position.x + Math.floor((grid.cellW - charaWidth) / 2); //In the middle
             let y = a.position.y + Math.floor(- charaHeight + grid.cellH); //Foots on the ground
 
-            let globalAlpha = context.globalAlpha;
+            context.save();
             if (!Utils.isEmpty(a.opacity)) {
                 context.globalAlpha = a.opacity;
+            }
+            if(pointer !== undefined) {
+            	let isHighlighted: boolean = pointer.i === a.i && pointer.j === a.j;
+                if (isHighlighted) {
+                    // Add highlight effect 
+                    context.shadowColor = Constant.Color.YELLOW;
+                    context.shadowBlur = 8;
+                }
             }
 
             context.drawImage(
@@ -105,7 +113,7 @@ namespace ActorManager {
                 charaHeight
             );
 
-            context.globalAlpha = globalAlpha;
+            context.restore();
         }
     }
 

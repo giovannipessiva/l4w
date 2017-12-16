@@ -121,7 +121,7 @@ class DynamicScene extends AbstractScene {
         if (!Utils.isEmpty(this.map.events)) {
             for (let actor of this.map.events) {
                 if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-                    ActorManager.render(this.grid, actor, this.context);
+                    ActorManager.render(this.grid, actor, this.context, this.pointer);
                 }
             }
         }
