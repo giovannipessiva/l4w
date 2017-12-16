@@ -168,7 +168,7 @@ namespace ActorManager {
             let targetGui = Utils.cellToGid(target, map.width);
             let cellStaticBlock = Utils.getMapStaticBlock(map,targetGui);
             let cellDynamicBlock = Utils.getMapDynamicBlock(map,targetGui);
-            if(Utils.isBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isBlocked(cellDynamicBlock, BlockDirection.ALL)) {
+            if(Utils.isDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isDirectionBlocked(cellDynamicBlock, BlockDirection.ALL)) {
                 // Target is blocked, and does not contain and event, so no movement needed
                 direction = DirectionEnum.NONE;
             } else {
@@ -177,36 +177,13 @@ namespace ActorManager {
                 if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
                     // Decide next step
                     direction = MapManager.pathFinder(map, a, target);
-                    
-                    let stepTarget: ICell = {
-                        i: a.i,
-                        j: a.j
-                    };
-                    switch (direction) {
-                        case DirectionEnum.LEFT:
-                            stepTarget.i -= 1;
-                            break;
-                        case DirectionEnum.RIGHT:
-                            stepTarget.i += 1;
-                            break;
-                        case DirectionEnum.UP:
-                            stepTarget.j -= 1;
-                            break;
-                        case DirectionEnum.DOWN:
-                            stepTarget.j += 1;
-                    }
+                    let stepTarget = Utils.getDirectionTarget(a, direction);
                     // Check if target contains an event
                     let stepTargetGID = Utils.cellToGid(stepTarget, map.width);
                     let stepTargetBlock = Utils.getMapDynamicBlock(map,stepTargetGID);
-                    if(Utils.isBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
+                    if(Utils.isDirectionBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
                         // I cant go further, stop now
-                        if(stepTargetGID === targetGui) {
-                            // Event reached!
-                            direction = DirectionEnum.NONE;
-                        } else {
-                            console.error("Unexpected state: dynamic blocked while stepping to next direction");
-                            console.error("Actor: " + a.i + "," + a.j +  ", Target: " + stepTarget.i + "," + stepTarget.j + " - " + Utils.getBlockName(stepTargetBlock)); 
-                        }
+                        direction = DirectionEnum.NONE;
                     }
                 }
             }

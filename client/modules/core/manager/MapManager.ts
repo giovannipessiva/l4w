@@ -73,7 +73,7 @@ namespace MapManager {
                         context.fillStyle = Constant.Color.GREEN;
                     }
                     
-                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
+                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
@@ -81,7 +81,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
+                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
@@ -89,7 +89,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
+                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -97,7 +97,7 @@ namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
+                    if (Utils.isDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
                         context.beginPath();
                         context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -314,46 +314,17 @@ namespace MapManager {
             }
         }
     }
-
-    export function isDirectionBlocked(map: IMap, i: number, j: number, direction: DirectionEnum): boolean {
-        let gid: number;
-        
-        // Check direction in current cell
-        gid = j * map.width + i;
-        let blockInCurrent: number = Utils.getMapBlocks(map,gid);
-        
-        // Check inverse direction in target cell
-        let blockInTarget: number;
-        switch (direction) {
-            case DirectionEnum.UP:
-                gid = Utils.cellToGid({
-                    i: i,
-                    j: j - 1
-                }, map.width);
-                break;
-            case DirectionEnum.DOWN:
-                gid = Utils.cellToGid({
-                    i: i,
-                    j: j + 1
-                }, map.width);
-                break;
-            case DirectionEnum.LEFT:
-                gid = Utils.cellToGid({
-                    i: i - 1,
-                    j: j
-                }, map.width);
-                break;
-            case DirectionEnum.RIGHT:
-                gid = Utils.cellToGid({
-                    i: i + 1,
-                    j: j
-                }, map.width);
-                break;
-            default:
-                console.error("Unexpected case: " + direction);
-        };
-        blockInTarget = Utils.getMapBlocks(map,gid);
-        return Utils.isBlocked(blockInCurrent, direction) || Utils.isBlocked(blockInTarget, Utils.getOpposedDirections(direction));
+    
+    /** check if the movement is allowed, but consider the final target as without dynamic block */
+    function isMovementTowardsTargetBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, finalTarget: ICell): boolean {
+        let target: ICell = Utils.getDirectionTarget({ i:i, j:j }, direction);
+        let ignoreDynamicBlocks = false;
+        if(Utils.getDirection(target, finalTarget) === DirectionEnum.NONE) {
+            // Always consider the final target as walkable, if it is an event
+            // Otherwise it would be difficult to compute a path to it
+            ignoreDynamicBlocks = true;    
+        }
+        return Utils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
     }
 
     /** use an algorithm to decide the better step for Actor to reach Target. Target is always considered as unblocked */
@@ -377,7 +348,7 @@ namespace MapManager {
                                 direction = DirectionEnum.LEFT;
                             }
                             // If first direction is blocked, try second
-                            if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
+                            if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
                                 if (distJ > 0) {
                                     direction = DirectionEnum.DOWN;
                                 } else {
@@ -391,7 +362,7 @@ namespace MapManager {
                                 direction = DirectionEnum.UP;
                             }
                             // If first direction is blocked, try second
-                            if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
+                            if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
                                 if (distI > 0) {
                                     direction = DirectionEnum.RIGHT;
                                 } else {
@@ -399,7 +370,7 @@ namespace MapManager {
                                 }
                             }
                         }
-                        if (MapManager.isDirectionBlocked(map, actor.i, actor.j, direction)) {
+                        if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
                             // If second direction is blocked too, you are fucked
                             direction = DirectionEnum.NONE;
                         } else {
@@ -422,7 +393,7 @@ namespace MapManager {
                         var _g: number[]; // Estimate of the start distance of the vertices
                         var _rhs: number[];  // One step lookahead estimate of g
 
-                        const MAX = 9999; // Approximation of infinity
+                        const MAX = Number.MAX_SAFE_INTEGER; // Approximation of infinity
                         var s_start: IVertex;// Start vertex
                         var s_goal: IVertex; // Target vertex
                         var s_last: IVertex;
@@ -443,6 +414,8 @@ namespace MapManager {
                         }
 
                         direction = main();
+                        
+                        //TODO detect loops, like in BASIC pathfinder
 
                         // Cache data
                         map.dstarlitecache = {
@@ -683,41 +656,14 @@ namespace MapManager {
                          * s2 belongs to succ(s1)
                          */
                         function c(s1: IVertex, s2: IVertex): number {
+                            let movementDirection: number = Utils.getDirection(s2.cell, s1.cell);
+                            // if s2 is the final target, ignore dynamic blocks
+                            let ignoreDynamicBlocks = (Utils.getDirection(s2.cell, s_goal.cell) === DirectionEnum.NONE);
                             // Check if movement to s2 is blocked
-                            let block = Utils.getMapBlocks(map,Utils.cellToGid(s2.cell, map.width));
-                            if (block !== BlockDirection.NONE) {
-                                let movementDirection: number;
-                                if (s1.cell.i > s2.cell.i) {
-                                    movementDirection = BlockDirection.RIGHT;
-                                } else if (s1.cell.i < s2.cell.i) {
-                                    movementDirection = BlockDirection.LEFT;
-                                } else if (s1.cell.j > s2.cell.j) {
-                                    movementDirection = BlockDirection.DOWN;
-                                } else {
-                                    movementDirection = BlockDirection.UP;
-                                }
-                                if (Utils.isBlocked(block, movementDirection)) {
-                                    // If movement to s2 is blocked, cost is infinite
-                                    return MAX;
-                                }
-                            }
-                            // Check if movement from s1 is blocked
-                            block = Utils.getMapBlocks(map,Utils.cellToGid(s1.cell, map.width));
-                            if (block !== BlockDirection.NONE) {
-                                let movementDirection: number;
-                                if (s1.cell.i > s2.cell.i) {
-                                    movementDirection = BlockDirection.LEFT;
-                                } else if (s1.cell.i < s2.cell.i) {
-                                    movementDirection = BlockDirection.RIGHT;
-                                } else if (s1.cell.j > s2.cell.j) {
-                                    movementDirection = BlockDirection.UP;
-                                } else {
-                                    movementDirection = BlockDirection.DOWN;
-                                }
-                                if (Utils.isBlocked(block, movementDirection)) {
-                                    // If movement from s1 is blocked, cost is infinite
-                                    return MAX;
-                                }
+                            let isBlocked = Utils.isMovementBlocked(map,s1.cell.i, s1.cell.j, movementDirection, ignoreDynamicBlocks);
+                            if(isBlocked) {
+                                // If movement to s2 is blocked, cost is infinite
+                                return MAX;
                             }
                             return 1;
                         };

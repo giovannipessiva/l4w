@@ -42,9 +42,62 @@ namespace Utils {
     export function cellToGid(cell: ICell, width: number): number {
         return cell.i + cell.j * width;
     }
+    
+    export function getDirectionTarget(start: ICell, direction: DirectionEnum) {
+        let target: ICell = {
+            i: start.i,
+            j: start.j
+        }; 
+        switch (direction) {
+            case DirectionEnum.UP:
+                target.j -= 1;
+                break;
+            case DirectionEnum.DOWN:
+                target.j += 1;
+                break;
+            case DirectionEnum.LEFT:
+                target.i -= 1;
+                break;
+            case DirectionEnum.RIGHT:
+                target.i += 1;
+                break;
+            case DirectionEnum.NONE:
+                break;
+            default:
+                console.error("Unexpected case: " + direction);
+        };
+        return target;
+    }
 
-    export function isBlocked(block: number, blockDirection: number): boolean {
-        return (block & blockDirection) === blockDirection && blockDirection !== BlockDirection.NONE;
+    /** check if block permit movement to directions */
+    export function isDirectionBlocked(block: number, directions: number): boolean {
+        return (block & directions) === directions && directions !== BlockDirection.NONE;
+    }
+    
+    /** check if movement from (i,j) to direction is blocked*/
+    export function isMovementBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, ignoreDynamicBlocks: boolean = false): boolean {
+        let gid: number;
+        
+        // Check direction in current cell
+        gid = j * map.width + i;
+        let blockInCurrent: number;
+        if(ignoreDynamicBlocks) {
+            blockInCurrent = Utils.getMapStaticBlock(map,gid);
+        } else {
+            blockInCurrent = Utils.getMapBlocks(map,gid);
+        }
+        
+        // Check inverse direction in target cell
+        let target: ICell = getDirectionTarget({ i: i, j: j }, direction); 
+        let targetGID = cellToGid(target, map.width);
+        let blockInTarget: number;
+        if(ignoreDynamicBlocks) {
+            blockInTarget = Utils.getMapStaticBlock(map,targetGID);
+        } else {
+            blockInTarget = Utils.getMapBlocks(map,targetGID);
+        }
+        // Check both movements from start to target, and from target to start
+        return isDirectionBlocked(blockInCurrent, direction) || isDirectionBlocked(blockInTarget, getOpposedDirections(direction));
     }
 
     export function getBlock(up: boolean, down: boolean, left: boolean, right: boolean): number {
@@ -114,6 +167,7 @@ namespace Utils {
             } else if (distJ < 0) {
                 direction = DirectionEnum.UP;
             } else {
+                // target === start
                 direction = DirectionEnum.NONE;
             }
         }
@@ -154,16 +208,16 @@ namespace Utils {
     
     export function getBlockName(block: number): string {
         let name = "FREE!";
-        if(isBlocked(block, BlockDirection.UP)) {
+        if(isDirectionBlocked(block, BlockDirection.UP)) {
             name = getDirectionName(DirectionEnum.UP);    
         }
-        if(isBlocked(block, BlockDirection.DOWN)) {
+        if(isDirectionBlocked(block, BlockDirection.DOWN)) {
             name += getDirectionName(DirectionEnum.DOWN);    
         }
-        if(isBlocked(block, BlockDirection.LEFT)) {
+        if(isDirectionBlocked(block, BlockDirection.LEFT)) {
             name += getDirectionName(DirectionEnum.LEFT);    
         }
-        if(isBlocked(block, BlockDirection.RIGHT)) {
+        if(isDirectionBlocked(block, BlockDirection.RIGHT)) {
             name += getDirectionName(DirectionEnum.RIGHT);    
         }
         return name;
