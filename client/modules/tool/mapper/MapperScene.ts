@@ -6,7 +6,8 @@
  */
 class MapperScene extends AbstractStaticScene {
 
-    public static UPPER_LEVEL_OPACITY: number = 0.5;
+    public static LOWER_LEVEL_OPACITY: number = 0.8;
+    public static UPPER_LEVEL_OPACITY: number = 0.4;
 
     private activeLayer: Constant.MapLayer;
     private editMode: Constant.EditMode;
@@ -105,12 +106,24 @@ class MapperScene extends AbstractStaticScene {
             return null;
         }
     }
+    
+    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
+        // Render events
+        if(!Utils.isEmpty(this.map.events)) {
+            for(let event of this.map.events) {
+                ActorManager.render(this.grid, event, this.context);    
+            }
+        }
+    }
 
     protected applyLayerCustomizations(layerIndex: number) {
         // Layers below the currently selected layer will be partially transparent
         if (layerIndex > this.activeLayer) {
             this.context.globalAlpha = MapperScene.UPPER_LEVEL_OPACITY;
+        } else if (layerIndex < this.activeLayer) {
+            this.context.globalAlpha = MapperScene.LOWER_LEVEL_OPACITY;
         }
+            
     };
 
     protected removeLayerCustomizations(layerIndex: number) {

@@ -228,9 +228,10 @@ abstract class AbstractScene {
             console.trace();
         }
         scene.map = map;
+        let grid = this.grid;
         scene.changeTile(map.tile, function(scene) {
             setTimeout(function() {
-                MapManager.initTransientData(scene.map);
+                MapManager.initTransientData(scene.map, grid);
             });
             callback(scene);
         });

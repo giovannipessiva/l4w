@@ -92,8 +92,8 @@ namespace ActorManager {
             if (!Utils.isEmpty(a.opacity)) {
                 context.globalAlpha = a.opacity;
             }
-            if(pointer !== undefined) {
-            	let isHighlighted: boolean = pointer.i === a.i && pointer.j === a.j;
+            if (pointer !== undefined) {
+                let isHighlighted: boolean = pointer.i === a.i && pointer.j === a.j;
                 if (isHighlighted) {
                     // Add highlight effect 
                     context.shadowColor = Constant.Color.YELLOW;

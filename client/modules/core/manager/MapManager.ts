@@ -253,9 +253,14 @@ namespace MapManager {
         map.width = columns;
     }
     
-    export function initTransientData(map) {
+    export function initTransientData(map: IMap, grid: AbstractGrid) {
         loadBlocks(map);
         loadDynamicBlocks(map);
+        if(!Utils.isEmpty(map.events)) {
+            for(let event of map.events) {
+                ActorManager.initTransientData(grid, event);    
+            }
+        }
     }
     
     export function updateDynamicData(map) {
