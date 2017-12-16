@@ -86,7 +86,7 @@ namespace ActorManager {
             };
 
             let x = a.position.x + Math.floor((grid.cellW - charaWidth) / 2); //In the middle
-            let y = a.position.y + Math.floor(- charaHeight + charaWidth * 2 / 3); //Foots on the ground
+            let y = a.position.y + Math.floor(- charaHeight + grid.cellH); //Foots on the ground
 
             let globalAlpha = context.globalAlpha;
             if (!Utils.isEmpty(a.opacity)) {

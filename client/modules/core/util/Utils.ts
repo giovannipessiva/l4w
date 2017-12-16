@@ -74,7 +74,7 @@ namespace Utils {
         return (block & directions) === directions && directions !== BlockDirection.NONE;
     }
     
-    /** check if movement from (i,j) to direction is blocked*/
+    /** check if movement from (i,j) to direction is blocked */
     export function isMovementBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, ignoreDynamicBlocks: boolean = false): boolean {
         let gid: number;
         
