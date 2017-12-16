@@ -149,7 +149,7 @@ namespace ActorManager {
     /**
      * Move max 1 step at a time, and use the time left for a recursive call
      */
-    export function manageMovements(map: IMap, grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, timeToMove: number = 0) {
+    export function manageMovements(map: IMap, grid: AbstractGrid, a: IActor, onCoordinatesChange, onCellChange, onTargetReached, timeToMove: number = 0) {
         // If I am moving 
         if (!Utils.isEmpty(a.movementStartTime)) {
 
@@ -184,6 +184,10 @@ namespace ActorManager {
                     if(Utils.isDirectionBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
                         // I cant go further, stop now
                         direction = DirectionEnum.NONE;
+                        if(stepTargetGID === targetGui) {
+                            // Reached target
+                            onTargetReached(target);
+                        }
                     }
                 }
             }
@@ -216,6 +220,7 @@ namespace ActorManager {
                 case DirectionEnum.NONE:
                     // Stop movement
                     stopMovement(a);
+                    onTargetReached(target);
                     break;
             };
 
@@ -258,7 +263,7 @@ namespace ActorManager {
             a.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
-            manageMovements(map, grid, a, onCoordinatesChange, onCellChange, timeToMove);
+            manageMovements(map, grid, a, onCoordinatesChange, onCellChange, onTargetReached, timeToMove);
         }
     }
 

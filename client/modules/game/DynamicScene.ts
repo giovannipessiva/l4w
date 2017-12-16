@@ -29,6 +29,7 @@ class DynamicScene extends AbstractScene {
 
         let scene = this;
         let time = Utils.now();
+        let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
             ActorManager.update(this.hero, time, this.pauseDuration);
             ActorManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
@@ -38,13 +39,15 @@ class DynamicScene extends AbstractScene {
                 // Update focus
                 scene.focus.x += w;
                 scene.focus.y += h;
+            }, function(target: ICell) {
+                context.registerAction(target.i, target.j);   
             });
         }
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
                 EventManager.update(event, this.grid, this.hero, this.action);
                 ActorManager.update(event, time, this.pauseDuration);
-                ActorManager.manageMovements(this.map, this.grid, event, function() { }, function() { });
+                ActorManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
             }
             // Reset the action
             this.action = undefined;

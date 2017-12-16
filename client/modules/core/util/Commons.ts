@@ -43,3 +43,6 @@ interface IProgressCallback {
 interface IBooleanCallback {
     (success: boolean): void;
 };
+
+function emptyFz(): void {
+}
