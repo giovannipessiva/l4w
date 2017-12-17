@@ -115,13 +115,13 @@ class DynamicScene extends AbstractScene {
     protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
         // TODO render by position
         if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-            ActorManager.render(this.grid, this.hero, this.context);
+            ActorManager.render(this.grid, this.hero, this.context, true);
         }
         
         if (!Utils.isEmpty(this.map.events)) {
             for (let actor of this.map.events) {
                 if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-                    ActorManager.render(this.grid, actor, this.context, this.pointer);
+                    ActorManager.render(this.grid, actor, this.context, true, this.pointer);
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace ActorManager {
         });
     }
 
-    export function render(grid: AbstractGrid, a: IActor, context: CanvasRenderingContext2D, pointer?: ICell) {
+    export function render(grid: AbstractGrid, a: IActor, context: CanvasRenderingContext2D, dynamic: boolean, pointer?: ICell) {
         let image: HTMLImageElement;
         if (!Utils.isEmpty(a.charaset)) {
             image = Resource.loadImageFromCache(a.charaset, Resource.TypeEnum.CHAR);
@@ -56,6 +56,8 @@ namespace ActorManager {
         if (!Utils.isEmpty(image)) {
             let charaWidth: number = Math.floor(image.width / 4);
             let charaHeight: number = Math.floor(image.height / 4);
+            let charaWidthResized: number = charaWidth;
+            let charaHeightResized: number = charaHeight;
 
             let charaX: number = 0;
             if (!Utils.isEmpty(a.target)) {
@@ -84,11 +86,27 @@ namespace ActorManager {
                 case DirectionEnum.RIGHT: charaY = charaHeight * 2; break;
                 case DirectionEnum.UP: charaY = charaHeight * 3; break;
             };
-
-            let x = a.position.x + Math.floor((grid.cellW - charaWidth) / 2); //In the middle
-            let y = a.position.y + Math.floor(- charaHeight + grid.cellH); //Foots on the ground
-
             context.save();
+            if(!dynamic) {
+                // Resize chara (proportionally) to fit in one cell
+                if(charaHeight > charaWidth) {
+                    charaWidthResized = Math.floor(charaWidth * grid.cellH / charaHeight);
+                    charaHeightResized = grid.cellH;  
+                } else {
+                    charaHeightResized = Math.floor(charaHeight * grid.cellW / charaWidth);
+                    charaWidthResized = grid.cellW;
+                }
+                
+                // Draw a border
+                context.save();
+                context.strokeStyle = Constant.Color.GREEN;
+                context.lineWidth = 2;
+                context.strokeRect(a.position.x, a.position.y, grid.cellW, grid.cellH);
+            }
+
+            let x = a.position.x + Math.floor((grid.cellW - charaWidthResized) / 2); //In the middle
+            let y = a.position.y + Math.floor(- charaHeightResized + grid.cellH); //Foots on the ground
+ 
             if (!Utils.isEmpty(a.opacity)) {
                 context.globalAlpha = a.opacity;
             }
@@ -102,17 +120,16 @@ namespace ActorManager {
             }
 
             context.drawImage(
-                image, //     Specifies the image, canvas, or video element to use     
-                charaX, //  Optional. The x coordinate where to start clipping  
-                charaY, //  Optional. The y coordinate where to start clipping  
-                charaWidth, //  Optional. The width of the clipped image    
-                charaHeight, //     Optional. The height of the clipped image   
-                x, //   The x coordinate where to place the image on the canvas     
-                y, //   The y coordinate where to place the image on the canvas
-                charaWidth,
-                charaHeight
+                image, // Specifies the image, canvas, or video element to use
+                charaX, // The x coordinate where to start clipping
+                charaY, // The y coordinate where to start clipping
+                charaWidth, // The width of the clipped image
+                charaHeight, // The height of the clipped image
+                x, // The x coordinate where to place the image on the canvas
+                y, // The y coordinate where to place the image on the canvas
+                charaWidthResized, // The width of the image to use (stretch or reduce the image)
+                charaHeightResized // The height of the image to use (stretch or reduce the image)
             );
-
             context.restore();
         }
     }
