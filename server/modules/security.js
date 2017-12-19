@@ -97,7 +97,7 @@ module.exports = {
 		// Allow framing only from trusted sources
 		res.setHeader("X-Frame-Options", "ALLOW-FROM http://rpt.altervista.org");
 		// Very basic CSP
-		res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https://*.google.com https://*.google-analytics.com");
+		res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https://*.gstatic.com https://*.googleapis.com https://*.google.com https://*.google-analytics.com");
 		// Random referrer policy
 		res.setHeader("Referrer-Policy", "origin-when-cross-origin");
 		// Reduce information exposure

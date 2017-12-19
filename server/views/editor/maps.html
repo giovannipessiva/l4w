@@ -5,6 +5,7 @@
 <title>L4W Mapper</title>
 <meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
 <link rel='icon' href='../style/favicon/edit.ico' />
+<link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet"> 
 
 <meta name="google-signin-scope" content="profile email">
 <meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
@@ -81,8 +82,8 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="MapperPage.save();" disabled="true">Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="MapperPage.reload();" disabled="true">Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="MapperPage.save();" disabled>Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="MapperPage.reload();" disabled>Reload</button></td>
 			</tr>
 		</table>
 	</div>
@@ -97,8 +98,6 @@ ga('send', 'pageview');
 				<td>Tile</td>
 				<td>
 					<select id="tiles" onchange="MapperPage.changeTile();"></select>
-				</td>
-				<td>
 				</td>
 			</tr>
 			<tr>
@@ -120,14 +119,15 @@ ga('send', 'pageview');
 		<tr>
 		<td><button id="mode0" type="button" onclick="Mapper.setMode(Constant.EditMode.APPLY);">Apply</button></td>
 		<td><button id="mode1" type="button" onclick="Mapper.setMode(Constant.EditMode.ERASE);">Erase</button></td>
+		<td></td>
+		<td><button id="mode2" type="button" onclick="Mapper.setMode(Constant.EditMode.EVENTS);">Events</button></td>
 		</tr>
 		</table>
-		<table>
+		<table id="layersPanel">
 		<tr>
 		<td><button id="layer0" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
 		<td><button id="layer1" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
 		<td><button id="layer2" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>
-		<td><button id="layer3" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.EVENTS);"><i>Events</i></button></td>
 		</tr>
 		</table>
 	</div>
@@ -137,6 +137,54 @@ ga('send', 'pageview');
 		
 		<canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
 		Your browser does not support HTML5 Canvas!</canvas>
+	</div>
+	<div id="eventPanel" style="border:1px solid black;position:relative" hidden>
+		<table>
+			<tr>
+				<td>Name</td>
+				<td><input type="text" name="name" placeholder="Event name"/></td>
+			</tr>
+			<tr>
+				<td>Charaset</td>
+				<td><select id="charasets" onchange="MapperPage.changeCharaset();"></select></td>
+			</tr>
+			<tr>
+				<td>Position</td>
+				<td>
+					<input id="eventi" type="number" name="width" min="0" max="999" step="1" style="width:3em">
+					<input id="eventj" type="number" name="width" min="0" max="999" step="1" style="width:3em">
+				</td>
+				<td>
+					<button type="submit" onclick="MapperPage.changeSize();">&#8634;</button>
+				</td>
+			</tr>
+			<tr>
+				<td>Script</td>
+				<td><input type="text" name="script" placeholder="Script class"/></td>
+			</tr>
+		</table>
+		<br/>
+		<table>
+			<tr>
+				<td>Current state</td>
+				<td><input style="background-color:#ffff99" type="number" name="states" min="1" max="99" value="1" onchange="MapperPage.changeStates();"/></td>
+			</tr>
+			<tr></tr>
+		</table>
+		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffff99">
+			<tr>
+				<td>Condition</td>
+				<td><input type="text" name="action" placeholder="Condition method"/></td>
+			</tr>
+			<tr>
+				<td>Trigger</td>
+				<td><select id="trigger"></select></td>
+			</tr>
+			<tr>
+				<td>Action</td>
+				<td><input type="text" name="action" placeholder="Action method"/></td>
+			</tr>
+		</table>
 	</div>
 </div>
 </body>

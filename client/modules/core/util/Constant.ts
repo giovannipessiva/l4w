@@ -34,7 +34,8 @@ namespace Constant {
     
     export enum EditMode {
         APPLY,
-        ERASE
+        ERASE,
+        EVENTS
     }
     
     export enum TileEditMode {

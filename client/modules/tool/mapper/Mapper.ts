@@ -144,7 +144,12 @@ namespace Mapper {
     export function setMode(editMode: Constant.EditMode) {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "0")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "1")).disabled = false;
+        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "2")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + editMode)).disabled = true;
+        let isEditEvents = editMode === Constant.EditMode.EVENTS;
+        (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
+        (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
+        (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
         mapper.setEditMode(editMode);
     };
 
@@ -152,7 +157,6 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "0")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "1")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "2")).disabled = false;
-        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "3")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
     };

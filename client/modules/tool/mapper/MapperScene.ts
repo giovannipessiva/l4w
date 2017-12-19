@@ -92,11 +92,27 @@ class MapperScene extends AbstractStaticScene {
                     }
                 }
                 break;
+            case Constant.EditMode.EVENTS:
+                this.openEventDetails(i_apply, j_apply);
+                break;
             default:
                 console.error("Unexpected case");
         }
         //TODO gestisci trascinamento del picker
         return changed;
+    }
+
+    openEventDetails(i: number, j: number) {
+        let event;
+        if(!Utils.isEmpty(this.map.events)) {
+            for(let e of this.map.events) {
+                if(e.i === i && e.j === j) {
+                	event = e;
+                	break;    
+                }
+            }
+        }
+        //TODO show event data
     }
 
     getSelectionArea(): IRectangle {
@@ -106,12 +122,12 @@ class MapperScene extends AbstractStaticScene {
             return null;
         }
     }
-    
+
     protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
         // Render events
-        if(!Utils.isEmpty(this.map.events)) {
-            for(let event of this.map.events) {
-                ActorManager.render(this.grid, event, this.context, false);    
+        if (!Utils.isEmpty(this.map.events)) {
+            for (let event of this.map.events) {
+                ActorManager.render(this.grid, event, this.context, false);
             }
         }
     }
@@ -123,7 +139,6 @@ class MapperScene extends AbstractStaticScene {
         } else if (layerIndex < this.activeLayer) {
             this.context.globalAlpha = MapperScene.LOWER_LEVEL_OPACITY;
         }
-            
     };
 
     protected removeLayerCustomizations(layerIndex: number) {

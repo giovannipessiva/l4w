@@ -174,7 +174,7 @@ namespace MapperPage {
 
         if (mapChanged) {
             // Disable maps selection
-            var test = $("#mapPanel").jstree(true).get_json("#", {
+            let test = $("#mapPanel").jstree(true).get_json("#", {
                 "flat": true,
                 "no_state": false,
                 "no_id": false,
