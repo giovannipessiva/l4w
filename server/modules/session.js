@@ -1,11 +1,11 @@
-var Session = require('express-session');
-var SequelizeStore = require('connect-session-sequelize')(Session.Store);
-var https = require('https');
+const Session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(Session.Store);
+const https = require('https');
 
-var utils = require(__dirname + '/utils');
-var security = require(__dirname + '/security');
-var models = require(__dirname + "/models");
-var database = require(__dirname + '/database');
+const utils = require(__dirname + '/utils');
+const security = require(__dirname + '/security');
+const models = require(__dirname + "/models");
+const database = require(__dirname + '/database');
 
 module.exports = {
 		
@@ -47,6 +47,14 @@ module.exports = {
 		}
 		return !utils.isEmpty(module.exports.getUser(request));
 	},
+	
+	doLogout: function(request,response,callback) {
+		request.session.destroy(function(){
+			request.session = null;
+	        response.clearCookie(this.cookieName,{ path: "/" });
+	        callback();
+	    });
+	},
 
 	doLogin: function(request, response, onSuccess, onFailure) {
 		if(!this.isAuthenticated(request)) {
@@ -55,13 +63,26 @@ module.exports = {
 				if(!utils.isEmpty(data)) {
 					var paramMap = utils.parseParameters(data);
 					https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res) {
+						res.setEncoding('utf8');
+						var authResponse = "";
 						res.on('data', function(buffer) {
-							var d = JSON.parse(buffer.toString("utf8"));
-							if(security.validateTokeninfoResponse(d)) {
-								database.logUser(d.email,request,response);
-								onSuccess();
-							} else {
-								// Authentication failed
+							authResponse += buffer;
+						});
+						res.on('end', function() {
+							try {
+								var auth = JSON.parse(authResponse);
+								if(security.validateTokeninfoResponse(auth)) {
+									database.logUser(auth.email, request, response);
+									onSuccess();
+								} else {
+									// Authentication failed
+									onFailure();
+								}
+							} catch(e) {
+								console.error("Unrecovable session:");
+								console.error(e);
+								// Invalidate existing session, since it's unrecoverable
+								module.exports.doLogout();
 								onFailure();
 							}
 						});
@@ -79,13 +100,5 @@ module.exports = {
 			database.logUserSessionAccess(request.session.user);
 			onSuccess();
 		}
-	},
-	
-	doLogout: function(request,response,callback) {
-		request.session.destroy(function(){
-			request.session = null;
-	        response.clearCookie(this.cookieName,{ path: "/" });
-	        callback();
-	    });
 	}
 }
