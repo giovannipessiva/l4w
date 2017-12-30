@@ -13,6 +13,7 @@ namespace MapperPage {
 
     let flagFirstLoad: boolean = true;
     let flagEdited: boolean = false;
+    let currentEvent: IEvent;
 
     export function start() {
         Compatibility.check(); 
@@ -189,5 +190,56 @@ namespace MapperPage {
                 }
             });
         }
+    }
+        
+    export function changeEventPosition() {
+        //TODO    
+    }
+    
+    export function changeEventCharaset() {
+        //TODO    
+    }
+    
+    export function loadEventState() {
+        let currentEventState = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
+        if(Utils.isEmpty(currentEvent.states)) {
+            currentEvent.states = [];
+        }
+        if(currentEventState > currentEvent.states.length) {
+            currentEvent.states[currentEventState - 1] = EventManager.getNewEventState();
+        }
+        let state: IEventState = currentEvent.states[currentEventState - 1];
+        (<HTMLInputElement> document.getElementById("condition")).value = state.condition;
+        let select: HTMLSelectElement = (<HTMLSelectElement> document.getElementById("trigger"));
+        let options: HTMLCollection = select.options;
+        options[ActionTriggerEnum.CLICK] = new Option("Click"); 
+        options[ActionTriggerEnum.TOUCH] = new Option("Touch");
+        options[ActionTriggerEnum.OVER] = new Option("Over");
+        options[ActionTriggerEnum.AUTO] = new Option("(auto)");
+        select.selectedIndex = state.trigger;        
+        (<HTMLInputElement> document.getElementById("action")).value = state.action;
+    }
+    
+    export function loadEvent(event?: IEvent) {
+        if(event === undefined) {
+            event = EventManager.getNewEvent();
+        }
+        currentEvent = event;
+        (<HTMLInputElement> document.getElementById("name")).value = event.name;
+        let select: HTMLSelectElement = (<HTMLSelectElement> document.getElementById("charasets"));
+        let options: HTMLCollection = select.options;
+        //TODO load from service
+        options[0] = new Option(""); 
+        options[1] = new Option("155-Animal05.png"); 
+        options[2] = new Option("404.png");
+        options[3] = new Option("fart.png");
+        options[4] = new Option("gigante.png");
+        options[5] = new Option("ann.png");
+        select.selectedIndex = 0; //TODO preselect from event
+        (<HTMLInputElement> document.getElementById("eventi")).valueAsNumber = event.i;
+        (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber = event.j;
+        (<HTMLInputElement> document.getElementById("script")).value = event.script;
+        (<HTMLInputElement> document.getElementById("state")).valueAsNumber = 1;
+        loadEventState();
     }
 }

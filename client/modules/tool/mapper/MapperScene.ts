@@ -13,6 +13,7 @@ class MapperScene extends AbstractStaticScene {
     private editMode: Constant.EditMode;
 
     private tilePicker: TilePickerScene;
+    private selectedEvent: IEvent;
 
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
@@ -93,7 +94,7 @@ class MapperScene extends AbstractStaticScene {
                 }
                 break;
             case Constant.EditMode.EVENTS:
-                this.openEventDetails(i_apply, j_apply);
+                this.selectEvent(i_apply, j_apply);
                 break;
             default:
                 console.error("Unexpected case");
@@ -102,17 +103,18 @@ class MapperScene extends AbstractStaticScene {
         return changed;
     }
 
-    openEventDetails(i: number, j: number) {
+    selectEvent(i: number, j: number) {
         let event;
         if(!Utils.isEmpty(this.map.events)) {
             for(let e of this.map.events) {
                 if(e.i === i && e.j === j) {
-                	event = e;
-                	break;    
+                    event = e;
+                    break;    
                 }
             }
         }
-        //TODO show event data
+        this.selectedEvent = event;
+        MapperPage.loadEvent(event);
     }
 
     getSelectionArea(): IRectangle {
@@ -162,5 +164,8 @@ class MapperScene extends AbstractStaticScene {
     }
     getMap(): IMap {
         return this.map;
+    }
+    getSelectedEvent(): IEvent {
+        return this.selectedEvent;    
     }
 }

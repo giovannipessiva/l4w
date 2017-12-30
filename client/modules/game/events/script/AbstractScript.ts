@@ -73,5 +73,19 @@ namespace Script {
             };
             return innerFn(seconds, countdown);
         };
+        
+        public saveMem(key: string, value: string) {
+            if(Utils.isEmpty(this.event.memory)) {
+                this.event.memory = new Map<string,string>();
+            }
+            this.event.memory.set(key, value);    
+        };
+        
+        public loadMem(key: string): string {
+            if(Utils.isEmpty(this.event.memory)) {
+                return undefined;
+            }
+            return this.event.memory.get(key);    
+        };
     }  
 }

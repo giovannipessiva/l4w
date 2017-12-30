@@ -15,7 +15,7 @@ interface IEvent extends IEventData, IActor {
 }
 
 interface IEventState {
-    condition: string; // Function that returns true if this state can be active (see Activators.ts)
+    condition: string; // Name of function that returns true if this state can be active (see Activators.ts)
     trigger: number; // Type of interaction which will start the action
     action: string; // Method of the script that will be invoked by the trigger
 }

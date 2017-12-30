@@ -79,7 +79,7 @@ module.exports = {
 									onFailure();
 								}
 							} catch(e) {
-								console.error("Unrecovable session:");
+								console.error("Unrecoverable session:");
 								console.error(e);
 								// Invalidate existing session, since it's unrecoverable
 								module.exports.doLogout();

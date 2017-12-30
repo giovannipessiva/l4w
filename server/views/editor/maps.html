@@ -138,43 +138,43 @@ ga('send', 'pageview');
 		<canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
 		Your browser does not support HTML5 Canvas!</canvas>
 	</div>
-	<div id="eventPanel" style="border:1px solid black;position:relative" hidden>
+	<div id="eventPanel" style="border:1px solid black;position:relative" hidden=true>
 		<table>
 			<tr>
 				<td>Name</td>
-				<td><input type="text" name="name" placeholder="Event name"/></td>
+				<td><input id="name" type="text" placeholder="Event name"/></td>
 			</tr>
 			<tr>
 				<td>Charaset</td>
-				<td><select id="charasets" onchange="MapperPage.changeCharaset();"></select></td>
+				<td><select id="charasets" onchange="MapperPage.changeEventCharaset();"></select></td>
 			</tr>
 			<tr>
 				<td>Position</td>
 				<td>
-					<input id="eventi" type="number" name="width" min="0" max="999" step="1" style="width:3em">
-					<input id="eventj" type="number" name="width" min="0" max="999" step="1" style="width:3em">
+					<input id="eventi" type="number" min="0" max="999" step="1" style="width:3em">
+					<input id="eventj" type="number" min="0" max="999" step="1" style="width:3em">
 				</td>
 				<td>
-					<button type="submit" onclick="MapperPage.changeSize();">&#8634;</button>
+					<button type="submit" onclick="MapperPage.changeEventPosition();">&#8634;</button>
 				</td>
 			</tr>
 			<tr>
 				<td>Script</td>
-				<td><input type="text" name="script" placeholder="Script class"/></td>
+				<td><input id="script" type="text" placeholder="Script class"/></td>
 			</tr>
 		</table>
 		<br/>
 		<table>
 			<tr>
-				<td>Current state</td>
-				<td><input style="background-color:#ffff99" type="number" name="states" min="1" max="99" value="1" onchange="MapperPage.changeStates();"/></td>
+				<td>State</td>
+				<td><input id="state" style="background-color:#ffff99" type="number" min="1" max="99" value="1" onchange="MapperPage.loadEventState();"/></td>
 			</tr>
 			<tr></tr>
 		</table>
 		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffff99">
 			<tr>
 				<td>Condition</td>
-				<td><input type="text" name="action" placeholder="Condition method"/></td>
+				<td><input id="condition" type="text" placeholder="Condition method"/></td>
 			</tr>
 			<tr>
 				<td>Trigger</td>
@@ -182,7 +182,7 @@ ga('send', 'pageview');
 			</tr>
 			<tr>
 				<td>Action</td>
-				<td><input type="text" name="action" placeholder="Action method"/></td>
+				<td><input type="text" id="action" placeholder="Action method"/></td>
 			</tr>
 		</table>
 	</div>

@@ -59,4 +59,26 @@ namespace EventManager {
                 return false;
         }
     }
+    
+    export function getNewEvent(): IEvent {
+        let event: IEvent = {
+            id: 0,
+            name: "NPC",
+            i: 0,
+            j: 0,
+            states: [],
+            memory: new Map<string,string>(),
+            script: "BaseScript"
+        };
+        return event;
+    };
+    
+    export function getNewEventState(): IEventState {
+        let eventState: IEventState = {
+            condition: "always",
+            trigger: ActionTriggerEnum.CLICK,
+            action: "speak"
+        };
+        return eventState;
+    };
 }

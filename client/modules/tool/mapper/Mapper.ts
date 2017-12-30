@@ -150,6 +150,9 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
+        if(isEditEvents) {
+            MapperPage.loadEvent();
+        }
         mapper.setEditMode(editMode);
     };
 
