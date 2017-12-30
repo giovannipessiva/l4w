@@ -13,7 +13,6 @@ class MapperScene extends AbstractStaticScene {
     private editMode: Constant.EditMode;
 
     private tilePicker: TilePickerScene;
-    private selectedEvent: IEvent;
 
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
@@ -113,7 +112,6 @@ class MapperScene extends AbstractStaticScene {
                 }
             }
         }
-        this.selectedEvent = event;
         MapperPage.loadEvent(event);
     }
 
@@ -164,8 +162,5 @@ class MapperScene extends AbstractStaticScene {
     }
     getMap(): IMap {
         return this.map;
-    }
-    getSelectedEvent(): IEvent {
-        return this.selectedEvent;    
     }
 }

@@ -200,6 +200,18 @@ namespace MapperPage {
         //TODO    
     }
     
+    export function deleteEventState() {
+        let currentEventState = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
+        if((currentEventState > 1 || (currentEventState === 1 && currentEvent.states.length > 1))
+          && currentEventState <= currentEvent.states.length) {
+            currentEvent.states.splice(currentEventState - 1, 1);
+            if(currentEventState > 1) {
+                (<HTMLInputElement> document.getElementById("state")).valueAsNumber -= 1;
+            }
+            loadEventState();
+        }
+    }
+    
     export function loadEventState() {
         let currentEventState = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
         if(Utils.isEmpty(currentEvent.states)) {
@@ -218,6 +230,8 @@ namespace MapperPage {
         options[ActionTriggerEnum.AUTO] = new Option("(auto)");
         select.selectedIndex = state.trigger;        
         (<HTMLInputElement> document.getElementById("action")).value = state.action;
+        // Update total states count
+        (<HTMLElement> document.getElementById("tot")).innerText = currentEvent.states.length + "";
     }
     
     export function loadEvent(event?: IEvent) {

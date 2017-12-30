@@ -168,13 +168,15 @@ ga('send', 'pageview');
 			<tr>
 				<td>State</td>
 				<td><input id="state" style="background-color:#ffff99" type="number" min="1" max="99" value="1" onchange="MapperPage.loadEventState();"/></td>
+				<td>of</td>
+				<td id="tot">1</td>
 			</tr>
 			<tr></tr>
 		</table>
 		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffff99">
 			<tr>
 				<td>Condition</td>
-				<td><input id="condition" type="text" placeholder="Condition method"/></td>
+				<td><input id="condition" type="text" placeholder="Condition method"></input></td>
 			</tr>
 			<tr>
 				<td>Trigger</td>
@@ -183,6 +185,9 @@ ga('send', 'pageview');
 			<tr>
 				<td>Action</td>
 				<td><input type="text" id="action" placeholder="Action method"/></td>
+			</tr>
+			<tr>
+				<td>Delete</td><td><button onclick="MapperPage.deleteEventState()">&#x2620;</button></td>
 			</tr>
 		</table>
 	</div>
