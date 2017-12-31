@@ -218,13 +218,33 @@ abstract class AbstractScene {
     changeScale(canvas: HTMLCanvasElement) {
         //TODO sposta l'inizializzazione del context
         this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
+        // Reset and reapply scale
+        this.context.setTransform(1,0,0,1,0,0);
         this.context.scale(this.grid.scaleX, this.grid.scaleY);
+    }
+        
+    togglePause(pause?: boolean) {
+        if (pause != null) {
+            this.paused = pause;
+        } else {
+            this.paused = !this.paused;
+        }
+        if (this.paused) {
+            // Save the pause start time
+            this.pauseStartTime = Utils.now();
+        } else {
+            // Save the pause total duration
+            this.pauseDuration = Utils.now() - this.pauseStartTime;
+            this.pauseStartTime = undefined;
+        }
     }
 
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }) {
+        // Pause rendering
+        this.togglePause(true);
         var scene: AbstractScene = this;
         if (Utils.isEmpty(map)) {
-            console.error("initialized map");
+            console.error("Uninitialized map");
             console.trace();
         }
         scene.map = map;
@@ -232,6 +252,8 @@ abstract class AbstractScene {
         scene.changeTile(map.tile, function(scene) {
             setTimeout(function() {
                 MapManager.initTransientData(scene.map, grid);
+                // Resume rendering
+                scene.togglePause(false);
             });
             callback(scene);
         });
@@ -359,22 +381,6 @@ abstract class AbstractScene {
     }
     
     protected removeLayerCustomizations(layerIndex: number) {
-    }
-    
-    togglePause(pause?: boolean) {
-        if (pause != null) {
-            this.paused = pause;
-        } else {
-            this.paused = !this.paused;
-        }
-        if (this.paused) {
-            // Save the pause start time
-            this.pauseStartTime = Utils.now();
-        } else {
-            // Save the pause total duration
-            this.pauseDuration = Utils.now() - this.pauseStartTime;
-            this.pauseStartTime = undefined;
-        }
     }
 
     protected onFocusCellChange() {

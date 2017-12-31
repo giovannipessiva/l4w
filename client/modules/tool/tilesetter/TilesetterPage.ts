@@ -6,8 +6,6 @@ declare var base_path: string;
 namespace TilesetterPage {
 
     export const PAGE_TITLE = document.title;
-    export const BUTTON_ID_MODE = "mode";
-    export const BUTTON_ID_LAYER = "layer";
 
     let flagEdited: boolean = false;
 

@@ -17,9 +17,7 @@ class MapperScene extends AbstractStaticScene {
     constructor(grid: StaticGrid, callback: { (scene: MapperScene): void }) {
         super(grid);
         this.activeLayer = Constant.MapLayer.MID;
-        this.editMode = Constant.EditMode.APPLY;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + this.activeLayer)).disabled = true;
-        (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + this.editMode)).disabled = true;
         callback(this);
     }
 

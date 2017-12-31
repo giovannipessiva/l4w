@@ -10,22 +10,30 @@ namespace Mapper {
 
     export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number) {
         if(!Utils.isEmpty(mapper)) {
-            mapper.togglePause(true);
-        }
-        new StaticGrid(canvas, function(grid: StaticGrid) {
-            new MapperScene(grid, function(scene: MapperScene) {
-                initInput(canvas, scene, grid);
-                initWidgets(canvas, scene, grid);
-                TilePicker.setMapper(scene);
-                scene.setTilePicker(tilePicker);
-                mapper = scene;
-                MapManager.loadMap(mapId, canvas, function(map: IMap) {
-                    mapper.changeMap(map, function() {
-                        mapper.start(canvas);
+            initMapperData(mapper, canvas, tilePicker, mapId, emptyFz);
+        } else {
+            new StaticGrid(canvas, function(grid: StaticGrid) {
+                new MapperScene(grid, function(scene: MapperScene) {
+                    mapper = scene;
+                    initInput(canvas, scene, grid);
+                    initWidgets(canvas, scene, grid);
+                    initMapperData(scene, canvas, tilePicker, mapId, function() {
+                        scene.start(canvas);    
                     });
                 });
+            }, GridTypeEnum.mapper);
+        }
+    }
+    
+    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number, callback) {
+        TilePicker.setMapper(scene);
+        scene.setTilePicker(tilePicker);
+        MapManager.loadMap(mapId, canvas, function(map: IMap) {
+            scene.changeMap(map, function() {
+                setMode(Constant.EditMode.APPLY);
+                callback();
             });
-        }, GridTypeEnum.mapper);
+        });    
     }
 
     export function changeTile(tile: string, tilePicker: TilePickerScene) {

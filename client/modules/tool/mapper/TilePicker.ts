@@ -5,15 +5,18 @@ namespace TilePicker {
     var tilePicker: TilePickerScene;
 
     export function start(canvas: HTMLCanvasElement, callback: (tilePicker: TilePickerScene) => void) {
-        tilePicker = null;
-        new StaticGrid(canvas, function(grid: StaticGrid) {
-            new TilePickerScene(grid, canvas.height, canvas.width, function(scene: TilePickerScene) {
-                tilePicker = scene;
-                initInput(canvas, grid);
-                tilePicker.start(canvas);
-                callback(tilePicker);
-            });
-        }, GridTypeEnum.tilePicker);
+        if(tilePicker !== undefined) {
+            callback(tilePicker);
+        } else {
+            new StaticGrid(canvas, function(grid: StaticGrid) {
+                new TilePickerScene(grid, canvas.height, canvas.width, function(scene: TilePickerScene) {
+                    tilePicker = scene;
+                    initInput(canvas, grid);
+                    tilePicker.start(canvas);
+                    callback(tilePicker);
+                });
+            }, GridTypeEnum.tilePicker);
+        }
     }
 
     export function loadTile(tile: string, calback: (tilePicker: TilePickerScene) => void) {
