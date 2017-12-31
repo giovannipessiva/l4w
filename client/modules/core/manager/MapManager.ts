@@ -165,37 +165,44 @@ namespace MapManager {
     }
 
     export function renderGlobalUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
-        if (!Utils.isEmpty(renderingConfiguration)) {
-            if (renderingConfiguration.enableSelection && !Utils.isEmpty(renderingConfiguration.selectCellStart)) {
-                let x = renderingConfiguration.selectCellStart.i * grid.cellW;
-                let y = renderingConfiguration.selectCellStart.j * grid.cellH;
-                let w;
-                let h;
-                if (Utils.isEmpty(renderingConfiguration.selectCellEnd)) {
-                    h = grid.cellH;
-                    w = grid.cellW;
-                } else {
-                    let x2 = renderingConfiguration.selectCellEnd.i * grid.cellW;
-                    let y2 = renderingConfiguration.selectCellEnd.j * grid.cellH;
-                    if (x > x2) {
-                        w = x - x2;
-                        x = x2;
-                    } else {
-                        w = x2 - x;
-                    }
-                    if (y > y2) {
-                        h = y - y2;
-                        y = y2;
-                    } else {
-                        h = y2 - y;
-                    }
-                    w += grid.cellW;
-                    h += grid.cellH;
-                }
+        if (!Utils.isEmpty(renderingConfiguration) && renderingConfiguration.enableSelection) {
+            if (!Utils.isEmpty(renderingConfiguration.selectCellStart) || !Utils.isEmpty(renderingConfiguration.selectEventCell)) {
                 context.save();
-                context.strokeStyle = Constant.Color.RED;
-                context.lineWidth = 3;
-                context.strokeRect(x, y, w, h);
+                let x;
+                let y;
+                let w = grid.cellW;
+                let h = grid.cellH;
+
+                if(!Utils.isEmpty(renderingConfiguration.selectCellStart)) {
+                    x = renderingConfiguration.selectCellStart.i * grid.cellW;
+                    y = renderingConfiguration.selectCellStart.j * grid.cellH;
+                    if (!Utils.isEmpty(renderingConfiguration.selectCellEnd)) {
+                        let x2 = renderingConfiguration.selectCellEnd.i * grid.cellW;
+                        let y2 = renderingConfiguration.selectCellEnd.j * grid.cellH;
+                        if (x > x2) {
+                            w = x - x2;
+                            x = x2;
+                        } else {
+                            w = x2 - x;
+                        }
+                        if (y > y2) {
+                            h = y - y2;
+                            y = y2;
+                        } else {
+                            h = y2 - y;
+                        }
+                        w += grid.cellW;
+                        h += grid.cellH;
+                    }
+                    context.strokeStyle = Constant.Color.RED;
+                    context.lineWidth = 3;
+                } else {    
+                    x = renderingConfiguration.selectEventCell.i * grid.cellW;
+                    y = renderingConfiguration.selectEventCell.j * grid.cellH;
+                    context.strokeStyle = Constant.Color.LIME;
+                    context.lineWidth = 2;
+                }
+                context.strokeRect(x, y, w, h);   
                 context.restore();
             }
         }

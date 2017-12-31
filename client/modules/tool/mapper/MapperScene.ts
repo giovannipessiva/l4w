@@ -52,6 +52,7 @@ class MapperScene extends AbstractStaticScene {
         if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
             this.map.layers[this.activeLayer].data = [];
         }
+        this.renderingConfiguration.selectEventCell = undefined;
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
                 if (Utils.isEmpty(pickerArea)) {
@@ -92,6 +93,10 @@ class MapperScene extends AbstractStaticScene {
                 break;
             case Constant.EditMode.EVENTS:
                 this.selectEvent(i_apply, j_apply);
+                this.renderingConfiguration.selectEventCell = {
+                    i: i_apply,
+                    j: j_apply    
+                }
                 break;
             default:
                 console.error("Unexpected case");
@@ -164,6 +169,10 @@ class MapperScene extends AbstractStaticScene {
         this.activeLayer = activeLayer;
     }
 
+    setSelectedEventCell(cell: ICell) {
+        this.renderingConfiguration.selectEventCell = cell;    
+    }
+    
     setEditMode(editMode: Constant.EditMode) {
         this.editMode = editMode;
     }

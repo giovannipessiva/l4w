@@ -30,6 +30,7 @@ class RenderConfiguration {
     fps: number = 0;
     selectCellStart: ICell;
     selectCellEnd: ICell;
+    selectEventCell: ICell;
 }
 
 interface IPropertiesCallback {

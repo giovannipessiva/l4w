@@ -158,6 +158,7 @@ namespace Mapper {
             }
         } else {
             MapperPage.finishEventEditing();
+            mapper.setSelectedEventCell(undefined);
         }
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "0")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "1")).disabled = false;
