@@ -190,6 +190,13 @@ ga('send', 'pageview');
 				<td>Delete</td><td><button onclick="MapperPage.deleteEventState()" title="This will delete the currently selected state">&#x2620;</button></td>
 			</tr>
 		</table>
+		Memory<br/>
+		<input id="key" type="text" style="width:5em" placeholder="Key"></input>
+		<input id="val" type="text" style="width:8em" placeholder="Value"></input>
+		<button onclick="MapperPage.addMemory();">+</button>
+		<table id="memory" style="border:1px solid black;position:relative;margin-left:10px">
+		</table>
+		<br/>
 		<button id="saveEvent" onclick="MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
 		<button id="deleteEvent" onclick="MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
 	</div>

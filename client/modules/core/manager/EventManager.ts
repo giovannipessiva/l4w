@@ -81,4 +81,24 @@ namespace EventManager {
         };
         return eventState;
     };
+    
+    export function saveMem(event: IEvent, key: string, value: string): void {
+        if(Utils.isEmpty(event.memory)) {
+            event.memory = new Map<string,string>();
+        }
+        event.memory.set(key, value);    
+    };
+    
+    export function loadMem(event: IEvent, key: string): string {
+        if(Utils.isEmpty(event.memory)) {
+            return undefined;
+        }
+        return event.memory.get(key);    
+    };
+        
+    export function deleteMem(event: IEvent, key: string): void {
+        if(!Utils.isEmpty(event.memory)) {
+            event.memory.delete(key);
+        }  
+    };
 }

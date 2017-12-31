@@ -78,17 +78,11 @@ namespace Script {
         };
         
         public saveMem(key: string, value: string) {
-            if(Utils.isEmpty(this.event.memory)) {
-                this.event.memory = new Map<string,string>();
-            }
-            this.event.memory.set(key, value);    
+            EventManager.saveMem(this.event, key, value);    
         };
         
         public loadMem(key: string): string {
-            if(Utils.isEmpty(this.event.memory)) {
-                return undefined;
-            }
-            return this.event.memory.get(key);    
+            return EventManager.loadMem(this.event, key);    
         };
     }  
 }

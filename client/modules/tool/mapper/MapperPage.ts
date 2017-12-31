@@ -261,7 +261,7 @@ namespace MapperPage {
             }
         } else {
             event = EventManager.getNewEvent();
-            MapperPage.eventModified(false);
+            eventModified(false);
         }
         currentEvent = event;
         (<HTMLInputElement> document.getElementById("name")).value = event.name;
@@ -279,6 +279,12 @@ namespace MapperPage {
         (<HTMLInputElement> document.getElementById("script")).value = event.script;
         (<HTMLInputElement> document.getElementById("state")).valueAsNumber = 1;
         loadEventState(false);
+        resetMemory();
+        if(!Utils.isEmpty(currentEvent.memory)) {
+            currentEvent.memory.forEach(function(key, value, map) {
+                addRowToMemory(key, value);
+            });
+        }
         return true;
     }
     
@@ -328,5 +334,68 @@ namespace MapperPage {
     export function eventModified(modified: boolean = true) {
         flagEventModified = modified;
         (<HTMLButtonElement> document.getElementById("saveEvent")).disabled = !modified;
+    }
+    
+    export function addMemory() {
+        let key = (<HTMLInputElement> document.getElementById("key")).value
+        let value =  (<HTMLInputElement> document.getElementById("val")).value
+        if(!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
+            //TODO gestisci key duplicati => update
+            eventModified();
+            EventManager.saveMem(currentEvent, key, value);
+            addRowToMemory(key, value);
+            (<HTMLInputElement> document.getElementById("key")).value = "";
+            (<HTMLInputElement> document.getElementById("val")).value = "";
+        }
+    }
+    
+    function resetMemory() {
+        (<HTMLInputElement> document.getElementById("key")).value = "";
+        (<HTMLInputElement> document.getElementById("val")).value = "";
+        let table: HTMLTableElement = (<HTMLTableElement> document.getElementById("memory"));
+        while (table.hasChildNodes()) {
+            table.removeChild(table.lastChild);
+        }
+    }
+    
+    function addRowToMemory(key: string, value: string) {
+        let totRows: number = (<HTMLTableElement> document.getElementById("memory")).rows.length;
+        let row: HTMLTableRowElement = (<HTMLTableElement> document.getElementById("memory")).insertRow(totRows);
+        row.id = key;
+        let td: HTMLTableCellElement;
+        let input: HTMLInputElement;
+        let button: HTMLButtonElement;
+        
+        td = row.insertCell();
+        input = document.createElement("input");
+        input.type = "text";
+        input.style.width="5em";
+        input.disabled = true;
+        input.value=key;
+        td.appendChild(input);
+        
+        td = row.insertCell();
+        input = document.createElement("input");
+        input.type = "text";
+        input.style.width="8em";
+        input.disabled = true;
+        input.value=value;
+        td.appendChild(input);
+        
+        td = row.insertCell();
+        button = document.createElement("button");
+        button.onclick = function() {
+            let table = (<HTMLTableElement> document.getElementById("memory"));
+            let list = table.rows;
+            for (let i = 0; i < list.length; i++) {
+                if(list[i].id === key) {
+                    table.deleteRow(i);
+                    break;
+                }
+            }
+            EventManager.deleteMem(currentEvent, key);
+        };
+        button.innerText = "-";
+        td.appendChild(button);
     }
 }
