@@ -14,6 +14,8 @@ namespace Utils {
             return obj.size === 0;
         } else if (obj.constructor === Array || obj.constructor === String) {
             return obj.length === 0;
+        } else if(obj.constructor === Object && Object.keys(obj).length === 0) {
+            return true;
         }
         return false;
     }

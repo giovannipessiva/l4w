@@ -13,6 +13,7 @@ namespace MapperPage {
 
     let flagFirstLoad: boolean = true;
     let flagEdited: boolean = false;
+    let flagEventModified: boolean = false;
     let currentEvent: IEvent;
 
     export function start() {
@@ -136,6 +137,12 @@ namespace MapperPage {
     }
 
     export function save() {
+        if(!Utils.isEmpty(currentEvent)) {
+            let confirmed: boolean = confirmCloseEventDetails();
+            if(!confirmed) {
+                return;
+            }
+        }
         Mapper.saveMap(function(result1) {
             if (result1) {
                 MapperPage.changeEditState(false);
@@ -193,11 +200,18 @@ namespace MapperPage {
     }
         
     export function changeEventPosition() {
+        eventModified();
         //TODO    
     }
     
     export function changeEventCharaset() {
+        eventModified();
         //TODO    
+    }
+    
+    export function deleteEvent() {
+        Mapper.deleteEvent(currentEvent);
+        loadEvent(undefined, false);
     }
     
     export function deleteEventState() {
@@ -208,11 +222,14 @@ namespace MapperPage {
             if(currentEventState > 1) {
                 (<HTMLInputElement> document.getElementById("state")).valueAsNumber -= 1;
             }
-            loadEventState();
+            loadEventState(false);
         }
     }
     
-    export function loadEventState() {
+    export function loadEventState(readPreviousState: boolean = true) {
+        if(readPreviousState) {
+            readEventStateDetails();
+        }
         let currentEventState = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
         if(Utils.isEmpty(currentEvent.states)) {
             currentEvent.states = [];
@@ -234,9 +251,17 @@ namespace MapperPage {
         (<HTMLElement> document.getElementById("tot")).innerText = currentEvent.states.length + "";
     }
     
-    export function loadEvent(event?: IEvent) {
-        if(event === undefined) {
+    export function loadEvent(event?: IEvent, askConfirm: boolean = true): boolean {
+        if(event !== undefined) {
+            if(askConfirm) {
+                let confirmed: boolean = confirmCloseEventDetails();
+                if(!confirmed) {
+                    return false;
+                }
+            }
+        } else {
             event = EventManager.getNewEvent();
+            MapperPage.eventModified(false);
         }
         currentEvent = event;
         (<HTMLInputElement> document.getElementById("name")).value = event.name;
@@ -245,15 +270,63 @@ namespace MapperPage {
         //TODO load from service
         options[0] = new Option(""); 
         options[1] = new Option("155-Animal05.png"); 
-        options[2] = new Option("404.png");
-        options[3] = new Option("fart.png");
-        options[4] = new Option("gigante.png");
-        options[5] = new Option("ann.png");
+        options[2] = new Option("fart.png");
+        options[3] = new Option("gigante.png");
+        options[4] = new Option("ann.png");
         select.selectedIndex = 0; //TODO preselect from event
         (<HTMLInputElement> document.getElementById("eventi")).valueAsNumber = event.i;
         (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber = event.j;
         (<HTMLInputElement> document.getElementById("script")).value = event.script;
         (<HTMLInputElement> document.getElementById("state")).valueAsNumber = 1;
-        loadEventState();
+        loadEventState(false);
+        return true;
+    }
+    
+    export function readEventDetails(): void {
+        if(currentEvent !== undefined) {
+            currentEvent.name = (<HTMLInputElement> document.getElementById("name")).value;
+            currentEvent.charaset = (<HTMLSelectElement> document.getElementById("charasets")).value;
+            currentEvent.i = (<HTMLInputElement> document.getElementById("eventi")).valueAsNumber;
+            currentEvent.j = (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber;
+            currentEvent.script = (<HTMLInputElement> document.getElementById("script")).value;
+            readEventStateDetails();
+            Mapper.addEvent(currentEvent);
+            MapperPage.eventModified(false);
+        }
+    }
+    
+    function readEventStateDetails(): void {
+        let state: IEventState = {
+            condition: (<HTMLInputElement> document.getElementById("condition")).value,
+            trigger: (<HTMLSelectElement> document.getElementById("trigger")).selectedIndex,
+            action: (<HTMLInputElement> document.getElementById("action")).value
+        }
+        let currentEventState = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
+        currentEvent.states[currentEventState - 1] = state;
+    }
+    
+    export function finishEventEditing(): boolean {
+        let confirmed: boolean = confirmCloseEventDetails();
+        if(!confirmed) {
+            return false;
+        }
+        currentEvent = undefined;
+        eventModified(false);
+        return true;
+    }
+    
+    /**
+     * If the event details has been modified, show a popup asking for confirm
+     */
+    export function confirmCloseEventDetails(): boolean {
+        if(!flagEventModified) {
+            return true;
+        }
+        return confirm("Event details not saved. If you continue, details of the currently selected event will be lost. Are you sure you want to continue?");
+    }
+    
+    export function eventModified(modified: boolean = true) {
+        flagEventModified = modified;
+        (<HTMLButtonElement> document.getElementById("saveEvent")).disabled = !modified;
     }
 }

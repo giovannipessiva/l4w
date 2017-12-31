@@ -142,17 +142,22 @@ namespace Mapper {
     };
 
     export function setMode(editMode: Constant.EditMode) {
+        let isEditEvents = editMode === Constant.EditMode.EVENTS;
+        if(isEditEvents) {
+            let confirmed = MapperPage.loadEvent();
+            if(!confirmed) {
+                return;
+            }
+        } else {
+            MapperPage.finishEventEditing();
+        }
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "0")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "1")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "2")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + editMode)).disabled = true;
-        let isEditEvents = editMode === Constant.EditMode.EVENTS;
         (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
-        if(isEditEvents) {
-            MapperPage.loadEvent();
-        }
         mapper.setEditMode(editMode);
     };
 
@@ -162,5 +167,31 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "2")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + layerIndex)).disabled = true;
         mapper.setActiveLayer(layerIndex);
+    };
+    
+    export function deleteEvent(event: IEvent) {
+        for(let i = 0; i < mapper.map.events.length; i++) {
+            let e: IEvent = mapper.map.events[i];
+            if(event === e) {
+                mapper.map.events.splice(i, 1);
+                break;
+            }
+        }
+    };
+    
+    export function addEvent(event: IEvent) {
+        for(let i = 0; i < mapper.map.events.length; i++) {
+            let e: IEvent = mapper.map.events[i];
+            if(event.i === e.i && event.j === e.j) {
+                // Update event
+                mapper.map.events[i] = event;
+                MapperPage.changeEditState(true);
+                return;
+            }
+        }
+        // Create new event
+        mapper.map.events.push(event);
+        ActorManager.initTransientData(this.mapper.grid, event);
+        MapperPage.changeEditState(true);
     };
 }

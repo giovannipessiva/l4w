@@ -142,7 +142,7 @@ ga('send', 'pageview');
 		<table>
 			<tr>
 				<td>Name</td>
-				<td><input id="name" type="text" placeholder="Event name"/></td>
+				<td><input id="name" type="text" placeholder="Event name" onchange="MapperPage.eventModified();"/></td>
 			</tr>
 			<tr>
 				<td>Charaset</td>
@@ -160,7 +160,7 @@ ga('send', 'pageview');
 			</tr>
 			<tr>
 				<td>Script</td>
-				<td><input id="script" type="text" placeholder="Script class"/></td>
+				<td><input id="script" type="text" placeholder="Script class" onchange="MapperPage.eventModified();"/></td>
 			</tr>
 		</table>
 		<br/>
@@ -176,20 +176,22 @@ ga('send', 'pageview');
 		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffff99">
 			<tr>
 				<td>Condition</td>
-				<td><input id="condition" type="text" placeholder="Condition method"></input></td>
+				<td><input id="condition" type="text" placeholder="Condition method" onchange="MapperPage.eventModified();"></input></td>
 			</tr>
 			<tr>
 				<td>Trigger</td>
-				<td><select id="trigger"></select></td>
+				<td><select id="trigger" onchange="MapperPage.eventModified();"></select></td>
 			</tr>
 			<tr>
 				<td>Action</td>
-				<td><input type="text" id="action" placeholder="Action method"/></td>
+				<td><input type="text" id="action" placeholder="Action method" onchange="MapperPage.eventModified();"/></td>
 			</tr>
 			<tr>
-				<td>Delete</td><td><button onclick="MapperPage.deleteEventState()">&#x2620;</button></td>
+				<td>Delete</td><td><button onclick="MapperPage.deleteEventState()" title="This will delete the currently selected state">&#x2620;</button></td>
 			</tr>
 		</table>
+		<button id="saveEvent" onclick="MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
+		<button id="deleteEvent" onclick="MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
 	</div>
 </div>
 </body>

@@ -17,6 +17,9 @@ namespace Script {
     
         protected dialog(message: string): boolean {
             // TODO dialogs
+            if(Utils.isEmpty(message)) {
+                message = "";
+            }
             console.log(this.event.name + "> " + message);
             return true;
         }

@@ -103,7 +103,11 @@ class MapperScene extends AbstractStaticScene {
     }
 
     selectEvent(i: number, j: number) {
-        let event;
+        let confirmed: boolean = MapperPage.confirmCloseEventDetails();
+        if(!confirmed) {
+            return;
+        }
+        let event: IEvent;
         if(!Utils.isEmpty(this.map.events)) {
             for(let e of this.map.events) {
                 if(e.i === i && e.j === j) {
@@ -112,7 +116,12 @@ class MapperScene extends AbstractStaticScene {
                 }
             }
         }
-        MapperPage.loadEvent(event);
+        if(event === undefined) {
+            event = EventManager.getNewEvent();
+            event.i = i;
+            event.j = j;  
+        }
+        MapperPage.loadEvent(event, false);
     }
 
     getSelectionArea(): IRectangle {
