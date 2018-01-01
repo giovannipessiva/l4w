@@ -269,6 +269,28 @@ namespace Resource {
         for(let c of scriptClasses) {
             map.set(c, (<typeof Script.AbstractScript> Script[c]).tooltip);
         }
-        return map;    
+        return map;
+    }
+    
+    /**
+     * Oh God what a ride
+     * https://stackoverflow.com/questions/39544789/get-class-methods-in-typescript/48051971#48051971
+     */
+    export function listScriptActions(scriptClassName: string): string[] {
+        // Retrieve all actions of a Script class
+        let classInstance = new Script[scriptClassName](undefined, undefined,undefined);
+        let allVars: string[] = Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance));
+        let actions = allVars.filter(function (key) {
+            try {
+                // Accept all methods, except inherited and the constructor
+                if(key === "constructor") {
+                    return false;
+                }
+                return typeof classInstance[key] === "function";
+            } catch (e) {
+                return false;
+            }
+        });
+        return actions;    
     }
 }

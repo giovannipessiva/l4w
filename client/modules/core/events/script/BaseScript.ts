@@ -6,6 +6,10 @@ namespace Script {
 
     export class BaseScript extends AbstractScript {
         
+        constructor(event: IEvent, hero: IActor, grid: AbstractGrid) {
+           super(event, hero, grid);
+        }
+        
         public static tooltip: string = "Basic script with simple actions, mainly for generic NPCs";    
 
         /**

@@ -48,7 +48,7 @@ namespace Script {
         }
         
         /* im sorry */
-        protected wait: (msec: number, timer?: boolean)=>Promise<boolean> = function(seconds: number, countdown: boolean = false): Promise<boolean> {
+        protected wait(seconds: number, countdown: boolean = false): Promise<boolean> {
             let innerFn = function(msec: number, countdown: boolean = false): Promise<boolean> {
                 // Check if waiting is already finished
                 if (msec <= 0) {
@@ -79,11 +79,11 @@ namespace Script {
             return innerFn(seconds, countdown);
         };
         
-        public saveMem(key: string, value: string) {
+        protected saveMem(key: string, value: string) {
             EventManager.saveMem(this.event, key, value);    
         };
         
-        public loadMem(key: string): string {
+        protected loadMem(key: string): string {
             return EventManager.loadMem(this.event, key);    
         };
     }  
