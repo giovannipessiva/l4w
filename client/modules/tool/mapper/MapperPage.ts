@@ -281,9 +281,9 @@ namespace MapperPage {
         loadEventState(false);
         resetMemory();
         if(!Utils.isEmpty(currentEvent.memory)) {
-            currentEvent.memory.forEach(function(key, value, map) {
-                addRowToMemory(key, value);
-            });
+            for(let key in currentEvent.memory) {
+                addRowToMemory(key, currentEvent.memory[key]);
+            }
         }
         return true;
     }

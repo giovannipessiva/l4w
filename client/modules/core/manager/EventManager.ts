@@ -67,7 +67,7 @@ namespace EventManager {
             i: 0,
             j: 0,
             states: [],
-            memory: new Map<string,string>(),
+            memory: {},
             script: "BaseScript"
         };
         return event;
@@ -84,21 +84,21 @@ namespace EventManager {
     
     export function saveMem(event: IEvent, key: string, value: string): void {
         if(Utils.isEmpty(event.memory)) {
-            event.memory = new Map<string,string>();
+            event.memory = {};
         }
-        event.memory.set(key, value);    
+        event.memory[key] = value;    
     };
     
     export function loadMem(event: IEvent, key: string): string {
         if(Utils.isEmpty(event.memory)) {
             return undefined;
         }
-        return event.memory.get(key);    
+        return event.memory[key];    
     };
         
     export function deleteMem(event: IEvent, key: string): void {
         if(!Utils.isEmpty(event.memory)) {
-            event.memory.delete(key);
+            delete event.memory[key];
         }  
     };
 }

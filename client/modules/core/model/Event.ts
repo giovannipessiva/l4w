@@ -4,7 +4,7 @@
 interface IEventData extends IActorData {
     currentState?: number; // Index of current valid state
     states: IEventState[]; //Array of states of this Event
-    memory: Map<string,string>; // Map of generic key -> value pairs
+    memory: {}; // Map of generic key -> value pairs
     script: string; // Script Class which contains the methods used by this event
     block?: boolean; // False if the event does not block movement (you can walk through it)
 }

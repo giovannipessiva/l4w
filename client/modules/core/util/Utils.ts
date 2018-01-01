@@ -19,6 +19,59 @@ namespace Utils {
         }
         return false;
     }
+    
+    /**
+     * Unit test for the Utils.isEmpty method
+     */
+    export function unitTestIsEmpty() {
+        // ES6 map
+        let test: any = new Map<string,string>();
+        console.assert(Utils.isEmpty(test), "empty ES6 map");
+        (<Map<string,string>> test).set("a","a");
+        console.assert(!Utils.isEmpty(test), "not empty ES6 map");
+        (<Map<string,string>> test).delete("a");
+        console.assert(Utils.isEmpty(test), "empty ES6 map (deleted key)");
+        
+        // array
+        test = []
+        console.assert(Utils.isEmpty(test), "empty array");
+        test[0] = 1;
+        console.assert(!Utils.isEmpty(test), "not empty array");
+        
+        // Array
+        test = new Array<string>();
+        console.assert(Utils.isEmpty(test), "empty Array");
+        test = (<Array<string>> test).push("1");
+        console.assert(!Utils.isEmpty(test), "not empty Array");
+        
+        // string
+        test = "";
+        console.assert(Utils.isEmpty(test), "empty string");
+        test = "a"
+        console.assert(!Utils.isEmpty(test), "not empty string");
+       
+        // Object
+        test = new Object();
+        console.assert(Utils.isEmpty(test), "empty Object");
+        test["a"] = 1;
+        console.assert(!Utils.isEmpty(test), "not empty Object");
+        delete test["a"];
+        console.assert(Utils.isEmpty(test), "empty Object (deleted property)");
+        
+        // {}
+        test = {};
+        console.assert(Utils.isEmpty(test), "empty {}");
+        test["a"] = 1;
+        console.assert(!Utils.isEmpty(test), "not empty {}");
+        delete test["a"];
+        console.assert(Utils.isEmpty(test), "empty {} (deleted property)");
+        
+        // basic types
+        console.assert(!Utils.isEmpty(true), "not empty boolean (true)");
+        console.assert(!Utils.isEmpty(false), "not empty boolean (false)");
+        console.assert(!Utils.isEmpty(0), "not empty number");
+        console.assert(!Utils.isEmpty(0.0), "not empty float");
+    }
 
     export function now() {
         return (new Date()).getTime();

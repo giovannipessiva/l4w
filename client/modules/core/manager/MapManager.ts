@@ -800,7 +800,7 @@ namespace MapManager {
                     script: "Script1",
                     i: 4,
                     j: 8,
-                    memory: new Map<string,string>(),
+                    memory: {},
                     states: [
                         {
                             condition: "always",
