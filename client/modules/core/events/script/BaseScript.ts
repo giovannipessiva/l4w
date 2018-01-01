@@ -6,6 +6,8 @@ namespace Script {
 
     export class BaseScript extends AbstractScript {
         
+        public static tooltip: string = "Basic script with simple actions, mainly for generic NPCs";    
+
         /**
          * Show a dialog, reading the text from event's mem.
          * Text is saved with a standard key:

@@ -2,7 +2,7 @@
 /// <reference path="../util/Utils.ts" />
 /// <reference path="../model/Event.ts" />
 /// <reference path="../manager/MapManager.ts" />
-/// <reference path="../../game/events/Conditions.ts" />
+/// <reference path="../events/Conditions.ts" />
 
 /**
  * Module to handle events

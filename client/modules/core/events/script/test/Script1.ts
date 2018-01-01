@@ -3,6 +3,8 @@
 namespace Script {
 
     export class Script1 extends AbstractScript {
+        
+        public static tooltip: string = "Script for tests";    
 
         public testAction(): boolean {
             this.dialog("Oink oink");

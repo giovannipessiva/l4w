@@ -126,6 +126,11 @@ app.get('/assets/:type/:file', function(request, response) {
     var filePath = path.resolve(__dirname + '/../client/assets/' + type);
     utils.sendFile(filePath, file, response);
 });
+app.get('/assetlist/:type', function(request, response) {
+    var type = request.params.type;
+    var filePath = path.resolve(__dirname + '/../client/assets/' + type);
+    utils.listFiles(filePath, response);
+});
 app.get('/style/:file', function(request, response) {
     var file = request.params.file;
     var filePath = path.resolve(__dirname + '/../server/views/style');

@@ -1,5 +1,6 @@
 ///<reference path="Commons.ts" />
 ///<reference path="Constant.ts" />
+///<reference path="../events/script/AbstractScript.ts" />
 
 declare var base_path: string;
 
@@ -10,6 +11,7 @@ namespace Resource {
 
     const DATA_PATH = base_path + "data/";
     const ASSET_PATH = base_path + "assets/";
+    const ASSETLIST_PATH = base_path + "assetlist";
     const EDIT_PATH = base_path + "edit/";
 
     const CACHE_SEPARATOR = "@";
@@ -242,5 +244,31 @@ namespace Resource {
                 console.trace();
         };
         return path + file;
+    }
+    
+    export function listResources(assetType: TypeEnum, callback) {
+        sendGETRequest(ASSETLIST_PATH + assetType, function(e: ProgressEvent) {
+            let list: Array<string> = JSON.parse(this.responseText);
+            callback(list);
+        }); 
+    }
+    
+    export function listScriptClasses(): Map<string, string> {
+        // Retrieve all Script classes that extends AbstractScript
+        let allVars: string[] = Object.keys(Script);
+        let scriptClasses = allVars.filter(function (key) {
+            try {
+                let obj = Script[key];
+                return obj.prototype instanceof Script.AbstractScript;
+            } catch (e) {
+                return false;
+            }
+        });
+        // Retrieve the tooltip for every Script class
+        let map = new Map<string, string>();
+        for(let c of scriptClasses) {
+            map.set(c, (<typeof Script.AbstractScript> Script[c]).tooltip);
+        }
+        return map;    
     }
 }

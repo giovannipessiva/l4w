@@ -1,6 +1,6 @@
-var path = require('path');
-var fs = require('fs');
-var HttpStatus = require('http-status-codes');
+const path = require('path');
+const fs = require('fs');
+const HttpStatus = require('http-status-codes');
 
 var placeholder = "404.png";
 
@@ -65,6 +65,22 @@ module.exports = {
     	    paramMap[tokens[0]]=tokens[1];
     	}
     	return paramMap;
+    },
+    
+    listFiles: function(filePath, response) {
+    	fs.readdir(filePath, (err, files) => {
+    		for(let i = 0; i < files.length; i++) {
+    			let file = files[i];
+    			let is404 = file.startsWith("404")
+    			let isHidden = file.startsWith(".")
+    			let isDirectory = fs.lstatSync(filePath + "\\" + file + "\\").isDirectory();
+    			if (is404 || isHidden || isDirectory) {
+    				files.splice(i, 1);
+    				i--;
+        		}	
+    		}
+			response.json(files);
+    	})
     }
 };
    

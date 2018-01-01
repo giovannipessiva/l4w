@@ -9,6 +9,8 @@ namespace Script {
         protected hero: IActor;
         protected grid: AbstractGrid;
         
+        public static tooltip: string = "(no description provided)";  
+        
         constructor(event: IEvent, hero: IActor, grid: AbstractGrid) {
             this.event = event;
             this.hero = hero;
