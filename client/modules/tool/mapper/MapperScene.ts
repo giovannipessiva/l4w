@@ -52,7 +52,6 @@ class MapperScene extends AbstractStaticScene {
         if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
             this.map.layers[this.activeLayer].data = [];
         }
-        this.renderingConfiguration.selectEventCell = undefined;
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
                 if (Utils.isEmpty(pickerArea)) {
@@ -92,10 +91,12 @@ class MapperScene extends AbstractStaticScene {
                 }
                 break;
             case Constant.EditMode.EVENTS:
-                this.selectEvent(i_apply, j_apply);
-                this.renderingConfiguration.selectEventCell = {
-                    i: i_apply,
-                    j: j_apply    
+                let result: boolean = this.selectEvent(i_apply, j_apply);
+                if(result) {
+                    this.renderingConfiguration.selectEventCell = {
+                        i: i_apply,
+                        j: j_apply    
+                    }
                 }
                 break;
             default:
@@ -105,10 +106,10 @@ class MapperScene extends AbstractStaticScene {
         return changed;
     }
 
-    selectEvent(i: number, j: number) {
+    selectEvent(i: number, j: number): boolean {
         let confirmed: boolean = MapperPage.confirmCloseEventDetails();
         if(!confirmed) {
-            return;
+            return false;
         }
         let event: IEvent;
         if(!Utils.isEmpty(this.map.events)) {
@@ -125,6 +126,7 @@ class MapperScene extends AbstractStaticScene {
             event.j = j;  
         }
         MapperPage.loadEvent(event, false);
+        return true;
     }
 
     getSelectionArea(): IRectangle {
@@ -159,6 +161,17 @@ class MapperScene extends AbstractStaticScene {
 
     resizeMap(rows: number, columns: number) {
         MapManager.resizeMap(this.map, rows, columns);
+    }
+    
+    changeMap(map: IMap, callback: { (scene: AbstractScene): void }): boolean {
+        // Check if changing map would discard changes
+        if(this.editMode === Constant.EditMode.EVENTS) {
+            if(!MapperPage.confirmCloseEventDetails()) { 
+                return false;
+            }
+        }
+        super.changeMap(map, callback);
+        return true;   
     }
 
     setTilePicker(tilePicker: TilePickerScene) {

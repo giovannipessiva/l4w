@@ -260,7 +260,7 @@ abstract class AbstractScene {
     }
 
     changeTile(tile: string, callback: { (scene: AbstractScene): void }) {
-        var scene: AbstractScene = this;
+        let scene: AbstractScene = this;
         TilesetManager.loadTileset(tile, this.context, function(json) {
             scene.map.tileset = json;
             Resource.load(tile, Resource.TypeEnum.TILE, function(image: HTMLImageElement) {
@@ -297,7 +297,10 @@ abstract class AbstractScene {
                             continue;
                         }
                         // Check if it is the right time to render cell(i,j_real) (based on its z-index)
-                        let zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                        let zindex = Constant.ZIndex.MIN;
+                        if(map.tileset.onTop !== undefined) {
+                            zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                        }
                         if(zindex === Constant.ZIndex.MIN || !renderOnTop) {
                             this.applyLayerCustomizations(layerIndex);
                             if (!Utils.isEmpty(layer.opacity)) {

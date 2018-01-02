@@ -79,10 +79,12 @@ namespace MapperPage {
                     }
                     $("#mapSizeW").val(node.data.w + "");
                     $("#mapSizeH").val(node.data.h + "");
-                    $("#tiles").val(node.data.tile);
-                    TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
-                        Mapper.start(canvas, tilePicker, parseInt(node.id));
-                    });
+                    if((<HTMLSelectElement> document.getElementById("tiles")).value !== node.data.tile) {
+                        $("#tiles").val(node.data.tile);
+                        TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
+                            Mapper.start(canvas, tilePicker, parseInt(node.id));
+                        });
+                    }
                     break;
                 default:
                     console.log("Action: " + data.action);
@@ -128,7 +130,7 @@ namespace MapperPage {
     }
 
     export function changeTile() {
-        var node = $("#mapPanel").jstree(true).get_selected(true)[0];
+        let node = $("#mapPanel").jstree(true).get_selected(true)[0];
         node.data.tile = $("#tiles").val();
         TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
             Mapper.changeTile(node.data.tile, tilePicker);
@@ -158,8 +160,11 @@ namespace MapperPage {
     }
 
     export function reload() {
-        Mapper.reloadMap();
-        $("#mapPanel").jstree(true).refresh(false, false);
+        Mapper.reloadMap(function(result: boolean) {
+            if(result) {
+                $("#mapPanel").jstree(true).refresh(false, false);
+            }
+        });
     }
 
     export function getActiveMap(): number {
@@ -200,17 +205,31 @@ namespace MapperPage {
     }
         
     export function changeEventPosition() {
-        eventModified();
-        //TODO    
+        let i = (<HTMLInputElement> document.getElementById("eventi")).valueAsNumber;
+        let j = (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber;
+        if(Mapper.isCellAvailable(currentEvent, i, j)) {
+            eventModified();   
+            currentEvent.i = i;
+            currentEvent.j = j;
+            Mapper.changeSelectedEventCell(i, j);
+            (<HTMLInputElement> document.getElementById("eventi")).style.removeProperty("color");
+            (<HTMLInputElement> document.getElementById("eventj")).style.removeProperty("color");
+        } else {
+            eventModified(false);   
+            (<HTMLInputElement> document.getElementById("eventi")).style.color = Constant.Color.RED;
+            (<HTMLInputElement> document.getElementById("eventj")).style.color = Constant.Color.RED;
+        }
     }
     
-    export function changeEventCharaset() {
+    export function changeEventScript() {
         eventModified();
-        //TODO    
-    }
+        let state = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
+        loadActions(currentEvent.states[state - 1]);
+    }  
     
     export function deleteEvent() {
         Mapper.deleteEvent(currentEvent);
+        eventModified();
         loadEvent(undefined, false);
     }
     
@@ -222,6 +241,7 @@ namespace MapperPage {
             if(currentEventState > 1) {
                 (<HTMLInputElement> document.getElementById("state")).valueAsNumber -= 1;
             }
+            eventModified();
             loadEventState(false);
         }
     }
@@ -237,18 +257,47 @@ namespace MapperPage {
         if(currentEventState > currentEvent.states.length) {
             currentEvent.states[currentEventState - 1] = EventManager.getNewEventState();
         }
-        let state: IEventState = currentEvent.states[currentEventState - 1];
-        (<HTMLInputElement> document.getElementById("condition")).value = state.condition;
+        let state: IEventState = currentEvent.states[currentEventState - 1];        
+        loadConditions(state);
         let select: HTMLSelectElement = (<HTMLSelectElement> document.getElementById("trigger"));
         let options: HTMLCollection = select.options;
         options[ActionTriggerEnum.CLICK] = new Option("Click"); 
         options[ActionTriggerEnum.TOUCH] = new Option("Touch");
         options[ActionTriggerEnum.OVER] = new Option("Over");
         options[ActionTriggerEnum.AUTO] = new Option("(auto)");
-        select.selectedIndex = state.trigger;        
-        (<HTMLInputElement> document.getElementById("action")).value = state.action;
+        select.selectedIndex = state.trigger;
+        loadActions(state);
         // Update total states count
         (<HTMLElement> document.getElementById("tot")).innerText = currentEvent.states.length + "";
+    }
+    
+    function loadConditions(state: IEventState) {
+        let conditions: string[] = Resource.listEventStateConditions();
+        let selectConditions = (<HTMLSelectElement> document.getElementById("condition"));
+        let conditionOptions: HTMLCollection = selectConditions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let i = 0;
+        for(let a of conditions) {
+            conditionOptions[i] = new Option(a);
+            if(a === state.condition) {
+                selectConditions.selectedIndex = i;
+            }
+            i++;
+        }
+    }
+    
+    function loadActions(state: IEventState) {
+        let scriptClass = (<HTMLSelectElement> document.getElementById("script")).value;
+        let actions: string[] = Resource.listScriptActions(scriptClass);
+        let selectActions = (<HTMLSelectElement> document.getElementById("action"));
+        let actionOptions: HTMLCollection = selectActions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let i = 0;
+        for(let a of actions) {
+            actionOptions[i] = new Option(a);
+            if(a === state.action) {
+                selectActions.selectedIndex = i;
+            }
+            i++;
+        }
     }
     
     export function loadEvent(event?: IEvent, askConfirm: boolean = true): boolean {
@@ -261,22 +310,39 @@ namespace MapperPage {
             }
         } else {
             event = EventManager.getNewEvent();
-            eventModified(false);
         }
         currentEvent = event;
+        (<HTMLInputElement> document.getElementById("eventi")).style.removeProperty("color");
+        (<HTMLInputElement> document.getElementById("eventj")).style.removeProperty("color");
+        eventModified(false);
+        
         (<HTMLInputElement> document.getElementById("name")).value = event.name;
-        let select: HTMLSelectElement = (<HTMLSelectElement> document.getElementById("charasets"));
-        let options: HTMLCollection = select.options;
-        //TODO load from service
-        options[0] = new Option(""); 
-        options[1] = new Option("155-Animal05.png"); 
-        options[2] = new Option("fart.png");
-        options[3] = new Option("gigante.png");
-        options[4] = new Option("ann.png");
-        select.selectedIndex = 0; //TODO preselect from event
+        let selectCharasets: HTMLSelectElement = (<HTMLSelectElement> document.getElementById("charasets"));
+        Resource.listResources(Resource.TypeEnum.CHAR, function(list: string[]) {
+            let options: HTMLCollection = selectCharasets.options;
+            options[0] = new Option(""); 
+            for(let i = 0; i < list.length; i++) {
+                options[i + 1] = new Option(list[i]);
+                if(list[i] === currentEvent.charaset) {
+                    selectCharasets.selectedIndex = i + 1;
+                }
+            }
+        });
         (<HTMLInputElement> document.getElementById("eventi")).valueAsNumber = event.i;
         (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber = event.j;
-        (<HTMLInputElement> document.getElementById("script")).value = event.script;
+        let scriptClasses: Map<string, string> = Resource.listScriptClasses();
+        let selectScript = (<HTMLSelectElement> document.getElementById("script"));
+        let classes: Map<string,string> = Resource.listScriptClasses();
+        let options: HTMLCollection = selectScript.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let i = 0;
+        for(let c of classes) {
+            options[i] = new Option(c[0]);
+            options[i]["title"] = c[1];
+            if(c[0] === currentEvent.script) {
+                selectScript.selectedIndex = i;
+            }
+            i++;
+        }
         (<HTMLInputElement> document.getElementById("state")).valueAsNumber = 1;
         loadEventState(false);
         resetMemory();
@@ -325,7 +391,7 @@ namespace MapperPage {
      * If the event details has been modified, show a popup asking for confirm
      */
     export function confirmCloseEventDetails(): boolean {
-        if(!flagEventModified) {
+        if(!flagEventModified || currentEvent === undefined) {
             return true;
         }
         return confirm("Event details not saved. If you continue, details of the currently selected event will be lost. Are you sure you want to continue?");
@@ -340,7 +406,6 @@ namespace MapperPage {
         let key = (<HTMLInputElement> document.getElementById("key")).value
         let value =  (<HTMLInputElement> document.getElementById("val")).value
         if(!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
-            //TODO gestisci key duplicati => update
             eventModified();
             EventManager.saveMem(currentEvent, key, value);
             addRowToMemory(key, value);
@@ -358,7 +423,24 @@ namespace MapperPage {
         }
     }
     
+    /**
+     * Add a row to the Memory table; if key already exists, update that row instead
+     */
     function addRowToMemory(key: string, value: string) {
+        // If key already exists, update its value
+        let table = (<HTMLTableElement> document.getElementById("memory"));
+        let list = table.rows;
+        for (let i = 0; i < list.length; i++) {
+            if(list[i].id === key) {
+                // Update thew value of this existing row
+                let row: HTMLTableRowElement = <HTMLTableRowElement> table.rows[i];
+                let cell: HTMLTableCellElement = <HTMLTableCellElement> row.cells[1];
+                let inputVal: HTMLInputElement = <HTMLInputElement> cell.childNodes[0];
+                inputVal.value = value;
+                return;
+            }
+        }
+        // If key does not exists, create new row        
         let totRows: number = (<HTMLTableElement> document.getElementById("memory")).rows.length;
         let row: HTMLTableRowElement = (<HTMLTableElement> document.getElementById("memory")).insertRow(totRows);
         row.id = key;

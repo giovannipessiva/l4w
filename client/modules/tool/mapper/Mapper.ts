@@ -37,7 +37,10 @@ namespace Mapper {
     }
 
     export function changeTile(tile: string, tilePicker: TilePickerScene) {
-        mapper.changeTile(tile, function(scene) { });
+        mapper.togglePause(true);
+        mapper.changeTile(tile, function(scene) {
+            mapper.togglePause(false);
+        });
         mapper.setTilePicker(tilePicker);
     }
     
@@ -45,13 +48,14 @@ namespace Mapper {
         mapper.resizeMap(rows, columns);
     }
     
-    export function reloadMap() {
+    export function reloadMap(callback) {
         let mapId = MapperPage.getActiveMap();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
         MapManager.loadMap(mapId, canvas, function(map: IMap) {
-            mapper.changeMap(map, function() {
+            let result = mapper.changeMap(map, function() {
                 MapperPage.changeEditState(false);
             });
+            callback(result);
         });
     }
 
@@ -150,12 +154,11 @@ namespace Mapper {
     };
 
     export function setMode(editMode: Constant.EditMode) {
+        mapper.setEditMode(editMode);
         let isEditEvents = editMode === Constant.EditMode.EVENTS;
         if(isEditEvents) {
-            let confirmed = MapperPage.loadEvent();
-            if(!confirmed) {
-                return;
-            }
+            // Select cell (0,0)
+            mapper.apply(0, 0);
         } else {
             MapperPage.finishEventEditing();
             mapper.setSelectedEventCell(undefined);
@@ -167,8 +170,14 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
-        mapper.setEditMode(editMode);
     };
+    
+    export function changeSelectedEventCell(i: number, j: number) {
+        mapper.renderingConfiguration.selectEventCell = {
+            i: i,
+            j: j    
+        }    
+    }
 
     export function setActiveLayer(layerIndex: Constant.MapLayer) {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_LAYER + "0")).disabled = false;
@@ -203,4 +212,17 @@ namespace Mapper {
         ActorManager.initTransientData(this.mapper.grid, event);
         MapperPage.changeEditState(true);
     };
+    
+    /**
+     * Check if changedEvent can be placed in (i,j)
+     * Return false if another event is already in that position
+     */
+    export function isCellAvailable(changedEvent: IEvent, i: number, j: number): boolean {
+        for(let e of mapper.map.events) {
+            if(e.i === i && e.j === j && e !== changedEvent) {
+                return false
+            }
+        }
+        return true;
+    }
 }

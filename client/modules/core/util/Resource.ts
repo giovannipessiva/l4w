@@ -1,6 +1,7 @@
 ///<reference path="Commons.ts" />
 ///<reference path="Constant.ts" />
 ///<reference path="../events/script/AbstractScript.ts" />
+///<reference path="../events/Conditions.ts" />
 
 declare var base_path: string;
 
@@ -176,78 +177,67 @@ namespace Resource {
     }
 
     function getResourcePath(file: string, assetType: TypeEnum): string {
-        var path;
+        let path;
         switch (assetType) {
             case TypeEnum.CHAR:
             case TypeEnum.FACE:
             case TypeEnum.SKIN:
             case TypeEnum.TILE:
                 path = ASSET_PATH;
-                switch (assetType) {
-                    case TypeEnum.CHAR:
-                        path += "charset/";
-                        break;
-                    case TypeEnum.FACE:
-                        path += "faceset/";
-                        break;
-                    case TypeEnum.SKIN:
-                        path += "skin/";
-                        break;
-                    case TypeEnum.TILE:
-                        path += "tile/";
-                        break;
-                    default:
-                        console.error("Unexpected resource type");
-                        console.trace();
-                };
                 break;
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
             case TypeEnum.TILESET:
                 path = DATA_PATH;
-                switch (assetType) {
-                    case TypeEnum.MAP:
-                        path += "map/";
-                        break;
-                    case TypeEnum.SAVE:
-                        path += "save/";
-                        break;
-                    case TypeEnum.TILESET:
-                        path += "tileset/";
-                        break;
-                    default:
-                        console.error("Unexpected resource type");
-                        console.trace();
-                };
                 break;
             default:
                 console.error("Unexpected resource type");
                 console.trace();
         };
-        return path + file;
+        let resourceTypeFolder = getResourceTypeFolder(assetType);
+        return path + resourceTypeFolder + file;
+    }
+    
+    function getResourceTypeFolder(assetType: TypeEnum): string {
+        let folder;
+        switch (assetType) {
+            case TypeEnum.CHAR:
+                folder = "charset/";
+                break;
+            case TypeEnum.FACE:
+                folder = "faceset/";
+                break;
+            case TypeEnum.SKIN:
+                folder = "skin/";
+                break;
+            case TypeEnum.TILE:
+                folder = "tile/";
+                break;
+            case TypeEnum.MAP:
+                folder = "map/";
+                break;
+            case TypeEnum.SAVE:
+                folder = "save/";
+                break;
+            case TypeEnum.TILESET:
+                folder = "tileset/";
+                break;
+            default:
+                console.error("Unexpected resource type");
+                console.trace();
+        };   
+        return folder;
     }
 
     function getEditPath(file: string, assetType: TypeEnum): string {
-        var path = EDIT_PATH;
-        switch (assetType) {
-            case TypeEnum.MAP:
-                path += "map/";
-                break;
-            case TypeEnum.SAVE:
-                path += "save/";
-                break;
-            case TypeEnum.TILESET:
-                path += "tileset/";
-                break;
-            default:
-                console.error("Unexpected resource type");
-                console.trace();
-        };
-        return path + file;
+        let path = EDIT_PATH;
+        let resourceTypeFolder = getResourceTypeFolder(assetType);
+        return path + resourceTypeFolder + file;
     }
     
     export function listResources(assetType: TypeEnum, callback) {
-        sendGETRequest(ASSETLIST_PATH + assetType, function(e: ProgressEvent) {
+        let resourceTypeFolder = getResourceTypeFolder(assetType);
+        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(e: ProgressEvent) {
             let list: Array<string> = JSON.parse(this.responseText);
             callback(list);
         }); 
@@ -272,7 +262,7 @@ namespace Resource {
         return map;
     }
     
-    /**
+    /*
      * Oh God what a ride
      * https://stackoverflow.com/questions/39544789/get-class-methods-in-typescript/48051971#48051971
      */
@@ -292,5 +282,9 @@ namespace Resource {
             }
         });
         return actions;    
+    }
+    
+    export function listEventStateConditions(): string[] {
+        return Object.keys(Condition);
     }
 }

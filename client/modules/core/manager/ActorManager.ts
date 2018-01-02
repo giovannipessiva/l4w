@@ -49,16 +49,36 @@ namespace ActorManager {
             //TODO gestisci actor con grafica da tile
         }
 
-        if (Utils.isEmpty(image)) {
-            image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);
+        //TODO manage 404 errors
+//        if (Utils.isEmpty(image)) {
+//            image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);
+//        }
+                      
+        if(!dynamic) {
+            // Draw a border
+            context.save();
+            context.strokeStyle = Constant.Color.GREEN;
+            context.lineWidth = 2;
+            context.strokeRect(a.position.x, a.position.y, grid.cellW, grid.cellH);
         }
-
+        
         if (!Utils.isEmpty(image)) {
             let charaWidth: number = Math.floor(image.width / 4);
             let charaHeight: number = Math.floor(image.height / 4);
             let charaWidthResized: number = charaWidth;
             let charaHeightResized: number = charaHeight;
-
+            
+            if(!dynamic) {   
+                // Resize chara (proportionally) to fit in one cell
+                if(charaHeight > charaWidth) {
+                    charaWidthResized = Math.floor(charaWidth * grid.cellH / charaHeight);
+                    charaHeightResized = grid.cellH;  
+                } else {
+                    charaHeightResized = Math.floor(charaHeight * grid.cellW / charaWidth);
+                    charaWidthResized = grid.cellW;
+                } 
+            }
+            
             let charaX: number = 0;
             if (!Utils.isEmpty(a.target)) {
                 //If it's moving, change animation
@@ -87,22 +107,6 @@ namespace ActorManager {
                 case DirectionEnum.UP: charaY = charaHeight * 3; break;
             };
             context.save();
-            if(!dynamic) {
-                // Resize chara (proportionally) to fit in one cell
-                if(charaHeight > charaWidth) {
-                    charaWidthResized = Math.floor(charaWidth * grid.cellH / charaHeight);
-                    charaHeightResized = grid.cellH;  
-                } else {
-                    charaHeightResized = Math.floor(charaHeight * grid.cellW / charaWidth);
-                    charaWidthResized = grid.cellW;
-                }
-                
-                // Draw a border
-                context.save();
-                context.strokeStyle = Constant.Color.GREEN;
-                context.lineWidth = 2;
-                context.strokeRect(a.position.x, a.position.y, grid.cellW, grid.cellH);
-            }
 
             let x = a.position.x + Math.floor((grid.cellW - charaWidthResized) / 2); //In the middle
             let y = a.position.y + Math.floor(- charaHeightResized + grid.cellH); //Foots on the ground
