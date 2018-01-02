@@ -44,9 +44,12 @@ namespace Constant {
         ONTOP
     }
     
-    export class ZIndex {
-        public static MIN = 0;
-        public static MAX = 4;
+    export const enum ZIndex {
+        LV0,
+        LV1,
+        LV2,
+        LV3,
+        LV4
     }
     
     export const enum Bool {

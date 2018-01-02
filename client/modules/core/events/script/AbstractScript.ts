@@ -9,7 +9,8 @@ namespace Script {
         protected hero: IActor;
         protected grid: AbstractGrid;
         
-        public static tooltip: string = "(no description provided)";  
+        public static tooltip: string = "(no description provided)";
+        public static STATE_VAR: string = "state"  
         
         constructor(event: IEvent, hero: IActor, grid: AbstractGrid) {
             this.event = event;
@@ -86,5 +87,20 @@ namespace Script {
         protected loadMem(key: string): string {
             return EventManager.loadMem(this.event, key);    
         };
+        
+        protected incrementStateVar(): number {
+            let stateVar: string = this.loadMem(AbstractScript.STATE_VAR);
+            let newStateVar: number = Number.parseInt(stateVar);
+            if(Number.isNaN(newStateVar)) {
+                newStateVar = 0;    
+            }
+            newStateVar++;
+            this.saveMem(AbstractScript.STATE_VAR, newStateVar + "");
+            return newStateVar;            
+        }
+        
+        protected setStateVar(stateVar: number) {
+            this.saveMem(AbstractScript.STATE_VAR, stateVar + "");    
+        }
     }  
 }

@@ -15,6 +15,16 @@ namespace MapperPage {
     let flagEdited: boolean = false;
     let flagEventModified: boolean = false;
     let currentEvent: IEvent;
+    
+    const scaleOptions: string[] = [
+        "Very low",
+        "Low",
+        "Medium-low",
+        "Medium",
+        "Medium-high",
+        "High",
+        "Very high"
+    ];
 
     export function start() {
         Compatibility.check(); 
@@ -225,7 +235,7 @@ namespace MapperPage {
         eventModified();
         let state = (<HTMLInputElement> document.getElementById("state")).valueAsNumber;
         loadActions(currentEvent.states[state - 1]);
-    }  
+    }
     
     export function deleteEvent() {
         Mapper.deleteEvent(currentEvent);
@@ -299,6 +309,110 @@ namespace MapperPage {
             i++;
         }
     }
+      
+    function loadActorProperties() {
+        let visible: boolean = currentEvent.visible;
+        if(Utils.isEmpty(visible)) {
+            visible = true;    
+        }
+        (<HTMLInputElement> document.getElementById("visible")).checked = visible;
+        
+        let opacity: number = Number.parseInt(currentEvent.opacity + "");
+        if(Utils.isEmpty(opacity) || Number.isNaN(opacity) || opacity < 0 || opacity > 100) {
+            opacity = 100;
+        }
+        (<HTMLInputElement> document.getElementById("opacity")).valueAsNumber = opacity;
+        
+        let i = 0;
+        let speedOptions: HTMLCollection = (<HTMLSelectElement> document.getElementById("speed")).options;
+        let frequencyOptions: HTMLCollection = (<HTMLSelectElement> document.getElementById("frequency")).options;
+        for(let s of scaleOptions) {
+            speedOptions[i] = new Option(s);
+            frequencyOptions[i] = new Option(s);
+            i++;
+        }
+        let speed: number = Number.parseInt(currentEvent.speed + "");
+        if(Utils.isEmpty(speed) || Number.isNaN(speed) || speed < ScaleEnum.VERY_LOW || speed > ScaleEnum.VERY_HIGH) {
+            speed = ScaleEnum.MEDIUM;    
+        }
+        (<HTMLSelectElement> document.getElementById("speed")).selectedIndex = speed;
+        let frequency: number = Number.parseInt(currentEvent.frequency + "");
+        if(Utils.isEmpty(frequency) || Number.isNaN(frequency) || frequency < ScaleEnum.VERY_LOW || frequency > ScaleEnum.VERY_HIGH) {
+            frequency = ScaleEnum.MEDIUM;    
+        }
+        (<HTMLSelectElement> document.getElementById("frequency")).selectedIndex = frequency;
+
+        let rotationOptions = (<HTMLSelectElement> document.getElementById("rotation")).options;
+        rotationOptions[0] = new Option("Off");
+        rotationOptions[1] = new Option("Clockwise");
+        rotationOptions[2] = new Option("Counterclockwise");
+        let rotation: number = Number.parseInt(currentEvent.rotation + "");
+        if(Utils.isEmpty(rotation) || Number.isNaN(rotation) || rotation < RotationEnum.OFF || rotation > RotationEnum.COUNTERCLOCKWISE) {
+            rotation = RotationEnum.OFF;    
+        }
+        (<HTMLSelectElement> document.getElementById("rotation")).selectedIndex = RotationEnum.OFF;
+        
+        let ontopOptions = (<HTMLSelectElement> document.getElementById("ontop")).options;
+        ontopOptions[Constant.ZIndex.LV0] = new Option("Off");
+        ontopOptions[Constant.ZIndex.LV1] = new Option("Liv. 1");
+        ontopOptions[Constant.ZIndex.LV2] = new Option("Liv. 2");
+        ontopOptions[Constant.ZIndex.LV3] = new Option("Liv. 3");
+        ontopOptions[Constant.ZIndex.LV4] = new Option("Liv. 4");
+        let ontop: number = Number.parseInt(currentEvent.onTop + "");
+        if(Utils.isEmpty(ontop) || Number.isNaN(ontop) || ontop < Constant.ZIndex.LV0 || ontop > Constant.ZIndex.LV4) {
+            ontop = Constant.ZIndex.LV0;    
+        }
+        (<HTMLSelectElement> document.getElementById("ontop")).selectedIndex = ontop;
+
+        let block: boolean = currentEvent.block;
+        if(Utils.isEmpty(block)) {
+            block = true;    
+        }
+        (<HTMLInputElement> document.getElementById("block")).checked = block;
+    }
+    
+    function readActorProperties() {
+        let visible: boolean = (<HTMLInputElement> document.getElementById("visible")).checked;
+        if(visible) {
+            visible = undefined;    
+        }
+        currentEvent.visible = visible; 
+        
+        let opacity: number = (<HTMLInputElement> document.getElementById("opacity")).valueAsNumber;
+        if(Utils.isEmpty(opacity) || Number.isNaN(opacity) || opacity < 0 || opacity >= 100) {
+            opacity = undefined;
+        }
+        currentEvent.opacity = opacity;
+        
+        let speed: number = (<HTMLSelectElement> document.getElementById("speed")).selectedIndex;
+        let frequency: number = (<HTMLSelectElement> document.getElementById("frequency")).selectedIndex;
+        if(Utils.isEmpty(speed) || speed < ScaleEnum.VERY_LOW || speed > ScaleEnum.VERY_HIGH || speed === ScaleEnum.MEDIUM) {
+            speed = undefined;    
+        }
+        if(Utils.isEmpty(frequency) || frequency < ScaleEnum.VERY_LOW || frequency > ScaleEnum.VERY_HIGH || frequency === ScaleEnum.MEDIUM) {
+            frequency = undefined;    
+        }
+        currentEvent.speed = speed;
+        currentEvent.frequency = frequency;
+        
+        let rotation: number = (<HTMLSelectElement> document.getElementById("rotation")).selectedIndex;
+        if(Utils.isEmpty(rotation) || rotation <= RotationEnum.OFF || rotation > RotationEnum.COUNTERCLOCKWISE) {
+            rotation = undefined;    
+        }
+        currentEvent.rotation = rotation;
+        
+        let ontop: number = (<HTMLSelectElement> document.getElementById("ontop")).selectedIndex;
+        if(Utils.isEmpty(ontop) || ontop <= Constant.ZIndex.LV0 || ontop > Constant.ZIndex.LV4) {
+            ontop = undefined;    
+        }
+        currentEvent.onTop = ontop;
+
+        let block: boolean = (<HTMLInputElement> document.getElementById("block")).checked;
+        if(block) {
+            block = undefined;    
+        }
+        currentEvent.block = block; 
+    }
     
     export function loadEvent(event?: IEvent, askConfirm: boolean = true): boolean {
         if(event !== undefined) {
@@ -345,6 +459,7 @@ namespace MapperPage {
         }
         (<HTMLInputElement> document.getElementById("state")).valueAsNumber = 1;
         loadEventState(false);
+        loadActorProperties();
         resetMemory();
         if(!Utils.isEmpty(currentEvent.memory)) {
             for(let key in currentEvent.memory) {
@@ -362,6 +477,7 @@ namespace MapperPage {
             currentEvent.j = (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber;
             currentEvent.script = (<HTMLInputElement> document.getElementById("script")).value;
             readEventStateDetails();
+            readActorProperties();
             Mapper.addEvent(currentEvent);
             MapperPage.eventModified(false);
         }

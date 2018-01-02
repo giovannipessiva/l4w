@@ -6,7 +6,6 @@ interface IEventData extends IActorData {
     states: IEventState[]; //Array of states of this Event
     memory: {}; // Map of generic key -> value pairs
     script: string; // Script Class which contains the methods used by this event
-    block?: boolean; // False if the event does not block movement (you can walk through it)
 }
 
 // Event extended model (include transient data)
@@ -14,6 +13,7 @@ interface IEvent extends IEventData, IActor {
 
 }
 
+//TODO IEventState should extends IACtorData, while IEvent should not.
 interface IEventState {
     condition: string; // Name of function that returns true if this state can be active (see Activators.ts)
     trigger: number; // Type of interaction which will start the action

@@ -110,7 +110,7 @@ namespace MapManager {
             }
             if (!onTop && renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
                 let gid = Utils.cellToGid({i: i, j:j},map.width);
-                if(Utils.normalizeZIndex(map.tileset.onTop[gid]) > Constant.ZIndex.MIN) {
+                if(Utils.normalizeZIndex(map.tileset.onTop[gid]) > Constant.ZIndex.LV0) {
                     context.save();
                     context.globalAlpha = 0.6;
                     context.beginPath();
@@ -293,7 +293,7 @@ namespace MapManager {
                             continue;
                         }
                         // Ignore cells onTop
-                        if(Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.MIN) {
+                        if(Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.LV0) {
                             continue;  
                         }
                         let blockValue = map.tileset.blocks[tileCell];
@@ -794,7 +794,6 @@ namespace MapManager {
             ],
             events: [
                 { 
-                    id: 1,
                     name: "Sig. Maiale",
                     charaset: "155-Animal05.png",
                     script: "Script1",

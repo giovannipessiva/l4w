@@ -297,11 +297,11 @@ abstract class AbstractScene {
                             continue;
                         }
                         // Check if it is the right time to render cell(i,j_real) (based on its z-index)
-                        let zindex = Constant.ZIndex.MIN;
+                        let zindex = Constant.ZIndex.LV0;
                         if(map.tileset.onTop !== undefined) {
                             zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
                         }
-                        if(zindex === Constant.ZIndex.MIN || !renderOnTop) {
+                        if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
                             this.applyLayerCustomizations(layerIndex);
                             if (!Utils.isEmpty(layer.opacity)) {
                                 context.globalAlpha = layer.opacity;

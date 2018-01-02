@@ -8,8 +8,21 @@
  */
 namespace ActorManager {
 
-    const DEFAULT_MSPEED: number = 4 * 32 / 1000;
-    const DEFAULT_FREQUENCY: number = 6 / 1000;
+    const VERY_LOW_MSPEED: number = 4 * 17 / 1000;
+    const LOW_MSPEED: number = 4 * 23 / 1000;
+    const MEDIUM_LOW_MSPEED: number = 4 * 28 / 1000;
+    const MEDIUM_MSPEED: number = 4 * 32 / 1000;
+    const MEDIUM_HIGH_MSPEED: number = 4 * 36 / 1000;
+    const HIGH_MSPEED: number = 4 * 41 / 1000;
+    const VERY_HIGH_MSPEED: number = 4 * 47 / 1000;
+
+    const VERY_LOW_FREQUENCY: number = 1 / 1000;
+    const LOW_FREQUENCY: number = 3 / 1000;
+    const MEDIUM_LOW_FREQUENCY: number = 5 / 1000;
+    const MEDIUM_FREQUENCY: number = 6 / 1000;
+    const MEDIUM_HIGH_FREQUENCY: number = 7 / 1000;
+    const HIGH_FREQUENCY: number = 9 / 1000;
+    const VERY_HIGH_FREQUENCY: number = 11 / 1000;
 
     export function update(a: IActor, time: number, pauseTimeOffset: number = 0) {
         //TODO
@@ -20,18 +33,58 @@ namespace ActorManager {
         }
     }
 
-    export function setSpeed(grid: AbstractGrid, a: IActor, speed: number) {
-        //TODO usa due velocita' diverse per le due direzioni
-        a.speed = speed;  // cell/sec
-        a.mSpeed = a.speed * grid.cellH / 1000; // cell/msec
+     export function setFrequency(a: IActor, frequency: number) {
+        switch (parseInt(frequency + "")) {
+            case ScaleEnum.VERY_LOW:
+                a.frequencyVal = VERY_LOW_FREQUENCY;
+            case ScaleEnum.LOW:
+                a.frequencyVal = LOW_FREQUENCY;
+            case ScaleEnum.MEDIUM_LOW:
+                a.frequencyVal = MEDIUM_LOW_FREQUENCY;
+            case ScaleEnum.MEDIUM:
+                a.frequencyVal = MEDIUM_FREQUENCY;
+            case ScaleEnum.MEDIUM_HIGH:
+                a.frequencyVal = MEDIUM_HIGH_FREQUENCY;
+            case ScaleEnum.HIGH:
+                a.frequencyVal = HIGH_FREQUENCY;
+            case ScaleEnum.VERY_HIGH:
+                a.frequencyVal = VERY_HIGH_FREQUENCY;
+            default: a.frequencyVal = MEDIUM_FREQUENCY;
+        }
+    }
+
+    export function setSpeed(a: IActor, speed: number) {
+        switch (parseInt(speed + "")) {
+            case ScaleEnum.VERY_LOW:
+                a.mSpeed = VERY_LOW_MSPEED;
+                break;
+            case ScaleEnum.LOW:
+                a.mSpeed = LOW_MSPEED;
+                break;
+            case ScaleEnum.MEDIUM_LOW:
+                a.mSpeed = MEDIUM_LOW_MSPEED;
+                break;
+            case ScaleEnum.MEDIUM:
+                a.mSpeed = MEDIUM_MSPEED;
+                break;
+            case ScaleEnum.MEDIUM_HIGH:
+                a.mSpeed = MEDIUM_HIGH_MSPEED;
+                break;
+            case ScaleEnum.HIGH:
+                a.mSpeed = HIGH_MSPEED;
+                break;
+            case ScaleEnum.VERY_HIGH:
+                a.mSpeed = VERY_HIGH_MSPEED;
+                break;
+            default: a.mSpeed = MEDIUM_MSPEED;
+        }
     }
 
     export function getMSpeed(a: IActor) {
         if (!Utils.isEmpty(a.mSpeed)) {
             return a.mSpeed;
-        } else {
-            return DEFAULT_MSPEED;
         }
+        return MEDIUM_MSPEED;
     }
 
     export function startMovement(grid: AbstractGrid, a: IActor, i: number, j: number) {
@@ -86,9 +139,9 @@ namespace ActorManager {
                     a.animationStartTime = Utils.now();
                 }
                 let animationTime = Utils.now() - a.animationStartTime;
-                let frequency: number = DEFAULT_FREQUENCY;
-                if (!Utils.isEmpty(a.frequency)) {
-                    frequency = parseFloat(a.frequency + "");
+                let frequency: number = a.frequencyVal;
+                if(Utils.isEmpty(frequency)) {
+                    frequency = MEDIUM_FREQUENCY;    
                 }
                 let position = Math.floor((animationTime * frequency) % 4);
                 switch (position) {
@@ -111,7 +164,7 @@ namespace ActorManager {
             let x = a.position.x + Math.floor((grid.cellW - charaWidthResized) / 2); //In the middle
             let y = a.position.y + Math.floor(- charaHeightResized + grid.cellH); //Foots on the ground
  
-            if (!Utils.isEmpty(a.opacity)) {
+            if (!Utils.isEmpty(a.opacity) && a.opacity !== 100) {
                 context.globalAlpha = a.opacity;
             }
             if (pointer !== undefined) {
@@ -140,8 +193,7 @@ namespace ActorManager {
 
     export function getNewActor(): IActor {
         let actor: IActor = {
-            id: 0,
-            name: "",
+            name: "NPC",
             i: 0,
             j: 0
         };
@@ -163,7 +215,7 @@ namespace ActorManager {
             return false
         }
         // Check if it is the right time to render this actor, based on its zindex
-        if(onTop !== (Utils.normalizeZIndex(a.onTop) !== Constant.ZIndex.MIN)) {
+        if(onTop !== (Utils.normalizeZIndex(a.onTop) !== Constant.ZIndex.LV0)) {
             return false
         }
         if (!Utils.isEmpty(a.visible) && !a.visible) {
@@ -311,10 +363,8 @@ namespace ActorManager {
                 y: a.j * grid.cellH
             };
         }
-        if (!Utils.isEmpty(a.speed)) {
-            this.setSpeed(a, a.speed);
-        }
-
+        this.setSpeed(a, a.speed);
+        this.setFrequency(a, a.frequency);
         return a;
     }
 

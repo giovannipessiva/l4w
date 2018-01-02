@@ -28,7 +28,6 @@ namespace Tester {
         };
         // Initialize actor and target
         let actor: IActor = {
-            id:0,
             name:"actor",  
             i:actorI,
             j:actorJ

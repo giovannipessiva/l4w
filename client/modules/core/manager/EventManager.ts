@@ -62,7 +62,6 @@ namespace EventManager {
     
     export function getNewEvent(): IEvent {
         let event: IEvent = {
-            id: 0,
             name: "NPC",
             i: 0,
             j: 0,

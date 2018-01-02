@@ -261,10 +261,10 @@ namespace Utils {
     }
 
     export function normalizeZIndex(zindex: number): number {
-        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex)) {
+        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex) && zindex >= Constant.ZIndex.LV0 && zindex >= Constant.ZIndex.LV4) {
             return zindex;
         }
-        return Constant.ZIndex.MIN;
+        return Constant.ZIndex.LV0;
     }
 
     export function getDirectionName(direction: DirectionEnum): string {

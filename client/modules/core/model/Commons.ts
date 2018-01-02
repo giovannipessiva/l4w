@@ -42,3 +42,19 @@ const enum ActionTriggerEnum {
     OVER,
     AUTO
 };
+
+const enum RotationEnum {
+    OFF,
+    CLOCKWISE,
+    COUNTERCLOCKWISE
+};
+
+const enum ScaleEnum {
+    VERY_LOW,
+    LOW,
+    MEDIUM_LOW,
+    MEDIUM,
+    MEDIUM_HIGH,
+    HIGH,
+    VERY_HIGH
+};

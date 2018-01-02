@@ -135,9 +135,9 @@ class TilesetterScene extends AbstractTileScene {
         
         let onTop = this.map.tileset.onTop[gid];
         if(Utils.isEmpty(onTop)) {
-            onTop = Constant.ZIndex.MIN;    
+            onTop = Constant.ZIndex.LV0;    
         }
-        if(onTop < Constant.ZIndex.MAX) {
+        if(onTop < Constant.ZIndex.LV4) {
             this.map.tileset.onTop[gid] = onTop + 1;
             TilesetterPage.changeEditState(true);
         }
@@ -154,9 +154,9 @@ class TilesetterScene extends AbstractTileScene {
         
         let onTop = this.map.tileset.onTop[gid];
         if(Utils.isEmpty(onTop)) {
-            onTop = Constant.ZIndex.MIN;    
+            onTop = Constant.ZIndex.LV0;    
         }
-        if(onTop > Constant.ZIndex.MIN) {
+        if(onTop > Constant.ZIndex.LV0) {
             this.map.tileset.onTop[gid] = onTop - 1;
             TilesetterPage.changeEditState(true);       
         }
