@@ -261,7 +261,7 @@ namespace Utils {
     }
 
     export function normalizeZIndex(zindex: number): number {
-        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex) && zindex >= Constant.ZIndex.LV0 && zindex >= Constant.ZIndex.LV4) {
+        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex) && zindex >= Constant.ZIndex.LV0 && zindex <= Constant.ZIndex.LV4) {
             return zindex;
         }
         return Constant.ZIndex.LV0;

@@ -8,21 +8,21 @@
  */
 namespace ActorManager {
 
-    const VERY_LOW_MSPEED: number = 4 * 17 / 1000;
-    const LOW_MSPEED: number = 4 * 23 / 1000;
-    const MEDIUM_LOW_MSPEED: number = 4 * 28 / 1000;
-    const MEDIUM_MSPEED: number = 4 * 32 / 1000;
-    const MEDIUM_HIGH_MSPEED: number = 4 * 36 / 1000;
-    const HIGH_MSPEED: number = 4 * 41 / 1000;
-    const VERY_HIGH_MSPEED: number = 4 * 47 / 1000;
+    const MEDIUM_MSPEED: number = 4 * 34 / 1000;
+    const VERY_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.90);
+    const LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.50);
+    const MEDIUM_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.20);
+    const MEDIUM_HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.20);
+    const HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.50);
+    const VERY_HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.90);
 
-    const VERY_LOW_FREQUENCY: number = 1 / 1000;
-    const LOW_FREQUENCY: number = 3 / 1000;
-    const MEDIUM_LOW_FREQUENCY: number = 5 / 1000;
-    const MEDIUM_FREQUENCY: number = 6 / 1000;
-    const MEDIUM_HIGH_FREQUENCY: number = 7 / 1000;
-    const HIGH_FREQUENCY: number = 9 / 1000;
-    const VERY_HIGH_FREQUENCY: number = 11 / 1000;
+    const MEDIUM_FREQUENCY: number = 8 / 1000;
+    const VERY_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.90);
+    const LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.50);
+    const MEDIUM_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.20);
+    const MEDIUM_HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.20);
+    const HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.50);
+    const VERY_HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.90);
 
     export function update(a: IActor, time: number, pauseTimeOffset: number = 0) {
         //TODO
@@ -37,18 +37,25 @@ namespace ActorManager {
         switch (parseInt(frequency + "")) {
             case ScaleEnum.VERY_LOW:
                 a.frequencyVal = VERY_LOW_FREQUENCY;
+                break;
             case ScaleEnum.LOW:
                 a.frequencyVal = LOW_FREQUENCY;
+                break;
             case ScaleEnum.MEDIUM_LOW:
                 a.frequencyVal = MEDIUM_LOW_FREQUENCY;
+                break;
             case ScaleEnum.MEDIUM:
                 a.frequencyVal = MEDIUM_FREQUENCY;
+                break;
             case ScaleEnum.MEDIUM_HIGH:
                 a.frequencyVal = MEDIUM_HIGH_FREQUENCY;
+                break;
             case ScaleEnum.HIGH:
                 a.frequencyVal = HIGH_FREQUENCY;
+                break;
             case ScaleEnum.VERY_HIGH:
                 a.frequencyVal = VERY_HIGH_FREQUENCY;
+                break;
             default: a.frequencyVal = MEDIUM_FREQUENCY;
         }
     }

@@ -55,6 +55,7 @@ class DynamicScene extends AbstractScene {
         }
         
         if(movements) {
+            console.log("MOVED");
             // Update map transient data (only when events move)
             MapManager.updateDynamicData(this.map);        
         }

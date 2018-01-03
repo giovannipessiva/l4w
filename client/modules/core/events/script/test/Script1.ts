@@ -20,5 +20,13 @@ namespace Script {
             });
             return true;
         }
+        
+        public move3ToRight(): boolean {
+            this.moveToTarget({
+                i: this.event.i + 3,
+                j: this.event.j
+            });
+            return true;    
+        }
     }
 }
