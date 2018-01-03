@@ -1,5 +1,5 @@
 /// <reference path="Tileset.ts" />
-/// <reference path="Actor.ts" />
+/// <reference path="Character.ts" />
 
 //Map core model (only persistent data)
 interface IMapData {

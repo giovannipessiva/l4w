@@ -141,7 +141,11 @@ class MapperScene extends AbstractStaticScene {
         // Render events
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
-                ActorManager.render(this.grid, event, this.context, false);
+                try {
+                    EventManager.render(this.grid, event, this.context, false);
+                } catch(e) {
+                    console.error(e);    
+                }
             }
         }
     }

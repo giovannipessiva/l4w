@@ -1,4 +1,4 @@
-/// <reference path="manager/ActorManager.ts" />
+/// <reference path="manager/CharacterManager.ts" />
 /// <reference path="manager/MapManager.ts" />
 /// <reference path="AbstractGrid.ts" />
 /// <reference path="model/Commons.ts" />
@@ -350,7 +350,7 @@ abstract class AbstractScene {
                         }
                     }
                 }
-                // Render actors
+                // Render Characters
                 for (let i = minColumn; i <= maxColumn; i++) {
                     this.renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, false);
                 }

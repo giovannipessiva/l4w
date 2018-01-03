@@ -1,5 +1,5 @@
 /// <reference path="../model/Save.ts" />
-/// <reference path="ActorManager.ts" />
+/// <reference path="CharacterManager.ts" />
 
 /**
  * Module to handle save
@@ -10,7 +10,7 @@ namespace SaveManager {
         var save: ISave = {
             id: 0,
             map: 0,
-            hero: ActorManager.getNewHero()
+            hero: EventManager.getNewHero()
         };
         return save;
     }

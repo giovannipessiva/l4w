@@ -6,13 +6,13 @@ namespace Script {
     export abstract class AbstractScript {
         
         protected event: IEvent;
-        protected hero: IActor;
+        protected hero: IEvent;
         protected grid: AbstractGrid;
         
         public static tooltip: string = "(no description provided)";
         public static STATE_VAR: string = "state"  
         
-        constructor(event: IEvent, hero: IActor, grid: AbstractGrid) {
+        constructor(event: IEvent, hero: IEvent, grid: AbstractGrid) {
             this.event = event;
             this.hero = hero;
             this.grid = grid;
@@ -28,7 +28,7 @@ namespace Script {
         }
         
         protected moveToTarget(target: ICell): boolean {
-            ActorManager.startMovement(this.grid, this.event, target.i, target.j);
+            EventManager.startMovement(this.grid, this.event, target.i, target.j);
             return true;  
         }
         

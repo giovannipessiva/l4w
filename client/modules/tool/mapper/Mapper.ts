@@ -175,7 +175,7 @@ namespace Mapper {
     export function changeEventPosition(event: IEvent, i: number, j: number) {
         event.i = i;
         event.j = j;
-        ActorManager.initTransientData(mapper.grid, event);
+        CharacterManager.initTransientData(mapper.grid, event);
         mapper.renderingConfiguration.selectEventCell = {
             i: i,
             j: j    

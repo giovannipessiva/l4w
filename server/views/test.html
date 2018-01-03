@@ -43,8 +43,8 @@ var blocks;
 const BLOCK = 15;
 
 function drawMap() {
-	let actorX = parseInt(document.getElementById("actorX").value);
-	let actorY = parseInt(document.getElementById("actorY").value);
+	let eventX = parseInt(document.getElementById("eventX").value);
+	let eventY = parseInt(document.getElementById("eventY").value);
 	let targetX = parseInt(document.getElementById("targetX").value);
 	let targetY = parseInt(document.getElementById("targetY").value);
 	let tableWidth = parseInt(document.getElementById("width").value);
@@ -54,17 +54,17 @@ function drawMap() {
 		blocks = new Array(tableWidth * tableHeight).fill(0);
 	}
 	
-	if(actorX >= tableWidth) {
-		actorX = tableWidth - 1;
-		document.getElementById("actorX").value = actorX;
+	if(eventX >= tableWidth) {
+		eventX = tableWidth - 1;
+		document.getElementById("eventX").value = eventX;
 	}
 	if(targetX >= tableWidth) {
 		targetX = tableWidth - 1;
 		document.getElementById("targetX").value = targetX;
 	}
-	if(actorY >= tableHeight) {
-		actorY = tableHeight - 1;
-		document.getElementById("actorY").value = actorY;
+	if(eventY >= tableHeight) {
+		eventY = tableHeight - 1;
+		document.getElementById("eventY").value = eventY;
 	}
 	if(targetY >= tableHeight) {
 		targetY = tableHeight - 1;
@@ -82,8 +82,8 @@ function drawMap() {
 			if(blocks[gid] === BLOCK) {
 				classes += " blocked";
 			}
-			if(actorX==x && actorY==y) {
-				classes += " actor";
+			if(eventX==x && eventY==y) {
+				classes += " event";
 			}
 			map += "<div id='g"+ gid + "' class='"+classes+"' onclick='toggleBlock(" + gid + ")'></div>";
 		}
@@ -93,18 +93,18 @@ function drawMap() {
 };
 
 function pathfinding(){
-	let actorX = parseInt(document.getElementById("actorX").value);
-	let actorY = parseInt(document.getElementById("actorY").value);
+	let eventX = parseInt(document.getElementById("eventX").value);
+	let eventY = parseInt(document.getElementById("eventY").value);
 	let targetX = parseInt(document.getElementById("targetX").value);
 	let targetY = parseInt(document.getElementById("targetY").value);
 	let tableWidth = parseInt(document.getElementById("width").value);
 	let tableHeight = parseInt(document.getElementById("height").value);
 	
-	let path = Tester.testPathfinding(tableWidth,tableHeight,actorX,actorY,targetX,targetY,blocks);
+	let path = Tester.testPathfinding(tableWidth,tableHeight,eventX,eventY,targetX,targetY,blocks);
 
 	// Disable all input fields
-	document.getElementById("actorX").disabled=true;
-	document.getElementById("actorY").disabled=true;
+	document.getElementById("eventX").disabled=true;
+	document.getElementById("eventY").disabled=true;
 	document.getElementById("targetX").disabled=true;
 	document.getElementById("targetY").disabled=true;
 	document.getElementById("width").disabled=true;
@@ -113,12 +113,12 @@ function pathfinding(){
 	document.getElementById("stop").disabled=false;
 	stopMovement = false;
 	
-	// Recursive function to simulate Actor movement along the path towards Target
-	function moveActor(path, step) {
+	// Recursive function to simulate event movement along the path towards Target
+	function moveEvent(path, step) {
 		if(step < path.length && !stopMovement) {
-			// Move actor by one step
-			document.getElementById("actorX").value = path[step].cell.i;
-			document.getElementById("actorY").value = path[step].cell.j;
+			// Move event by one step
+			document.getElementById("eventX").value = path[step].cell.i;
+			document.getElementById("eventY").value = path[step].cell.j;
 			
 			function printVertexes(vertexes,format) {
 				let str = "";
@@ -150,13 +150,13 @@ function pathfinding(){
 			
 			drawMap();
 			setTimeout(function() {
-				moveActor(path, step + 1);
+				moveEvent(path, step + 1);
 			},100);
 		} else {
 			// End of the path!
 			// Enable all input fields
-			document.getElementById("actorX").disabled=false;
-			document.getElementById("actorY").disabled=false;
+			document.getElementById("eventX").disabled=false;
+			document.getElementById("eventY").disabled=false;
 			document.getElementById("targetX").disabled=false;
 			document.getElementById("targetY").disabled=false;
 			document.getElementById("width").disabled=false;
@@ -167,7 +167,7 @@ function pathfinding(){
 	}
 	
 	document.getElementById("log").innerHTML = "";
-	moveActor(path,0);	
+	moveEvent(path,0);	
 };
 
 function stop(){
@@ -215,7 +215,7 @@ border:1px dotted black;
 div.blocked{
 background-color:black;
 }
-div.actor{
+div.event{
 background-color:yellow;
 border:1px dotted black;
 }
@@ -232,9 +232,9 @@ Map size:
 <input id="width" type="number" value="40" min="1" max="50" onchange="drawMap();"/>
 <input id="height" type="number" value="40" min="1" max="50" onchange="drawMap();"/>
 <br/>
-<div class="cell actor"></div>&nbsp; Actor:
-<input id="actorX" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
-<input id="actorY" type="number" value="2" min="0" max="49" onchange="drawMap();"/>
+<div class="cell event"></div>&nbsp; Event:
+<input id="eventX" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
+<input id="eventY" type="number" value="2" min="0" max="49" onchange="drawMap();"/>
 <br style="clear:both;"/>
 <div class="cell target"></div>&nbsp; Target:
 <input id="targetX" type="number" value="37" min="0" max="49" onchange="drawMap();"/>

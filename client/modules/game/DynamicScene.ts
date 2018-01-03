@@ -1,5 +1,5 @@
 /// <reference path="../core/AbstractScene.ts" />
-/// <reference path="../core/manager/ActorManager.ts" />
+/// <reference path="../core/manager/CharacterManager.ts" />
 /*
  * Scene implementation for managing dynamic rendering
  */
@@ -14,7 +14,7 @@ class DynamicScene extends AbstractScene {
     lastFPS = 0;
     fpsPerformance = [22, 21, 20];
 
-    hero: IActor;   
+    hero: IEvent;   
     action: ICell;
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
@@ -31,8 +31,8 @@ class DynamicScene extends AbstractScene {
         let time = Utils.now();
         let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
-            ActorManager.update(this.hero, time, this.pauseDuration);
-            ActorManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
+            EventManager.update(this.hero, this.grid, this.hero, this.action, time, this.pauseDuration);
+            EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
             }, function(w: number, h: number) {
@@ -46,9 +46,8 @@ class DynamicScene extends AbstractScene {
         let movements: boolean = false;
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
-                EventManager.update(event, this.grid, this.hero, this.action);
-                ActorManager.update(event, time, this.pauseDuration);
-                movements = movements || ActorManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
+                EventManager.update(event, this.grid, this.hero, this.action, time, this.pauseDuration);
+                movements = movements || EventManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
             }
             // Reset the action
             this.action = undefined;
@@ -113,15 +112,22 @@ class DynamicScene extends AbstractScene {
     }
 
     protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
-        // TODO render by position
-        if (ActorManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-            ActorManager.render(this.grid, this.hero, this.context, true);
+        try {
+            if (EventManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
+                EventManager.render(this.grid, this.hero, this.context, true);
+            }
+        } catch(e) {
+            console.error(e);    
         }
-        
+
         if (!Utils.isEmpty(this.map.events)) {
-            for (let actor of this.map.events) {
-                if (ActorManager.isVisible(actor, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-                    ActorManager.render(this.grid, actor, this.context, true, this.pointer);
+            for (let event of this.map.events) {
+                try {
+                    if (EventManager.isVisible(event, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
+                        EventManager.render(this.grid, event, this.context, true, this.pointer);
+                    }
+                } catch(e) {
+                    console.error(e);    
                 }
             }
         }
@@ -131,7 +137,7 @@ class DynamicScene extends AbstractScene {
         var scene = this;
 
         let callback2: IBooleanCallback = function(result) {
-            // Initialize every actor in the map
+            // Initialize every Event in the map
             if (result && !Utils.isEmpty(scene.map.events)) {
                 for (let i = 0; i < scene.map.events.length; i++) {
                     scene.map.events[i] = EventManager.initTransientData(scene.map, scene.grid, scene.map.events[i]);
@@ -141,12 +147,12 @@ class DynamicScene extends AbstractScene {
         };
 
         let mapId;
-        let hero: IActor;
+        let hero: IEvent;
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
                 mapId = "0"; // Load first map
-                hero = ActorManager.getNewHero();
+                hero = EventManager.getNewHero();
             } else {
                 // Leave current map
                 callback(false);
@@ -158,7 +164,7 @@ class DynamicScene extends AbstractScene {
             hero = save.hero;
         }
 
-        this.hero = ActorManager.initTransientData(this.grid, hero);
+        this.hero = EventManager.initTransientData(this.map, this.grid, hero);
 
         MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
             scene.changeMap(map, function() {
@@ -183,7 +189,7 @@ class DynamicScene extends AbstractScene {
     }
 
     startMovement(i: number, j: number) {
-        ActorManager.startMovement(this.grid, this.hero, i, j);
+        EventManager.startMovement(this.grid, this.hero, i, j);
     }
     
     registerAction(i: number, j: number) {

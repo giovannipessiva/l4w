@@ -11,7 +11,7 @@ namespace Tester {
         cache: IDStarLiteCache
     };
 
-    export function testPathfinding(width: number, height: number, actorI: number, actorJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
+    export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
         let map: IMap = {
             id: 0,
@@ -26,12 +26,10 @@ namespace Tester {
             nextobjectid: 0,
             blocks: blocks
         };
-        // Initialize actor and target
-        let actor: IActor = {
-            name:"actor",  
-            i:actorI,
-            j:actorJ
-        };
+        // Initialize Event and target
+        let event: IEvent = EventManager.getNewEvent();
+        event.i = eventI;
+        event.j = eventJ;
         let target: ICell = {
             i:targetI,
             j:targetJ
@@ -47,13 +45,13 @@ namespace Tester {
         let direction: DirectionEnum;
         let guard = 0;
         while (direction !== DirectionEnum.NONE) {
-            direction = MapManager.pathFinder(map, actor, target, pathfinder);
+            direction = MapManager.pathFinder(map, event, target, pathfinder);
             if(direction !== DirectionEnum.NONE) {
-                actor = <IActor> Utils.moveToDirection(actor, direction);
+                event = <IEvent> Utils.moveToDirection(event, direction);
                 result.push({
                     cell:{
-                        i:actor.i,
-                        j:actor.j
+                        i:event.i,
+                        j:event.j
                     },
                     cache:map.dstarlitecache
                 });

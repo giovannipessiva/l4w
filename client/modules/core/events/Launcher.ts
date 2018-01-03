@@ -2,7 +2,7 @@
 
 namespace Script {
 
-    export function launchAction(event: IEvent, grid: AbstractGrid, hero: IActor, state: number, parameters?): boolean {
+    export function launchAction(event: IEvent, grid: AbstractGrid, hero: IEvent, state: number, parameters?): boolean {
         let script = event.script;
         let scriptClass = new Script[script](event, hero, grid);
         if (Utils.isEmpty(scriptClass)) {
@@ -16,8 +16,11 @@ namespace Script {
         }
         // On click action, the hero should face the event
         if (event.states[state].trigger === ActionTriggerEnum.CLICK) {
-            hero.direction = Utils.getDirection(event,hero);
-            event.direction = Utils.getOpposedDirections(hero.direction);
+            let heroDirection = Utils.getDirection(event, hero);
+            let eventDirection = Utils.getOpposedDirections(heroDirection);
+            EventManager.getState(hero).direction = heroDirection;
+            EventManager.getState(event).direction = eventDirection;
+
         }
         try {
             if (Utils.isEmpty(parameters)) {

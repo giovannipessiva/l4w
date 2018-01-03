@@ -242,7 +242,7 @@ namespace Utils {
     }
     
     /** Move a cell in the direction */
-    export function moveToDirection(cell: ICell, direction: DirectionEnum) {
+    export function moveToDirection(cell: ICell, direction: DirectionEnum): ICell {
         let target = {
             i: cell.i,
             j: cell.j

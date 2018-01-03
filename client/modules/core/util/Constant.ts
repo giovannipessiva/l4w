@@ -25,6 +25,22 @@ namespace Constant {
     export class MimeType {
         static JSON = "application/json";
     }
+
+    export const MEDIUM_MSPEED: number = 4 * 32 / 1000; // 4 cells per second
+    export const VERY_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.90);
+    export const LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.50);
+    export const MEDIUM_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.20);
+    export const MEDIUM_HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.20);
+    export const HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.50);
+    export const VERY_HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.90);
+
+    export const MEDIUM_FREQUENCY: number = 6 / 1000; // 6 animations per second
+    export const VERY_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.90);
+    export const LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.50);
+    export const MEDIUM_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.20);
+    export const MEDIUM_HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.20);
+    export const HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.50);
+    export const VERY_HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.90);
     
     export enum MapLayer {
         LOW,

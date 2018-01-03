@@ -1,7 +1,7 @@
 /// <reference path="../util/Constant.ts" />
 /// <reference path="../model/Map.ts" />
 /// <reference path="../AbstractGrid.ts" />
-/// <reference path="../manager/ActorManager.ts" />
+/// <reference path="../manager/CharacterManager.ts" />
 
 /**
  * Helper class for handling game maps
@@ -321,7 +321,8 @@ namespace MapManager {
         }
         if (!Utils.isEmpty(map.events)) {            
             for (let e of map.events) {
-                if(Utils.isEmpty(e.block) || e.block) {
+                let state = EventManager.getState(e);
+                if(state === undefined || Utils.isEmpty(state.block) || state.block) {
                     let gid = Utils.cellToGid(e, map.width);
                     map.dynamicBlocks[gid] = BlockDirection.ALL;
                 }
@@ -341,10 +342,10 @@ namespace MapManager {
         return Utils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
     }
 
-    /** use an algorithm to decide the better step for Actor to reach Target. Target is always considered as unblocked */
-    export function pathFinder(map: IMap, actor: IActor, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
-        let distI = target.i - actor.i;
-        let distJ = target.j - actor.j;
+    /** use an algorithm to decide the better step for Event to reach Target. Target is always considered as unblocked */
+    export function pathFinder(map: IMap, event: IEvent, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
+        let distI = target.i - event.i;
+        let distJ = target.j - event.j;
         if (distI === 0 && distJ === 0) {
             // Stop
             return DirectionEnum.NONE;
@@ -362,7 +363,7 @@ namespace MapManager {
                                 direction = DirectionEnum.LEFT;
                             }
                             // If first direction is blocked, try second
-                            if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
+                            if (isMovementTowardsTargetBlocked(map, event.i, event.j, direction, target)) {
                                 if (distJ > 0) {
                                     direction = DirectionEnum.DOWN;
                                 } else {
@@ -376,7 +377,7 @@ namespace MapManager {
                                 direction = DirectionEnum.UP;
                             }
                             // If first direction is blocked, try second
-                            if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
+                            if (isMovementTowardsTargetBlocked(map, event.i, event.j, direction, target)) {
                                 if (distI > 0) {
                                     direction = DirectionEnum.RIGHT;
                                 } else {
@@ -384,14 +385,14 @@ namespace MapManager {
                                 }
                             }
                         }
-                        if (isMovementTowardsTargetBlocked(map, actor.i, actor.j, direction, target)) {
+                        if (isMovementTowardsTargetBlocked(map, event.i, event.j, direction, target)) {
                             // If second direction is blocked too, you are fucked
                             direction = DirectionEnum.NONE;
                         } else {
                             // Save direction in the path
-                            ActorManager.addDirectionToPath(actor, direction, 3);
+                            EventManager.addDirectionToPath(event, direction, 3);
                             // Check if the pathfinder is in loop
-                            if (actor.path.length === 3 && actor.path[0] === actor.path[2] && Utils.isDirectionsOpposed(actor.path[0], actor.path[1])) {
+                            if (event.path.length === 3 && event.path[0] === event.path[2] && Utils.isDirectionsOpposed(event.path[0], event.path[1])) {
                                 // If a block is detected, stop
                                 direction = DirectionEnum.NONE;
                             }
@@ -416,7 +417,7 @@ namespace MapManager {
                         var width = map.width;
 
                         s_start = {
-                            cell: actor
+                            cell: event
                         };
                         s_goal = {
                             cell: target
@@ -556,7 +557,7 @@ namespace MapManager {
                                 s_start = s_min;
 
                                 // Move to s_start
-                                return Utils.getDirection(s_start.cell, actor);
+                                return Utils.getDirection(s_start.cell, event);
 
                                 // Assuming constant edge costs, this part is not needed
                                 /*
@@ -797,7 +798,6 @@ namespace MapManager {
             events: [
                 { 
                     name: "Sig. Maiale",
-                    charaset: "155-Animal05.png",
                     script: "Script1",
                     i: 4,
                     j: 8,
@@ -806,7 +806,8 @@ namespace MapManager {
                         {
                             condition: "always",
                             trigger: ActionTriggerEnum.CLICK,
-                            action: "testAction"
+                            action: "testAction",
+                            charaset: "155-Animal05.png",
                         }    
                     ]
                 }     
