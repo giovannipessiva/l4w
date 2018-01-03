@@ -55,7 +55,6 @@ class DynamicScene extends AbstractScene {
         }
         
         if(movements) {
-            console.log("MOVED");
             // Update map transient data (only when events move)
             MapManager.updateDynamicData(this.map);        
         }
@@ -135,7 +134,7 @@ class DynamicScene extends AbstractScene {
             // Initialize every actor in the map
             if (result && !Utils.isEmpty(scene.map.events)) {
                 for (let i = 0; i < scene.map.events.length; i++) {
-                    scene.map.events[i] = <IEvent> ActorManager.initTransientData(scene.grid, scene.map.events[i]);
+                    scene.map.events[i] = EventManager.initTransientData(scene.map, scene.grid, scene.map.events[i]);
                 }
             }
             callback(result);

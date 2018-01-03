@@ -219,9 +219,7 @@ namespace MapperPage {
         let j = (<HTMLInputElement> document.getElementById("eventj")).valueAsNumber;
         if(Mapper.isCellAvailable(currentEvent, i, j)) {
             eventModified();   
-            currentEvent.i = i;
-            currentEvent.j = j;
-            Mapper.changeSelectedEventCell(i, j);
+            Mapper.changeEventPosition(currentEvent, i, j);
             (<HTMLInputElement> document.getElementById("eventi")).style.removeProperty("color");
             (<HTMLInputElement> document.getElementById("eventj")).style.removeProperty("color");
         } else {

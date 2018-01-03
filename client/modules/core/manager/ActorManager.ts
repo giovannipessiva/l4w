@@ -166,13 +166,13 @@ namespace ActorManager {
                 case DirectionEnum.RIGHT: charaY = charaHeight * 2; break;
                 case DirectionEnum.UP: charaY = charaHeight * 3; break;
             };
-            context.save();
 
             let x = a.position.x + Math.floor((grid.cellW - charaWidthResized) / 2); //In the middle
             let y = a.position.y + Math.floor(- charaHeightResized + grid.cellH); //Foots on the ground
- 
+            
+            context.save();
             if (!Utils.isEmpty(a.opacity) && a.opacity !== 100) {
-                context.globalAlpha = a.opacity;
+                context.globalAlpha = a.opacity / 100;
             }
             if (pointer !== undefined) {
                 let isHighlighted: boolean = pointer.i === a.i && pointer.j === a.j;
@@ -364,12 +364,10 @@ namespace ActorManager {
     }
 
     export function initTransientData(grid: AbstractGrid, a: IActor): IActor {
-        if (Utils.isEmpty(a.position)) {
-            a.position = {
-                x: a.i * grid.cellW,
-                y: a.j * grid.cellH
-            };
-        }
+        a.position = {
+            x: a.i * grid.cellW,
+            y: a.j * grid.cellH
+        };
         this.setSpeed(a, a.speed);
         this.setFrequency(a, a.frequency);
         return a;

@@ -10,7 +10,7 @@ interface IEventData extends IActorData {
 
 // Event extended model (include transient data)
 interface IEvent extends IEventData, IActor {
-
+    index?: number; // Index of this event in the map.events Array
 }
 
 //TODO IEventState should extends IACtorData, while IEvent should not.

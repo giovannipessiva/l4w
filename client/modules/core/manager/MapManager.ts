@@ -265,8 +265,10 @@ namespace MapManager {
         loadDynamicBlocks(map);
         if(!Utils.isEmpty(map.events)) {
             for(let event of map.events) {
-                ActorManager.initTransientData(grid, event);    
+                EventManager.initTransientData(map, grid, event);    
             }
+        } else {
+            map.events = [];    
         }
     }
     

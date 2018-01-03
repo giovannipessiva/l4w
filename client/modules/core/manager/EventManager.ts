@@ -100,4 +100,19 @@ namespace EventManager {
             delete event.memory[key];
         }  
     };
+    
+    export function initTransientData(map: IMap, grid: AbstractGrid, e: IEvent): IEvent {
+        ActorManager.initTransientData(grid, e);
+        if(!Utils.isEmpty(map)) {
+            let i = 0;
+            for(let ev of map.events) {
+                if(e.i === ev.i && e.j === ev.j) {    
+                    e.index = i;
+                    return e;
+                }
+                i++;
+            }
+        }
+        return e;
+    }
 }

@@ -27,7 +27,7 @@ abstract class AbstractScene {
     layers: number;
 
     context: CanvasRenderingContext2D;
-    protected grid: AbstractGrid;
+    grid: AbstractGrid;
 
     paused: boolean;
     pauseStartTime: number;

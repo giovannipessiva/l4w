@@ -172,7 +172,10 @@ namespace Mapper {
         (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
     };
     
-    export function changeSelectedEventCell(i: number, j: number) {
+    export function changeEventPosition(event: IEvent, i: number, j: number) {
+        event.i = i;
+        event.j = j;
+        ActorManager.initTransientData(mapper.grid, event);
         mapper.renderingConfiguration.selectEventCell = {
             i: i,
             j: j    
@@ -192,24 +195,22 @@ namespace Mapper {
             let e: IEvent = mapper.map.events[i];
             if(event === e) {
                 mapper.map.events.splice(i, 1);
-                break;
+            } else {
+                // Update index
+                e.index = i;
             }
         }
     };
     
     export function addEvent(event: IEvent) {
-        for(let i = 0; i < mapper.map.events.length; i++) {
-            let e: IEvent = mapper.map.events[i];
-            if(event.i === e.i && event.j === e.j) {
-                // Update event
-                mapper.map.events[i] = event;
-                MapperPage.changeEditState(true);
-                return;
-            }
+        if(!Utils.isEmpty(event.index)) {
+            // Event already updated
+            MapperPage.changeEditState(true);
+            return;    
         }
         // Create new event
         mapper.map.events.push(event);
-        ActorManager.initTransientData(this.mapper.grid, event);
+        EventManager.initTransientData(mapper.map, this.mapper.grid, event);
         MapperPage.changeEditState(true);
     };
     
