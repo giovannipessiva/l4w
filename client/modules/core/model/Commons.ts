@@ -13,9 +13,9 @@ interface IExtendedCell extends IPoint, ICell {
 
 const enum DirectionEnum {
     UP,
+    RIGHT,
     DOWN,
     LEFT,
-    RIGHT,
     NONE
 };
 

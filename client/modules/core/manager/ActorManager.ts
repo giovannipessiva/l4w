@@ -8,7 +8,7 @@
  */
 namespace ActorManager {
 
-    const MEDIUM_MSPEED: number = 4 * 34 / 1000;
+    const MEDIUM_MSPEED: number = 4 * 32 / 1000; // 4 cells per second
     const VERY_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.90);
     const LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.50);
     const MEDIUM_LOW_MSPEED: number = MEDIUM_MSPEED * (1 - 0.20);
@@ -16,7 +16,7 @@ namespace ActorManager {
     const HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.50);
     const VERY_HIGH_MSPEED: number = MEDIUM_MSPEED * (1 + 0.90);
 
-    const MEDIUM_FREQUENCY: number = 8 / 1000;
+    const MEDIUM_FREQUENCY: number = 6 / 1000; // 6 animations per second
     const VERY_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.90);
     const LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.50);
     const MEDIUM_LOW_FREQUENCY: number = MEDIUM_FREQUENCY * (1 - 0.20);
@@ -156,6 +156,27 @@ namespace ActorManager {
                     case 2: charaX = charaWidth * 2; break;
                     case 3: charaX = charaWidth * 3; break;
                 }
+            } else if (a.rotation === RotationEnum.CLOCKWISE || a.rotation === RotationEnum.COUNTERCLOCKWISE) {
+                // Rotate
+                if (Utils.isEmpty(a.animationStartTime)) {
+                    a.animationStartTime = Utils.now();
+                }
+                let animationTime = Utils.now() - a.animationStartTime;
+                let frequencyVal: number = a.frequencyVal;
+                if(Utils.isEmpty(frequencyVal)) {
+                    frequencyVal = MEDIUM_FREQUENCY;    
+                }
+                // Rotation frequency is a forth of movement rotation
+                frequencyVal /= 4;
+                let direction = Math.floor((animationTime * frequencyVal) % 4);
+                if (a.rotation === RotationEnum.COUNTERCLOCKWISE) {
+                    if(direction === DirectionEnum.LEFT) {
+                        direction = DirectionEnum.RIGHT;
+                    } else if(direction === DirectionEnum.RIGHT) {
+                        direction = DirectionEnum.LEFT;
+                    }
+                }
+                a.direction = direction;  
             } else {
                 a.animationStartTime = undefined;
             }

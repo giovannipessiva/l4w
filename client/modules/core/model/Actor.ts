@@ -5,9 +5,10 @@ interface IActorData extends ICell {
     name: string; //String assigned to name field in editor
     visible?: boolean; //Whether Actor should be rendered
     opacity?: number; //Actor rendering opacity
-    rotation?: RotationEnum; //Define Actor rotation //TODO render rotation
+    rotation?: RotationEnum; //Define Actor rotation
     speed?: ScaleEnum; //Movement speed
     frequency?: ScaleEnum; //Animation change speed
+    direction?: DirectionEnum; //Current direction
     onTop?: number; //Integer > 0 if this Actor should be rendered on top
     block?: boolean; // False if Actor does not block movement (you can walk through it)
     charaset?: string; //Name of the charaset (alternative to GID)
@@ -23,7 +24,6 @@ interface IActor extends IActorData {
     movementDirection?: DirectionEnum; //Direction of current step
     target?: IPoint; //Current destination in pixels
     newTarget?: IPoint; //New destination in pixels
-    direction?: DirectionEnum; //Current direction
     animationStartTime?: number; //ms since last animation change
     path?: DirectionEnum[]; //Path computed for current target
 }
