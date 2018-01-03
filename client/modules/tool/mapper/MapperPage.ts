@@ -321,6 +321,17 @@ namespace MapperPage {
         }
         (<HTMLInputElement> document.getElementById("opacity")).valueAsNumber = opacity;
         
+        let directionOptions = (<HTMLSelectElement> document.getElementById("direction")).options;
+        directionOptions[DirectionEnum.UP] = new Option("Up");
+        directionOptions[DirectionEnum.RIGHT] = new Option("Right");
+        directionOptions[DirectionEnum.DOWN] = new Option("Down");
+        directionOptions[DirectionEnum.LEFT] = new Option("Left");
+        let direction: number = Number.parseInt(currentEvent.direction + "");
+        if(Utils.isEmpty(direction) || Number.isNaN(direction) || direction < DirectionEnum.UP || direction > DirectionEnum.NONE) {
+            direction = DirectionEnum.DOWN;    
+        }
+        (<HTMLSelectElement> document.getElementById("direction")).selectedIndex = direction;
+        
         let i = 0;
         let speedOptions: HTMLCollection = (<HTMLSelectElement> document.getElementById("speed")).options;
         let frequencyOptions: HTMLCollection = (<HTMLSelectElement> document.getElementById("frequency")).options;
@@ -341,14 +352,14 @@ namespace MapperPage {
         (<HTMLSelectElement> document.getElementById("frequency")).selectedIndex = frequency;
 
         let rotationOptions = (<HTMLSelectElement> document.getElementById("rotation")).options;
-        rotationOptions[0] = new Option("Off");
-        rotationOptions[1] = new Option("Clockwise");
-        rotationOptions[2] = new Option("Counterclockwise");
+        rotationOptions[RotationEnum.OFF] = new Option("Off");
+        rotationOptions[RotationEnum.CLOCKWISE] = new Option("Clockwise");
+        rotationOptions[RotationEnum.COUNTERCLOCKWISE] = new Option("Counterclockwise");
         let rotation: number = Number.parseInt(currentEvent.rotation + "");
         if(Utils.isEmpty(rotation) || Number.isNaN(rotation) || rotation < RotationEnum.OFF || rotation > RotationEnum.COUNTERCLOCKWISE) {
             rotation = RotationEnum.OFF;    
         }
-        (<HTMLSelectElement> document.getElementById("rotation")).selectedIndex = RotationEnum.OFF;
+        (<HTMLSelectElement> document.getElementById("rotation")).selectedIndex = rotation;
         
         let ontopOptions = (<HTMLSelectElement> document.getElementById("ontop")).options;
         ontopOptions[Constant.ZIndex.LV0] = new Option("Off");
@@ -381,6 +392,12 @@ namespace MapperPage {
             opacity = undefined;
         }
         currentEvent.opacity = opacity;
+        
+        let direction: number = (<HTMLSelectElement> document.getElementById("direction")).selectedIndex;
+        if(Utils.isEmpty(direction) || direction < DirectionEnum.UP || direction > DirectionEnum.LEFT) {
+            direction = undefined;    
+        }
+        currentEvent.direction = direction;
         
         let speed: number = (<HTMLSelectElement> document.getElementById("speed")).selectedIndex;
         let frequency: number = (<HTMLSelectElement> document.getElementById("frequency")).selectedIndex;
