@@ -208,12 +208,12 @@ namespace EventManager {
         return stepCompleted;
     }
     
-    
-    function getMSpeed(a: ICharacter) {
-        if (!Utils.isEmpty(a.mSpeed)) {
-            return a.mSpeed;
+    function getMSpeed(e: IEvent): number {
+        let mSpeed = getState(e).mSpeed;
+        if (Utils.isEmpty(mSpeed)) {
+            mSpeed = Constant.MEDIUM_MSPEED;
         }
-        return Constant.MEDIUM_MSPEED;
+        return mSpeed;
     }
 
     export function addDirectionToPath(e: IEvent, direction: DirectionEnum, stackLimit?: number) {
@@ -426,7 +426,7 @@ namespace EventManager {
     };
     
     export function initTransientData(map: IMap, grid: AbstractGrid, e: IEvent): IEvent {
-        CharacterManager.initTransientData(grid, e);
+        CharacterManager.initTransientData(grid, EventManager.getState(e));
         e.position = {
             x: e.i * grid.cellW,
             y: e.j * grid.cellH
