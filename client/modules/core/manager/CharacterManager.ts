@@ -8,86 +8,97 @@
  */
 namespace CharacterManager {
     
-    export function setFrequency(a: ICharacter, frequency: number) {
+    export function setFrequency(c: ICharacter, frequency: number) {
         switch (parseInt(frequency + "")) {
             case ScaleEnum.VERY_LOW:
-                a.frequencyVal = Constant.VERY_LOW_FREQUENCY;
+                c.frequencyVal = Constant.VERY_LOW_FREQUENCY;
                 break;
             case ScaleEnum.LOW:
-                a.frequencyVal = Constant.LOW_FREQUENCY;
+                c.frequencyVal = Constant.LOW_FREQUENCY;
                 break;
             case ScaleEnum.MEDIUM_LOW:
-                a.frequencyVal = Constant.MEDIUM_LOW_FREQUENCY;
+                c.frequencyVal = Constant.MEDIUM_LOW_FREQUENCY;
                 break;
             case ScaleEnum.MEDIUM:
-                a.frequencyVal = Constant.MEDIUM_FREQUENCY;
+                c.frequencyVal = Constant.MEDIUM_FREQUENCY;
                 break;
             case ScaleEnum.MEDIUM_HIGH:
-                a.frequencyVal = Constant.MEDIUM_HIGH_FREQUENCY;
+                c.frequencyVal = Constant.MEDIUM_HIGH_FREQUENCY;
                 break;
             case ScaleEnum.HIGH:
-                a.frequencyVal = Constant.HIGH_FREQUENCY;
+                c.frequencyVal = Constant.HIGH_FREQUENCY;
                 break;
             case ScaleEnum.VERY_HIGH:
-                a.frequencyVal = Constant.VERY_HIGH_FREQUENCY;
+                c.frequencyVal = Constant.VERY_HIGH_FREQUENCY;
                 break;
-            default: a.frequencyVal = Constant.MEDIUM_FREQUENCY;
+            default: c.frequencyVal = Constant.MEDIUM_FREQUENCY;
         }
     }
 
-    export function setSpeed(a: ICharacter, speed: number) {
+    export function setSpeed(c: ICharacter, speed: number) {
         switch (parseInt(speed + "")) {
             case ScaleEnum.VERY_LOW:
-                a.mSpeed = Constant.VERY_LOW_MSPEED;
+                c.mSpeed = Constant.VERY_LOW_MSPEED;
                 break;
             case ScaleEnum.LOW:
-                a.mSpeed = Constant.LOW_MSPEED;
+                c.mSpeed = Constant.LOW_MSPEED;
                 break;
             case ScaleEnum.MEDIUM_LOW:
-                a.mSpeed = Constant.MEDIUM_LOW_MSPEED;
+                c.mSpeed = Constant.MEDIUM_LOW_MSPEED;
                 break;
             case ScaleEnum.MEDIUM:
-                a.mSpeed = Constant.MEDIUM_MSPEED;
+                c.mSpeed = Constant.MEDIUM_MSPEED;
                 break;
             case ScaleEnum.MEDIUM_HIGH:
-                a.mSpeed = Constant.MEDIUM_HIGH_MSPEED;
+                c.mSpeed = Constant.MEDIUM_HIGH_MSPEED;
                 break;
             case ScaleEnum.HIGH:
-                a.mSpeed = Constant.HIGH_MSPEED;
+                c.mSpeed = Constant.HIGH_MSPEED;
                 break;
             case ScaleEnum.VERY_HIGH:
-                a.mSpeed = Constant.VERY_HIGH_MSPEED;
+                c.mSpeed = Constant.VERY_HIGH_MSPEED;
                 break;
-            default: a.mSpeed = Constant.MEDIUM_MSPEED;
+            default: c.mSpeed = Constant.MEDIUM_MSPEED;
         }
     }
     
-    export function isVisible(a: ICharacter, onTop: boolean) {
-        if(a === undefined) {
+    export function isVisible(c: ICharacter, onTop: boolean) {
+        if(c === undefined) {
             console.error("Uninitialized character");
             console.trace();
             return false;    
         }
         // Check if it is the right time to render this Character, based on its zindex
-        if(onTop !== (Utils.normalizeZIndex(a.onTop) !== Constant.ZIndex.LV0)) {
+        if(onTop !== (Utils.normalizeZIndex(c.onTop) !== Constant.ZIndex.LV0)) {
             return false
         }
-        if (!Utils.isEmpty(a.visible) && !a.visible) {
+        if (!Utils.isEmpty(c.visible) && !c.visible) {
             return false;
         }
-        if (!Utils.isEmpty(a.opacity) && a.opacity === 0) {
+        if (!Utils.isEmpty(c.opacity) && c.opacity === 0) {
             return false;
         }
-        if (Utils.isEmpty(a.charaset)) {
+        if (Utils.isEmpty(c.charaset)) {
             return false;
         }
         return true;
     }
+    
+    export function getNewCharacter(): ICharacter {
+        let c: ICharacter = {
+           charaset: ""
+        };
+        return c;
+    };
+     
 
-    export function initTransientData(grid: AbstractGrid, a: ICharacter): ICharacter {
-        this.setSpeed(a, a.speed);
-        this.setFrequency(a, a.frequency);
-        return a;
+    export function initTransientData(grid: AbstractGrid, c: ICharacter): ICharacter {
+        if(c === undefined) {
+            c = getNewCharacter();
+        }
+        setSpeed(c, c.speed);
+        setFrequency(c, c.frequency);
+        return c;
     }
 
 };

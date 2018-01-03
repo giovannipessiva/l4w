@@ -2,6 +2,8 @@
 
 // Character core model (only persistent data)
 interface ICharacterData {
+    charaset?: string; // Name of the charaset (alternative to GID)
+    gid?: number; // GID from a Tilemap (alternative to charaset)
     visible?: boolean; // Whether Character should be rendered
     opacity?: number; //Character rendering opacity
     rotation?: RotationEnum; //Define Character rotation
@@ -10,8 +12,6 @@ interface ICharacterData {
     direction?: DirectionEnum; // Current direction
     onTop?: number; // Integer > 0 if this Character should be rendered on top
     block?: boolean; // False if Character does not block movement (you can walk through it)
-    charaset?: string; // Name of the charaset (alternative to GID)
-    gid?: number; // GID from a Tilemap (alternative to charaset)
 }
 
 // Character extended model (include transient data)
