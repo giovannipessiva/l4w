@@ -87,6 +87,12 @@ namespace Utils {
         return newMap;
     }
 
+    export function resetSelect(select: HTMLSelectElement) {
+        for(let i = select.length - 1; i >= 0; i--) {
+            select.remove(i);
+        }
+    }
+
     export function gidToCell(gid: number, width: number): ICell {
         return {
             i: gid % width,
