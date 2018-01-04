@@ -256,9 +256,15 @@ namespace Utils {
         return target;
     }
     
-    export function getDistance(s1: ICell, s2: ICell): number {
-        let dx: number = Math.abs(s1.i - s2.i);
+    export function getCellDistance(s1: ICell, s2: ICell): number {
+        let di: number = Math.abs(s1.i - s2.i);
         let dy: number = Math.abs(s1.j - s2.j);
+        return di + dy;        
+    }
+    
+    export function getPointDistance(s1: IPoint, s2: IPoint): number {
+        let dx: number = Math.abs(s1.x - s2.x);
+        let dy: number = Math.abs(s1.y - s2.y);
         return dx + dy;        
     }
 

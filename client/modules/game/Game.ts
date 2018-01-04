@@ -98,10 +98,10 @@ namespace Game {
             currentTargetPoint = scene.hero.newTarget;
         }
         if(!Utils.isEmpty(currentTargetPoint)) {
-            let currentTarget: ICell = scene.grid.mapCanvasToCell(scene.hero.target);
-            if(Utils.getDistance(scene.hero, currentTarget) <= 1) {
-                // If currentTarget is near, start new movement from target (not from hero's current position)
-                startingCell = currentTarget;
+            let distance = Utils.getPointDistance(scene.hero.position, scene.hero.target);
+            if(distance <= Math.floor(scene.grid.cellH / 2)) {
+                // If currentTarget is half-cell away, start new movement from target (not from hero's current position)
+                startingCell = scene.grid.mapCanvasToCell(scene.hero.target);
             }
         }
         let target = Utils.getDirectionTarget(startingCell, direction);

@@ -154,7 +154,6 @@ namespace Input {
         
         // Keyboard events
         document.addEventListener("keydown", function(e) {
-            console.log("keydowm"); ////////////
             let callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
                 callback(e);

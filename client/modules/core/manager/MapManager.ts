@@ -344,6 +344,7 @@ namespace MapManager {
 
     /** use an algorithm to decide the better step for Event to reach Target. Target is always considered as unblocked */
     export function pathFinder(map: IMap, event: IEvent, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
+        let startTime = Utils.now();
         let distI = target.i - event.i;
         let distJ = target.j - event.j;
         if (distI === 0 && distJ === 0) {
@@ -762,6 +763,7 @@ namespace MapManager {
                         }
                     }
             }
+            console.log("Path found in:" + (Utils.now() - startTime));
             return direction;
         }
     }

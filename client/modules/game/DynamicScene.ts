@@ -176,7 +176,6 @@ class DynamicScene extends AbstractScene {
     }
 
     startMovement(i: number, j: number) {
-        console.log("move to:" + i + "," + j);
         EventManager.startMovement(this.grid, this.hero, i, j);
     }
     
