@@ -49,8 +49,8 @@ namespace TilePicker {
             canvas,
             grid,
             inputCallbackMap,
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
             function(i, j, x, y, mouseButton) {
                 // Start action
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
@@ -74,15 +74,15 @@ namespace TilePicker {
                 //Hover
                 tilePicker.updatePointer(i, j);
             },
-            function() { },
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
+            emptyFz,
             function(i, j) {
                 //OnRightClick
                 tilePicker.cleanSelection();
             },
-            function() { console.log("doubleClick"); },
-            function() { console.log("wheel"); }
+            emptyFz,
+            emptyFz
         );
     };
 

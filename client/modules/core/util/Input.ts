@@ -72,8 +72,8 @@ namespace Input {
         doubleClickCallback: IPositionCallback,
         wheelCallback: IPositionCallback) {
 
-        var lastKey: number;
-        var flagPause: boolean = false;
+        let lastKey: number;
+        let flagPause: boolean = false;
         
         // Always use SPACE for pause
         inputCallbacks[Keys.SPACE] = function(e: KeyboardEvent) {
@@ -84,17 +84,16 @@ namespace Input {
                 pauseCallback();
                 flagPause = true;
             }
-            e.preventDefault();
         };
         
         // Mouse events 
-        var flagMouseDown: boolean = false;
+        let flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e) {
             let precisePosition: IExtendedCell = mapEvent(e);
             actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
         });
         canvas.addEventListener("mousemove", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             if (flagMouseDown) {
                 ongoingActionCallback(position.i, position.j, e.buttons);
             } else {
@@ -108,7 +107,7 @@ namespace Input {
         });
         canvas.addEventListener("mouseup", function(e: PointerEvent) {
             flagMouseDown = false;
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             endActionCallback(position.i, position.j, e.buttons);
         });
         canvas.addEventListener("mouseout", function(e: PointerEvent) {
@@ -120,44 +119,44 @@ namespace Input {
         });
         canvas.addEventListener("contextmenu", function(e) {
             e.preventDefault();
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             rightClickCallback(position.i, position.j);
         });
         canvas.addEventListener("dblclick", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             doubleClickCallback(position.i, position.j);
         });
         canvas.addEventListener("wheel", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             wheelCallback(position.i, position.j);
         });
         
         // Touch events
         canvas.addEventListener("touchstart", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             startActionCallback(position.i, position.j, position.x, position.y);
         });
         canvas.addEventListener("touchend", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             ongoingActionCallback(null, null);
             endActionCallback(position.i, position.j);
 
         });
         canvas.addEventListener("touchcancel", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             ongoingActionCallback(null, null);
             endActionCallback(position.i, position.j);
         });
         canvas.addEventListener("touchmove", function(e) {
-            var position = mapEvent(e);
+            let position = mapEvent(e);
             ongoingActionCallback(position.i, position.j);
         });
         
         // Keyboard events
         document.addEventListener("keydown", function(e) {
-            var callback = inputCallbacks[String(e.keyCode)];
+            console.log("keydowm"); ////////////
+            let callback = inputCallbacks[String(e.keyCode)];
             if (callback !== undefined) {
-                e.preventDefault();
                 callback(e);
             }
             lastKey = e.keyCode;
@@ -167,7 +166,6 @@ namespace Input {
                 resetCallback();
             }
         });
-        //keypress, input -> tasto premuto
         
         // Visibility events
         document.addEventListener("visibilitychange", function() {

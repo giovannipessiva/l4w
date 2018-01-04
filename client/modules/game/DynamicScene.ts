@@ -160,7 +160,7 @@ class DynamicScene extends AbstractScene {
             }
         } else {
             // Load map from save
-            mapId = save.map;
+            mapId = save.currentMap;
             hero = save.hero;
         }
 
@@ -175,20 +175,8 @@ class DynamicScene extends AbstractScene {
         });
     }
 
-    //TODO move to SaveManager
-    public getSave(): ISave {
-        if (Utils.isEmpty(this.map) || Utils.isEmpty(this.focus)) {
-            return null;
-        } else {
-            return {
-                id: 0,
-                map: this.map.id,
-                hero: this.hero
-            };
-        }
-    }
-
     startMovement(i: number, j: number) {
+        console.log("move to:" + i + "," + j);
         EventManager.startMovement(this.grid, this.hero, i, j);
     }
     

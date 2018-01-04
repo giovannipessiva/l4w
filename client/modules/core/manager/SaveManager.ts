@@ -6,12 +6,24 @@
  */
 namespace SaveManager {
 
-    export function getNewSave(name: string): ISave {
+    export function getNewSave(): ISave {
         var save: ISave = {
             id: 0,
-            map: 0,
-            hero: EventManager.getNewHero()
+            timestamp: Utils.now(),
+            currentMap: 0,
+            hero: EventManager.getNewHero(),
+            maps: []
         };
+        return save;
+    }
+    
+    export function getSave(map: IMap, hero: IEvent): ISave {
+        if (Utils.isEmpty(map) || Utils.isEmpty(hero)) {
+            return null;
+        }
+        let save: ISave = SaveManager.getNewSave();
+        save.currentMap = map.id;
+        save.hero = hero;
         return save;
     }
     

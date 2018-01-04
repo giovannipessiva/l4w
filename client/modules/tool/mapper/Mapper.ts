@@ -60,8 +60,8 @@ namespace Mapper {
     }
 
     export function saveMap(callback: IBooleanCallback = null) {
-        var mapId = MapperPage.getActiveMap();
-        var mapJSON = JSON.stringify(this.mapper.getMap());
+        let mapId = MapperPage.getActiveMap();
+        let mapJSON = JSON.stringify(this.mapper.getMap());
         Resource.save(mapId+"", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
             if(callback !== null) {
                 callback(success);
@@ -70,36 +70,43 @@ namespace Mapper {
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
-        var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
-        inputCallbackMap[Input.Keys.UP] = function(e) {
+        let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
+        inputCallbackMap[Input.Keys.UP] = function(e: KeyboardEvent) {
             scene.moveFocus(DirectionEnum.UP);
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.DOWN] = function(e) {
+        inputCallbackMap[Input.Keys.DOWN] = function(e: KeyboardEvent) {
             scene.moveFocus(DirectionEnum.DOWN);
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.LEFT] = function(e) {
+        inputCallbackMap[Input.Keys.LEFT] = function(e: KeyboardEvent) {
             scene.moveFocus(DirectionEnum.LEFT);
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.RIGHT] = function(e) {
+        inputCallbackMap[Input.Keys.RIGHT] = function(e: KeyboardEvent) {
             scene.moveFocus(DirectionEnum.RIGHT);
+            e.preventDefault();
         };
 
-        inputCallbackMap[Input.Keys.F2] = function(e) {
+        inputCallbackMap[Input.Keys.F2] = function(e: KeyboardEvent) {
             scene.toggleEditorGrid();
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.F3] = function(e) {
+        inputCallbackMap[Input.Keys.F3] = function(e: KeyboardEvent) {
             scene.toggleCellNumbering();
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.F4] = function(e) {
+        inputCallbackMap[Input.Keys.F4] = function(e: KeyboardEvent) {
             scene.toggleFocus();
+            e.preventDefault();
         };
 
         Input.init(
             canvas,
             grid,
             inputCallbackMap,
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
             function(i, j, x, y, mouseButton) {
                 // Start action
                 if (mouseButton === Input.MouseButtons.LEFT) {
@@ -131,15 +138,15 @@ namespace Mapper {
                 //Hover
                 scene.updatePointer(i, j);
             },
-            function() { },
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
+            emptyFz,
             function(i, j) {
                 //OnRightClick
                 scene.cleanSelection();
             },
-            function() { console.log("doubleClick"); },
-            function() { console.log("wheel"); }
+            emptyFz,
+            emptyFz
         );
     };
 

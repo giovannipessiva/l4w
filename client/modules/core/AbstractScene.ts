@@ -6,11 +6,14 @@
 /// <reference path="util/Commons.ts" />
 /// <reference path="util/Utils.ts" />
 
-var nextAnimationFrame =
+var _requestAnimationFrame =
     window.requestAnimationFrame ||
-    function(callback) {
+    function(callback): number {
         window.setTimeout(callback, 40);
+        return Math.floor(Math.random() * 100);
     };
+
+var _cancelAnimationFrame = window.cancelAnimationFrame
 
 /**
  * Abstract class for handling rendering operations
@@ -48,20 +51,20 @@ abstract class AbstractScene {
 
     start(canvas: HTMLCanvasElement) {
         this.changeScale(canvas);
-        this.mainGameLoop();
+        let scene = this;
+        let frameId = _requestAnimationFrame(function() {
+            scene.mainGameLoop(frameId);
+        });
     }
 
-    mainGameLoop() {
-        var scene = this;
-        nextAnimationFrame(function() {
-            scene.mainGameLoop();
+    mainGameLoop(frameId: number) {
+        let scene = this;
+        let nextFrameID = _requestAnimationFrame(function() {
+            scene.mainGameLoop(nextFrameID);
         });
-
-        if (this.paused) {
-            return;
-        }
-
-        if (this.mainGameLoop_pre() === false) {
+        
+        if (this.paused || !this.mainGameLoop_pre()) {
+            _cancelAnimationFrame(frameId);
             return;
         }
 

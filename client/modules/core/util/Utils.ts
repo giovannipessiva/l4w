@@ -23,7 +23,7 @@ namespace Utils {
     /**
      * Unit test for the Utils.isEmpty method
      */
-    export function unitTestIsEmpty() {
+    export function unitTestIsEmpty(): void {
         // ES6 map
         let test: any = new Map<string,string>();
         console.assert(Utils.isEmpty(test), "empty ES6 map");
@@ -73,7 +73,7 @@ namespace Utils {
         console.assert(!Utils.isEmpty(0.0), "not empty float");
     }
 
-    export function now() {
+    export function now(): number {
         return (new Date()).getTime();
     }
 
@@ -254,6 +254,12 @@ namespace Utils {
             case DirectionEnum.RIGHT: target.i += 1; break;
         }
         return target;
+    }
+    
+    export function getDistance(s1: ICell, s2: ICell): number {
+        let dx: number = Math.abs(s1.i - s2.i);
+        let dy: number = Math.abs(s1.j - s2.j);
+        return dx + dy;        
     }
 
     export function getRandomBoolean(): boolean {

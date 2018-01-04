@@ -61,8 +61,8 @@ namespace Tilesetter {
             canvas,
             grid,
             inputCallbackMap,
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
             function(i, j, x, y, mouseButton) {
                 // Start action
                 switch (TilesetterPage.getEditMode()) {
@@ -101,15 +101,15 @@ namespace Tilesetter {
                 //Hover
                 tilesetterScene.updatePointer(i, j);
             },
-            function() { },
-            function() { },
-            function() { },
+            emptyFz,
+            emptyFz,
+            emptyFz,
             function(i, j) {
                 //OnRightClick
                 tilesetterScene.cleanSelection();
             },
-            function() { console.log("doubleClick"); },
-            function() { console.log("wheel"); }
+            emptyFz,
+            emptyFz
         );
     };
 

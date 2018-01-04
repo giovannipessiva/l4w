@@ -50,7 +50,7 @@ namespace Game {
     export function save() {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        let currentState: ISave = scene.getSave();
+        let currentState: ISave = SaveManager.getSave(scene.map, scene.hero);
         if (!Utils.isEmpty(currentState)) {
             saveId = currentState.id + "";
         }
@@ -64,7 +64,7 @@ namespace Game {
     function loadSave(canvas: HTMLCanvasElement, callback: (save: ISave) => void) {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        let currentState: ISave = scene.getSave();
+        let currentState: ISave = SaveManager.getSave(scene.map, scene.hero);
         if (!Utils.isEmpty(currentState)) {
             saveId = currentState.id + "";
         }
@@ -89,33 +89,55 @@ namespace Game {
             }
         });
     }
+    
+    function moveToDirection(scene: DynamicScene, direction: DirectionEnum) {
+        let startingCell: ICell = scene.hero;
+        // If hero is currently moving
+        let currentTargetPoint: IPoint = scene.hero.target;
+        if(Utils.isEmpty(currentTargetPoint)) {
+            currentTargetPoint = scene.hero.newTarget;
+        }
+        if(!Utils.isEmpty(currentTargetPoint)) {
+            let currentTarget: ICell = scene.grid.mapCanvasToCell(scene.hero.target);
+            if(Utils.getDistance(scene.hero, currentTarget) <= 1) {
+                // If currentTarget is near, start new movement from target (not from hero's current position)
+                startingCell = currentTarget;
+            }
+        }
+        let target = Utils.getDirectionTarget(startingCell, direction);
+        scene.startMovement(target.i, target.j);    
+    }
 
     function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, grid: DynamicGrid) {
-        var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
-        inputCallbackMap[Input.Keys.W] = function(e) {
-            scene.moveFocus(DirectionEnum.UP);
+        let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
+        inputCallbackMap[Input.Keys.W] = function(e: KeyboardEvent) {
+            moveToDirection(scene, DirectionEnum.UP);
         };
-        inputCallbackMap[Input.Keys.S] = function(e) {
-            scene.moveFocus(DirectionEnum.DOWN);
+        inputCallbackMap[Input.Keys.S] = function(e: KeyboardEvent) {
+            moveToDirection(scene, DirectionEnum.DOWN);
         };
-        inputCallbackMap[Input.Keys.A] = function(e) {
-            scene.moveFocus(DirectionEnum.LEFT);
+        inputCallbackMap[Input.Keys.A] = function(e: KeyboardEvent) {
+            moveToDirection(scene, DirectionEnum.LEFT);
         };
-        inputCallbackMap[Input.Keys.D] = function(e) {
-            scene.moveFocus(DirectionEnum.RIGHT);
+        inputCallbackMap[Input.Keys.D] = function(e: KeyboardEvent) {
+            moveToDirection(scene, DirectionEnum.RIGHT);
         };
 
-        inputCallbackMap[Input.Keys.F1] = function(e) {
+        inputCallbackMap[Input.Keys.F1] = function(e: KeyboardEvent) {
             scene.toggleFPS();
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.F2] = function(e) {
+        inputCallbackMap[Input.Keys.F2] = function(e: KeyboardEvent) {
             scene.toggleGridMode();
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.F3] = function(e) {
+        inputCallbackMap[Input.Keys.F3] = function(e: KeyboardEvent) {
             scene.toggleCellNumbering();
+            e.preventDefault();
         };
-        inputCallbackMap[Input.Keys.F4] = function(e) {
+        inputCallbackMap[Input.Keys.F4] = function(e: KeyboardEvent) {
             scene.toggleFocus();
+            e.preventDefault();
         };
         inputCallbackMap[Input.Keys.F5] = function(e: KeyboardEvent) {
             scene.toggleBlocks();
@@ -125,8 +147,7 @@ namespace Game {
             scene.toggleAntialiasing();
             e.preventDefault(); // Avoid focusing URL bar
         };
-        var actionCallback = function(i: number, j: number, x: number, y: number) {
-            //TODO distingui da celle evento e celle vuote dove spostarsi
+        let actionCallback = function(i: number, j: number, x: number, y: number) {
             doAction(i, j);
         };
 

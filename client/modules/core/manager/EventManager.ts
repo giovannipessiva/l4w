@@ -185,7 +185,7 @@ namespace EventManager {
                     e.i = cell.i;
                     e.j = cell.j;
                     onCellChange(movementX, movementY);
-
+                    
                     // Check If I am arrived, or a new target has been requested
                     if (!Utils.isEmpty(e.newTarget) || (e.position.x === e.target.x && e.position.y === e.target.y)) {
                         // Reset current movement
