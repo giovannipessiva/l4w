@@ -30,6 +30,7 @@ namespace MapManager {
                     } else {
                         console.error(exception);
                     }
+                    console.error(resourceText);
                     Errors.showError(canvas.getContext("2d"));
                     callback(null);
                 }

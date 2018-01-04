@@ -11,6 +11,6 @@ interface IMapSave {
 }
 
 interface IEventSave {
-    index: number; // Index of the event
+    id: number; // ID of this event (unique in its map)
     memory: {}; // Map of generic key -> value pairs (override the default memory of this event)  
 }

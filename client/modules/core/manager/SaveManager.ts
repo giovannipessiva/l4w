@@ -38,10 +38,27 @@ namespace SaveManager {
     
     function getEventSave(e: IEvent): IEventSave {
         let es: IEventSave = {
-            index: e.id,  
+            id: e.id,  
             memory: e.memory
         };
         return es;        
     }
     
+    export function applySave(save: ISave, map: IMap) {
+        if(Utils.isEmpty(save) || Utils.isEmpty(map.events)) {
+            return;
+        }
+        let saveEvents = save.maps[map.id].events;
+        if(Utils.isEmpty(saveEvents)) {
+            return;    
+        }
+        for(let se of saveEvents) {
+            for(let e of map.events) {
+                if(se.id === e.id) {    
+                    // Override event with saved data
+                    e.memory = se.memory;
+                }
+            }
+        }
+    }
 }

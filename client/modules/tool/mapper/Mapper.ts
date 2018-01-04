@@ -198,7 +198,6 @@ namespace Mapper {
     };
     
     export function deleteEvent(event: IEvent) {
-        console.log(mapper.map); ///////////
         if(Utils.isEmpty(event.id)) {
             return;    
         }

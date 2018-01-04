@@ -18,25 +18,23 @@ namespace EventManager {
             event.movementStartTime += pauseTimeOffset;
         }
         if(!Utils.isEmpty(event.states)) {
-            // Check if there are activable states (where the states index > event.currentState)
-            // The state with higher index wins, and get activated
-            if(Utils.isEmpty(event.currentState) || event.states.length > event.currentState + 1) {
-                event.currentState = NO_STATE;
-                for(let s = event.states.length - 1; s>=0 && (Utils.isEmpty(event.currentState) || s > event.currentState); s--) {
-                    // Check activation action and condition
-                    if(isStateActivable(event, s)) {
-                        event.currentState = s;
-                        break;
-                    }
+            // Check if there are activable states; the state with higher index wins, and get activated
+            let newState: number = NO_STATE;
+            for(let s = event.states.length - 1; s >= 0; s--) {
+                // Check activation action and condition
+                if(isStateActivable(event, s)) {
+                    newState = s;
+                    break;
                 }
             }
-            
+            event.currentState = newState;
+
             if(event === hero) {
                 // For the hero, don't trigger actions
                 return;    
             }
+            // Check if an action has been triggered
             if(isActionTriggered(event, event.currentState, hero, actionCell)) {
-                // Check if this trigger an action
                 Script.launchAction(event, grid, hero, event.currentState);
             }
         }
@@ -58,6 +56,7 @@ namespace EventManager {
                 if(Utils.isEmpty(actionCell) || actionCell.i !== event.i || actionCell.j !== event.j) {
                     break;
                 }
+                // else, continue as "TOUCH" case
             case ActionTriggerEnum.TOUCH:
                 let i_diff = Math.abs(event.i - hero.i);
                 let j_diff = Math.abs(event.j - hero.j);

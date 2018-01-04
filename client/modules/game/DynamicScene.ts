@@ -16,6 +16,7 @@ class DynamicScene extends AbstractScene {
 
     hero: IEvent;   
     action: ICell;
+    save: ISave;
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
@@ -134,7 +135,7 @@ class DynamicScene extends AbstractScene {
     }
     
     public loadSave(save: ISave, callback: IBooleanCallback) {
-        var scene = this;
+        let scene = this;
 
         let callback2: IBooleanCallback = function(result) {
             // Initialize every Event in the map
@@ -159,6 +160,7 @@ class DynamicScene extends AbstractScene {
                 return;
             }
         } else {
+            this.save= save;
             // Load map from save
             mapId = save.currentMap;
             hero = save.hero;
@@ -166,7 +168,8 @@ class DynamicScene extends AbstractScene {
 
         this.hero = EventManager.initTransientData(this.map, this.grid, hero);
 
-        MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) {
+        MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) { 
+            SaveManager.applySave(save, map);           
             scene.changeMap(map, function() {
                 scene.resetTranslation();
                 scene.focus = scene.grid.mapCellToCanvas(hero);

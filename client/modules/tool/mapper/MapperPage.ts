@@ -14,6 +14,7 @@ namespace MapperPage {
     let flagFirstLoad: boolean = true;
     let flagEdited: boolean = false;
     let flagEventModified: boolean = false;
+    let currentState: IEventState;
     let currentEvent: IEvent;
 
     const scaleOptions: string[] = [
@@ -115,7 +116,7 @@ namespace MapperPage {
     }
 
     export function changeSize() {
-        var node = getSelectedNode();
+        let node = getSelectedNode();
         node.data.w = parseInt($("#mapSizeW").val());
         node.data.h = parseInt($("#mapSizeH").val());
         Mapper.changeSize(node.data.h, node.data.w);
@@ -124,8 +125,8 @@ namespace MapperPage {
 
     function loadTiles() {
         $.getJSON(base_path + "data/resources/tiles.json", function(data) {
-            var sel = $("#tiles");
-            for (var i = 0; i < data.length; i++) {
+            let sel = $("#tiles");
+            for (let i = 0; i < data.length; i++) {
                 sel.append("<option value='" + data[i].name + "'>" + data[i].desc
                     + "</option>");
             }
@@ -134,7 +135,7 @@ namespace MapperPage {
 
     export function loadNews() {
         $.getJSON(base_path + "news", function(data) {
-            var news = $("#news");
+            let news = $("#news");
             //TODO manage json response
         });
     }
@@ -231,8 +232,7 @@ namespace MapperPage {
 
     export function changeEventScript() {
         eventModified();
-        let state = (<HTMLInputElement>document.getElementById("state")).valueAsNumber;
-        loadActions(currentEvent.states[state - 1]);
+        loadActions();
     }
 
     export function deleteEvent() {
@@ -258,14 +258,15 @@ namespace MapperPage {
         if (readPreviousState) {
             readEventStateDetails();
         }
-        let currentEventState = (<HTMLInputElement>document.getElementById("state")).valueAsNumber;
+        let currentEventStateNum = (<HTMLInputElement>document.getElementById("state")).valueAsNumber;
         if (Utils.isEmpty(currentEvent.states)) {
             currentEvent.states = [];
         }
-        if (currentEventState > currentEvent.states.length) {
-            currentEvent.states[currentEventState - 1] = EventManager.getNewEventState();
+        if (currentEventStateNum > currentEvent.states.length) {
+            currentEvent.states[currentEventStateNum - 1] = EventManager.getNewEventState();
         }
-        let state: IEventState = currentEvent.states[currentEventState - 1];
+        let state: IEventState = currentEvent.states[currentEventStateNum - 1];
+        currentState = state;
         loadConditions(state);
         let select: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("trigger"));
         let options: HTMLCollection = select.options;
@@ -274,10 +275,12 @@ namespace MapperPage {
         options[ActionTriggerEnum.OVER] = new Option("Over");
         options[ActionTriggerEnum.AUTO] = new Option("(auto)");
         select.selectedIndex = state.trigger;
-        loadActions(state);
+        
+        loadActions();
+        
         // Update total states count
         (<HTMLElement>document.getElementById("tot")).innerText = currentEvent.states.length + "";
-        loadCharacterProperties(state);
+        loadCharacterProperties();
     }
 
     function loadConditions(state: IEventState) {
@@ -294,22 +297,23 @@ namespace MapperPage {
         }
     }
 
-    function loadActions(state: IEventState) {
+    function loadActions() {
         let scriptClass = (<HTMLSelectElement>document.getElementById("script")).value;
         let actions: string[] = Resource.listScriptActions(scriptClass);
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
         let actionOptions: HTMLCollection = selectActions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
         let i = 0;
+        selectActions.selectedIndex = undefined;
         for (let a of actions) {
             actionOptions[i] = new Option(a);
-            if (a === state.action) {
+            if (a === currentState.action) {
                 selectActions.selectedIndex = i;
             }
             i++;
         }
     }
 
-    function loadCharacterProperties(currentState: IEventState) {
+    function loadCharacterProperties() {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
         Resource.listResources(Resource.TypeEnum.CHAR, function(list: string[]) {
             let options: HTMLCollection = selectCharasets.options;
@@ -394,12 +398,10 @@ namespace MapperPage {
     }
 
     function readEventStateDetails(): void {
-        let currentState: IEventState = {
-            condition: (<HTMLInputElement>document.getElementById("condition")).value,
-            trigger: (<HTMLSelectElement>document.getElementById("trigger")).selectedIndex,
-            action: (<HTMLInputElement>document.getElementById("action")).value,
-            charaset: (<HTMLSelectElement>document.getElementById("charasets")).value
-        }
+        currentState.condition = (<HTMLInputElement>document.getElementById("condition")).value;
+        currentState.trigger = (<HTMLSelectElement>document.getElementById("trigger")).selectedIndex;
+        currentState.action = (<HTMLInputElement>document.getElementById("action")).value;
+        currentState.charaset = (<HTMLSelectElement>document.getElementById("charasets")).value;
 
         let visible: boolean = (<HTMLInputElement>document.getElementById("visible")).checked;
         if (visible) {
@@ -447,9 +449,6 @@ namespace MapperPage {
             block = undefined;
         }
         currentState.block = block;
-
-        let state = (<HTMLInputElement>document.getElementById("state")).valueAsNumber;
-        currentEvent.states[state - 1] = currentState;
     }
 
     export function loadEvent(event?: IEvent, askConfirm: boolean = true): boolean {

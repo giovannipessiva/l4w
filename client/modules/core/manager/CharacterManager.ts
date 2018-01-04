@@ -64,8 +64,6 @@ namespace CharacterManager {
     
     export function isVisible(c: ICharacter, onTop: boolean) {
         if(c === undefined) {
-            console.error("Uninitialized character");
-            console.trace();
             return false;    
         }
         // Check if it is the right time to render this Character, based on its zindex

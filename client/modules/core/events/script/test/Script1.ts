@@ -18,6 +18,26 @@ namespace Script {
             this.wait(1000).then(function(){
                 script.stepFromTarget(script.hero);
             });
+            this.incrementStateVar();
+            return true;
+        }
+        
+        public giantTest2(): boolean {
+            let context = this;
+            this.dialog("Can't you see that I'm busy?");
+            let script = this;
+            this.wait(1000).then(function(){
+                script.stepFromTarget(script.hero);
+            });
+            this.incrementStateVar();
+            return true;
+        }
+               
+        public giantTest3(): boolean {
+            let context = this;
+            this.dialog("Aargh!!");
+            this.moveToTarget({ i: 0, j: 0 });
+            this.setStateVar(0);
             return true;
         }
         
