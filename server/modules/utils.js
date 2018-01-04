@@ -73,7 +73,7 @@ module.exports = {
     			let file = files[i];
     			let is404 = file.startsWith("404")
     			let isHidden = file.startsWith(".")
-    			let isDirectory = fs.lstatSync(filePath + "\\" + file + "\\").isDirectory();
+    			let isDirectory = fs.lstatSync(filePath + "/" + file).isDirectory();
     			if (is404 || isHidden || isDirectory) {
     				files.splice(i, 1);
     				i--;

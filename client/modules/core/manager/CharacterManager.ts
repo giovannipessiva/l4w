@@ -91,7 +91,6 @@ namespace CharacterManager {
         return c;
     };
      
-
     export function initTransientData(grid: AbstractGrid, c: ICharacter): ICharacter {
         if(c === undefined) {
             c = getNewCharacter();
