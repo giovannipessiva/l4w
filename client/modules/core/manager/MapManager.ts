@@ -390,14 +390,6 @@ namespace MapManager {
                         if (isMovementTowardsTargetBlocked(map, event.i, event.j, direction, target)) {
                             // If second direction is blocked too, you are fucked
                             direction = DirectionEnum.NONE;
-                        } else {
-                            // Save direction in the path
-                            EventManager.addDirectionToPath(event, direction, 3);
-                            // Check if the pathfinder is in loop
-                            if (event.path.length === 3 && event.path[0] === event.path[2] && Utils.isDirectionsOpposed(event.path[0], event.path[1])) {
-                                // If a block is detected, stop
-                                direction = DirectionEnum.NONE;
-                            }
                         }
                     }
                     break;
@@ -763,6 +755,16 @@ namespace MapManager {
                             return uMin;
                         }
                     }
+            }
+            // Detect loops
+            if(direction !== DirectionEnum.NONE) {
+                // Save direction in the path
+                EventManager.addDirectionToPath(event, direction, 3);
+                // Check if the pathfinder is in loop
+                if (event.path.length === 3 && event.path[0] === event.path[2] && Utils.isDirectionsOpposed(event.path[0], event.path[1])) {
+                    // If a block is detected, stop
+                    direction = DirectionEnum.NONE;
+                }    
             }
             let time = Utils.now() - startTime;
             if(time > 10) {

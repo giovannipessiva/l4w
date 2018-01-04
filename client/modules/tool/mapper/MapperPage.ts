@@ -270,6 +270,7 @@ namespace MapperPage {
         loadConditions(state);
         let select: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("trigger"));
         let options: HTMLCollection = select.options;
+        options.length = 0;
         options[ActionTriggerEnum.CLICK] = new Option("Click");
         options[ActionTriggerEnum.TOUCH] = new Option("Touch");
         options[ActionTriggerEnum.OVER] = new Option("Over");
@@ -287,6 +288,7 @@ namespace MapperPage {
         let conditions: string[] = Resource.listEventStateConditions();
         let selectConditions = (<HTMLSelectElement>document.getElementById("condition"));
         let conditionOptions: HTMLCollection = selectConditions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        conditionOptions.length = 0;
         let i = 0;
         for (let a of conditions) {
             conditionOptions[i] = new Option(a);
@@ -303,6 +305,7 @@ namespace MapperPage {
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
         let actionOptions: HTMLCollection = selectActions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
         let i = 0;
+        actionOptions.length = 0;
         selectActions.selectedIndex = undefined;
         for (let a of actions) {
             actionOptions[i] = new Option(a);
@@ -317,6 +320,7 @@ namespace MapperPage {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
         Resource.listResources(Resource.TypeEnum.CHAR, function(list: string[]) {
             let options: HTMLCollection = selectCharasets.options;
+            options.length = 0;
             options[0] = new Option("");
             for (let i = 0; i < list.length; i++) {
                 options[i + 1] = new Option(list[i]);
@@ -339,6 +343,7 @@ namespace MapperPage {
         (<HTMLInputElement>document.getElementById("opacity")).valueAsNumber = opacity;
 
         let directionOptions = (<HTMLSelectElement>document.getElementById("direction")).options;
+        directionOptions.length = 0;
         directionOptions[DirectionEnum.UP] = new Option("Up");
         directionOptions[DirectionEnum.RIGHT] = new Option("Right");
         directionOptions[DirectionEnum.DOWN] = new Option("Down");
@@ -352,6 +357,8 @@ namespace MapperPage {
         let i = 0;
         let speedOptions: HTMLCollection = (<HTMLSelectElement>document.getElementById("speed")).options;
         let frequencyOptions: HTMLCollection = (<HTMLSelectElement>document.getElementById("frequency")).options;
+        speedOptions.length = 0;
+        frequencyOptions.length = 0;
         for (let s of scaleOptions) {
             speedOptions[i] = new Option(s);
             frequencyOptions[i] = new Option(s);
@@ -369,6 +376,7 @@ namespace MapperPage {
         (<HTMLSelectElement>document.getElementById("frequency")).selectedIndex = frequency;
 
         let rotationOptions = (<HTMLSelectElement>document.getElementById("rotation")).options;
+        rotationOptions.length = 0;
         rotationOptions[RotationEnum.OFF] = new Option("Off");
         rotationOptions[RotationEnum.CLOCKWISE] = new Option("Clockwise");
         rotationOptions[RotationEnum.COUNTERCLOCKWISE] = new Option("Counterclockwise");
@@ -379,6 +387,7 @@ namespace MapperPage {
         (<HTMLSelectElement>document.getElementById("rotation")).selectedIndex = rotation;
 
         let ontopOptions = (<HTMLSelectElement>document.getElementById("ontop")).options;
+        ontopOptions.length = 0;
         ontopOptions[Constant.ZIndex.LV0] = new Option("Off");
         ontopOptions[Constant.ZIndex.LV1] = new Option("Liv. 1");
         ontopOptions[Constant.ZIndex.LV2] = new Option("Liv. 2");
@@ -475,6 +484,7 @@ namespace MapperPage {
         let selectScript = (<HTMLSelectElement>document.getElementById("script"));
         let classes: Map<string, string> = Resource.listScriptClasses();
         let options: HTMLCollection = selectScript.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        options.length = 0;
         let i = 0;
         for (let c of classes) {
             options[i] = new Option(c[0]);

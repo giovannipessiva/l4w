@@ -32,7 +32,7 @@ class DynamicScene extends AbstractScene {
         let time = Utils.now();
         let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
-            EventManager.update(this.hero, this.grid, this.hero, this.action, time, this.pauseDuration);
+            EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
             EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
@@ -47,7 +47,7 @@ class DynamicScene extends AbstractScene {
         let movements: boolean = false;
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
-                EventManager.update(event, this.grid, this.hero, this.action, time, this.pauseDuration);
+                EventManager.update(event, this, this.hero, this.action, time, this.pauseDuration);
                 movements = movements || EventManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
             }
             // Reset the action
@@ -135,18 +135,6 @@ class DynamicScene extends AbstractScene {
     }
     
     public loadSave(save: ISave, callback: IBooleanCallback) {
-        let scene = this;
-
-        let callback2: IBooleanCallback = function(result) {
-            // Initialize every Event in the map
-            if (result && !Utils.isEmpty(scene.map.events)) {
-                for (let i = 0; i < scene.map.events.length; i++) {
-                    scene.map.events[i] = EventManager.initTransientData(scene.map, scene.grid, scene.map.events[i]);
-                }
-            }
-            callback(result);
-        };
-
         let mapId;
         let hero: IEvent;
         if (Utils.isEmpty(save)) {
@@ -165,17 +153,9 @@ class DynamicScene extends AbstractScene {
             mapId = save.currentMap;
             hero = save.hero;
         }
-
         this.hero = EventManager.initTransientData(this.map, this.grid, hero);
 
-        MapManager.loadMap(mapId, this.context.canvas, function(map: IMap) { 
-            SaveManager.applySave(save, map);           
-            scene.changeMap(map, function() {
-                scene.resetTranslation();
-                scene.focus = scene.grid.mapCellToCanvas(hero);
-                callback2(true);
-            });
-        });
+        SaveManager.loadMapSave(this, mapId, hero, callback);
     }
 
     startMovement(i: number, j: number): boolean {

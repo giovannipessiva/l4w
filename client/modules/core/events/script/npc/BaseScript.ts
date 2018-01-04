@@ -1,4 +1,4 @@
-/// <reference path="AbstractScript.ts" />
+/// <reference path="../AbstractScript.ts" />
 
 namespace Script {
     

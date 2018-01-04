@@ -44,8 +44,25 @@ namespace SaveManager {
         return es;        
     }
     
-    export function applySave(save: ISave, map: IMap) {
-        if(Utils.isEmpty(save) || Utils.isEmpty(map.events)) {
+    export function loadMapSave(scene: DynamicScene, mapId: number, target: ICell, callback) {
+            MapManager.loadMap(mapId, scene.context.canvas, function(map: IMap) { 
+            applySave(scene.save, map);           
+            scene.changeMap(map, function() {
+                scene.resetTranslation();
+                scene.focus = scene.grid.mapCellToCanvas(target);
+                // Initialize every Event in the map
+                if (!Utils.isEmpty(scene.map.events)) {
+                    for (let i = 0; i < scene.map.events.length; i++) {
+                        scene.map.events[i] = EventManager.initTransientData(scene.map, scene.grid, scene.map.events[i]);
+                    }
+                }
+                callback(true);
+            });
+        });      
+    }
+    
+    function applySave(save: ISave, map: IMap): void {
+        if(Utils.isEmpty(save) || Utils.isEmpty(map.events) || Utils.isEmpty(save.maps[map.id])) {
             return;
         }
         let saveEvents = save.maps[map.id].events;

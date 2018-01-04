@@ -339,8 +339,12 @@ abstract class AbstractScene {
                             if (Utils.isEmpty(tileGID)) {
                                 continue;
                             }
+                            
                             // Check if it is the right time to render cell(i,j_real) (based on its z-index)
-                            let zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                            let zindex = Constant.ZIndex.LV0;
+                            if(map.tileset.onTop !== undefined) {
+                                zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                            }
                             if(zindex > 0 && j_real + zindex === j) {
                                 this.applyLayerCustomizations(layerIndex);
                                 if (!Utils.isEmpty(layer.opacity)) {

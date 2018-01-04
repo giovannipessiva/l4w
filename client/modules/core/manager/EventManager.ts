@@ -11,7 +11,7 @@ namespace EventManager {
     
     const NO_STATE = -1;
     
-    export function update(event: IEvent, grid: AbstractGrid, hero: IEvent, actionCell: ICell, time: number, pauseTimeOffset: number = 0) {
+    export function update(event: IEvent, scene: DynamicScene, hero: IEvent, actionCell: ICell, time: number, pauseTimeOffset: number = 0) {
         if (!Utils.isEmpty(event.movementStartTime)) {
             // If the Character was moving, and there has been a pause,
             // correct the movementStartTime
@@ -35,7 +35,7 @@ namespace EventManager {
             }
             // Check if an action has been triggered
             if(isActionTriggered(event, event.currentState, hero, actionCell)) {
-                Script.launchAction(event, grid, hero, event.currentState);
+                Script.launchAction(event, scene, hero, event.currentState);
             }
         }
     }

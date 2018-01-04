@@ -2,9 +2,9 @@
 
 namespace Script {
 
-    export function launchAction(event: IEvent, grid: AbstractGrid, hero: IEvent, state: number, parameters?): boolean {
+    export function launchAction(event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?): boolean {
         let script = event.script;
-        let scriptClass = new Script[script](event, hero, grid);
+        let scriptClass = new Script[script](event, hero, scene);
         if (Utils.isEmpty(scriptClass)) {
             console.error("Script \"" + script + "\" not found (event: " + event.name + ")");
             return false;

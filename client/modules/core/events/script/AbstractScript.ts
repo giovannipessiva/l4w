@@ -7,15 +7,15 @@ namespace Script {
         
         protected event: IEvent;
         protected hero: IEvent;
-        protected grid: AbstractGrid;
+        protected scene: DynamicScene;
         
         public static tooltip: string = "(no description provided)";
         public static STATE_VAR: string = "state"  
         
-        constructor(event: IEvent, hero: IEvent, grid: AbstractGrid) {
+        constructor(event: IEvent, hero: IEvent, scene: DynamicScene) {
             this.event = event;
             this.hero = hero;
-            this.grid = grid;
+            this.scene = scene;
         }
     
         protected dialog(message: string): boolean {
@@ -28,7 +28,7 @@ namespace Script {
         }
         
         protected moveToTarget(target: ICell): boolean {
-            EventManager.startMovement(this.grid, this.event, target.i, target.j);
+            EventManager.startMovement(this.scene.grid, this.event, target.i, target.j);
             return true;  
         }
         
@@ -101,6 +101,10 @@ namespace Script {
         
         protected setStateVar(stateVar: number) {
             this.saveMem(AbstractScript.STATE_VAR, stateVar + "");    
+        }
+        
+        protected goToMap(mapId: number, target: ICell) {
+            SaveManager.loadMapSave(this.scene, mapId, target, emptyFz);
         }
     }  
 }
