@@ -9,6 +9,7 @@ interface IMapData {
     width: number; //Number of tile columns
     height: number; //Number of tile rows
     layers: IMapLayer[]; //Array of Layers
+    maxEventId?: number; // Max id of events in this map
     events: IEventData[]; //Events
     nextobjectid: number; //Auto-increments for each placed 
 };

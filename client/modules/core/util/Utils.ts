@@ -258,8 +258,8 @@ namespace Utils {
     
     export function getCellDistance(s1: ICell, s2: ICell): number {
         let di: number = Math.abs(s1.i - s2.i);
-        let dy: number = Math.abs(s1.j - s2.j);
-        return di + dy;        
+        let dj: number = Math.abs(s1.j - s2.j);
+        return di + dj;        
     }
     
     export function getPointDistance(s1: IPoint, s2: IPoint): number {

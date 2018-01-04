@@ -72,11 +72,12 @@ namespace EventManager {
         }
     }
     
-    export function startMovement(grid: AbstractGrid, e: IEvent, i: number, j: number) {
+    export function startMovement(grid: AbstractGrid, e: IEvent, i: number, j: number): boolean {
         e.newTarget = grid.mapCellToCanvas({
             i: i,
             j: j
         });
+        return true;
     }
     
     function stopMovement(e: IEvent) {
@@ -365,6 +366,7 @@ namespace EventManager {
     
     export function getNewEvent(): IEvent {
         let event: IEvent = {
+            id: undefined,
             name: "NPC",
             i: 0,
             j: 0,
@@ -431,16 +433,6 @@ namespace EventManager {
             x: e.i * grid.cellW,
             y: e.j * grid.cellH
         };
-        if(!Utils.isEmpty(map)) {
-            let i = 0;
-            for(let ev of map.events) {
-                if(e.i === ev.i && e.j === ev.j) {    
-                    e.index = i;
-                    return e;
-                }
-                i++;
-            }
-        }
         return e;
     }
     

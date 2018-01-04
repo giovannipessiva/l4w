@@ -198,24 +198,32 @@ namespace Mapper {
     };
     
     export function deleteEvent(event: IEvent) {
+        console.log(mapper.map); ///////////
+        if(Utils.isEmpty(event.id)) {
+            return;    
+        }
         for(let i = 0; i < mapper.map.events.length; i++) {
             let e: IEvent = mapper.map.events[i];
-            if(event === e) {
+            if(event.id === e.id) {
                 mapper.map.events.splice(i, 1);
-            } else {
-                // Update index
-                e.index = i;
+                return;
             }
         }
     };
     
     export function addEvent(event: IEvent) {
-        if(!Utils.isEmpty(event.index)) {
+        if(!Utils.isEmpty(event.id)) {
             // Event already updated
             MapperPage.changeEditState(true);
             return;    
         }
         // Create new event
+        let newId = 0;
+        if(!Utils.isEmpty(mapper.map.maxEventId)) {
+            newId = mapper.map.maxEventId + 1;
+        }
+        event.id = newId;
+        mapper.map.maxEventId = newId;
         mapper.map.events.push(event);
         EventManager.initTransientData(mapper.map, this.mapper.grid, event);
         MapperPage.changeEditState(true);

@@ -175,8 +175,11 @@ class DynamicScene extends AbstractScene {
         });
     }
 
-    startMovement(i: number, j: number) {
-        EventManager.startMovement(this.grid, this.hero, i, j);
+    startMovement(i: number, j: number): boolean {
+        if(i < 0 || i >= this.map.width || j < 0 || j >= this.map.height) {
+            return false;    
+        }
+        return EventManager.startMovement(this.grid, this.hero, i, j);
     }
     
     registerAction(i: number, j: number) {

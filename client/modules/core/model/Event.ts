@@ -2,6 +2,7 @@
 
 // Event core model (only persistent data)
 interface IEventData extends ICell {
+    id: number; // ID of this event (unique in its map)
     name: string; // String assigned to name field in editor
     states: IEventState[]; // Array of states of this Event
     memory: {}; // Map of generic key -> value pairs
@@ -10,7 +11,6 @@ interface IEventData extends ICell {
 
 // Event extended model (include transient data)
 interface IEvent extends IEventData  {
-    index?: number; // Index of this event in the map.events Array
     currentState?: number; // Index of current valid state
     position?: IPoint; // Exact coordinate in pixels (derived from event.i, event.j)
     movementStartTime?: number; // ms since last step started

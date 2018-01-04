@@ -3,11 +3,10 @@ interface ISave {
     timestamp: number; // Save time
     hero: IEvent; // Hero state
     currentMap: number; // Id of the current map
-    maps: IMapSave[]; // List of customized maps
+    maps: IMapSave[]; // List of customized maps, indexed by map.id
 }
 
 interface IMapSave {
-    id: number; //Id of the map
     events: IEventSave[]; // Memory of the events  
 }
 

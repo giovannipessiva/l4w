@@ -21,10 +21,27 @@ namespace SaveManager {
         if (Utils.isEmpty(map) || Utils.isEmpty(hero)) {
             return null;
         }
+        let events: IEventSave[] = new Array<IEventSave>();
+        if(!Utils.isEmpty(map.events)) {
+            for(let e of map.events) {
+                events.push(getEventSave(e));   
+            }
+        }
         let save: ISave = SaveManager.getNewSave();
         save.currentMap = map.id;
         save.hero = hero;
+        save.maps[map.id] = {
+            events: events    
+        };
         return save;
+    }
+    
+    function getEventSave(e: IEvent): IEventSave {
+        let es: IEventSave = {
+            index: e.id,  
+            memory: e.memory
+        };
+        return es;        
     }
     
 }
