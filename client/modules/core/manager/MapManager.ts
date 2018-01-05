@@ -584,6 +584,7 @@ namespace MapManager {
                                 }
                                 */
                             }
+                            return DirectionEnum.NONE;
                         };
 
                         /** Set g(u) to val */

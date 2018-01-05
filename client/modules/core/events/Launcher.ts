@@ -20,7 +20,6 @@ namespace Script {
             let eventDirection = Utils.getOpposedDirections(heroDirection);
             EventManager.getState(hero).direction = heroDirection;
             EventManager.getState(event).direction = eventDirection;
-
         }
         try {
             if (Utils.isEmpty(parameters)) {
@@ -31,5 +30,6 @@ namespace Script {
          } catch(e) {
             console.error(e);
          }
+        return false;
     };
 }

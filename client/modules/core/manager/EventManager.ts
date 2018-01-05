@@ -52,9 +52,9 @@ namespace EventManager {
     function isActionTriggered(event: IEvent, s: number, hero: IEvent, actionCell: ICell) {
         switch(event.states[s].trigger) {
             case ActionTriggerEnum.CLICK:
-                // If action is not on the event, break;
+                // If action is not on the event, exit
                 if(Utils.isEmpty(actionCell) || actionCell.i !== event.i || actionCell.j !== event.j) {
-                    break;
+                    return false;
                 }
                 // else, continue as "TOUCH" case
             case ActionTriggerEnum.TOUCH:
