@@ -104,7 +104,11 @@ namespace Script {
         }
         
         protected goToMap(mapId: number, target: ICell) {
-            SaveManager.loadMapSave(this.scene, mapId, target, emptyFz);
+            let scene = this.scene;
+            SaveManager.loadMapSave(scene, mapId, target, function() {
+                scene.moveFocusToTarget(target);
+                EventManager.stopMovement(scene.hero);
+            });
         }
     }  
 }

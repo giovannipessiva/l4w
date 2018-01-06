@@ -202,7 +202,7 @@ abstract class AbstractScene {
         };
     }
 
-    moveFocus(direction: DirectionEnum = null) {
+    moveFocusToDirection(direction: DirectionEnum = null) {
         if (direction != null) {
             switch (direction) {
                 case DirectionEnum.UP: this.focus.y -= +this.grid.cellH; break;
@@ -211,6 +211,11 @@ abstract class AbstractScene {
                 case DirectionEnum.RIGHT: this.focus.x += +this.grid.cellW; break;
             }
         }
+        this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
+    }
+    
+    moveFocusToTarget(target: ICell) {
+        this.focus = this.grid.mapCellToCanvas(target);
         this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
     }
 

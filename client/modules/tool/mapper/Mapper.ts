@@ -72,19 +72,19 @@ namespace Mapper {
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
         let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e: KeyboardEvent) {
-            scene.moveFocus(DirectionEnum.UP);
+            scene.moveFocusToDirection(DirectionEnum.UP);
             e.preventDefault();
         };
         inputCallbackMap[Input.Keys.DOWN] = function(e: KeyboardEvent) {
-            scene.moveFocus(DirectionEnum.DOWN);
+            scene.moveFocusToDirection(DirectionEnum.DOWN);
             e.preventDefault();
         };
         inputCallbackMap[Input.Keys.LEFT] = function(e: KeyboardEvent) {
-            scene.moveFocus(DirectionEnum.LEFT);
+            scene.moveFocusToDirection(DirectionEnum.LEFT);
             e.preventDefault();
         };
         inputCallbackMap[Input.Keys.RIGHT] = function(e: KeyboardEvent) {
-            scene.moveFocus(DirectionEnum.RIGHT);
+            scene.moveFocusToDirection(DirectionEnum.RIGHT);
             e.preventDefault();
         };
 

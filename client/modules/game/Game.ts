@@ -25,7 +25,7 @@ namespace Game {
             loadSave(canvas, function(save: ISave) {
                 scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
-                    scene.moveFocus();
+                    scene.moveFocusToDirection();
                 });
 
             });
@@ -36,7 +36,7 @@ namespace Game {
         let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
         loadSave(canvas, function(save: ISave) {
             scene.loadSave(save, function(success: boolean) {
-                scene.moveFocus();
+                scene.moveFocusToDirection();
                 if (success) {
                     console.log("Save loaded successfully");
                 } else {

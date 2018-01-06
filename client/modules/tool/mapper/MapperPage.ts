@@ -269,7 +269,7 @@ namespace MapperPage {
         currentState = state;
         loadConditions(state);
         let select: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("trigger"));
-        let options: HTMLCollection = select.options;
+        let options: HTMLOptionsCollection = select.options;
         if(options.length === 0) {
             options[ActionTriggerEnum.CLICK] = new Option("Click");
             options[ActionTriggerEnum.TOUCH] = new Option("Touch");
@@ -289,7 +289,7 @@ namespace MapperPage {
         let conditions: string[] = Resource.listEventStateConditions();
         let selectConditions = (<HTMLSelectElement>document.getElementById("condition"));
         Utils.resetSelect(selectConditions);
-        let conditionOptions: HTMLCollection = selectConditions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let conditionOptions: HTMLOptionsCollection = selectConditions.options;
         let i = 0;
         for (let a of conditions) {
             conditionOptions[i] = new Option(a);
@@ -304,7 +304,7 @@ namespace MapperPage {
         let scriptClass = (<HTMLSelectElement>document.getElementById("script")).value;
         let actions: string[] = Resource.listScriptActions(scriptClass);
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
-        let actionOptions: HTMLCollection = selectActions.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let actionOptions: HTMLOptionsCollection = selectActions.options;
         let i = 0;
         Utils.resetSelect(selectActions);
         selectActions.selectedIndex = undefined;
@@ -321,7 +321,7 @@ namespace MapperPage {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
         Resource.listResources(Resource.TypeEnum.CHAR, function(list: string[]) {
             Utils.resetSelect(selectCharasets);
-            let options: HTMLCollection = selectCharasets.options;
+            let options: HTMLOptionsCollection = selectCharasets.options;
             options[0] = new Option("");
             for (let i = 0; i < list.length; i++) {
                 options[i + 1] = new Option(list[i]);
@@ -345,7 +345,7 @@ namespace MapperPage {
 
         let directionSelect = <HTMLSelectElement>document.getElementById("direction");
         if(directionSelect.length === 0) {
-            let directionOptions = directionSelect.options;
+            let directionOptions: HTMLOptionsCollection = directionSelect.options;
             directionOptions[DirectionEnum.UP] = new Option("Up");
             directionOptions[DirectionEnum.RIGHT] = new Option("Right");
             directionOptions[DirectionEnum.DOWN] = new Option("Down");
@@ -358,8 +358,8 @@ namespace MapperPage {
         (<HTMLSelectElement>document.getElementById("direction")).selectedIndex = direction;
 
         let i = 0;
-        let speedOptions: HTMLCollection = (<HTMLSelectElement>document.getElementById("speed")).options;
-        let frequencyOptions: HTMLCollection = (<HTMLSelectElement>document.getElementById("frequency")).options;
+        let speedOptions: HTMLOptionsCollection = (<HTMLSelectElement>document.getElementById("speed")).options;
+        let frequencyOptions: HTMLOptionsCollection = (<HTMLSelectElement>document.getElementById("frequency")).options;
         if(speedOptions.length === 0 || frequencyOptions.length === 0) {
             for (let s of scaleOptions) {
                 speedOptions[i] = new Option(s);
@@ -378,7 +378,7 @@ namespace MapperPage {
         }
         (<HTMLSelectElement>document.getElementById("frequency")).selectedIndex = frequency;
 
-        let rotationOptions = (<HTMLSelectElement>document.getElementById("rotation")).options;
+        let rotationOptions: HTMLOptionsCollection = (<HTMLSelectElement>document.getElementById("rotation")).options;
         if(rotationOptions.length === 0) {
             rotationOptions[RotationEnum.OFF] = new Option("Off");
             rotationOptions[RotationEnum.CLOCKWISE] = new Option("Clockwise");
@@ -390,7 +390,7 @@ namespace MapperPage {
         }
         (<HTMLSelectElement>document.getElementById("rotation")).selectedIndex = rotation;
 
-        let ontopOptions = (<HTMLSelectElement>document.getElementById("ontop")).options;
+        let ontopOptions: HTMLOptionsCollection = (<HTMLSelectElement>document.getElementById("ontop")).options;
         if(ontopOptions.length === 0) {
             ontopOptions[Constant.ZIndex.LV0] = new Option("Off");
             ontopOptions[Constant.ZIndex.LV1] = new Option("Liv. 1");
@@ -489,11 +489,11 @@ namespace MapperPage {
         let selectScript = (<HTMLSelectElement>document.getElementById("script"));
         Utils.resetSelect(selectScript);
         let classes: Map<string, string> = Resource.listScriptClasses();
-        let options: HTMLCollection = selectScript.options; // Why?? Shouldn't this return an HTMLOptionsCollection?
+        let options: HTMLOptionsCollection = selectScript.options;
         let i = 0;
         for (let c of classes) {
             options[i] = new Option(c[0]);
-            options[i]["title"] = c[1];
+            options[i].title = c[1];
             if (c[0] === currentEvent.script) {
                 selectScript.selectedIndex = i;
             }

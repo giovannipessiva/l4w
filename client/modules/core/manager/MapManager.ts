@@ -271,6 +271,9 @@ namespace MapManager {
         } else {
             map.events = [];    
         }
+        // Make sure these values are numeric
+        map.width = parseInt(map.width + "");
+        map.height = parseInt(map.height + "");
     }
     
     export function updateDynamicData(map) {
@@ -537,7 +540,7 @@ namespace MapManager {
                             }
 
                             while (!isVertexEqual(s_start, s_goal)) {
-                                // Find the successor vetex with lowes g value
+                                // Find the successor vertex with lowes g value
                                 // If (rhs(s_start) === MAX) then there is no known path */
                                 let s_min;
                                 let s_min_c;

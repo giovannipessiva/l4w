@@ -49,6 +49,8 @@ namespace SaveManager {
             applySave(scene.save, map);           
             scene.changeMap(map, function() {
                 scene.resetTranslation();
+                scene.hero.i = target.i;
+                scene.hero.j = target.j;
                 scene.focus = scene.grid.mapCellToCanvas(target);
                 // Initialize every Event in the map
                 if (!Utils.isEmpty(scene.map.events)) {

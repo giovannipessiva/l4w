@@ -79,7 +79,7 @@ namespace EventManager {
         return true;
     }
     
-    function stopMovement(e: IEvent) {
+    export function stopMovement(e: IEvent) {
         e.path = undefined;
         e.movementStartTime = undefined;
         e.target = undefined;
