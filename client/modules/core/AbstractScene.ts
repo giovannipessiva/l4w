@@ -57,7 +57,7 @@ abstract class AbstractScene {
         });
     }
 
-    mainGameLoop(frameId: number) {
+    mainGameLoop(frameId: number): void {
         let scene = this;
         let nextFrameID = _requestAnimationFrame(function() {
             scene.mainGameLoop(nextFrameID);
@@ -67,7 +67,7 @@ abstract class AbstractScene {
             _cancelAnimationFrame(frameId);
             return;
         }
-
+        
         let boundariesY = this.grid.getBoundariesY(this.focus.y, this.getSceneHeight());
         let minRow = boundariesY.min;
         let maxRow = boundariesY.max;
@@ -89,7 +89,7 @@ abstract class AbstractScene {
     protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
     }
 
-    protected renderPointer() {
+    protected renderPointer(): void {
         if (this.pointer.i != null && this.pointer.j != null) {
             let mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
@@ -257,7 +257,7 @@ abstract class AbstractScene {
         }
         scene.map = map;
         let grid = this.grid;
-        scene.changeTile(map.tile, function(scene) {
+        scene.changeTile(map.tileset.image, function(scene) {
             setTimeout(function() {
                 MapManager.initTransientData(scene.map, grid);
                 // Resume rendering
@@ -269,10 +269,10 @@ abstract class AbstractScene {
 
     changeTile(tile: string, callback: { (scene: AbstractScene): void }) {
         let scene: AbstractScene = this;
-        TilesetManager.loadTileset(tile, this.context, function(json) {
-            scene.map.tileset = json;
-            Resource.load(tile, Resource.TypeEnum.TILE, function(image: HTMLImageElement) {
-                scene.map.tileset.imageData = image;
+        TilesetManager.loadTileset(tile, this.context, function(tileset: ITileset) {
+            scene.map.tileset = tileset;
+            Resource.load(tileset.image, Resource.TypeEnum.TILE, function(image: HTMLImageElement) {
+                tileset.imageData = image;
                 callback(scene);
             });
         });

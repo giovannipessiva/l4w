@@ -4,7 +4,6 @@
 //Map core model (only persistent data)
 interface IMapData {
     id: number; //Id of the map
-    tile: string; //Image of the tileset
     name: string; //Name of the map
     width: number; //Number of tile columns
     height: number; //Number of tile rows
@@ -18,7 +17,7 @@ interface IMapData {
 interface IMap extends IMapData {
     blocks?: number[]; //Array of codes representing the block attributes from layers
     dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
-    tileset?: ITileset; //Tileset object for this map
+    tileset: ITileset; //Tileset object for this map
     dstarlitecache?: IDStarLiteCache; //Data for D* Lite pathfinder
 };
 

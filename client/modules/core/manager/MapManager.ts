@@ -274,6 +274,7 @@ namespace MapManager {
         // Make sure these values are numeric
         map.width = parseInt(map.width + "");
         map.height = parseInt(map.height + "");
+        TilesetManager.initTransientData(map.tileset);
     }
     
     export function updateDynamicData(map) {
@@ -790,26 +791,16 @@ namespace MapManager {
                     type: "tilelayer",
                     x: 0,
                     y: 0
-                },
-                {
-                    type: "tilelayer",
-                    x: 0,
-                    y: 0
-                },
-                {
-                    type: "tilelayer",
-                    x: 0,
-                    y: 0
-                },
-                {
-                    type: "tilelayer",
-                    x: 0,
-                    y: 0
                 }
             ],
             events: [],
             nextobjectid: 2,
-            tile: "002-Woods01.png"
+            tileset: {
+                firstgid: 0,
+                image: "002-Woods01.png",
+                blocks: [],
+                onTop: []
+            }
         };
     }
 }

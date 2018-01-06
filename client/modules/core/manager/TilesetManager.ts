@@ -29,13 +29,19 @@ namespace TilesetManager {
         });
     }
     
+    export function initTransientData(tileset: ITileset) {
+        if(!Utils.isEmpty(tileset.imageData)) {
+            tileset.imagewidth = tileset.imageData.width;
+            tileset.imageheight = tileset.imageData.height;
+        }
+    }
+    
     export function getNewTileset(name: string): ITileset {
         return {
             "firstgid": 1,
             "image": "002-Woods01.png",
             "imageheight": 800,
             "imagewidth": 256,
-            "name": "Bosco",
             "blocks": [],
             "onTop": []
         };

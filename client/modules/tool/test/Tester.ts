@@ -13,19 +13,10 @@ namespace Tester {
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
-        let map: IMap = {
-            id: 0,
-            tile: "Test",
-            name: "Test",
-            width: width,
-            height: height,
-            layers: [{
-                type:"tilelayer",
-            }],
-            events: [],
-            nextobjectid: 0,
-            blocks: blocks
-        };
+        let map: IMap = MapManager.getNewMap("Test");
+        map.width = width;
+        map.height = height;
+        map.blocks = blocks;
         // Initialize Event and target
         let event: IEvent = EventManager.getNewEvent();
         event.i = eventI;

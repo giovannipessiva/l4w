@@ -51,6 +51,7 @@ namespace SaveManager {
                 scene.resetTranslation();
                 scene.hero.i = target.i;
                 scene.hero.j = target.j;
+                EventManager.initTransientData(map, scene.grid, scene.hero);
                 scene.focus = scene.grid.mapCellToCanvas(target);
                 // Initialize every Event in the map
                 if (!Utils.isEmpty(scene.map.events)) {

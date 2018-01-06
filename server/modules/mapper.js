@@ -10,9 +10,6 @@ module.exports = {
     },
 	updateMaps: function(mapData, user, response) {
 		module.exports.updateMap(null, mapData, user, response);
-    },
-    getTiles: function(response) {
-    	var filePath = path.resolve(__dirname + '/../../client/data/resources/tiles.json');
-	}
+    }
 };
    

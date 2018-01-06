@@ -11,28 +11,11 @@ class TilesetterScene extends AbstractTileScene {
         this.changeTileEditMode(tileEditMode);
 
         // Init the map for rendering blocks
-        this.map = {
-            id: undefined,
-            name: undefined,
-            tile: undefined,
-            layers: [],
-            events: [],
-            nextobjectid: undefined,
-
-            width: this.getSceneWidth(),
-            height: this.getSceneHeight(),
-            blocks: [],
-            tileset: {
-                firstgid: -1,
-                image: "",
-                name: "",
-                imagewidth: this.getSceneWidth(),
-                imageheight: this.getSceneHeight(),
-                blocks: [],
-                onTop: []
-            }
-        };
-        
+        this.map = MapManager.getNewMap("blocks");
+        this.map.width = this.getSceneWidth();
+        this.map.height = this.getSceneHeight();
+        this.map.tileset.imagewidth = this.getSceneWidth();
+        this.map.tileset.imageheight = this.getSceneHeight();
         callback(this);
     }
 
