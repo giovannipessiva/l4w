@@ -144,9 +144,4 @@ class TilesetterScene extends AbstractTileScene {
             TilesetterPage.changeEditState(true);       
         }
     }
-    
-    public setData(tileset: ITileset) {
-        this.map.blocks = tileset.blocks;
-        this.map.tileset= tileset;
-    }
 }

@@ -45,8 +45,8 @@ namespace SaveManager {
     }
     
     export function loadMapSave(scene: DynamicScene, mapId: number, target: ICell, callback) {
-            MapManager.loadMap(mapId, scene.context.canvas, function(map: IMap) { 
-            applySave(scene.save, map);           
+        MapManager.loadMap(mapId, scene.context.canvas, function(map: IMap) {
+            applySave(scene.save, map);       
             scene.changeMap(map, function() {
                 scene.resetTranslation();
                 scene.hero.i = target.i;

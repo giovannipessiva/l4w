@@ -9,7 +9,7 @@ namespace Script {
         public forest(): void {
             this.goToMap(1, {
                 i: 15,
-                j: 0
+                j: 1
             });
         };
         

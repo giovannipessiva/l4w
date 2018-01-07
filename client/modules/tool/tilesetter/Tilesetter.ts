@@ -3,8 +3,7 @@
 
 namespace Tilesetter {
 
-    var tilesetterScene: TilesetterScene;
-    var tileset: ITilesetData;
+    let tilesetterScene: TilesetterScene;
 
     /**
      * This funcion will be called only at the first page load
@@ -27,14 +26,14 @@ namespace Tilesetter {
 
     export function loadTile(tile: string, callback) {
         // Clear the canvas
-        var canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
-        var contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
-        var canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
+        let canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
+        let contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
+        let canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage: HTMLImageElement) {
             // Resize the canvas
-            let image = new Image();
+            let image: HTMLImageElement = new Image();
             image.src = tileImage.src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
@@ -45,6 +44,7 @@ namespace Tilesetter {
             contextTile.drawImage(tileImage, 0, 0);
             // Load tileset data
             loadTilesetData(function(result) {
+                tilesetterScene.map.tileset.imageData = image;
                 callback(result, image.naturalWidth, image.naturalHeight);
             });
         });
@@ -115,12 +115,12 @@ namespace Tilesetter {
 
     export function saveTilesetData(callback: IBooleanCallback = null) {
         let blocks: number[] = tilesetterScene.map.blocks;
-        tileset.blocks = blocks;
+        tilesetterScene.map.tileset.blocks = blocks;
         $.ajax({
-            url: "/edit/tileset/" + tileset.image,
+            url: "/edit/tileset/" + tilesetterScene.map.tileset.image,
             type: Constant.RequestType.POST,
             contentType: Constant.MimeType.JSON,
-            data: JSON.stringify(tileset),
+            data: JSON.stringify(tilesetterScene.map.tileset),
             success: function(result) {
                 callback(true);
             },
@@ -138,15 +138,17 @@ namespace Tilesetter {
             type: Constant.RequestType.GET,
             contentType: Constant.MimeType.JSON,
             success: function(result: ITilesetData) {
-                tileset = result;
+                let image = tilesetterScene.map.tileset.imageData;  
+                tilesetterScene.map.tileset = result;
+                tilesetterScene.map.tileset.imageData = image;
                 if (!Utils.isEmpty(tilesetterScene)) {
-                    if (tileset.blocks === undefined) {
-                        tileset.blocks = [];
+                    if (tilesetterScene.map.tileset.blocks === undefined) {
+                        tilesetterScene.map.tileset.blocks = [];
                     }
-                    if (tileset.onTop === undefined) {
-                        tileset.onTop = [];
+                    if (tilesetterScene.map.tileset.onTop === undefined) {
+                        tilesetterScene.map.tileset.onTop = [];
                     }
-                    tilesetterScene.setData(tileset);
+                    tilesetterScene.map.blocks = tilesetterScene.map.tileset.blocks;
                 }
                 callback(true);
             },

@@ -64,10 +64,6 @@ namespace Game {
     function loadSave(canvas: HTMLCanvasElement, callback: (save: ISave) => void) {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        let currentState: ISave = SaveManager.getSave(scene.map, scene.hero);
-        if (!Utils.isEmpty(currentState)) {
-            saveId = currentState.id + "";
-        }
         Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 callback(null);

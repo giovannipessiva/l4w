@@ -124,10 +124,10 @@ namespace MapperPage {
     }
 
     function loadTiles() {
-        $.getJSON(base_path + "data/resources/tiles.json", function(data) {
+        $.getJSON(base_path + "assetlist/tile", function(data) {
             let sel = $("#tiles");
             for (let i = 0; i < data.length; i++) {
-                sel.append("<option value='" + data[i].name + "'>" + data[i].desc
+                sel.append("<option value='" + data[i] + "'>" + data[i]
                     + "</option>");
             }
         });

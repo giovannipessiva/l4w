@@ -297,7 +297,7 @@ abstract class AbstractScene {
                     for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
 
                         let layer = this.map.layers[layerIndex];
-                        if (layer === undefined || layer.data.length < cellIndex) {
+                        if (layer === undefined || layer.data === undefined || layer.data.length < cellIndex) {
                             continue;
                         }
                         let tileGID = layer.data[cellIndex];
@@ -337,7 +337,7 @@ abstract class AbstractScene {
                         for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
                             
                             let layer = this.map.layers[layerIndex];
-                            if (layer === undefined || layer.data.length < cellIndex) {
+                            if (layer === undefined || layer.data === undefined || layer.data.length < cellIndex) {
                                 continue;
                             }
                             let tileGID = layer.data[cellIndex];
