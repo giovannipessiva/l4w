@@ -27,13 +27,14 @@ class DynamicScene extends AbstractScene {
         if (!super.mainGameLoop_pre()) {
             return false;
         }
-
+        
+        let movements: boolean = false;
         let scene = this;
         let time = Utils.now();
         let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
             EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
-            EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
+            movements = EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
             }, function(w: number, h: number) {
@@ -44,7 +45,6 @@ class DynamicScene extends AbstractScene {
                 context.registerAction(target.i, target.j);   
             });
         }
-        let movements: boolean = false;
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
                 EventManager.update(event, this, this.hero, this.action, time, this.pauseDuration);
@@ -56,7 +56,7 @@ class DynamicScene extends AbstractScene {
         
         if(movements) {
             // Update map transient data (only when events move)
-            MapManager.updateDynamicData(this.map);        
+            MapManager.updateDynamicData(scene.hero, this.map);        
         }
         
         // Reset pause duration

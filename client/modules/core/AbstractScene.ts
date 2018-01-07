@@ -265,7 +265,7 @@ abstract class AbstractScene {
         let grid = this.grid;
         scene.changeTile(map.tileset.image, function(scene) {
             setTimeout(function() {
-                MapManager.initTransientData(scene.map, grid);
+                MapManager.initTransientData(scene);
                 // Resume rendering
                 scene.togglePause(false);
             });

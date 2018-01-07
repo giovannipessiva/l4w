@@ -261,9 +261,17 @@ namespace MapManager {
         map.width = columns;
     }
     
-    export function initTransientData(map: IMap, grid: AbstractGrid) {
+    export function initTransientData(scene: AbstractScene) {
+        let hero: IEvent;
+        let map: IMap = scene.map;
+        let grid: AbstractGrid = scene.grid;
+        
+        if(scene instanceof DynamicScene) {
+            hero = scene.hero;    
+        }
+        
         loadBlocks(map);
-        loadDynamicBlocks(map);
+        loadDynamicBlocks(hero, map);
         if(!Utils.isEmpty(map.events)) {
             for(let event of map.events) {
                 EventManager.initTransientData(map, grid, event);    
@@ -277,8 +285,8 @@ namespace MapManager {
         TilesetManager.initTransientData(map.tileset);
     }
     
-    export function updateDynamicData(map) {
-        loadDynamicBlocks(map);
+    export function updateDynamicData(hero: IEvent, map) {
+        loadDynamicBlocks(hero, map);
     }
 
     /**
@@ -319,18 +327,23 @@ namespace MapManager {
     /**
      * Read the block in every event, and save them in the map.dynamicBlock array
      */
-    function loadDynamicBlocks(map: IMap) {
+    function loadDynamicBlocks(hero: IEvent, map: IMap) {
         map.dynamicBlocks = [];
         for (let j = 0; j < map.height * map.width; j++) {
             map.dynamicBlocks[j] = 0;
         }
-        if (!Utils.isEmpty(map.events)) {            
-            for (let e of map.events) {
-                let state = EventManager.getState(e);
-                if(state === undefined || Utils.isEmpty(state.block) || state.block) {
-                    let gid = Utils.cellToGid(e, map.width);
-                    map.dynamicBlocks[gid] = BlockDirection.ALL;
-                }
+        let events = new Array<IEvent>();
+        if(!Utils.isEmpty(hero)) {
+            events.push(hero);
+        }
+        if (!Utils.isEmpty(map.events)) {
+            events = events.concat(map.events);
+        } 
+        for (let e of events) {
+            let state = EventManager.getState(e);
+            if(state === undefined || Utils.isEmpty(state.block) || state.block) {
+                let gid = Utils.cellToGid(e, map.width);
+                map.dynamicBlocks[gid] = BlockDirection.ALL;
             }
         }
     }
