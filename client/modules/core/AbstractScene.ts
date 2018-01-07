@@ -209,6 +209,8 @@ abstract class AbstractScene {
                 case DirectionEnum.DOWN: this.focus.y += +this.grid.cellH; break;
                 case DirectionEnum.LEFT: this.focus.x -= +this.grid.cellW; break;
                 case DirectionEnum.RIGHT: this.focus.x += +this.grid.cellW; break;
+                case DirectionEnum.NONE: break;
+                default: console.error("Unexpected case: " + direction);
             }
         }
         this.grid.changeTranslation(this.focus.x, this.focus.y, this.map.width, this.map.height);
@@ -221,6 +223,10 @@ abstract class AbstractScene {
 
     resetTranslation() {
         this.grid.resetTranslation();
+    }
+    
+    reapplyTranslation() {
+        this.grid.reappyTranslation();    
     }
 
     changeScale(canvas: HTMLCanvasElement) {

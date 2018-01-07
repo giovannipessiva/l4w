@@ -82,6 +82,7 @@ namespace EventManager {
     export function stopMovement(e: IEvent) {
         e.path = undefined;
         e.movementStartTime = undefined;
+        e.movementDirection = undefined;
         e.target = undefined;
     }
     
@@ -428,6 +429,7 @@ namespace EventManager {
     
     export function initTransientData(map: IMap, grid: AbstractGrid, e: IEvent): IEvent {
         CharacterManager.initTransientData(grid, EventManager.getState(e));
+        stopMovement(e);
         e.position = {
             x: e.i * grid.cellW,
             y: e.j * grid.cellH

@@ -168,13 +168,15 @@ namespace Game {
                 scene.togglePause(true);
             },
             function() {
-                console.log("unpause");
                 scene.togglePause(false);
+                console.log("unpause");
             },
             function() {
+                scene.togglePause(true);
                 grid.refresh();
                 scene.changeScale(canvas);
-                scene.resetTranslation();
+                scene.reapplyTranslation();
+                scene.togglePause(false);
             },
             emptyFz,
             emptyFz,

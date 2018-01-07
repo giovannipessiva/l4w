@@ -136,9 +136,30 @@ class AbstractGrid {
             }
         }
         // Translate the context, considering the currently applied translation
+        return this.applyTranslate(leftTopX, leftTopY);
+    }
+    
+    /**
+     * When size changes (canvas resized and/or canvas scale changed??),
+     * it is necessary to reapply the translation. Not sure why...
+     */
+    reappyTranslation() {
+        let leftTopX = this.currentTranslation.x;
+        let leftTopY = this.currentTranslation.y;
+        this.currentTranslation.x = 0;
+        this.currentTranslation.y = 0;    
+        this.applyTranslate(leftTopX, leftTopY);
+    }
+    
+    private applyTranslate(leftTopX: number, leftTopY: number) {
         let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
+        // Apply relative translation (
         context.translate(this.currentTranslation.x - leftTopX, this.currentTranslation.y - leftTopY);
-        this.currentTranslation = { x: leftTopX, y: leftTopY };
+        // Save new translation
+        this.currentTranslation = {
+        	x: leftTopX,
+        	y: leftTopY
+        };
         return this.currentTranslation;
     }
 
