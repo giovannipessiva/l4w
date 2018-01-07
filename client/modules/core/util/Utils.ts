@@ -152,13 +152,9 @@ namespace Utils {
         let gid: number;
         
         // Check direction in current cell
+        // (always ignore dynamic blocks in current cell)
         gid = cellToGid({ i: i, j: j }, map.width);
-        let blockInCurrent: number;
-        if(ignoreDynamicBlocks) {
-            blockInCurrent = Utils.getMapStaticBlock(map,gid);
-        } else {
-            blockInCurrent = Utils.getMapBlocks(map,gid);
-        }
+        let blockInCurrent = Utils.getMapStaticBlock(map,gid);
         
         // Check inverse direction in target cell
         let target: ICell = getDirectionTarget({ i: i, j: j }, direction); 

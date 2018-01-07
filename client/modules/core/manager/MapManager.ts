@@ -434,23 +434,9 @@ namespace MapManager {
                             cell: target
                         };
 
-                        // If the target has changed, flush cached data
-                        if (!Utils.isEmpty(map.dstarlitecache) && !isVertexEqual(map.dstarlitecache.s_goal, s_goal)) {
-                            map.dstarlitecache = undefined;
-                        }
-
                         direction = main();
                         
                         //TODO detect loops, like in BASIC pathfinder
-
-                        // Cache data
-                        map.dstarlitecache = {
-                            S: S,
-                            U: U,
-                            s_goal: s_goal,
-                            g: _g,
-                            rhs: _rhs
-                        };
 
                         function calculateKey(s: IVertex): number[] {
                             return [Math.min(g(s), rhs(s)) + h(s_start, s) + km, Math.min(g(s), rhs(s))];
@@ -541,17 +527,9 @@ namespace MapManager {
                         };
 
                         function main(): DirectionEnum {
-                            // Check if initial data has already been computed and cached
-                            if (!Utils.isEmpty(map.dstarlitecache)) {
-                                S = map.dstarlitecache.S;
-                                U = map.dstarlitecache.U;
-                                _g = map.dstarlitecache.g;
-                                _rhs = map.dstarlitecache.rhs;
-                            } else {
-                                s_last = s_start;
-                                initialize();
-                                computeShortestPath();
-                            }
+                            s_last = s_start;
+                            initialize();
+                            computeShortestPath();
 
                             while (!isVertexEqual(s_start, s_goal)) {
                                 // Find the successor vertex with lowes g value
@@ -786,7 +764,7 @@ namespace MapManager {
             }
             let time = Utils.now() - startTime;
             if(time > 10) {
-                console.log("Path found in:" + time);
+                console.log("Path found in :" + time);
             }
             return direction;
         }

@@ -18,20 +18,11 @@ interface IMap extends IMapData {
     blocks?: number[]; //Array of codes representing the block attributes from layers
     dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
     tileset: ITileset; //Tileset object for this map
-    dstarlitecache?: IDStarLiteCache; //Data for D* Lite pathfinder
 };
 
 interface IVertex {
     cell: ICell,
     key?: number[]
-}
-
-interface IDStarLiteCache {
-    S: IVertex[],
-    U: IVertex[],
-    s_goal: IVertex,
-    g: number[],
-    rhs: number[]
 }
 
 interface IMapLayer {

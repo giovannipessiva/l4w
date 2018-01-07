@@ -8,7 +8,6 @@ namespace Tester {
     
     interface IPathfinderTestResult {
         cell: ICell,
-        cache: IDStarLiteCache
     };
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
@@ -44,7 +43,6 @@ namespace Tester {
                         i:event.i,
                         j:event.j
                     },
-                    cache:map.dstarlitecache
                 });
             }
             // Check guard to avoid infite loop

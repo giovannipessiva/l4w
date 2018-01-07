@@ -109,15 +109,20 @@ namespace EventManager {
             let targetGui = Utils.cellToGid(target, map.width);
             let cellStaticBlock = Utils.getMapStaticBlock(map,targetGui);
             let cellDynamicBlock = Utils.getMapDynamicBlock(map,targetGui);
-            if(Utils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL)) {
-                // Target is blocked, and does not contain and event, so no movement needed
+            if((Utils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL))
+                || (targetGui < 0 || targetGui >= map.width * map.height)) {
+                // Target is blocked and does not contain and event, or it is invalid, so no movement needed
                 direction = DirectionEnum.NONE;
             } else {
                 // Check if I am currently moving a step
                 direction = e.movementDirection;
                 if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
                     // Decide next step
-                    direction = MapManager.pathFinder(map, e, target);
+                    try {
+                        direction = MapManager.pathFinder(map, e, target);
+                    } catch(e) {
+                        console.error(e);    
+                    }
                     let stepTarget = Utils.getDirectionTarget(e, direction);
                     // Check if target contains an event
                     let stepTargetGID = Utils.cellToGid(stepTarget, map.width);
