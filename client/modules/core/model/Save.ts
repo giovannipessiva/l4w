@@ -4,6 +4,7 @@ interface ISave {
     hero: IEvent; // Hero state
     currentMap: number; // Id of the current map
     maps: IMapSave[]; // List of customized maps, indexed by map.id
+    config: IConfig; // User configuration
 }
 
 interface IMapSave {
@@ -13,4 +14,8 @@ interface IMapSave {
 interface IEventSave {
     id: number; // ID of this event (unique in its map)
     memory: {}; // Map of generic key -> value pairs (override the default memory of this event)  
+}
+
+interface IConfig {
+    lang: LanguageEnum; // Language chosen by the user    
 }

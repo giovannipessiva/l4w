@@ -7,12 +7,15 @@
 namespace SaveManager {
 
     export function getNewSave(): ISave {
-        var save: ISave = {
+        let save: ISave = {
             id: 0,
             timestamp: Utils.now(),
             currentMap: 0,
             hero: EventManager.getNewHero(),
-            maps: []
+            maps: [],
+            config: {
+                lang: LanguageEnum.EN    
+            }
         };
         return save;
     }

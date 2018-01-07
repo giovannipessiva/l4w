@@ -58,3 +58,8 @@ const enum ScaleEnum {
     HIGH,
     VERY_HIGH
 };
+
+const enum LanguageEnum {
+    IT,
+    EN    
+}

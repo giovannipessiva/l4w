@@ -157,8 +157,8 @@ class AbstractGrid {
         context.translate(this.currentTranslation.x - leftTopX, this.currentTranslation.y - leftTopY);
         // Save new translation
         this.currentTranslation = {
-        	x: leftTopX,
-        	y: leftTopY
+            x: leftTopX,
+            y: leftTopY
         };
         return this.currentTranslation;
     }

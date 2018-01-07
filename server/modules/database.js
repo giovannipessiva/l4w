@@ -1,13 +1,13 @@
-var fs = require("fs");
-var path = require("path");
-var pg = require("pg");
-var Sequelize = require("sequelize");
-var HttpStatus = require('http-status-codes');
+const fs = require("fs");
+const path = require("path");
+const pg = require("pg");
+const Sequelize = require("sequelize");
+const HttpStatus = require('http-status-codes');
 
-var models = require(__dirname + "/models");
-var utils = require(__dirname + "/utils");
-var constants = require(__dirname + "/constants");
-var defaults = require(__dirname + "/defaults");
+const models = require(__dirname + "/models");
+const utils = require(__dirname + "/utils");
+const constants = require(__dirname + "/constants");
+const defaults = require(__dirname + "/defaults");
 
 function getDefaults(type, file) {
 	if (!utils.isEmpty(file)) {
@@ -75,7 +75,7 @@ module.exports = {
 							response.json(result.data);
 						} else {
 							console.log("Map "+ file + " not found, returning default");
-							response.status(HttpStatus.NOT_FOUND).send(
+							response.send(
 									defaults.getDefaultMap());
 						}
 					},
@@ -97,8 +97,7 @@ module.exports = {
 							response.json(result.data);
 						} else {
 							console.log("Tileset "+ file + " not found, returning default");
-							response.status(HttpStatus.NOT_FOUND).send(
-									defaults.getDefaultMap());
+							response.send(defaults.getDefaultMap());
 						}
 					},
 					function(error) {
@@ -120,8 +119,7 @@ module.exports = {
 						if (!utils.isEmpty(result)) {
 							response.send(result.dataValues.save);
 						} else {
-							response.status(HttpStatus.NOT_FOUND).send(
-									defaults.getDefaultSave());
+							response.send(defaults.getDefaultSave());
 						}
 					},
 					function(error) {
@@ -133,6 +131,32 @@ module.exports = {
 				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
 			}
 			break;
+		case "string":
+			if (!utils.isEmpty(user)) {
+				models.l4w_string.findOne({
+					where : {
+						id : file
+					},
+					attributes : [ "lang", "value" ]
+				}).then(
+					function(result) {
+						if (!utils.isEmpty(result)) {
+							response.send(result.dataValues.value);
+						} else {
+							response.send("???");
+						}
+					},
+					function(error) {
+						console.log(error);
+						response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+								.send(defaults.getDefaultSave());
+					});
+			} else {
+				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
+			}
+			break;
+		default:
+			console.error("Unexpected case:" + type);
 		};
 	},
 
@@ -172,6 +196,33 @@ module.exports = {
 			}, function(error) {
 				manageQueryError(response, error);
 			});
+			break;
+		case "string":
+			let strings = JSON.parse(data);
+			let counter = string.length;
+			let callbackSuccess = function() {
+				counter--;
+				if(counter <= 0) {
+					response.status(HttpStatus.OK).send("");
+				}
+			}
+			let id = undefined;
+			if(!utils.isEmpty(file)) {
+				id = file;
+			}
+			for(let lang in string) {
+				models.l4w_string.upsert({
+					id : id,
+					lang: lang,
+					save : strings[lang]
+				}).then(callbackSuccess, function(error) {
+					counter = 999;
+					manageQueryError(response, error);
+				});
+			}
+			break;
+		default:
+			console.error("Unexpected case:" + type);
 		}
 	},
 

@@ -27,6 +27,7 @@ namespace Resource {
         TILE,
         MAP,
         SAVE,
+        STRING,
         TILESET
     }
 
@@ -131,10 +132,11 @@ namespace Resource {
                 break;
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
+            case TypeEnum.STRING:
             case TypeEnum.TILESET:
-                // Load text file
+                // read data from DB
                 sendGETRequest(path, function(e: ProgressEvent) {
-                    callback(<string>this.responseText);
+                    callback(this.responseText);
                 });
                 break;
             default:
@@ -164,11 +166,15 @@ namespace Resource {
     /**
      * Save an asset to server
      */
-    export function save(id: string, data: string, assetType: TypeEnum, callback: IBooleanCallback) {
-        var path = getEditPath(id, assetType);
+    export function save(id: string, data: string, assetType: TypeEnum, callback) {
+        let path = getEditPath(id, assetType);
         sendPOSTRequest(path, data, function(e: ProgressEvent) {
             if (this.status === 200) {
-                callback(true);
+                if(assetType === TypeEnum.STRING) {
+                    callback(this.responseText);
+                } else {
+                    callback(true);
+                }
             } else {
                 console.error(this.status + " - " + this.response);
                 callback(false);
@@ -187,6 +193,7 @@ namespace Resource {
                 break;
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
+            case TypeEnum.STRING:
             case TypeEnum.TILESET:
                 path = DATA_PATH;
                 break;
@@ -218,6 +225,9 @@ namespace Resource {
                 break;
             case TypeEnum.SAVE:
                 folder = "save/";
+                break;
+            case TypeEnum.STRING:
+                folder = "string/";
                 break;
             case TypeEnum.TILESET:
                 folder = "tileset/";

@@ -59,17 +59,17 @@ namespace Mapper {
         });
     }
 
-    export function saveMap(callback: IBooleanCallback = null) {
+    export function saveMap(callback: IBooleanCallback = null): void {
         let mapId = MapperPage.getActiveMap();
         let mapJSON = JSON.stringify(this.mapper.getMap());
-        Resource.save(mapId+"", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
+        Resource.save(mapId + "", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
             if(callback !== null) {
                 callback(success);
             }
         });
     }
 
-    function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
+    function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid): void {
         let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.UP] = function(e: KeyboardEvent) {
             scene.moveFocusToDirection(DirectionEnum.UP);
