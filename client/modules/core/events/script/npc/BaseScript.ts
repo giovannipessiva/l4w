@@ -21,7 +21,7 @@ namespace Script {
                 message = this.loadMem(DEFAULT_MESSAGE);
             }
             let messageId: number = parseInt(message);
-            if(Utils.isEmpty(messageId) && isNaN(messageId)) {
+            if(Utils.isEmpty(messageId) || isNaN(messageId)) {
                 return;    
             }
             this.dialog(messageId, emptyFz);        

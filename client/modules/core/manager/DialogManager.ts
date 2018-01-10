@@ -10,7 +10,11 @@ namespace DialogManager {
     languages[LanguageEnum.IT] = "Italiano 🇮🇹";
     languages[LanguageEnum.EN] = "English 🇬🇧";
 
-    export function loadString(stringId: number, language: LanguageEnum, callback: (string) => void) {
+    export function loadString(stringId: number, language: LanguageEnum, callback: (string) => void): void {
+        if(isNaN(stringId)) {
+            callback(undefined);
+            return;    
+        }
         Resource.load(stringId + "", Resource.TypeEnum.STRING, function(resourceText: string) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading string: " + stringId);

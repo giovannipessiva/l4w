@@ -4,7 +4,7 @@
 /// <reference path="../../core/util/Errors.ts" />
 /// <reference path="MapperPage.ts" />
 
-module Mapper {
+namespace Mapper {
 
     export var mapper: MapperScene;
 
