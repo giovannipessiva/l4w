@@ -7,13 +7,13 @@ namespace Script {
         public static tooltip: string = "Script for tests";    
 
         public testAction(): boolean {
-            this.dialog("Oink oink");
+            this.dialog(2, emptyFz);
             return true;
         }
         
         public giantTest(): boolean {
             let context = this;
-            this.dialog("Leave me alone, little one");
+            this.dialog(4, emptyFz);
             let script = this;
             this.wait(1000).then(function(){
                 script.stepFromTarget(script.hero);
@@ -24,7 +24,7 @@ namespace Script {
         
         public giantTest2(): boolean {
             let context = this;
-            this.dialog("Can't you see that I'm busy?");
+            this.dialog(5, emptyFz);
             let script = this;
             this.wait(1000).then(function(){
                 script.stepFromTarget(script.hero);
@@ -35,7 +35,7 @@ namespace Script {
                
         public giantTest3(): boolean {
             let context = this;
-            this.dialog("Aargh!!");
+            this.dialog(6, emptyFz);
             this.moveToTarget({ i: 0, j: 0 });
             this.setStateVar(0);
             return true;

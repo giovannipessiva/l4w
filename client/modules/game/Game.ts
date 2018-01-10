@@ -11,7 +11,7 @@
 /**
  * Module for initializing and launching a game
  */
-namespace Game {
+module Game {
 
     var scene: DynamicScene;
 

@@ -14,7 +14,8 @@ namespace SaveManager {
             hero: EventManager.getNewHero(),
             maps: [],
             config: {
-                lang: LanguageEnum.EN    
+                lang: LanguageEnum.EN,
+                skin: "ld3skin.png"
             }
         };
         return save;

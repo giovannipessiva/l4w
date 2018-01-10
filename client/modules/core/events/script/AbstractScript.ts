@@ -18,12 +18,13 @@ namespace Script {
             this.scene = scene;
         }
     
-        protected dialog(message: string): boolean {
-            // TODO dialogs
-            if(Utils.isEmpty(message)) {
-                message = "";
+        protected dialog(messageId: number, callback): boolean {
+            //TODO load cfg
+            let cfg: IConfig = {
+                lang: LanguageEnum.IT,
+                skin: "ld3skin.png"
             }
-            console.log(this.event.name + "> " + message);
+            DialogManager.show(this.event.name, messageId, cfg.lang, cfg.skin, callback);
             return true;
         }
         

@@ -20,7 +20,11 @@ namespace Script {
             if(Utils.isEmpty(message)) {
                 message = this.loadMem(DEFAULT_MESSAGE);
             }
-            this.dialog(message);        
+            let messageId: number = parseInt(message);
+            if(Utils.isEmpty(messageId) && isNaN(messageId)) {
+                return;    
+            }
+            this.dialog(messageId, emptyFz);        
         };
     };
 }

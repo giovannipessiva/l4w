@@ -17,5 +17,6 @@ interface IEventSave {
 }
 
 interface IConfig {
-    lang: LanguageEnum; // Language chosen by the user    
+    lang: LanguageEnum; // Language chosen by the user
+    skin: string; // Current window skin
 }

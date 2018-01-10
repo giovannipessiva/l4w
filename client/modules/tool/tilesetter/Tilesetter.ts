@@ -1,7 +1,7 @@
 /// <reference path="../../core/util/Utils.ts" />
 /// <reference path="../../core/model/Tileset.ts" />
 
-namespace Tilesetter {
+module Tilesetter {
 
     let tilesetterScene: TilesetterScene;
 

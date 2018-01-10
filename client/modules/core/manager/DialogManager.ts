@@ -32,4 +32,27 @@ namespace DialogManager {
             }
         });
     }
+
+    export function show(name: string, messageId: number, language: LanguageEnum, skin: string, callback) {
+        let message: string;
+        let image: HTMLImageElement;
+        loadString(messageId, language, function(msg: string) {
+            message = msg;
+            if(image !== undefined) {
+                showDialog(name, message, language, image, callback);   
+            }
+        });
+        Resource.load(skin, Resource.TypeEnum.SKIN, function(img: HTMLImageElement) {
+            image = img;
+            if(message !== undefined) {
+                showDialog(name, message, language, image, callback);
+            }  
+        });
+    }
+    
+    function showDialog(name: string, message: string, language: LanguageEnum, skin: HTMLImageElement, callback) {     
+        //TODO
+        console.log(name + "> " + message);
+        callback();
+    }
 };
