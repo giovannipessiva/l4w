@@ -308,7 +308,7 @@ namespace MapManager {
                             continue;
                         }
                         // Ignore cells onTop
-                        if(Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.LV0) {
+                        if(map.tileset.onTop !== undefined && Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.LV0) {
                             continue;  
                         }
                         let blockValue = map.tileset.blocks[tileCell];
@@ -764,7 +764,7 @@ namespace MapManager {
             }
             let time = Utils.now() - startTime;
             if(time > 10) {
-                console.log("Path found in :" + time);
+                console.debug("Path found in: " + time);
             }
             return direction;
         }
