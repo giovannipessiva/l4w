@@ -1,8 +1,7 @@
-var path = require('path');
-var fs = require('fs');
-var HttpStatus = require('http-status-codes');
+const path = require('path');
+const fs = require('fs');
 
-var database = require(__dirname + "/database");
+const database = require(__dirname + "/database");
 
 module.exports = {
     updateMap: function(mapId, mapData, user, response) {

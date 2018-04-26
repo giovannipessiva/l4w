@@ -8,7 +8,21 @@ interface ICell {
     j: number;
 };
 
+interface ISize {
+    w: number;
+    h: number;
+};
+
+/**
+ * Represent a point, and contains both the ICell and the IPoint representation
+ */
 interface IExtendedCell extends IPoint, ICell {
+};
+
+/**
+ * Represent a rectangular area as the top-left vertex and its width and height
+ */
+interface IRectangle extends IPoint, ISize {
 };
 
 const enum DirectionEnum {

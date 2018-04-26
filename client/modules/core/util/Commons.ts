@@ -9,13 +9,6 @@ interface IRange {
     max: number;
 };
 
-interface IRectangle {
-    x1: number;
-    x2: number;
-    y1: number;
-    y2: number;
-};
-
 class RenderConfiguration {
     showGrid: boolean = false;
     showEditorGrid: boolean = false;

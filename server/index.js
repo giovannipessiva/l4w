@@ -1,13 +1,13 @@
-var path = require('path');
-var express = require('express');
-var compression = require('compression');
-var HttpStatus = require('http-status-codes');
+const path = require('path');
+const express = require('express');
+const compression = require('compression');
 
-var mapper = require(__dirname + '/modules/mapper');
-var utils = require(__dirname + '/modules/utils');
-var database = require(__dirname + '/modules/database');
-var security = require(__dirname + '/modules/security');
-var session = require(__dirname + '/modules/session');
+const constants = require(__dirname + "/modules/constants");
+const mapper = require(__dirname + '/modules/mapper');
+const utils = require(__dirname + '/modules/utils');
+const database = require(__dirname + '/modules/database');
+const security = require(__dirname + '/modules/security');
+const session = require(__dirname + '/modules/session');
 
 var app = express();
 app.use(compression());
@@ -156,7 +156,7 @@ app.post('/edit/maps', function(request, response) {
 	        mapper.updateMaps(data, session.getUser(request), response);
 		});
 	} else {
-		response.status(HttpStatus.FORBIDDEN).send("");
+		response.status(constants.HttpStatus.FORBIDDEN).send("");
 	}
 });
 app.post('/edit/:type/:id', function(request, response) {
@@ -175,14 +175,14 @@ app.post('/edit/:type/:id', function(request, response) {
 			}
 		});
 	} else {
-		response.status(HttpStatus.FORBIDDEN).send("");
+		response.status(constants.HttpStatus.FORBIDDEN).send("");
 	}
 });
 app.get('/news', function(request, response) {
 	if(session.isAuthenticated(request)) {
 		database.getNews(session.getUser(request), response);
 	} else {
-		response.status(HttpStatus.FORBIDDEN).send("");
+		response.status(constants.HttpStatus.FORBIDDEN).send("");
 	}
 });
 

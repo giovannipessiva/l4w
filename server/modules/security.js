@@ -1,8 +1,8 @@
-var HttpStatus = require('http-status-codes');
-var Sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 
-var models = require(__dirname + "/models");
-var utils = require(__dirname + "/utils");
+const constants = require(__dirname + "/constants");
+const models = require(__dirname + "/models");
+const utils = require(__dirname + "/utils");
 
 module.exports = {
 		
@@ -31,9 +31,9 @@ module.exports = {
 	        request.on("data", function(data) {
 	            queryData += data;
 	            if(queryData.length > 1e6) {
-	            	this.logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData);
+	            	this.logSecurityEvent(constants.HttpStatus.REQUEST_TOO_LONG,queryData);
 	                queryData = "";
-	                response.status(HttpStatus.REQUEST_TOO_LONG).send("");
+	                response.status(constants.HttpStatus.REQUEST_TOO_LONG).send("");
 	                request.connection.destroy();  
 	            }
 	        });

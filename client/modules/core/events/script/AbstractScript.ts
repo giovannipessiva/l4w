@@ -24,7 +24,7 @@ namespace Script {
                 lang: LanguageEnum.IT,
                 skin: "ld3skin.png"
             }
-            DialogManager.show(this.event.name, messageId, cfg.lang, cfg.skin, callback);
+            DialogManager.show(this.scene, this.event.name, messageId, cfg.lang, cfg.skin, callback);
             return true;
         }
         

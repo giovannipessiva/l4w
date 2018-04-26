@@ -17,6 +17,11 @@ class DynamicScene extends AbstractScene {
     hero: IEvent;   
     action: ICell;
     save: ISave;
+    
+    dialogName: string;
+    dialogText: string;
+    dialogSkin: HTMLImageElement;
+    dialogAction: (input?: string)=>void;
 
     constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
         super(grid);
@@ -132,6 +137,10 @@ class DynamicScene extends AbstractScene {
                 }
             }
         }
+        
+        if(onTop && this.isDialogOpen()) {
+            DialogManager.renderDialog(<DynamicGrid> this.grid, this.context, this.dialogName, this.dialogText, this.dialogSkin);    
+        }
     }
     
     public loadSave(save: ISave, callback: IBooleanCallback) {
@@ -167,5 +176,29 @@ class DynamicScene extends AbstractScene {
     
     registerAction(i: number, j: number) {
         this.action = { i:i, j:j };
+    }
+    
+    isDialogOpen() {
+        return this.dialogName !== undefined && this.dialogSkin !== undefined;
+    }
+    
+    closeDialog(scene: DynamicScene) {
+        scene.dialogAction();
+        scene.dialogName = undefined;
+        scene.dialogText = undefined;
+        scene.dialogSkin = undefined;
+        scene.dialogAction = undefined;    
+    }
+    
+    showSimpleDialog(name: string, message: string, skin: HTMLImageElement, callback: ()=>void): void {     
+        this.dialogName = name;
+        this.dialogText = message;
+        this.dialogSkin = skin;
+        this.dialogAction = callback;
+        //TODO manage closing condition: as of now, use temporized closing
+        let scene = this;
+        setTimeout(function() {
+            scene.closeDialog(scene);
+        }, 3000);
     }
 }

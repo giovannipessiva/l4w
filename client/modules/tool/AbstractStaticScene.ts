@@ -75,18 +75,18 @@ abstract class AbstractStaticScene extends AbstractScene {
 
     /**
      * Return the rectangular area currently selected in the scene.
-     * Both the top-left point (x1,y1) and the bottom-right point
-     * (x2, y2) are included in the area
+     * Both the top-left point (x,y) and the bottom-right point
+     * (x+w, y+h) are included in the area
      */
-    getSelectionArea(): IRectangle {
+    public getSelectionArea(): IRectangle {
         if (Utils.isEmpty(this.renderingConfiguration.selectCellStart)) {
             return null;
         }
-        var x1 = this.renderingConfiguration.selectCellStart.i;
-        var y1 = this.renderingConfiguration.selectCellStart.j;
+        let x1 = this.renderingConfiguration.selectCellStart.i;
+        let y1 = this.renderingConfiguration.selectCellStart.j;
    
-        var x2;
-        var y2;
+        let x2;
+        let y2;
         if (!Utils.isEmpty(this.renderingConfiguration.selectCellEnd)) {
             x2 = this.renderingConfiguration.selectCellEnd.i;
             y2 = this.renderingConfiguration.selectCellEnd.j;
@@ -106,10 +106,10 @@ abstract class AbstractStaticScene extends AbstractScene {
         }
                 
         return {
-            x1: x1,
-            y1: y1,
-            x2: x2,
-            y2: y2
+            x: x1,
+            y: y1,
+            w: x2 - x1,
+            h: y2 - y1
         };
     }
        

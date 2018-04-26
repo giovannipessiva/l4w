@@ -1,8 +1,9 @@
 const path = require('path');
 const fs = require('fs');
-const HttpStatus = require('http-status-codes');
 
-var placeholder = "404.png";
+const constants = require(__dirname + "/constants");
+
+const placeholder = "404.png";
 
 module.exports = {
 		
@@ -26,8 +27,8 @@ module.exports = {
             path + "/" + file,
             options,
             function(err) {
-                if (err && response.statusCode != HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
-                    if (response.statusCode == HttpStatus.NOT_FOUND && file !== placeholder) {
+                if (err && response.statusCode != constants.HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
+                    if (response.statusCode == constants.HttpStatus.NOT_FOUND && file !== placeholder) {
                     	sendFile(path, placeholder, response);
                     } else {
                     	// Do not log 404 on mimified script

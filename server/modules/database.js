@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const pg = require("pg");
 const Sequelize = require("sequelize");
-const HttpStatus = require('http-status-codes');
 
 const models = require(__dirname + "/models");
 const utils = require(__dirname + "/utils");
@@ -37,7 +36,7 @@ function logAccess(user) {
 
 function manageQueryError(response, error) {
 	console.error(error);
-	response.status(HttpStatus.BAD_REQUEST).send("");
+	response.status(constants.HttpStatus.BAD_REQUEST).send("");
 };
 
 module.exports = {
@@ -74,7 +73,7 @@ module.exports = {
 					},
 					function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
+						response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
 								defaults.getDefaultMap());
 					});
 			break;
@@ -95,7 +94,7 @@ module.exports = {
 					},
 					function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
+						response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
 								defaults.getDefaultTileset());
 					});
 			break;
@@ -117,11 +116,11 @@ module.exports = {
 					},
 					function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
 								.send(defaults.getDefaultSave());
 					});
 			} else {
-				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
+				response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
 			}
 			break;
 		case "string":
@@ -141,11 +140,11 @@ module.exports = {
 					},
 					function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
 								.send(defaults.getDefaultSave());
 					});
 			} else {
-				response.status(HttpStatus.OK).send(defaults.getDefaultSave());
+				response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
 			}
 			break;
 		default:
@@ -162,7 +161,7 @@ module.exports = {
 				id : file,
 				data : JSON.parse(data)
 			}).then(function(result) {
-				response.status(HttpStatus.OK).send("");
+				response.status(constants.HttpStatus.OK).send("");
 			}, function(error) {
 				manageQueryError(response, error);
 			});
@@ -172,7 +171,7 @@ module.exports = {
 				image : file,
 				data : JSON.parse(data)
 			}).then(function(result) {
-				response.status(HttpStatus.OK).send("");
+				response.status(constants.HttpStatus.OK).send("");
 			}, function(error) {
 				manageQueryError(response, error);
 			});
@@ -185,7 +184,7 @@ module.exports = {
 				name: null,
 				save : JSON.parse(data)
 			}).then(function(result) {
-				response.status(HttpStatus.OK).send("");
+				response.status(constants.HttpStatus.OK).send("");
 			}, function(error) {
 				manageQueryError(response, error);
 			});
@@ -196,7 +195,7 @@ module.exports = {
 			let callbackSuccess = function() {
 				counter--;
 				if(counter <= 0) {
-					response.status(HttpStatus.OK).send("");
+					response.status(constants.HttpStatus.OK).send("");
 				}
 			}
 			let id = undefined;
@@ -268,11 +267,11 @@ module.exports = {
 						}
 					}, function(error) {
 						console.log(error);
-						response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+						response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
 					});
 				}, function(error) {
 					console.log(error);
-					response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+					response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
 				});
 			} else {
 				// Add user id to session
@@ -284,7 +283,7 @@ module.exports = {
 			}
 		}, function(error) {
 			console.log(error);
-			response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+			response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
 		});
 	},
 

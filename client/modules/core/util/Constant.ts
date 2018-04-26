@@ -42,6 +42,15 @@ namespace Constant {
     export const HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.50);
     export const VERY_HIGH_FREQUENCY: number = MEDIUM_FREQUENCY * (1 + 0.90);
     
+    export class DialogBox {
+        static IMG_BOX_WIDTH: number = 128;
+        static IMG_BOX_HEIGHT: number = 128;
+        static IMG_BORDER_WIDTH: number = 16;
+        static IMG_BORDER_HEIGHT: number = 16;
+        static WIDTH_PERC: number = 0.8;
+        static HEIGHT_PERC: number = 0.2;
+    }
+    
     export enum MapLayer {
         LOW,
         MID,

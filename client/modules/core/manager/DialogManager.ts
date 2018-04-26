@@ -37,26 +37,73 @@ namespace DialogManager {
         });
     }
 
-    export function show(name: string, messageId: number, language: LanguageEnum, skin: string, callback) {
+    export function show(scene: DynamicScene, name: string, messageId: number, language: LanguageEnum, skin: string, callback) {
         let message: string;
         let image: HTMLImageElement;
         loadString(messageId, language, function(msg: string) {
             message = msg;
             if(image !== undefined) {
-                showDialog(name, message, language, image, callback);   
+                showDialog(scene, name, message, image, callback);   
             }
         });
         Resource.load(skin, Resource.TypeEnum.SKIN, function(img: HTMLImageElement) {
             image = img;
             if(message !== undefined) {
-                showDialog(name, message, language, image, callback);
+                showDialog(scene, name, message, image, callback);
             }  
         });
     }
     
-    function showDialog(name: string, message: string, language: LanguageEnum, skin: HTMLImageElement, callback) {     
+    function showDialog(scene: DynamicScene, name: string, message: string, skin: HTMLImageElement, callback: ()=>void): void {     
+        scene.showSimpleDialog(name, message, skin, callback);
+    }
+    
+    export function renderDialog(grid: DynamicGrid, context: CanvasRenderingContext2D, name: string, message: string, skin: HTMLImageElement): void {
+        let dialogBox: IRectangle = grid.getDialogBoxSize();
+        renderDialogBox(dialogBox, context, skin);
+        renderDialogBorder(dialogBox, context, skin);
+        renderDialogText(dialogBox, context, name, message, skin);
+    }
+    
+    function renderDialogBox(dialogBox: IRectangle, context: CanvasRenderingContext2D, skin: HTMLImageElement): void {
         //TODO
-        console.log(name + "> " + message);
-        callback();
+        
+        context.drawImage(
+            skin, // Specifies the image, canvas, or video element to use
+            0, // The x coordinate where to start clipping
+            0, // The y coordinate where to start clipping
+            Constant.DialogBox.IMG_BOX_WIDTH, // The width of the clipped image
+            Constant.DialogBox.IMG_BOX_HEIGHT, // The height of the clipped image
+            dialogBox.x, // The x coordinate where to place the image on the canvas
+            dialogBox.y, // The y coordinate where to place the image on the canvas
+            dialogBox.w, // The width of the image to use (stretch or reduce the image)
+            dialogBox.h // The height of the image to use (stretch or reduce the image)
+        );
+    }
+    
+    function renderDialogBorder(dialogBox: IRectangle, context: CanvasRenderingContext2D, skin: HTMLImageElement): void {
+        //TODO
+        
+        context.drawImage(
+            skin, // Specifies the image, canvas, or video element to use
+            Constant.DialogBox.IMG_BOX_WIDTH, // The x coordinate where to start clipping
+            0, // The y coordinate where to start clipping
+            Constant.DialogBox.IMG_BORDER_WIDTH, // The width of the clipped image
+            Constant.DialogBox.IMG_BORDER_HEIGHT, // The height of the clipped image
+            dialogBox.x, // The x coordinate where to place the image on the canvas
+            dialogBox.y, // The y coordinate where to place the image on the canvas
+            dialogBox.w, // The width of the image to use (stretch or reduce the image)
+            dialogBox.h // The height of the image to use (stretch or reduce the image)
+        );
+    }
+    
+    function renderDialogText(dialogBox: IRectangle, context: CanvasRenderingContext2D, name: string, message: string, skin: HTMLImageElement): void {
+        //TODO
+        context.fillStyle = Constant.Color.BLACK;
+        context.font = "10px Arial";
+        context.fillText(
+            message,
+            dialogBox.x + 11,
+            dialogBox.y);
     }
 };

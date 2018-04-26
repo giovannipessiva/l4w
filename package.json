@@ -11,9 +11,8 @@
     "connect-session-sequelize": "5.2.1",
     "express": "4.16.3",
     "express-session": "1.15.6",
-    "http-status-codes": "1.3.0",
     "pg": "7.4.1",
-    "sequelize": "4.36.1"
+    "sequelize": "4.37.6"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
@@ -22,10 +21,10 @@
     "grunt-babel": "7.0.0",
     "grunt-contrib-uglify": "3.3.0",
     "grunt-ts": "5.5.1",
-    "grunt-tslint": "5.0.1",
+    "grunt-tslint": "5.0.2",
     "sequelize-auto": "0.4.29",
     "tslint": "5.9.1",
-    "typescript": "2.7.2"
+    "typescript": "2.8.3"
   },
   "engines": {
     "node": "9.2"

@@ -5,24 +5,25 @@
  */
 class DynamicGrid extends AbstractGrid {
 
-    canvasRatio: number;
-    scaleStepX: number;
-    scaleStepY: number; 
-
+    protected canvasRatio: number;
+    protected scaleStepX: number;
+    protected scaleStepY: number;
+    protected dialogBox: IRectangle;
+    
     constructor(
         cnvs: HTMLCanvasElement,
         onCompleted: { (grid: DynamicGrid): void }) {
         super(cnvs, onCompleted, GridTypeEnum.game);
     }
 
-    deferredInit(props: Map<string, number>) {
+    public deferredInit(props: Map<string, number>) {
         super.deferredInit(props);
         this.canvasRatio = props.get("canvasRatio");
         this.scaleStepX = this.cellW * Math.pow(2,-10);
         this.scaleStepY = this.cellH * Math.pow(2,-10);
     }
 
-    refresh() {
+    public refresh() {
         let ratioH = this.baseH / this.height();
         let ratioW = this.baseW / this.width();
         let newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
@@ -35,6 +36,19 @@ class DynamicGrid extends AbstractGrid {
         this.scaleY = newScale - (newScale % this.scaleStepY);
         super.refresh();
     }
+    
+    public updateSizingDerivates() {
+        super.updateSizingDerivates();
+        // Update sizes of dialog box
+        let h = Math.floor(this.baseH * Constant.DialogBox.WIDTH_PERC);
+        let w = Math.floor(this.baseW * Constant.DialogBox.HEIGHT_PERC);
+        this.dialogBox = {
+            h: h,
+            w: w,
+            x: Math.floor((this.baseH - h) / 2),
+            y: Math.floor((this.baseW - w) / 2)
+        }
+    }
 
     private width() {
         return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
@@ -42,5 +56,9 @@ class DynamicGrid extends AbstractGrid {
 
     private height() {
         return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+    }
+    
+    public getDialogBoxSize(): IRectangle {
+        return this.dialogBox;
     }
 }

@@ -34,8 +34,8 @@ class MapperScene extends AbstractStaticScene {
                 this.context.fillRect(
                     this.pointer.i * this.grid.cellW,
                     this.pointer.j * this.grid.cellH,
-                    (selectionArea.x2 - selectionArea.x1 + 1) * this.grid.cellW,
-                    (selectionArea.y2 - selectionArea.y1 + 1) * this.grid.cellH);
+                    (selectionArea.w + 1) * this.grid.cellW,
+                    (selectionArea.h + 1) * this.grid.cellH);
                 this.context.restore();
             }
         }
@@ -58,9 +58,9 @@ class MapperScene extends AbstractStaticScene {
                     return false;
                 }
                 let tileColumns: number = Math.floor(this.map.tileset.imagewidth / this.grid.cellW); //TODO questa non cambia mai, ottimizzabile
-                let appliedTile: number = pickerArea.x1 + pickerArea.y1 * tileColumns;
-                for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
-                    for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                let appliedTile: number = pickerArea.x + pickerArea.y * tileColumns;
+                for (let j = 0; j <= pickerArea.h; j++) {
+                    for (let i = 0; i <= pickerArea.w; i++) {
                         if (i_apply + i < this.map.width) {
                             let appliedTileOffset: number = i + j * tileColumns;
                             let changedCellOffset: number = i + j * this.map.width;
@@ -75,11 +75,11 @@ class MapperScene extends AbstractStaticScene {
             case Constant.EditMode.ERASE:
                 if (Utils.isEmpty(pickerArea)) {
                     pickerArea = {
-                        x1: 0, x2: 0, y1: 0, y2: 0
+                        x: 0, y: 0, w: 0, h: 0
                     };
                 }
-                for (let j = 0; j <= pickerArea.y2 - pickerArea.y1; j++) {
-                    for (let i = 0; i <= pickerArea.x2 - pickerArea.x1; i++) {
+                for (let j = 0; j <= pickerArea.h; j++) {
+                    for (let i = 0; i <= pickerArea.w; i++) {
                         if (i_apply + i < this.map.width) {
                             let changedCellOffset: number = i + j * this.map.width;
                             if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== null) {
