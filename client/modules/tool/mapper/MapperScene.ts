@@ -23,7 +23,7 @@ class MapperScene extends AbstractStaticScene {
 
     protected renderPointer() {
         if (this.pointer.i != null && this.pointer.j != null) {
-            var selectionArea: IRectangle = this.getSelectionArea();
+            let selectionArea: IRectangle = this.getSelectionArea();
             if (Utils.isEmpty(selectionArea)) {
                 super.renderPointer();
             } else {
