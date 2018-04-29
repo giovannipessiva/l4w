@@ -16,7 +16,7 @@ before-script:
 - npm install
 
 script:
-- grunt travis
+- grunt l4w-build-pipeline
 
 after_success:
 - bash post_build.sh

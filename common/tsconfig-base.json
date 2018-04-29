@@ -2,6 +2,15 @@
     "compileOnSave": true,
     "compilerOptions": {
     	"target": "ES6",
-    	"skipLibCheck": true
+    	"skipLibCheck": true,
+    	"strict": true,
+	    "noImplicitAny": true,
+	    "strictNullChecks": true,
+	    "noImplicitThis": true,
+	    "alwaysStrict": true,    
+	    "noUnusedLocals": true,     
+	    "noUnusedParameters": true,       
+	    "noImplicitReturns": true, 
+	    "noFallthroughCasesInSwitch": true
     }
 }
