@@ -1,0 +1,14 @@
+{
+	"extends": "common/tsconfig-base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "outFile": "compiled.js",
+        "allowJs": true
+    },
+    "include": [
+        "client/modules",
+        "server/modules",
+        "server/modules",
+        "common/modules"
+    ]
+}

@@ -1,1 +1,1 @@
-web: node --inspect server/index.js
+web: node --inspect server/l4w-server.js

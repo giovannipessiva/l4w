@@ -1,1 +1,1 @@
-web: node server/index.js
+web: node server/l4w-server.js

@@ -91,4 +91,5 @@ module.exports = function(grunt) {
         grunt.task.run(["babel","uglify"]);
     });
     grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
+	grunt.registerTask("default","l4w-build-pipeline");
 };

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType">
 <stringAttribute key="org.eclipse.debug.core.ATTR_REFRESH_SCOPE" value="${working_set:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;resources&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/client/l4w-client.js&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/server/l4w-server.js&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;/resources&gt;}"/>
+<booleanAttribute key="org.eclipse.debug.core.capture_output" value="false"/>
+<booleanAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_OUTPUT_ON" value="false"/>
 <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="true"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_BUILD_SCOPE" value="${working_set:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;resources&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/client/modules&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/client/tsconfig.json&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/common&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/server/modules&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;item path=&quot;/ProjectL4W/server/tsconfig.json&quot; type=&quot;1&quot;/&gt;&#13;&#10;&lt;/resources&gt;}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/ProjectL4W/compile.bat}"/>
