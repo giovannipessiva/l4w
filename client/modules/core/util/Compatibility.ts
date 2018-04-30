@@ -10,6 +10,7 @@ namespace Compatibility {
         canvas();
         serviceWorker();
         webWorker();
+        webSpeech();
         thirdPartyCookies();
     }
 
@@ -33,6 +34,14 @@ namespace Compatibility {
     export function webWorker(): boolean {
         if(!("Worker" in window)) {
             console.error("Web Workers are not supported");
+            return false;
+        }
+        return true;
+    }
+    
+    function webSpeech(): boolean {
+        if(!("SpeechSynthesisUtterance" in window)) {
+            console.error("Web Speech API are not supported");
             return false;
         }
         return true;

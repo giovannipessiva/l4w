@@ -74,6 +74,6 @@ const enum ScaleEnum {
 };
 
 const enum LanguageEnum {
-    IT,
-    EN    
+    IT = "it",
+    EN = "en"    
 }

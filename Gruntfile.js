@@ -90,5 +90,5 @@ module.exports = function(grunt) {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);
     });
-    grunt.registerTask("travis", ["task_lint","task_compile","task_minify"]);
+    grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
 };
