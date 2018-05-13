@@ -1,17 +1,18 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-    	"target": "ES6",
-    	"moduleResolution": "node",
-    	"skipLibCheck": true,
-    	"strict": true,
-	    "noImplicitAny": true,
-	    "strictNullChecks": true,
-	    "noImplicitThis": true,
-	    "alwaysStrict": true,    
-	    "noUnusedLocals": true,     
-	    "noUnusedParameters": true,       
-	    "noImplicitReturns": true, 
-	    "noFallthroughCasesInSwitch": true
+		"target": "es6",
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "strict": true,
+        "noImplicitAny": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,    
+        "noUnusedLocals": true,     
+        "noUnusedParameters": false,       
+        "noImplicitReturns": true, 
+        "noFallthroughCasesInSwitch": false
     }
 }

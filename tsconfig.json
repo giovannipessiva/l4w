@@ -1,14 +1,21 @@
 {
-	"extends": "common/tsconfig-base.json",
+	"extends": "./common/tsconfig-base.json",
     "compilerOptions": {
         "noEmit": true,
-        "outFile": "compiled.js",
-        "allowJs": true
+        "types": [
+            "node",
+            "connect-session-sequelize"
+        ],
+        "paths": {
+            "*": [
+                "./node_modules/@types/*",
+                "./server/src/types"
+            ]
+        }
     },
     "include": [
-        "client/modules",
-        "server/modules",
-        "server/modules",
-        "common/modules"
+        "client/src/**/*.ts",
+        "server/src/**/*.ts",
+        "common/src/**/*.ts"
     ]
 }

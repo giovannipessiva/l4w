@@ -1,15 +1,15 @@
 module.exports = function(grunt) {
-
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"), 
 
         tslint: {
             files: {
                 src: [
-                      "client/modules/**/*.ts",
-                      "!client/modules/interfaces/*.ts",
-                      "common/modules/**/*.ts",
-                      "server/modules/**/*.ts"
+                      "client/src/**/*.ts",
+                      "!client/src/interfaces/**",
+                      "common/src/**/*.ts",
+                      "server/src/**/*.ts",
+                      "!server/src/@types/**"
                 ]
             },
             options: {
@@ -19,26 +19,10 @@ module.exports = function(grunt) {
         
         ts: {
             client: {
-                src: [
-                    "client/modules/**/*.ts",
-                	"common/modules/**/*.ts"
-                ],
-                out: "client/<%= pkg.name %>-client.js",
-                options: {
-                    target: "es6",
-                    sourceMap: false
-                }
+                tsconfig: "./client/tsconfig-client.json"
             },
             server: {
-                src: [
-                	"server/modules/**/*.ts",
-                	"common/modules/**/*.ts"
-                ],
-                out: "server/<%= pkg.name %>-server.js",
-                options: {
-                    target: "es6",
-                    sourceMap: false
-                }
+                tsconfig: "./server/tsconfig-server.json"
             }
         },
         
@@ -48,7 +32,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "client/<%= pkg.name %>-client.es5.js": "client/<%= pkg.name %>-client.js"
+                    "client/dist/<%= pkg.name %>-client.es5.js": "client/<%= pkg.name %>-client.js"
                 }
             }
         },
@@ -70,8 +54,37 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "client/<%= pkg.name %>-client.min.js": ["client/<%= pkg.name %>-client.es5.js"]
+                    "client/dist/<%= pkg.name %>-client.min.js": ["client/dist/<%= pkg.name %>-client.es5.js"]
                 }
+            }
+        },
+
+        copy: {
+            main: {
+                files: [{
+                    expand: true, 
+                    cwd: ".", 
+                    src: [
+                        "./server/dist/*.js",
+                        "./server/dist/models/index.js"
+                    ],
+                    dest: ".", 
+                    rename: function(dest, src) {
+                        return dest + "/" + src.replace(".js",".mjs");
+                    }
+                }]
+            }
+        },
+
+        clean: {
+            options: { 
+                force: true
+            },
+            clean: {
+                src: [
+                    "./server/dist/*.js",
+                    "./server/dist/models/index.js"
+                ]
             }
         }
     });
@@ -80,12 +93,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-clean");
     
     grunt.registerTask("task_lint", "Execute tslint (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["tslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:client","ts:server"]);
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:client","ts:server","copy","clean"]);
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);

@@ -1,8 +1,8 @@
-module.exports = {
+namespace defaults2 {
 
-	getDefaultMap: function(id) {
-		return {
-			"id": 3,
+    export function getDefaultMap() {
+        return {
+            "id": 3,
             "name": "Nuova mappa",
             "height": 20,
             "width": 25,
@@ -40,15 +40,16 @@ module.exports = {
                 "over": null
             }
         };
-	},
-	
-	getDefaultTileset: function () {
-		return {
-			image: "023-FarmVillage01.png"
-		};
-	},
+    }
+    
+    export function getDefaultTileset() {
+        return {
+            image: "023-FarmVillage01.png"
+        };
+    }
 
-	getDefaultSave: function() {
-		return "";
-	}
+    export function getDefaultSave() {
+        return "";
+    }
 };
+export default defaults2;

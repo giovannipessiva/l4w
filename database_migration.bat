@@ -9,7 +9,7 @@ rem This script will set 3 variables for the connection to the remote PG databas
 rem - remote_host
 rem - remote_db
 rem - remote_user
-call server\config\setRemoteConnectionConfig.bat
+call server\setRemoteConnectionConfig.bat
 
 dropdb --host localhost --username %local_user% %local_db%
 

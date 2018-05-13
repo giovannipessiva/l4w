@@ -17,11 +17,11 @@
 var base_path = "../";
 
 requirejs([base_path + "lib/jquery3.min.js"],function($){
-    requirejs([base_path + "js/l4w.min"],function(l4w){
+    requirejs([base_path + "js/l4w-client.min"],function(l4w){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version
-        requirejs([base_path + "js/l4w"],function(l4w){
+        requirejs([base_path + "js/l4w-client"],function(l4w){
             finishedLoading();
         });
     });

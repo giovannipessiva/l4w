@@ -4,11 +4,11 @@ git config --global user.name "Travis CI"
 git branch deploy
 git checkout deploy
 
-rm -rf client/modules
+rm -rf client/src
 rm -rf client/.gitignore
-rm -rf server/config
 rm -rf .settings
 rm -rf .externalToolBuilders
+rm -rf .vscode
 rm .env
 rm .project
 rm .travis.yml

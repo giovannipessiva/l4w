@@ -60,13 +60,15 @@ namespace DialogManager {
     
     export function renderDialog(grid: DynamicGrid, context: CanvasRenderingContext2D, name: string, message: string, skin: HTMLImageElement): void {
         let dialogBox: IRectangle = grid.getDialogBoxSize();
-        renderDialogBox(dialogBox, context, skin);
-        renderDialogBorder(dialogBox, context, skin);
-        renderDialogText(dialogBox, context, name, message, skin);
+        let translation: IPoint = grid.getCurrentTranslation();
+        renderDialogBox(dialogBox, translation, context, skin);
+        //renderDialogBorder(dialogBox, context, skin);
+        //renderDialogText(dialogBox, context, name, message, skin);
     }
     
-    function renderDialogBox(dialogBox: IRectangle, context: CanvasRenderingContext2D, skin: HTMLImageElement): void {
+    function renderDialogBox(dialogBox: IRectangle, translation: IPoint, context: CanvasRenderingContext2D, skin: HTMLImageElement): void {
         //TODO
+        console.log(dialogBox.x + "," + dialogBox.y);
         
         context.drawImage(
             skin, // Specifies the image, canvas, or video element to use
