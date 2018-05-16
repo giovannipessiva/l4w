@@ -5,7 +5,11 @@ git branch deploy
 git checkout deploy
 
 rm -rf client/src
+rm -rf server/src
+rm -rf common/src
 rm -rf client/.gitignore
+rm -rf server/.gitignore
+rm -rf common/.gitignore
 rm -rf .settings
 rm -rf .externalToolBuilders
 rm -rf .vscode
