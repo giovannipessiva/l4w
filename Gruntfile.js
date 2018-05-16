@@ -5,11 +5,11 @@ module.exports = function(grunt) {
         tslint: {
             files: {
                 src: [
-                      "client/src/**/*.ts",
-                      "!client/src/interfaces/**",
-                      "common/src/**/*.ts",
-                      "server/src/**/*.ts",
-                      "!server/src/@types/**"
+                      "./client/src/**/*.ts",
+                      "!./client/src/interfaces/**",
+                      "./common/src/**/*.ts",
+                      "./server/src/**/*.ts",
+                      "!./server/src/@types/**"
                 ]
             },
             options: {
@@ -23,39 +23,6 @@ module.exports = function(grunt) {
             },
             server: {
                 tsconfig: "./server/tsconfig-server.json"
-            }
-        },
-        
-        babel: {
-            options: {
-                presets: ["env"]
-            },
-            dist: {
-                files: {
-                    "client/dist/<%= pkg.name %>-client.es5.js": "client/<%= pkg.name %>-client.js"
-                }
-            }
-        },
-    
-        uglify: {
-            options: {
-                banner: "/* <%= pkg.name %> <%= grunt.template.date((new Date()).getTime() + 3600000*2,'yyyy-mm-dd HH:MM') %> */\n",
-                compress: {
-                    properties: true,
-                    unsafe: true,
-                    comparisons: true,
-                    evaluate: true,
-                    booleans: true,
-                    loops: true,
-                    if_return: true,
-                    join_vars: true
-                },
-                mangle: true
-            },
-            dist: {
-                files: {
-                    "client/dist/<%= pkg.name %>-client.min.js": ["client/dist/<%= pkg.name %>-client.es5.js"]
-                }
             }
         },
 
@@ -85,6 +52,39 @@ module.exports = function(grunt) {
                     "./server/dist/*.js",
                     "./server/dist/models/index.js"
                 ]
+            }
+        },
+        
+        babel: {
+            options: {
+                presets: ["env"]
+            },
+            dist: {
+                files: {
+                    "./client/dist/<%= pkg.name %>-client.es5.js": "./client/dist/<%= pkg.name %>-client.js"
+                }
+            }
+        },
+    
+        uglify: {
+            options: {
+                banner: "/* <%= pkg.name %> <%= grunt.template.date((new Date()).getTime() + 3600000*2,'yyyy-mm-dd HH:MM') %> */\n",
+                compress: {
+                    properties: true,
+                    unsafe: true,
+                    comparisons: true,
+                    evaluate: true,
+                    booleans: true,
+                    loops: true,
+                    if_return: true,
+                    join_vars: true
+                },
+                mangle: true
+            },
+            dist: {
+                files: {
+                    "./client/dist/<%= pkg.name %>-client.min.js": ["./client/dist/<%= pkg.name %>-client.es5.js"]
+                }
             }
         }
     });
