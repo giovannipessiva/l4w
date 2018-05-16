@@ -3,3 +3,5 @@ node_modules
 /npm-debug.log
 client/l4w-client.js
 server/config/setRemoteConnectionConfig.bat
+server/l4w-server.js
+server/l4w-server.js
