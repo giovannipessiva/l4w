@@ -1,5 +1,3 @@
-/// <reference path="./database.ts" />
-
 import { database2 } from "./database";
 
 export namespace mapper {

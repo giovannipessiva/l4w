@@ -1,9 +1,3 @@
-/// <reference path="./mapper.ts" />
-/// <reference path="./utils2.ts" />
-/// <reference path="./database.ts" />
-/// <reference path="./security.ts" />
-/// <reference path="./session.ts" />
-
 //@ts-ignore TS1192
 import path from "path"
 //@ts-ignore TS1192
@@ -11,9 +5,9 @@ import express from "express";
 //@ts-ignore TS1192
 import compression from "compression";
 
-import constants2 from "./constants2"
+import constants from "./constants"
 import { session } from "./session"
-import * as utils2 from "./utils2"
+import * as utils2 from "./utils"
 import { security } from "./security"
 import { database2 } from "./database"
 import { mapper } from "./mapper"
@@ -171,7 +165,7 @@ app.post("/edit/maps", function(request: Request, response: Response) {
             mapper.updateMaps(data, session.getUser(request), response);
         });
     } else {
-        response.status(constants2.HttpStatus.FORBIDDEN).send("");
+        response.status(constants.HttpStatus.FORBIDDEN).send("");
     }
 });
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
@@ -190,14 +184,14 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
             }
         });
     } else {
-        response.status(constants2.HttpStatus.FORBIDDEN).send("");
+        response.status(constants.HttpStatus.FORBIDDEN).send("");
     }
 });
 app.get("/news", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
        database2.getNews(session.getUser(request), response);
     } else {
-        response.status(constants2.HttpStatus.FORBIDDEN).send("");
+        response.status(constants.HttpStatus.FORBIDDEN).send("");
     }
 });
 

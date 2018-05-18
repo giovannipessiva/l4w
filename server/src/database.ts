@@ -2,14 +2,14 @@
 import sequelize from "sequelize"
 
 import { models } from "./models/index"
-import * as utils2 from "./utils2"
-import constants2 from "./constants2"
-import defaults2 from "./defaults"
+import * as utils from "./utils"
+import constants from "./constants"
+import defaults from "./defaults"
 
 export namespace database2 {
 
     function getDefaults(type: string, file: string | undefined) {
-        if (!utils2.isEmpty(file)) {
+        if (!utils.isEmpty(file)) {
             return file!;
         }
         if ("map" === type) {
@@ -37,7 +37,7 @@ export namespace database2 {
     
     function manageQueryError(response: any, error: any) {
         console.error(error);
-        response.status(constants2.HttpStatus.BAD_REQUEST).send("");
+        response.status(constants.HttpStatus.BAD_REQUEST).send("");
     };
 
     export function init() {
@@ -63,18 +63,18 @@ export namespace database2 {
                 attributes : [ "data" ]
             }).then(
                     function(result: any) {
-                        if (!utils2.isEmpty(result)) {
+                        if (!utils.isEmpty(result)) {
                             response.json(result.data);
                         } else {
                             console.log("Map "+ file + " not found, returning default");
                             response.send(
-                                    defaults2.getDefaultMap());
+                                    defaults.getDefaultMap());
                         }
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR).send(
-                                defaults2.getDefaultMap());
+                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
+                                defaults.getDefaultMap());
                     });
             break;
         case "tileset":
@@ -85,21 +85,21 @@ export namespace database2 {
                 attributes : [ "data" ]
             }).then(
                     function(result: any) {
-                        if (!utils2.isEmpty(result)) {
+                        if (!utils.isEmpty(result)) {
                             response.json(result.data);
                         } else {
                             console.log("Tileset "+ file + " not found, returning default");
-                            response.send(defaults2.getDefaultMap());
+                            response.send(defaults.getDefaultMap());
                         }
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR).send(
-                                defaults2.getDefaultTileset());
+                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
+                                defaults.getDefaultTileset());
                     });
             break;
         case "save":
-            if (!utils2.isEmpty(user)) {
+            if (!utils.isEmpty(user)) {
                 models.usr_save.findOne({
                     where : {
                         user : user,
@@ -108,23 +108,23 @@ export namespace database2 {
                     attributes : [ "save" ]
                 }).then(
                     function(result: any) {
-                        if (!utils2.isEmpty(result)) {
+                        if (!utils.isEmpty(result)) {
                             response.send(result.dataValues.save);
                         } else {
-                            response.send(defaults2.getDefaultSave());
+                            response.send(defaults.getDefaultSave());
                         }
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR)
-                                .send(defaults2.getDefaultSave());
+                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
+                                .send(defaults.getDefaultSave());
                     });
             } else {
-                response.status(constants2.HttpStatus.OK).send(defaults2.getDefaultSave());
+                response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
             }
             break;
         case "string":
-            if (!utils2.isEmpty(user)) {
+            if (!utils.isEmpty(user)) {
                 models.l4w_string.findOne({
                     where : {
                         id : file
@@ -132,7 +132,7 @@ export namespace database2 {
                     attributes : [ "lang", "value" ]
                 }).then(
                     function(result: any) {
-                        if (!utils2.isEmpty(result)) {
+                        if (!utils.isEmpty(result)) {
                             response.send(result.dataValues.value);
                         } else {
                             response.send("???");
@@ -140,11 +140,11 @@ export namespace database2 {
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR)
-                                .send(defaults2.getDefaultSave());
+                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
+                                .send(defaults.getDefaultSave());
                     });
             } else {
-                response.status(constants2.HttpStatus.OK).send(defaults2.getDefaultSave());
+                response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
             }
             break;
         default:
@@ -161,7 +161,7 @@ export namespace database2 {
                 id : file,
                 data : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants2.HttpStatus.OK).send("");
+                response.status(constants.HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -171,7 +171,7 @@ export namespace database2 {
                 image : file,
                 data : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants2.HttpStatus.OK).send("");
+                response.status(constants.HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -184,7 +184,7 @@ export namespace database2 {
                 name: null,
                 save : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants2.HttpStatus.OK).send("");
+                response.status(constants.HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -195,11 +195,11 @@ export namespace database2 {
             let callbackSuccess = function() {
                 counter--;
                 if(counter <= 0) {
-                    response.status(constants2.HttpStatus.OK).send("");
+                    response.status(constants.HttpStatus.OK).send("");
                 }
             }
             let id = undefined;
-            if(!utils2.isEmpty(file)) {
+            if(!utils.isEmpty(file)) {
                 id = file;
             }
             for(let lang in strings) {
@@ -247,7 +247,7 @@ export namespace database2 {
                             // Send welcome event to the new user
                             models.usr_event.upsert({
                                 user: user_new_record.user,
-                                event: constants2.event.WELCOME,
+                                event: constants.event.WELCOME,
                                 date: new Date()
                             }).then(function(res: any) {
                             }, function(error: any) {
@@ -269,11 +269,11 @@ export namespace database2 {
                         }
                     }, function(error: any) {
                         console.log(error);
-                        response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
                     });
                 }, function(error: any) {
                     console.log(error);
-                    response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                    response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
                 });
             } else {
                 // Add user id to session
@@ -285,12 +285,12 @@ export namespace database2 {
             }
         }, function(error: any) {
             console.log(error);
-            response.status(constants2.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+            response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
         });
     }
 
     export function getNews(user: string, response: any) {
-        if (utils2.isEmpty(user)) {
+        if (utils.isEmpty(user)) {
             response.json({});
         } else {
             models.usr_event.findAll({
@@ -299,7 +299,7 @@ export namespace database2 {
                 },
                 attributes : [ "event" ],
             }).then(function(events: any) {
-                if (!utils2.isEmpty(events)) {
+                if (!utils.isEmpty(events)) {
                     var eventsArray = new Array;
                     for (var i = 0; i < events.length; i++) {
                         eventsArray.push(events[i].event);

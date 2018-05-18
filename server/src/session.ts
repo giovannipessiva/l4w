@@ -1,8 +1,3 @@
-/// <reference path="./utils2.ts" />
-/// <reference path="./security.ts" />
-/// <reference path="./models/index.ts" />
-/// <reference path="./database.ts" />
-
 //@ts-ignore TS1192
 import Session from "express-session"
 //@ts-ignore TS1192
@@ -12,7 +7,7 @@ let SequelizeStore = SequelizeSessionInit(Session.Store);
 //@ts-ignore TS1192
 import https from "https"
 
-import * as utils2 from "./utils2"
+import * as utils from "./utils"
 import { security } from "./security"
 import { models } from "./models/index"
 import { database2 } from "./database"
@@ -42,7 +37,7 @@ export namespace session {
     }
     
     export function getUser(request: any) {
-        if(utils2.isEmpty(request.session.user)) {
+        if(utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l"autenticazione sia disabilitata, forza l"utente 0
                 return "0";
@@ -56,15 +51,15 @@ export namespace session {
         if(security.isAuthenticationDisabled()) {
             return true;
         }
-        return !utils2.isEmpty(getUser(request));
+        return !utils.isEmpty(getUser(request));
     }
 
     export function doLogin(request: any, response: any, onSuccess: any, onFailure: any) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
             security.getBodyData(request,response,function(data: any){
-                if(!utils2.isEmpty(data)) {
-                    var paramMap = utils2.parseParameters(data);
+                if(!utils.isEmpty(data)) {
+                    var paramMap = utils.parseParameters(data);
                     https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res: https.ClientRequest) {
                         res.setEncoding("utf8");
                         var authResponse: string = "";

@@ -1,8 +1,5 @@
-/// <reference path="./models/index.ts" />
-/// <reference path="./utils2.ts" />
-
-import constants2 from "./constants2"
-import * as utils2 from "./utils2"
+import constants from "./constants"
+import * as utils from "./utils"
 import { models } from "./models/index"
 
 export namespace security {
@@ -16,7 +13,7 @@ export namespace security {
     }
     
     export function logSecurityEvent(event: any, info: any) {
-        if(utils2.isEmpty(info)) {
+        if(utils.isEmpty(info)) {
             info = "(empty)";
         }
         let table: any = (models.log_security);
@@ -33,9 +30,9 @@ export namespace security {
             request.on("data", function(data: any) {
                 queryData += data;
                 if(queryData.length > 1e6) {
-                    logSecurityEvent(constants2.HttpStatus.REQUEST_TOO_LONG,queryData);
+                    logSecurityEvent(constants.HttpStatus.REQUEST_TOO_LONG,queryData);
                     queryData = "";
-                    response.status(constants2.HttpStatus.REQUEST_TOO_LONG).send("");
+                    response.status(constants.HttpStatus.REQUEST_TOO_LONG).send("");
                     request.connection.destroy();  
                 }
             });
@@ -49,7 +46,7 @@ export namespace security {
     }
     
     export function validateTokeninfoResponse(data: any) {
-        if(utils2.isEmpty(data)) {
+        if(utils.isEmpty(data)) {
             return false;
         }
         
