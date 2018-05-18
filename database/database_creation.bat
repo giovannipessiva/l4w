@@ -23,9 +23,8 @@ rem Create the database
 createdb --host %local_host% --port %local_port% --encoding UTF8 --locale en %local_db%
 
 rem Create a new user and make it owner of the database with all privileges
-psql -p %local_port% -d %local_db% -c "CREATE USER %local_user% WITH PASSWORD %local_password%;"
+psql -p %local_port% -d %local_db% -c "CREATE USER %local_user% WITH PASSWORD '%local_password%' CREATEDB;"
 psql -p %local_port% -d %local_db% -c "ALTER DATABASE %local_db% OWNER TO %local_user%;"
-psql -p %local_port% -d %local_db% -c "GRANT ALL PRIVILEGES ON DATABASE %local_db% TO %local_user%;
 
 rem Start the copy from Production
 call .\database_migration.bat

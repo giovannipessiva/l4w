@@ -1,4 +1,4 @@
-@echo on
+@echo off
 
 echo Starting migration from Production to localhost...
 
