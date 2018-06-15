@@ -112,9 +112,9 @@ namespace Input {
         });
         canvas.addEventListener("mouseout", function(e: PointerEvent) {
             if (flagMouseDown) {
-                ongoingActionCallback(null, null, e.buttons);
+                ongoingActionCallback(undefined, undefined, e.buttons);
             } else {
-                hoverCallback(null, null);
+                hoverCallback(undefined, undefined);
             }
         });
         canvas.addEventListener("contextmenu", function(e) {
@@ -138,13 +138,13 @@ namespace Input {
         });
         canvas.addEventListener("touchend", function(e) {
             let position = mapEvent(e);
-            ongoingActionCallback(null, null);
+            ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
 
         });
         canvas.addEventListener("touchcancel", function(e) {
             let position = mapEvent(e);
-            ongoingActionCallback(null, null);
+            ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
         });
         canvas.addEventListener("touchmove", function(e) {

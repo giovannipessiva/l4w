@@ -4,9 +4,9 @@
 namespace Errors {
     
     //TODO fargli recuperare da solo il contesto??
-    export function showError(context: CanvasRenderingContext2D) {
-        if(!Utils.isEmpty(this.context) && !Utils.isEmpty(this.grid)) {
-            this.grid.clear(this.context);
+    export function showError(context: CanvasRenderingContext2D, grid: AbstractGrid) {
+        if(!Utils.isEmpty(context) && !Utils.isEmpty(grid)) {
+            grid.clear(context);
         }
         context.fillStyle = "#000000";
         context.font = "bold 20px Arial";

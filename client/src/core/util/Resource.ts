@@ -70,7 +70,7 @@ namespace Resource {
     };
 
     function sendGETRequest(uri: string, callback: IProgressCallback) {
-        sendRequest(Constant.RequestType.GET, null, uri, callback);
+        sendRequest(Constant.RequestType.GET, undefined, uri, callback);
     };
 
     function sendPOSTRequest(uri: string, data: string, callback: IProgressCallback) {
@@ -83,11 +83,11 @@ namespace Resource {
         request.onerror = function(e: ErrorEvent) {
             console.error("Error while getting " + uri);
             console.log(e);
-            callback(null);
+            callback(undefined);
         };
         request.ontimeout = function() {
             console.error("Timeout while getting " + uri);
-            callback(null);
+            callback(undefined);
         };
         request.open(requestType, uri, true);
         try {
@@ -103,7 +103,7 @@ namespace Resource {
                 console.error(exception);
                 console.trace();
             }
-            callback(null);
+            callback(undefined);
         }
     }
 
@@ -142,7 +142,7 @@ namespace Resource {
             default:
                 console.error("Unexpected resource type");
                 console.trace();
-                callback(null);
+                callback(undefined);
         }
     }
 
