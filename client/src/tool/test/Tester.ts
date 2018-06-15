@@ -1,4 +1,4 @@
-/// <reference path="../../core/model/Commons.ts" />
+/// <reference path="../../../../common/src/model/Commons.ts" />
 /// <reference path="../../core/util/Utils.ts" />
 /// <reference path="../../core/util/Constant.ts" />
 /// <reference path="../../core/util/Errors.ts" />

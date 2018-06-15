@@ -1,5 +1,5 @@
 /// <reference path="../../core/util/Utils.ts" />
-/// <reference path="../../core/model/Tileset.ts" />
+/// <reference path="../../../../common/src/model/Tileset.ts" />
 
 namespace Tilesetter {
 

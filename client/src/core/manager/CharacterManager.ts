@@ -1,6 +1,6 @@
 /// <reference path="../util/Commons.ts" />
 /// <reference path="../util/Utils.ts" />
-/// <reference path="../model/Character.ts" />
+/// <reference path="../../../../common/src/model/Character.ts" />
 /// <reference path="../manager/MapManager.ts" />
 
 /**

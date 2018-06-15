@@ -1,5 +1,5 @@
 /// <reference path="../util/Constant.ts" />
-/// <reference path="../model/Map.ts" />
+/// <reference path="../../../../common/src/model/Map.ts" />
 
 /**
  * Helper class for managin dialogs and alfanumeric input/output

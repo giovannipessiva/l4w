@@ -1,5 +1,5 @@
 /// <reference path="../util/Constant.ts" />
-/// <reference path="../model/Map.ts" />
+/// <reference path="../../../../common/src/model/Map.ts" />
 /// <reference path="../AbstractGrid.ts" />
 /// <reference path="../manager/CharacterManager.ts" />
 

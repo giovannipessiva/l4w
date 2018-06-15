@@ -1,4 +1,4 @@
-/// <reference path="../model/Tileset.ts" />
+/// <reference path="../../../../common/src/model/Tileset.ts" />
 
 /**
  * Helper class for handling tilesets and autotile
