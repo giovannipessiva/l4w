@@ -8,6 +8,6 @@
     "include": [
         "./server/src/**/*.ts",
         "./server/src/models/*.js",
-        "./common/src/**/*.ts"
+        ". /common/src/**/*.ts"
     ]
 }
