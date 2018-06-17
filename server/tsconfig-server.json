@@ -6,8 +6,8 @@
         "outDir": "./dist"
     },
     "include": [
-        "./server/src/**/*.ts",
-        "./server/src/models/*.js",
-        ". /common/src/**/*.ts"
+        "./src/**/*.ts",
+        "./src/models/*.js",
+        "../common/src/**/*.ts"
     ]
 }
