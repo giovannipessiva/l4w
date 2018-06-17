@@ -1,1 +1,1 @@
-web: node --experimental-modules ProjectL4W/server/dist/l4w-server.mjs
+web: node --experimental-modules l4w/server/dist/l4w-server.mjs
