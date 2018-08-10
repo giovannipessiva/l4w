@@ -14,7 +14,7 @@ import { mapper } from "./mapper"
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
 //TODO this is not supported by tsc, should be fixed in TypeScript 2.9
-// see alse: https://github.com/Microsoft/TypeScript/issues/22861
+// see also: https://github.com/Microsoft/TypeScript/issues/22861
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
 let dirname = process.cwd() + path.sep + "server";
 

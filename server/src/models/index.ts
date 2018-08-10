@@ -22,7 +22,7 @@ let sequelizeInstance = new Sequelize(process.env.DATABASE_URL!, sequelizeOption
 
 export var models: any = {};
 //TODO this is not supported by tsc, should be fixed in TypeScript 2.9
-// see alse: https://github.com/Microsoft/TypeScript/issues/22861
+// see also: https://github.com/Microsoft/TypeScript/issues/22861
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
 let dirname = process.cwd() + path.sep + "server" + path.sep + "dist" + path.sep + "models";
 
