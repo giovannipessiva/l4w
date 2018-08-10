@@ -1,4 +1,4 @@
-/// <reference path="../model/Save.ts" />
+/// <reference path="../../../../common/src/model/Save.ts" />
 /// <reference path="CharacterManager.ts" />
 
 /**

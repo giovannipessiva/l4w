@@ -1,4 +1,4 @@
-/// <reference path="../../../core/model/Commons.ts" />
+/// <reference path="../../../../../common/src/model/Commons.ts" />
 /// <reference path="../../../core/AbstractGrid.ts" />
 
 namespace Script {

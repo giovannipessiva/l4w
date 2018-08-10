@@ -11,9 +11,9 @@ namespace Workers {
         scope: "../"
     };
     
-    let worker;
+    let worker: Worker;
    
-    export function launchWebWorker(data) {
+    export function launchWebWorker(data: any) {
         if(Compatibility.webWorker()) {
             if(Utils.isEmpty(worker)) {
                worker = new Worker(WEBWORKER_URL); 

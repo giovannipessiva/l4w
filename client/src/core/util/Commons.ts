@@ -1,4 +1,4 @@
-/// <reference path="../model/Commons.ts" />
+/// <reference path="../../../../common/src/model/Commons.ts" />
 
 /**
  * Module for common type structures and function interfaces

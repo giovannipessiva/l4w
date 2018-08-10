@@ -1,6 +1,6 @@
 /// <reference path="../util/Commons.ts" />
 /// <reference path="../util/Utils.ts" />
-/// <reference path="../model/Event.ts" />
+/// <reference path="../../../../common/src/model/Event.ts" />
 /// <reference path="../manager/MapManager.ts" />
 /// <reference path="../events/Conditions.ts" />
 

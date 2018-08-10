@@ -1,4 +1,4 @@
-///<reference path="../model/Commons.ts" />
+///<reference path="../../../../common/src/model/Commons.ts" />
 
 /**
  * Module for generic utility methods
@@ -181,10 +181,10 @@ namespace Utils {
     /** return block value for static and dynamic blocks on gid */
     function getMapBlocksSelective(map: IMap, gid: number, staticBlocks: boolean, dynamicBlocks: boolean): number {
         let block: number = BlockDirection.NONE;
-        if(staticBlocks && !Utils.isEmpty(map.blocks) && gid < map.blocks.length) {
+        if(staticBlocks && map.blocks !== undefined && gid < map.blocks.length) {
             block |= map.blocks[gid];
         }
-        if(dynamicBlocks && !Utils.isEmpty(map.dynamicBlocks) && gid < map.dynamicBlocks.length) {
+        if(dynamicBlocks && map.dynamicBlocks !== undefined  && gid < map.dynamicBlocks.length) {
             block |= map.dynamicBlocks[gid];
         }
         return block;

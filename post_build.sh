@@ -4,19 +4,22 @@ git config --global user.name "Travis CI"
 git branch deploy
 git checkout deploy
 
-rm -rf client/src
-rm -rf server/src
-rm -rf common/src
-rm -rf client/.gitignore
-rm -rf server/.gitignore
-rm -rf common/.gitignore
-rm -rf .settings
-rm -rf .externalToolBuilders
 rm -rf .vscode
+rm -rf client/src
+rm -rf common/src
+rm -rf database
+rm -rf server/src
+rm client/.gitignore
+rm client/tsconfig-client.json
+rm common/tsconfig-base.json
+rm server/.gitignore
+rm server/tsconfig-server.json
 rm .env
-rm .project
 rm .travis.yml
 rm Gruntfile.js
+rm LICENSE
+rm Procfile_inspect
+rm tsconfig.json
 rm tslint.json
 rm yarn.lock
 rm *.md

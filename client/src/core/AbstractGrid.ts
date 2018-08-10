@@ -1,4 +1,4 @@
-/// <reference path="model/Commons.ts" />
+/// <reference path="../../../common/src/model/Commons.ts" />
 /// <reference path="util/Resource.ts" />
 /// <reference path="util/Commons.ts" />
 
