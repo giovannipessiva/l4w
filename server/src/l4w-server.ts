@@ -13,10 +13,10 @@ import { database2 } from "./database"
 import { mapper } from "./mapper"
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
-//TODO this is not supported by tsc, should be fixed in TypeScript 2.9
-// see also: https://github.com/Microsoft/TypeScript/issues/22861
+//TODO import.meta require target=esnext and module=esnext
+// see also: https://github.com/Microsoft/TypeScript/issues/24082
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
-let dirname = process.cwd() + path.sep + "server";
+let dirname = process.cwd() + path.sep + "server" + path.sep + "dist" + path.sep + "l4w" + path.sep + "server";
 
 let app = express();
 app.use(compression());

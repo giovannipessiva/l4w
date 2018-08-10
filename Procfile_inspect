@@ -1,1 +1,1 @@
-web: node --experimental-modules --inspect server/dist/l4w-server.mjs
+web: node --experimental-modules --inspect server/dist/l4w/server/src/l4w-server.mjs

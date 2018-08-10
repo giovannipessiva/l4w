@@ -32,8 +32,7 @@ module.exports = function(grunt) {
                     expand: true, 
                     cwd: ".", 
                     src: [
-                        "./server/dist/*.js",
-                        "./server/dist/models/index.js"
+                        "./server/dist/**/*.js"
                     ],
                     dest: ".", 
                     rename: function(dest, src) {
@@ -49,9 +48,7 @@ module.exports = function(grunt) {
             },
             clean: {
                 src: [
-                    "./server/dist/*.js",
-                    "./server/dist/models/index.js"
-                ]
+                    "./server/dist/**/*.js"                ]
             }
         },
         

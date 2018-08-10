@@ -21,7 +21,6 @@ rm LICENSE
 rm Procfile_inspect
 rm tsconfig.json
 rm tslint.json
-rm yarn.lock
 rm *.md
 rm *.sh
 rm *.bat

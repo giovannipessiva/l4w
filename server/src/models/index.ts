@@ -21,10 +21,10 @@ let sequelizeOptions: Sequelize.Options = {
 let sequelizeInstance = new Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
 export var models: any = {};
-//TODO this is not supported by tsc, should be fixed in TypeScript 2.9
-// see also: https://github.com/Microsoft/TypeScript/issues/22861
+//TODO import.meta require target=esnext and module=esnext
+// see also: https://github.com/Microsoft/TypeScript/issues/24082
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
-let dirname = process.cwd() + path.sep + "server" + path.sep + "dist" + path.sep + "models";
+let dirname = process.cwd() + path.sep + "server" + path.sep + "dist" + path.sep + "l4w" + path.sep + "server" + path.sep + "src" + path.sep + "models";
 
 fs.readdirSync(dirname).filter(function(file: string) {
     return (file.indexOf(".") !== 0) && (file !== "index.mjs");
