@@ -34,9 +34,14 @@ module.exports = function(grunt) {
                     src: [
                         "./server/dist/**/*.js"
                     ],
+
                     dest: ".", 
                     rename: function(dest, src) {
-                        return dest + "/" + src.replace(".js",".mjs");
+                        if(!src.includes("/models/") || src.endsWith("/models/index.js")) {
+                            return dest + "/" + src.replace(".js",".mjs");
+                        } else {
+                            return dest + "/" + src;
+                        }
                     }
                 }]
             }
@@ -46,9 +51,18 @@ module.exports = function(grunt) {
             options: { 
                 force: true
             },
-            clean: {
+            pre: {
                 src: [
-                    "./server/dist/**/*.js"                ]
+                    "./client/dist/**",
+                    "./server/dist/**"
+                ]
+            },
+            post: {
+                src: [
+                    "./server/dist/**/*.js",
+                    "!./server/dist/**/models/*.js",
+                    "./server/dist/**/models/index.js"
+                ]
             }
         },
         
@@ -93,11 +107,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
     
-    grunt.registerTask("task_lint", "Execute tslint (can fail)", function () {
+    grunt.registerTask("task_lint", "Clean the dist folders and execute tslint (can fail)", function () {
         grunt.option("force", true);
-        grunt.task.run(["tslint"]);
+        grunt.task.run(["clean:pre","tslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:client","ts:server","copy","clean"]);
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:client","ts:server","copy","clean:post"]);
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);

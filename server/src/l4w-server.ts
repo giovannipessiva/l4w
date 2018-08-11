@@ -16,7 +16,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
-let dirname = process.cwd() + path.sep + "server" + path.sep + "dist" + path.sep + "l4w" + path.sep + "server";
+let dirname = process.cwd() + path.sep + "server" + path.sep;
 
 let app = express();
 app.use(compression());
