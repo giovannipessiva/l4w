@@ -38,5 +38,9 @@ interface IBooleanCallback {
     (success: boolean): void;
 };
 
+interface IEmptyCallback {
+    (): void;
+};
+
 function emptyFz(): void {
 }

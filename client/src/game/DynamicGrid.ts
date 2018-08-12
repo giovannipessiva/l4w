@@ -12,13 +12,17 @@ class DynamicGrid extends AbstractGrid {
     
     constructor(
         cnvs: HTMLCanvasElement,
-        onCompleted: { (grid: DynamicGrid): void }) {
+        onCompleted: { (grid: AbstractGrid): void }) {
         super(cnvs, onCompleted, GridTypeEnum.game);
     }
 
     public deferredInit(props: Map<string, number>) {
         super.deferredInit(props);
-        this.canvasRatio = props.get("canvasRatio");
+        let tmpRatio = props.get("canvasRatio");
+        if(tmpRatio === undefined) {
+            tmpRatio = 1;
+        }
+        this.canvasRatio = tmpRatio;
         this.scaleStepX = this.cellW * Math.pow(2,-10);
         this.scaleStepY = this.cellH * Math.pow(2,-10);
     }
@@ -40,13 +44,14 @@ class DynamicGrid extends AbstractGrid {
     public updateSizingDerivates() {
         super.updateSizingDerivates();
         // Update sizes of dialog box
-        let h = Math.floor(this.baseH * Constant.DialogBox.WIDTH_PERC);
-        let w = Math.floor(this.baseW * Constant.DialogBox.HEIGHT_PERC);
+        let h = Math.floor(this.baseH * Constant.DialogBox.HEIGHT_PERC);
+        let w = Math.floor(this.baseW * Constant.DialogBox.WIDTH_PERC);
         this.dialogBox = {
             h: h,
             w: w,
-            x: Math.floor((this.baseH - h) / 2),
-            y: Math.floor((this.baseW - w) / 2)
+            // x and y are relative to the current translation point
+            x: Math.floor((this.baseW - w) / 2),
+            y: this.baseH - h
         }
     }
 
