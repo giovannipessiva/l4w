@@ -66,10 +66,13 @@ ga('send', 'pageview');
 			Your browser does not support HTML5 Canvas!
 			</canvas>
 			<div id="dialog1" class="l4wDialogFrame">
-				<div id="dialog1header" class="l4wDialogHeader">
-						&#x205e;&#x205e;&#x205e;	
+				<div id="dialog1Header" class="l4wDialogHeader">
+					&#x205e;&#x205e;&#x205e;	
 				</div>
-				<div class="l4wDialog">
+				<div id="dialogFace" class="l4wDialogFace"></div>
+				<div id="dialogName" class="l4wDialogName">Sheev Palpatine</div>:
+				<div style="clear:both;"></div>
+				<div id="dialogArea" class="l4wDialog">
 				Did you ever hear the tragedy of Darth Plagueis the Wise?
 				I thought not. It's not a story the Jedi would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life... He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. It's ironic he could save others from death, but not himself.
 				</div>
@@ -89,9 +92,9 @@ dragElement(document.getElementById("dialog1"));
 
 function dragElement(elmnt) {
 	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-	if (document.getElementById(elmnt.id + "header")) {
+	if (document.getElementById(elmnt.id + "Header")) {
 		/* if present, the header is where you move the DIV from:*/
-		document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+		document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
 	} else {
 		/* otherwise, move the DIV from anywhere inside the DIV:*/
 		elmnt.onmousedown = dragMouseDown;
@@ -119,6 +122,7 @@ function dragElement(elmnt) {
 		// set the element's new position:
 		elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
 		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+		// Secret sauce fox fixing my use case
 		elmnt.style.margin="0px";
 	}
 

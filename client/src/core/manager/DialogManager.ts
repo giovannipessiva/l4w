@@ -10,6 +10,12 @@ namespace DialogManager {
     languages[LanguageEnum.IT] = "Italiano 🇮🇹";
     languages[LanguageEnum.EN] = "English 🇬🇧";
 
+    const DIALOG_FRAME_ID = "dialog1";
+    const DIALOG_FACE_ID = "dialogFace";
+    const DIALOG_NAME_ID = "dialogName";
+    const DIALOG_AREA_ID = "dialogArea";
+
+
     export function loadString(stringId: number, language: LanguageEnum, callback: (str?: string) => void): void {
         if(isNaN(stringId)) {
             callback();
@@ -59,10 +65,44 @@ namespace DialogManager {
     }
     
     export function renderDialog(grid: DynamicGrid, context: CanvasRenderingContext2D, name: string, message: string, skin: HTMLImageElement): void {
-        let dialogBox: IRectangle = grid.getDialogBoxSize();
-        let translation: IPoint = grid.getCurrentTranslation();
-        renderDialogBox(dialogBox, translation, context, skin);
-        renderDialogBorder(dialogBox, translation, context, skin);
+        var dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
+        let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
+        let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
+        let dlgArea: HTMLElement | null = document.getElementById(DIALOG_AREA_ID);
+      
+        if(dlgFrame === null) {
+            console.error("Element not foud: " + DIALOG_FRAME_ID);
+            return;
+        } else {
+            // TODO il messaggio deve sparire solo quanto l'utente clicca
+            setTimeout(function() {
+                dlgFrame!.style.display = "none";
+            }, 3000);
+        }
+        if(dlgFace === null) {
+            console.error("Element not foud: " + DIALOG_FACE_ID);
+            return;
+        }
+        if(dlgName === null) {
+            console.error("Element not foud: " + DIALOG_NAME_ID);
+            return;
+        }
+        if(dlgArea === null) {
+            console.error("Element not foud: " + DIALOG_AREA_ID);
+            return;
+        }
+
+        dlgFrame.style.display = "block";
+        //TODO manage facesets
+        //dlgFace.style.backgroundImage = "url('/assets/faceset/" + face + "')";
+        dlgFace.style.display = "none";
+        dlgName.innerText = name;
+        dlgArea.innerText = message;
+
+        //let dialogBox: IRectangle = grid.getDialogBoxSize();
+        //let translation: IPoint = grid.getCurrentTranslation();
+        //renderDialogBox(dialogBox, translation, context, skin);
+        //renderDialogBorder(dialogBox, translation, context, skin);
         //renderDialogText(dialogBox, context, name, message, skin);
     }
     

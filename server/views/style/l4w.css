@@ -15,20 +15,20 @@ p {
 }
 
 .l4wDialogFrame {
-	/* */ display: none; /* TODO rimuovere per i test */
+	 display: none; /* TEST */ 
 	position: absolute;
 	margin: auto;
 	width: 50%;
-	/* */
 	left:0px;
 	right: 1em;
-	/* */
 	bottom: 1em;
-	border: 1px dotted hsl(240, 100%, 50%, 80%);
 	text-align: left;
+	font-family: Oldenburg;
+	background-color: hsl(271, 76%, 53%, 80%);
 	resize: both;
 	overflow: auto;
-	font-family: Oldenburg;
+	border: 16px solid hsl(271, 76%, 53%, 80%);
+	border-image: url("/assets/skin/ld3-webskin1.png") 16 16 16 16 repeat;
 }
 
 .l4wDialogHeader {
@@ -40,13 +40,24 @@ p {
 	background-color: hsl(240, 100%, 50%, 80%);
 }
 
+.l4wDialogFace {
+	width: 96px;
+	height: 96px;
+	background-image: url("/assets/faceset/papatine.jpg");
+	float: left;
+	border: 1px solid black;
+}
+
+.l4wDialogName {
+	float: left;
+	font-weight: bold;
+}
+
 .l4wDialog {
 	float: left;
 	padding: 0.5em;
 	position: relative;
-	background-color: hsl(271, 76%, 53%, 80%);
 	color: black;
-	text-shadow: 0.01em 0.01em 0.1em yellow;
 }
 
 .l4wCanvas:active {
