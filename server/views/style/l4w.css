@@ -7,8 +7,46 @@ p {
 }
 
 .l4wCanvas {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
 	border: 1px solid black;
 	cursor: url("/assets/pointer/sword-off.png"), pointer;
+}
+
+.l4wDialogFrame {
+	/* */ display: none; /* TODO rimuovere per i test */
+	position: absolute;
+	margin: auto;
+	width: 50%;
+	/* */
+	left:0px;
+	right: 1em;
+	/* */
+	bottom: 1em;
+	border: 1px dotted hsl(240, 100%, 50%, 80%);
+	text-align: left;
+	resize: both;
+	overflow: auto;
+	font-family: Oldenburg;
+}
+
+.l4wDialogHeader {
+	user-select: none;
+	cursor: all-scroll;
+	float: left;
+	padding: 0.3em;
+	position: relative;
+	background-color: hsl(240, 100%, 50%, 80%);
+}
+
+.l4wDialog {
+	float: left;
+	padding: 0.5em;
+	position: relative;
+	background-color: hsl(271, 76%, 53%, 80%);
+	color: black;
+	text-shadow: 0.01em 0.01em 0.1em yellow;
 }
 
 .l4wCanvas:active {

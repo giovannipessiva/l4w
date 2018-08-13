@@ -54,27 +54,80 @@ ga('send', 'pageview');
 </head>
 <body>
 	<div style="text-align:center">
-		<div style="border:1px solid black;float:left;padding:1em;">
-			Bentornato!<br/>
-			<button onclick="signOut();">Sign out</button><br/>
+		<div style="padding:0.5em; width:20em; margin-left:auto; margin-right:0px;">
+			Bentornato!
+			<button onclick="signOut();">Sign out</button>
 			<button onclick="Game.save()">Save</button><button onclick="Game.load()">Load</button>
 			<!-- The button is required for initialization purposes -->
 			<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
 		</div>
-		<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
-		Your browser does not support HTML5 Canvas!</canvas>
-		<script type='text/javascript'>	
-			var canvas = document.getElementById("canvas1");
-			var ctx = canvas.getContext("2d");
-			ctx.fillStyle='#000000';
-			ctx.font='38px Arial';
-		    ctx.fillText("loading scripts...",10,40);
-		</script>
+		<div id="canvasArea">
+			<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
+			Your browser does not support HTML5 Canvas!
+			</canvas>
+			<div id="dialog1" class="l4wDialogFrame">
+				<div id="dialog1header" class="l4wDialogHeader">
+						&#x205e;&#x205e;&#x205e;	
+				</div>
+				<div class="l4wDialog">
+				Did you ever hear the tragedy of Darth Plagueis the Wise?
+				I thought not. It's not a story the Jedi would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life... He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. It's ironic he could save others from death, but not himself.
+				</div>
+			</div>
+		</div>
 	</div>
-	<p>
-		Editors: <a href="edit">/edit</a><br/>
-		Test page: <a href="test">/test</a><br/>
-		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Game">https://github.com/giovannipessiva/l4w/wiki/Game</a>
-	</p>
+	<script type='text/javascript'>	
+let canvas = document.getElementById("canvas1");
+let ctx = canvas.getContext("2d");
+ctx.fillStyle='#000000';
+ctx.font='38px Arial';
+ctx.fillText("loading scripts...",10,40);
+
+// Copy-pasted from: https://www.w3schools.com/howto/howto_js_draggable.asp
+//Make the DIV element draggagle:
+dragElement(document.getElementById("dialog1"));
+
+function dragElement(elmnt) {
+	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+	if (document.getElementById(elmnt.id + "header")) {
+		/* if present, the header is where you move the DIV from:*/
+		document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+	} else {
+		/* otherwise, move the DIV from anywhere inside the DIV:*/
+		elmnt.onmousedown = dragMouseDown;
+	}
+
+	function dragMouseDown(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// get the mouse cursor position at startup:
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		// call a function whenever the cursor moves:
+		document.onmousemove = elementDrag;
+	}
+
+	function elementDrag(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// calculate the new cursor position:
+		pos1 = pos3 - e.clientX;
+		pos2 = pos4 - e.clientY;
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		// set the element's new position:
+		elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+		elmnt.style.margin="0px";
+	}
+
+	function closeDragElement() {
+		/* stop moving when mouse button is released:*/
+		document.onmouseup = null;
+		document.onmousemove = null;
+	}
+}
+	</script>
 </body>
 </html>
