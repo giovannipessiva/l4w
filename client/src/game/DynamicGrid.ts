@@ -8,7 +8,6 @@ class DynamicGrid extends AbstractGrid {
     protected canvasRatio: number;
     protected scaleStepX: number;
     protected scaleStepY: number;
-    protected dialogBox: IRectangle;
     
     constructor(
         cnvs: HTMLCanvasElement,
@@ -43,16 +42,6 @@ class DynamicGrid extends AbstractGrid {
     
     public updateSizingDerivates() {
         super.updateSizingDerivates();
-        // Update sizes of dialog box
-        let h = Math.floor(this.baseH * Constant.DialogBox.HEIGHT_PERC);
-        let w = Math.floor(this.baseW * Constant.DialogBox.WIDTH_PERC);
-        this.dialogBox = {
-            h: h,
-            w: w,
-            // x and y are relative to the current translation point
-            x: Math.floor((this.baseW - w) / 2),
-            y: this.baseH - h
-        }
     }
 
     private width() {
@@ -61,9 +50,5 @@ class DynamicGrid extends AbstractGrid {
 
     private height() {
         return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-    }
-    
-    public getDialogBoxSize(): IRectangle {
-        return this.dialogBox;
     }
 }

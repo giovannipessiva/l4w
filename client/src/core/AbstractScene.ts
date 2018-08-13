@@ -33,8 +33,8 @@ abstract class AbstractScene {
     grid: AbstractGrid;
 
     paused: boolean;
-    pauseStartTime: number;
-    pauseDuration: number;
+    pauseStartTime: number | undefined;
+    pauseDuration: number | undefined;
 
     constructor(grid: AbstractGrid) {
         this.renderingConfiguration = new RenderConfiguration();
@@ -202,8 +202,8 @@ abstract class AbstractScene {
         };
     }
 
-    moveFocusToDirection(direction: DirectionEnum = null) {
-        if (direction != null) {
+    moveFocusToDirection(direction?: DirectionEnum) {
+        if (direction !== undefined) {
             switch (direction) {
                 case DirectionEnum.UP: this.focus.y -= +this.grid.cellH; break;
                 case DirectionEnum.DOWN: this.focus.y += +this.grid.cellH; break;

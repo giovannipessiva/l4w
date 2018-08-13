@@ -15,7 +15,7 @@ p {
 }
 
 .l4wDialogFrame {
-	 display: none; /* TEST */ 
+	display: none; /* TEST */ 
 	position: absolute;
 	margin: auto;
 	width: 50%;
@@ -35,28 +35,26 @@ p {
 	user-select: none;
 	cursor: all-scroll;
 	float: left;
-	padding: 0.3em;
+	padding-right: 0.5em;
 	position: relative;
-	background-color: hsl(240, 100%, 50%, 80%);
+	color: lightgrey;
+	/* background-color: hsl(240, 100%, 50%, 80%); */
 }
 
 .l4wDialogFace {
+	float: left;
 	width: 96px;
 	height: 96px;
 	background-image: url("/assets/faceset/papatine.jpg");
-	float: left;
 	border: 1px solid black;
+	margin-right:1em;
 }
 
 .l4wDialogName {
-	float: left;
 	font-weight: bold;
 }
 
 .l4wDialog {
-	float: left;
-	padding: 0.5em;
-	position: relative;
 	color: black;
 }
 
@@ -74,5 +72,5 @@ p {
 
 .editor:hover {
     border: 2px solid black;
-    text-style: bold;
+    font-weight: bold;
 }

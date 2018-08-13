@@ -15,7 +15,7 @@ class DynamicScene extends AbstractScene {
     fpsPerformance = [22, 21, 20];
 
     hero: IEvent;   
-    action: ICell;
+    action: ICell | undefined;
     save: ISave;
     
     dialogName: string;
@@ -117,7 +117,7 @@ class DynamicScene extends AbstractScene {
         }
     }
 
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
+    protected renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean) {
         try {
             if (EventManager.isVisible(this.hero, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
                 EventManager.render(this.grid, this.hero, this.context, true);
@@ -137,19 +137,15 @@ class DynamicScene extends AbstractScene {
                 }
             }
         }
-        
-        if(onTop && this.isDialogOpen()) {
-            DialogManager.renderDialog(<DynamicGrid> this.grid, this.context, this.dialogName, this.dialogText, this.dialogSkin);    
-        }
     }
     
     public loadSave(save: ISave, callback: IBooleanCallback) {
-        let mapId;
+        let mapId: number;
         let hero: IEvent;
         if (Utils.isEmpty(save)) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
-                mapId = "0"; // Load first map
+                mapId = 0; // Load first map
                 hero = EventManager.getNewHero();
             } else {
                 // Leave current map
@@ -180,25 +176,5 @@ class DynamicScene extends AbstractScene {
     
     isDialogOpen() {
         return this.dialogName !== undefined && this.dialogSkin !== undefined;
-    }
-    
-    closeDialog(scene: DynamicScene) {
-        scene.dialogAction();
-        scene.dialogName = undefined;
-        scene.dialogText = undefined;
-        scene.dialogSkin = undefined;
-        scene.dialogAction = undefined;    
-    }
-    
-    showSimpleDialog(name: string, message: string, skin: HTMLImageElement, callback: ()=>void): void {     
-        this.dialogName = name;
-        this.dialogText = message;
-        this.dialogSkin = skin;
-        this.dialogAction = callback;
-        //TODO manage closing condition: as of now, use temporized closing
-        let scene = this;
-        setTimeout(function() {
-            scene.closeDialog(scene);
-        }, 3000);
     }
 }

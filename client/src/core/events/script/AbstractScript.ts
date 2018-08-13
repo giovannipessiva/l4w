@@ -18,13 +18,15 @@ namespace Script {
             this.scene = scene;
         }
     
-        protected dialog(messageId: number, callback): boolean {
+        protected dialog(messageId: number, callback: IEmptyCallback): boolean {
             //TODO load cfg
             let cfg: IConfig = {
                 lang: LanguageEnum.IT,
-                skin: "ld3skin.png"
+                skin: "ld3-webskin1.png"
             }
-            DialogManager.show(this.scene, this.event.name, messageId, cfg.lang, cfg.skin, callback);
+            //TODO use faceset
+            let faceset: string | undefined = undefined;
+            DialogManager.show(this.scene, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
             return true;
         }
         
