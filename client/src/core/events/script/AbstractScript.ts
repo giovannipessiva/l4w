@@ -18,7 +18,7 @@ namespace Script {
             this.scene = scene;
         }
     
-        protected dialog(messageId: number, callback: IEmptyCallback): boolean {
+        protected showSimpleDialog(messageId: number, callback: IEmptyCallback): boolean {
             //TODO load cfg
             let cfg: IConfig = {
                 lang: LanguageEnum.IT,
@@ -26,7 +26,19 @@ namespace Script {
             }
             //TODO use faceset
             let faceset: string | undefined = undefined;
-            DialogManager.show(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
+            DialogManager.showSimpleDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
+            return true;
+        }
+
+        protected showComplexDialog(messageId: number, callback: IEmptyCallback): boolean {
+            //TODO load cfg
+            let cfg: IConfig = {
+                lang: LanguageEnum.IT,
+                skin: "ld3-webskin1.png"
+            }
+            //TODO use faceset
+            let faceset: string | undefined = undefined;
+            DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
             return true;
         }
         

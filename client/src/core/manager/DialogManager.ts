@@ -18,7 +18,7 @@ namespace DialogManager {
     const DIALOG_EDGE_AREA_ID = "dialogEdgeArea";
     const DIALOG_USER_INPUT_ID = "userInput";
 
-    let genericMessages = new Map<number, IGenericMessage[]>();
+    let genericMessages: Map<number, IGenericMessage>;
 
     let onDialogClose: IEmptyCallback | undefined;
 
@@ -43,10 +43,10 @@ namespace DialogManager {
             return;    
         }
         Resource.load(stringId + "", Resource.TypeEnum.STRING, function(resourceText) {
-            if (Utils.isEmpty(resourceText)) {
+            if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading string: " + stringId);
                 callback();
-            } else if(typeof resourceText === "string") {
+            } else {
                 callback(resourceText);
             }
         });
@@ -64,20 +64,60 @@ namespace DialogManager {
         });
     }
 
-    export function show(scene: DynamicScene, hero: IEvent, name: string, messageId: number, language: LanguageEnum, skin: string, callback: IEmptyCallback, faceset?: string) {
-        //TODO non deve ricevere messageId, deve ricevere un dialogId
+    export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
+        if(isNaN(dialogId)) {
+            callback();
+            return;    
+        }
+        Resource.load(dialogId + "", Resource.TypeEnum.DIALOG, function(resourceText) {
+            if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
+                console.error("Error while loading dialog: " + dialogId);
+                callback();
+            } else {
+                let dialog: IDialogNode = <IDialogNode> JSON.parse(resourceText);
+                callback(dialog);
+            }
+        });
+    }
+
+    export function loadGenericMessages(genericMessageId: number, language: LanguageEnum, callback: IBooleanCallback): void {
+        if(isNaN(genericMessageId)) {
+            callback(false);
+            return;    
+        }
+        Resource.load(genericMessageId + "", Resource.TypeEnum.DIALOG, function(resourceText) {
+            if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
+                console.error("Error while loading dialog: " + genericMessageId);
+                callback(false);
+            } else {
+                genericMessages = <Map<number, IGenericMessage>> JSON.parse(resourceText);
+                callback(true);
+            }
+        });
+    }
+    
+    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, language: LanguageEnum, skin: string, callback: IEmptyCallback, faceset?: string) {
+        loadDialog(dialogId, language, function(dialog?: IDialogNode) {
+            if(dialog === undefined) {
+                console.error("Error while loading dialog: " + dialogId);
+            } else {
+                showDialog(scene, hero, name, dialog, skin, callback, faceset);
+            }
+        });
+    }
+    
+    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: number, language: LanguageEnum, skin: string, callback: IEmptyCallback, faceset?: string) {
         loadString(messageId, language, function(str) {
             let dialog: IDialogNode = {
                 id: 0,
                 message: str
             };    
-            //TODO load DialogNode
             showDialog(scene, hero, name, dialog, skin, callback, faceset);
         });
     }
-    
+
     function showDialog(scene: DynamicScene, hero: IEvent, name: string, dialog: IDialogNode, skin: string, callback: IEmptyCallback, faceset?: string): void {     
-        var dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
+        let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
         let dlgArea: HTMLElement | null = document.getElementById(DIALOG_AREA_ID);
@@ -189,7 +229,7 @@ namespace DialogManager {
         }
     }
 
-    function isConditionActivable(condition: string): boolean {
+    function isConditionActivable(condition: string | undefined, conditionParams?: string): boolean {
         if(condition === undefined) {
             return true;
         }
@@ -197,7 +237,7 @@ namespace DialogManager {
             console.error("Condition not found: \"" + condition + "\", on event.");
             return false;    
         }
-        return Condition[condition]();
+        return Condition[condition](conditionParams);
     }
 
     function getMessage(dialog: IDialogNode): string | undefined {
@@ -216,12 +256,20 @@ namespace DialogManager {
 
     function resolveGenericMessage(genericMessage: number): string | undefined {
         let generic = genericMessages.get(genericMessage);
-        if(generic !== undefined) {
-            for(let i = generic.values.length - 1; i>= 0; i--) {
-                if(isConditionActivable(generic.values[i].condition)) {
-                    return generic.values[i].messageId;
-                }
+        if(generic !== undefined && !Utils.isEmpty(generic.values)) {
+            let activeValues: IGenericMessageValue[];
+            if(generic.condition === undefined) {
+                // No condition defined, therefore all the values are valid
+                activeValues = generic.values;
+            } else {
+                // Check the conditions for every value, discard invalid values
+                activeValues = generic.values.filter(function(val: IGenericMessageValue) {
+                    return isConditionActivable(generic!.condition, val.conditionParams);
+                });
             }
+            // Select a random value
+            let selectedVal = Utils.getRandomInteger(0, activeValues.length - 1);
+            return activeValues[selectedVal].message;
         }
         return undefined;
     }

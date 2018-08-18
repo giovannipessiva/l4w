@@ -16,7 +16,8 @@ interface IDialogEdgeData {
     id: number; // ID of the dialog edge
     message?: string; // String displayed for this edge
     inputType?: DialogInputTypeEnum; // Type of input required for this edge
-    condition: string; // Name of function that returns true if this edge can be active (see Conditions.ts)
+    condition?: string; // Name of function that returns true if this edge can be active (see Conditions.ts)
+    conditionParams?: string; // Value that will be passed as parameter to the condition function
     script?: string; // Script Class which contains the method used by this edge
     action?: string; // Method of the script that will be invoked for this edge
     nodeId?: number; // ID of the node pointed by this edge
@@ -32,12 +33,16 @@ interface IDialogEdge extends IDialogEdgeData {
     node?: IDialogNode; // Node pointed by this edge
 }
 
+// Single value that could be used for a generic message
 interface IGenericMessageValue {
-    stringId: number;
-    condition?: string;
+    message: string; // String of the message
+    conditionParams: string; // Parameters to be used for evaluating the condition
 }
 
+// A message that can be resolved to different strings, based on some conditions
 interface IGenericMessage {
-    id: number;
-    values: IGenericMessageValue[];
+    id: number; // ID of the generic string
+    description: string; // Description of the generic string
+    condition?: string; // Name of function that returns true if this state can be active (see Conditions.ts)
+    values: IGenericMessageValue[]; // Array of possible values for this generic message
 }

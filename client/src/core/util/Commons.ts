@@ -30,8 +30,11 @@ interface IPropertiesCallback {
     (props: Map<string, number>): void;
 };
 
+interface IResponseCallback {
+    (response?: any): void;
+};
 interface IProgressCallback {
-    (e: ProgressEvent): void;
+    (this: XMLHttpRequest, e: ProgressEvent): any;
 };
 
 interface IBooleanCallback {

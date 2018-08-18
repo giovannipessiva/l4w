@@ -1,5 +1,6 @@
 @echo off
-rem The package sequelize-auto needs to be installed:
+rem Some packages needs to be installed:
+rem $ npm install -g pg@6.4.2	// see: https://github.com/sequelize/sequelize-auto/issues/184
 rem $ npm install -g sequelize-auto
 
 rem This script will set 5 variables for the connection to the local PG database:
@@ -9,7 +10,7 @@ rem - local_db
 rem - local_data
 rem - local_user
 rem - local_password
-call server\setLocalConnectionConfig.bat
+call setLocalConnectionConfig.bat
 
 rem The database tables must grant privileges to the user
 

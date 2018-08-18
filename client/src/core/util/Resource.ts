@@ -28,6 +28,8 @@ namespace Resource {
         MAP,
         SAVE,
         STRING,
+        DIALOG,
+        GENERIC_MESSAGES,
         TILESET
     }
 
@@ -35,10 +37,10 @@ namespace Resource {
 
     export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
         if (propertiesCache.has(file)) {
-            onLoadCallback(propertiesCache.get(file));
+            onLoadCallback(propertiesCache.get(file)!);
         } else {
-            function parsePropertiesCallback(e: ProgressEvent) {
-                var props: Map<string, number> = parseProperties(this.responseText);
+            function parsePropertiesCallback(responseText: string) {
+                let props: Map<string, number> = parseProperties(responseText);
                 propertiesCache.set(file, props);
                 onLoadCallback(props);
             }
@@ -59,7 +61,7 @@ namespace Resource {
                 } else {
                     // If value is NaN, check if it's a valid key 
                     if (props.has(lineTokens[1])) {
-                        props.set(lineTokens[0], props.get(lineTokens[1]));
+                        props.set(lineTokens[0], props.get(lineTokens[1])!);
                     } else {
                         console.error("Error parsing properties file at line " + i + ": " + value);
                     }
@@ -69,20 +71,22 @@ namespace Resource {
         return props;
     };
 
-    function sendGETRequest(uri: string, callback: IProgressCallback) {
+    function sendGETRequest(uri: string, callback: IResponseCallback) {
         sendRequest(Constant.RequestType.GET, undefined, uri, callback);
     };
 
-    function sendPOSTRequest(uri: string, data: string, callback: IProgressCallback) {
+    function sendPOSTRequest(uri: string, data: string, callback: IResponseCallback) {
         sendRequest(Constant.RequestType.POST, data, uri, callback);
     };
 
-    function sendRequest(requestType: string, data: string, uri: string, callback: IProgressCallback) {
-        var request = new XMLHttpRequest();
-        request.onload = callback;
-        request.onerror = function(e: ErrorEvent) {
+    function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback) {
+        let request = new XMLHttpRequest();
+        request.onload = function(this: XMLHttpRequest, e: ProgressEvent): any {
+            callback(this.responseText);
+        };
+        request.onerror = function(this: XMLHttpRequest, e: ProgressEvent): any {
             console.error("Error while getting " + uri);
-            console.log(e);
+            console.error(e);
             callback(undefined);
         };
         request.ontimeout = function() {
@@ -110,12 +114,17 @@ namespace Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: TypeEnum, callback: { (response: HTMLImageElement | string): void }) {
+    export function load(file: string, assetType: TypeEnum, callback: { (response?: HTMLImageElement | string): void }) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
         }
         let path = getResourcePath(file, assetType);
+        if(path === undefined) {
+            console.error("Error while loading file: " + file + "/" + assetType);
+            callback();
+            return;
+        }
 
         switch (assetType) {
             case TypeEnum.CHAR:
@@ -133,11 +142,11 @@ namespace Resource {
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
             case TypeEnum.STRING:
+            case TypeEnum.DIALOG:
+            case TypeEnum.GENERIC_MESSAGES:
             case TypeEnum.TILESET:
                 // read data from DB
-                sendGETRequest(path, function(e: ProgressEvent) {
-                    callback(this.responseText);
-                });
+                sendGETRequest(path, callback);
                 break;
             default:
                 console.error("Unexpected resource type");
@@ -152,8 +161,12 @@ namespace Resource {
     export function loadImageFromCache(file: string, assetType: TypeEnum) {
         let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
         if (Utils.isEmpty(image)) {
-            load(file, assetType, function(image: HTMLImageElement) {
-                resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+            load(file, assetType, function(image?: HTMLImageElement | string) {
+                if(image === undefined || typeof image === "string") {
+                    console.error("Error while reading image: " + file);
+                } else {
+                    resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+                }
             });
         }
         return image;
@@ -166,11 +179,11 @@ namespace Resource {
     /**
      * Save an asset to server
      */
-    export function save(id: string, data: string, assetType: TypeEnum, callback) {
+    export function save(id: string, data: string, assetType: TypeEnum, callback: IResponseCallback) {
         let path = getEditPath(id, assetType);
-        sendPOSTRequest(path, data, function(e: ProgressEvent) {
+        sendPOSTRequest(path, data, function(this: XMLHttpRequest, e?: ProgressEvent) {
             if (this.status === 200) {
-                if(assetType === TypeEnum.STRING) {
+                if(assetType === TypeEnum.STRING || assetType === TypeEnum.DIALOG || assetType === TypeEnum.GENERIC_MESSAGES) {
                     callback(this.responseText);
                 } else {
                     callback(true);
@@ -182,7 +195,7 @@ namespace Resource {
         });
     }
 
-    function getResourcePath(file: string, assetType: TypeEnum): string {
+    function getResourcePath(file: string, assetType: TypeEnum): string | undefined {
         let path;
         switch (assetType) {
             case TypeEnum.CHAR:
@@ -194,6 +207,8 @@ namespace Resource {
             case TypeEnum.MAP:
             case TypeEnum.SAVE:
             case TypeEnum.STRING:
+            case TypeEnum.DIALOG:
+            case TypeEnum.GENERIC_MESSAGES:
             case TypeEnum.TILESET:
                 path = DATA_PATH;
                 break;
@@ -202,10 +217,14 @@ namespace Resource {
                 console.trace();
         };
         let resourceTypeFolder = getResourceTypeFolder(assetType);
+        if(resourceTypeFolder === undefined) {
+            console.error("Can't find resource path:" + file + "/" + assetType);
+            return undefined;
+        }
         return path + resourceTypeFolder + file;
     }
     
-    function getResourceTypeFolder(assetType: TypeEnum): string {
+    function getResourceTypeFolder(assetType: TypeEnum): string | undefined {
         let folder;
         switch (assetType) {
             case TypeEnum.CHAR:
@@ -229,6 +248,12 @@ namespace Resource {
             case TypeEnum.STRING:
                 folder = "string/";
                 break;
+            case TypeEnum.DIALOG:
+                folder = "dialog/";
+                break;
+            case TypeEnum.GENERIC_MESSAGES:
+                folder = "generic-messages/";
+                break;
             case TypeEnum.TILESET:
                 folder = "tileset/";
                 break;
@@ -245,9 +270,9 @@ namespace Resource {
         return path + resourceTypeFolder + file;
     }
     
-    export function listResources(assetType: TypeEnum, callback) {
+    export function listResources(assetType: TypeEnum, callback: IResponseCallback) {
         let resourceTypeFolder = getResourceTypeFolder(assetType);
-        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(e: ProgressEvent) {
+        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(this: XMLHttpRequest, e?: ProgressEvent) {
             let list: Array<string> = JSON.parse(this.responseText);
             callback(list);
         }); 

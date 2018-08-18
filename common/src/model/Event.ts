@@ -11,7 +11,7 @@ interface IEventData extends ICell {
 
 // Event extended model (include transient data)
 interface IEvent extends IEventData  {
-    currentState?: number; // Index of current valid state
+    currentState: number; // Index of current valid state
     position?: IPoint; // Exact coordinate in pixels (derived from event.i, event.j)
     movementStartTime?: number; // ms since last step started
     movementDirection?: DirectionEnum; // Direction of current step
@@ -21,7 +21,7 @@ interface IEvent extends IEventData  {
 }
 
 interface IEventState extends ICharacter {
-    condition: string; // Name of function that returns true if this state can be active (see Activators.ts)
+    condition: string; // Name of function that returns true if this state can be active (see Conditions.ts)
     trigger: number; // Type of interaction which will start the action
     action: string; // Method of the script that will be invoked by the trigger
 }

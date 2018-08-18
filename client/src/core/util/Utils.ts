@@ -274,6 +274,13 @@ namespace Utils {
         return Math.random() >= 0.5;
     }
 
+    /**
+     * Returns a random integer between min (inclusive) and max (inclusive)
+     */
+    export function getRandomInteger(min: number, max: number) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     export function normalizeZIndex(zindex: number): number {
         if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex) && zindex >= Constant.ZIndex.LV0 && zindex <= Constant.ZIndex.LV4) {
             return zindex;
