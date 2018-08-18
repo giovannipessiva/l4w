@@ -124,28 +124,25 @@ export namespace database2 {
             }
             break;
         case "string":
-            if (!utils.isEmpty(user)) {
-                models.l4w_string.findOne({
-                    where : {
-                        id : file
-                    },
-                    attributes : [ "lang", "value" ]
-                }).then(
-                    function(result: any) {
-                        if (!utils.isEmpty(result)) {
-                            response.send(result.dataValues.value);
-                        } else {
-                            response.send("???");
-                        }
-                    },
-                    function(error: any) {
-                        console.log(error);
-                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
-                                .send(defaults.getDefaultSave());
-                    });
-            } else {
-                response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
-            }
+            models.l4w_string.findOne({
+                where : {
+                    id : file
+                },
+                attributes : [ "lang", "value" ]
+            }).then(
+                function(result: any) {
+                    if (!utils.isEmpty(result)) {
+                        response.send(result.dataValues.value);
+                    } else {
+                        response.send("???");
+                    }
+                },
+                function(error: any) {
+                    console.log(error);
+                    response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
+                            .send(defaults.getDefaultSave());
+                }
+            );
             break;
         default:
             console.error("Unexpected case:" + type);

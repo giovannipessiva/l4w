@@ -26,7 +26,7 @@ namespace Script {
             }
             //TODO use faceset
             let faceset: string | undefined = undefined;
-            DialogManager.show(this.scene, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
+            DialogManager.show(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
             return true;
         }
         

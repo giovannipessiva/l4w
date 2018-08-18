@@ -58,6 +58,30 @@ p {
 	color: black;
 }
 
+.dialogEdgeArea {
+	margin: 0.5em;
+}
+
+.l4wDialogEdge {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	font-style: italic;
+	cursor: pointer;
+}
+
+.l4wDialogEdge:before {
+    content: ">";
+    margin-right: 6px;
+}
+
+.l4wDialogEdge:hover {
+	/*
+	border: 1px solid black;
+	border-radius: 0.5em;
+	*/
+	text-shadow: 1px 1px lightgray;
+}
+
 .l4wCanvas:active {
     cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
 }

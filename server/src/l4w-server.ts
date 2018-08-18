@@ -111,7 +111,7 @@ app.get("/data/:type", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         user = session.getUser(request);
     }
-   database2.read(type, undefined, user, response);
+    database2.read(type, undefined, user, response);
 });
 app.get("/data/:type/:file", function(request: Request, response: Response) {
     var file = request.params.file;
@@ -122,7 +122,7 @@ app.get("/data/:type/:file", function(request: Request, response: Response) {
         utils2.sendFile(filePath, file, response);
         return;
     }
-   database2.read(type, file, session.getUser(request), response);
+    database2.read(type, file, session.getUser(request), response);
 });
 app.get("/assets/:file", function(request: Request, response: Response) {
     var file = request.params.file;
