@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     expires: {
-      type: DataTypes.TIME,
+      type: DataTypes.DATE,
       allowNull: true
     },
     data: {

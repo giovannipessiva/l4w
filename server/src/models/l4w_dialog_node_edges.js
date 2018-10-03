@@ -1,8 +1,16 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('usr_role', {
-    user: {
+  return sequelize.define('l4w_dialog_node_edges', {
+    node: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'l4w_dialog_node',
+        key: 'id'
+      }
+    },
+    edge: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -10,16 +18,8 @@ module.exports = function(sequelize, DataTypes) {
         model: 'null',
         key: 'null'
       }
-    },
-    role: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'lst_role',
-        key: 'role'
-      }
     }
   }, {
-    tableName: 'usr_role'
+    tableName: 'l4w_dialog_node_edges'
   });
 };
