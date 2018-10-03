@@ -272,8 +272,14 @@ namespace Resource {
     
     export function listResources(assetType: TypeEnum, callback: IResponseCallback) {
         let resourceTypeFolder = getResourceTypeFolder(assetType);
-        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(this: XMLHttpRequest, e?: ProgressEvent) {
-            let list: Array<string> = JSON.parse(this.responseText);
+        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(responseTxt: string, e?: ProgressEvent) {
+            let list: Array<string>;
+            if(responseTxt !== undefined) {
+                list = JSON.parse(responseTxt);
+            } else {
+                console.error("Empty respose from " + ASSETLIST_PATH);
+                list = [];
+            }
             callback(list);
         }); 
     }

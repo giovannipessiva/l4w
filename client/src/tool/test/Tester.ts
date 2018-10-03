@@ -34,7 +34,7 @@ namespace Tester {
         let result: IPathfinderTestResult[] = [];
         let direction: DirectionEnum;
         let guard = 0;
-        while (direction !== DirectionEnum.NONE) {
+        do {
             direction = MapManager.pathFinder(map, event, target, pathfinder);
             if(direction !== DirectionEnum.NONE) {
                 event = <IEvent> Utils.moveToDirection(event, direction);
@@ -46,12 +46,12 @@ namespace Tester {
                 });
             }
             // Check guard to avoid infite loop
-            guard++;
+            guard ++;
             if(guard > width * height) {
                 console.error("Pathfinder has failed :(");
                 break;    
             }
-        }
+        } while(direction !== DirectionEnum.NONE);
         return result;
     };
 }

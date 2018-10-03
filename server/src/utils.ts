@@ -89,6 +89,9 @@ export function listFiles(filePath: string, response: Response) {
                 i--;
             }    
         }
+        if(err !== undefined) {
+            console.error(err);
+        }
         response.json(files);
     })
 }

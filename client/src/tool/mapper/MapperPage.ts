@@ -331,8 +331,8 @@ namespace MapperPage {
             }
         });
 
-        let visible: boolean = currentState.visible;
-        if (Utils.isEmpty(visible)) {
+        let visible: boolean | undefined = currentState.visible;
+        if (visible === undefined) {
             visible = true;
         }
         (<HTMLInputElement>document.getElementById("visible")).checked = visible;
