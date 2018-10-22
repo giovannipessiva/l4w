@@ -1,9 +1,18 @@
-/// <reference path="../AbstractTileScene.ts" />
+import { AbstractTileScene } from "../AbstractTileScene"
+import { TilesetterPage } from "./TilesetterPage"
+import { StaticGrid } from "../StaticGrid"
+import { Constant } from "../../core/util/Constant"
+import { Utils } from "../../core/util/Utils"
+import { SelectionAreaEnum, BlockDirection } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { MapManager } from "../../core/manager/MapManager"
+import { TilesetManager } from "../../core/manager/TilesetManager";
+import { ITileset } from "../../../../common/src/model/Tileset";
 
 /**
  * Scene implementation for managing Tilesetter logics
  */
-class TilesetterScene extends AbstractTileScene {
+export class TilesetterScene extends AbstractTileScene {
     
     constructor(grid: StaticGrid, heightPx: number, widthPx: number, tileEditMode: Constant.TileEditMode, callback: { (scene: TilesetterScene): void }) {
         super(grid, heightPx, widthPx);
@@ -11,7 +20,8 @@ class TilesetterScene extends AbstractTileScene {
         this.changeTileEditMode(tileEditMode);
 
         // Init the map for rendering blocks
-        this.map = MapManager.getNewMap("blocks");
+        this.map = <IMap> MapManager.getNewMap("blocks");
+        this.map.tileset = <ITileset> TilesetManager.getNewTileset();
         this.map.width = this.getSceneWidth();
         this.map.height = this.getSceneHeight();
         this.map.tileset.imagewidth = this.getSceneWidth();
@@ -104,6 +114,9 @@ class TilesetterScene extends AbstractTileScene {
             default:
                 console.error("Unexpected case");
         };
+        if(this.map.blocks === undefined) {
+            this.map.blocks = [];
+        }
         this.map.blocks[gid] = block;
     }
     

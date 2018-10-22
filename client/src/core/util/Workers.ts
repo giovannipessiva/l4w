@@ -1,9 +1,10 @@
-/// <reference path="Compatibility.ts" />
+import { Compatibility } from "./Compatibility"
+import { Utils } from "./Utils"
 
 /**
  * Module for managing background jobs and services
  */
-namespace Workers {
+export namespace Workers {
     
     export const WEBWORKER_URL: string = "workers/l4w-webworker.js";
     export const SERVICEWORKER_URL: string = "workers/l4w-serviceworker.js";

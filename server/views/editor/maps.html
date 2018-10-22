@@ -18,12 +18,12 @@ var base_path = "../";
 
 requirejs([base_path + "lib/jquery3.min.js"],function($){
     requirejs([base_path + "lib/jstree.min.js"],function(jstree){
-        requirejs([base_path + "js/l4w-client.min"],function(l4w){
+        requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
             finishedLoading();
         },function(err){
             // If min version is unavailable, use the full version
             console.log("Minified version unavailable, using full script");
-            requirejs([base_path + "js/l4w-client"],function(l4w){
+            requirejs([base_path + "js/l4w-mapper"],function(l4w){
                 finishedLoading();
             });
         });
@@ -31,7 +31,7 @@ requirejs([base_path + "lib/jquery3.min.js"],function($){
 });
 
 function finishedLoading(){
-    MapperPage.start();
+    L4W_mapper.MapperPage.start();
 };
 
 function signOut() {
@@ -82,8 +82,8 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="MapperPage.save();" disabled>Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="MapperPage.reload();" disabled>Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="L4W_mapper.MapperPage.save();" disabled>Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="L4W_mapper.MapperPage.reload();" disabled>Reload</button></td>
 			</tr>
 		</table>
 	</div>
@@ -97,7 +97,7 @@ ga('send', 'pageview');
 			<tr>
 				<td>Tile</td>
 				<td>
-					<select id="tiles" onchange="MapperPage.changeTile();"></select>
+					<select id="tiles" onchange="L4W_mapper.MapperPage.changeTile();"></select>
 				</td>
 			</tr>
 			<tr>
@@ -108,7 +108,7 @@ ga('send', 'pageview');
 					<input id="mapSizeH" type="number" name="width" min="16" max="999" step="1" style="width:3em">
 				</td>
 				<td>
-					<button type="submit" onclick="MapperPage.changeSize();">&#8634;</button>
+					<button type="submit" onclick="L4W_mapper.MapperPage.changeSize();">&#8634;</button>
 				</td>
 			</tr>
 		</table>
@@ -142,32 +142,32 @@ ga('send', 'pageview');
 		<table style="width:100%">
 			<tr>
 				<td>Name</td>
-				<td><input id="name" type="text" placeholder="Event name" onchange="MapperPage.eventModified();"/></td>
+				<td><input id="name" type="text" placeholder="Event name" onchange="L4W_mapper.MapperPage.eventModified();"/></td>
 			</tr>
 			<tr>
 				<td>Position</td>
-				<td onchange="MapperPage.changeEventPosition();">
+				<td onchange="L4W_mapper.MapperPage.changeEventPosition();">
 					<input id="eventi" type="number" min="0" max="999" step="1" style="width:3em">
 					<input id="eventj" type="number" min="0" max="999" step="1" style="width:3em" >
 				</td>
 			</tr>
 			<tr>
 				<td>Script</td>
-				<td><select id="script" style="background-color:#d0ffd0" onchange="MapperPage.changeEventScript();"></select></td>
+				<td><select id="script" style="background-color:#d0ffd0" onchange="L4W_mapper.MapperPage.changeEventScript();"></select></td>
 			</tr>
 		</table>
-		<div id="scriptTooltip" style="text-style:italic"></div>
+		<div id="scriptTooltip" style="font-style:italic"></div>
 		<br/>
 		<table style="width:100%">
 			<tr>
 				<td>State</td>
-				<td><input id="state" style="background-color:#ffffd0" type="number" min="1" max="99" value="1" onchange="MapperPage.loadEventState();"/></td>
+				<td><input id="state" style="background-color:#ffffd0" type="number" min="1" max="99" value="1" onchange="L4W_mapper.MapperPage.loadEventState();"/></td>
 				<td>of</td>
 				<td id="tot">1</td>
 			</tr>
 		</table>
 		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffffd0;width:90%">
-			<tbody onchange="MapperPage.eventModified();">
+			<tbody onchange="L4W_mapper.MapperPage.eventModified();">
 				<tr><td>Condition</td>	<td><select id="condition"></select></td></tr>
 				<tr><td>Charaset</td>	<td><select id="charasets"></select></td></tr>
 				<tr><td>Trigger</td>	<td><select id="trigger"></select></td></tr>
@@ -183,7 +183,7 @@ ga('send', 'pageview');
 			</tbody>
 			<tfoot><tr>
 				<td></td>
-				<td><button style="color:red" onclick="MapperPage.deleteEventState()" title="This will delete the currently selected state">Delete state &#x2620;</button></td>
+				<td><button style="color:red" onclick="L4W_mapper.MapperPage.deleteEventState()" title="This will delete the currently selected state">Delete state &#x2620;</button></td>
 			</tr></tfoot>
 		</table>
 		<table style="width:100%">
@@ -193,13 +193,13 @@ ga('send', 'pageview');
 		<input id="key" type="text" style="width:5em" placeholder="Key" title='Standard keys:
 msg1: message displayed by "speak" Action (the number represent the state number)
 state: variable used by Conditions "isStateVar0", "isStateVar1", ...
-'></input>
-		<input id="val" type="text" style="width:8em" placeholder="Value"></input>
-		<button onclick="MapperPage.addMemory();">+</button>
+' />
+		<input id="val" type="text" style="width:8em" placeholder="Value" />
+		<button onclick="L4W_mapper.MapperPage.addMemory();">+</button>
 		<table id="memory" style="border:1px solid black;position:relative;margin-left:10px"></table>
 		<br/>
-		<button id="saveEvent" onclick="MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
-		<button id="deleteEvent" style="color:red" onclick="MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
+		<button id="saveEvent" onclick="L4W_mapper.MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
+		<button id="deleteEvent" style="color:red" onclick="L4W_mapper.MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
 	</div>
 </div>
 </body>

@@ -1,9 +1,23 @@
-/// <reference path="../core/AbstractScene.ts" />
-/// <reference path="../core/manager/CharacterManager.ts" />
+import { AbstractScene } from "../core/AbstractScene"
+import { EventManager } from "../core/manager/EventManager"
+import { MapManager } from "../core/manager/MapManager"
+import { SaveManager } from "../core/manager/SaveManager"
+import { Utils } from "../core/util/Utils"
+import { IRange, IBooleanCallback, emptyFz } from "../core/util/Commons"
+import { Constant } from "../core/util/Constant"
+import { DynamicGrid } from "./DynamicGrid"
+import { ICell } from "../../../common/src/model/Commons"
+import { IEvent } from "../../../common/src/model/Event"
+import { ISave } from "../../../common/src/model/Save"
+
+export interface ILauncher {
+    (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean
+};
+
 /*
  * Scene implementation for managing dynamic rendering
  */
-class DynamicScene extends AbstractScene {
+export class DynamicScene extends AbstractScene {
 
     FPS = 20;
     refreshInterval = 1000 / this.FPS;
@@ -17,15 +31,20 @@ class DynamicScene extends AbstractScene {
     hero: IEvent;   
     action: ICell | undefined;
     save: ISave;
+
+    launcher: ILauncher;
     
     dialogName: string;
     dialogText: string;
     dialogSkin: HTMLImageElement;
     dialogAction: (input?: string)=>void;
 
-    constructor(grid: DynamicGrid, canvas: HTMLCanvasElement) {
+    constructor(grid: DynamicGrid, canvas: HTMLCanvasElement, launcher: ILauncher) {
         super(grid);
         this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
+        // Launcher method needs to be injected to avoid circular references
+        // (which cause this: "TypeError: Class extends value undefined is not a constructor or null")
+        this.launcher = launcher;
     }
 
     protected mainGameLoop_pre() {
@@ -38,7 +57,10 @@ class DynamicScene extends AbstractScene {
         let time = Utils.now();
         let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
-            EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
+            let launchableState = EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
+            if(launchableState !== undefined) {
+                this.launcher(this.hero, this, this.hero, launchableState);
+            }
             movements = EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
                 scene.grid.changeTranslation(scene.focus.x + w, scene.focus.y + h, scene.map.width, scene.map.height);
@@ -52,8 +74,11 @@ class DynamicScene extends AbstractScene {
         }
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
-                EventManager.update(event, this, this.hero, this.action, time, this.pauseDuration);
-                movements = movements || EventManager.manageMovements(this.map, this.grid, event, emptyFz, emptyFz, emptyFz);
+                let launchableState = EventManager.update(<IEvent> event, this, this.hero, this.action, time, this.pauseDuration);
+                if(launchableState !== undefined) {
+                    this.launcher(<IEvent> event, this, this.hero, launchableState);
+                }
+                movements = movements || EventManager.manageMovements(this.map, this.grid, <IEvent> event, emptyFz, emptyFz, emptyFz);
             }
             // Reset the action
             this.action = undefined;
@@ -129,8 +154,8 @@ class DynamicScene extends AbstractScene {
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
                 try {
-                    if (EventManager.isVisible(event, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
-                        EventManager.render(this.grid, event, this.context, true, this.pointer);
+                    if (EventManager.isVisible(<IEvent> event, minRow, maxRow, minColumn, maxColumn, i, j, onTop)) {
+                        EventManager.render(this.grid, <IEvent> event, this.context, true, this.pointer);
                     }
                 } catch(e) {
                     console.error(e);    
@@ -139,10 +164,10 @@ class DynamicScene extends AbstractScene {
         }
     }
     
-    public loadSave(save: ISave, callback: IBooleanCallback) {
+    public loadSave(save: ISave | undefined, callback: IBooleanCallback) {
         let mapId: number;
         let hero: IEvent;
-        if (Utils.isEmpty(save)) {
+        if (save === undefined) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
                 mapId = 0; // Load first map
@@ -156,10 +181,14 @@ class DynamicScene extends AbstractScene {
             this.save= save;
             // Load map from save
             mapId = save.currentMap;
-            hero = save.hero;
+            hero = <IEvent> save.hero;
         }
-        this.hero = EventManager.initTransientData(this.map, this.grid, hero);
-
+        let tmpEvt = EventManager.initTransientData(this.map, this.grid, hero);
+        if(tmpEvt === undefined) {
+            console.error("Cannot initialize hero event");
+        } else {
+            this.hero = tmpEvt;
+        }
         SaveManager.loadMapSave(this, mapId, hero, callback);
     }
 

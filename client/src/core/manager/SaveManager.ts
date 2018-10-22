@@ -1,10 +1,18 @@
-/// <reference path="../../../../common/src/model/Save.ts" />
-/// <reference path="CharacterManager.ts" />
+import { ISave } from "../../../../common/src/model/Save"
+import { LanguageEnum, ICell } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { IEvent } from "../../../../common/src/model/Event"
+import { IEventSave } from "../../../../common/src/model/Save"
+import { EventManager } from "./EventManager"
+import { MapManager } from "./MapManager"
+import { Utils } from "../util/Utils"
+import { DynamicScene } from "../../game/DynamicScene"
+import { IBooleanCallback } from "../util/Commons";
 
 /**
  * Module to handle save
  */
-namespace SaveManager {
+export namespace SaveManager {
 
     export function getNewSave(): ISave {
         let save: ISave = {
@@ -21,14 +29,14 @@ namespace SaveManager {
         return save;
     }
     
-    export function getSave(map: IMap, hero: IEvent): ISave {
+    export function getSave(map: IMap, hero: IEvent): ISave | undefined {
         if (Utils.isEmpty(map) || Utils.isEmpty(hero)) {
-            return null;
+            return undefined;
         }
         let events: IEventSave[] = new Array<IEventSave>();
         if(!Utils.isEmpty(map.events)) {
             for(let e of map.events) {
-                events.push(getEventSave(e));   
+                events.push(getEventSave(<IEvent> e));   
             }
         }
         let save: ISave = SaveManager.getNewSave();
@@ -48,8 +56,9 @@ namespace SaveManager {
         return es;        
     }
     
-    export function loadMapSave(scene: DynamicScene, mapId: number, target: ICell, callback) {
-        MapManager.loadMap(mapId, scene.context.canvas, function(map: IMap) {
+    export function loadMapSave(scene: DynamicScene, mapId: number, target: ICell, callback: IBooleanCallback) {
+        MapManager.loadMap(mapId, scene.context.canvas, function(loaded) {
+            let map = <IMap> loaded;
             applySave(scene.save, map);       
             scene.changeMap(map, function() {
                 scene.resetTranslation();
@@ -60,7 +69,10 @@ namespace SaveManager {
                 // Initialize every Event in the map
                 if (!Utils.isEmpty(scene.map.events)) {
                     for (let i = 0; i < scene.map.events.length; i++) {
-                        scene.map.events[i] = EventManager.initTransientData(scene.map, scene.grid, scene.map.events[i]);
+                        let e = EventManager.initTransientData(scene.map, scene.grid, <IEvent> scene.map.events[i]);
+                        if(e !== undefined) {
+                            scene.map.events[i] = e;
+                        }
                     }
                 }
                 callback(true);

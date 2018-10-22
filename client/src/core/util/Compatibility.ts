@@ -1,7 +1,7 @@
 /**
  * Module for checking if user browser supports all the requirements
  */
-namespace Compatibility {
+export namespace Compatibility {
 
     //TODO usa su https, per evitare errore "Bloccato il caricamento di contenuto misto attivo (mixed active content)"
 //    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";

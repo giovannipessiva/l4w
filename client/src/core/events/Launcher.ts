@@ -1,8 +1,13 @@
-/// <reference path="script/test/Script1.ts" />
+import { IEvent } from "../../../../common/src/model/Event"
+import { ActionTriggerEnum } from "../../../../common/src/model/Commons"
+import { Utils } from "../util/Utils"
+import { EventManager } from "../manager/EventManager"
+import { DynamicScene } from "../../game/DynamicScene"
+import * as Script from "../events/script/ScriptsRoot"
 
-namespace Script {
+export namespace Launcher {
 
-    export function launchAction(event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?): boolean {
+    export function launchAction(event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean {
         let script = event.script;
         let scriptClass = new Script[script](event, hero, scene);
         if (Utils.isEmpty(scriptClass)) {
@@ -17,9 +22,19 @@ namespace Script {
         // On click action, the hero should face the event
         if (event.states[state].trigger === ActionTriggerEnum.CLICK) {
             let heroDirection = Utils.getDirection(event, hero);
+            let state = EventManager.getState(hero);
+            if(state !== undefined) {
+                state.direction = heroDirection;
+            } else {
+                console.error("Hero state undefined");
+            }
             let eventDirection = Utils.getOpposedDirections(heroDirection);
-            EventManager.getState(hero).direction = heroDirection;
-            EventManager.getState(event).direction = eventDirection;
+            state = EventManager.getState(event);
+            if(state !== undefined) {
+                state.direction = eventDirection;
+            } else {
+                console.error("Event state undefined:" + event);
+            }
         }
         try {
             if (Utils.isEmpty(parameters)) {

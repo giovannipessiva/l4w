@@ -1,7 +1,9 @@
 {
-	"extends": "../common/tsconfig-base.json",
+    "extends": "../common/tsconfig-base.json",
     "compilerOptions": {
-        "outFile": "./dist/l4w-client.js"
+        "rootDir": "..",
+        "outDir": "./dist",
+        "sourceMap": true
     },
     "include": [
         "./src/**/*.ts",

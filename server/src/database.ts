@@ -1,10 +1,11 @@
 //@ts-ignore TS1192
 import sequelize from "sequelize"
 
+import { HttpStatus } from "../../common/src/Constants"
 import { models } from "./models/index"
 import * as utils from "./utils"
-import constants from "./constants"
-import defaults from "./defaults"
+import { constants } from "./constants"
+import { defaults } from "./defaults"
 
 export namespace database2 {
 
@@ -37,7 +38,7 @@ export namespace database2 {
     
     function manageQueryError(response: any, error: any) {
         console.error(error);
-        response.status(constants.HttpStatus.BAD_REQUEST).send("");
+        response.status(HttpStatus.BAD_REQUEST).send("");
     };
 
     export function init() {
@@ -73,7 +74,7 @@ export namespace database2 {
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
                                 defaults.getDefaultMap());
                     });
             break;
@@ -94,7 +95,7 @@ export namespace database2 {
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send(
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
                                 defaults.getDefaultTileset());
                     });
             break;
@@ -116,11 +117,11 @@ export namespace database2 {
                     },
                     function(error: any) {
                         console.log(error);
-                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .send(defaults.getDefaultSave());
                     });
             } else {
-                response.status(constants.HttpStatus.OK).send(defaults.getDefaultSave());
+                response.status(HttpStatus.OK).send(defaults.getDefaultSave());
             }
             break;
         case "string":
@@ -139,7 +140,7 @@ export namespace database2 {
                 },
                 function(error: any) {
                     console.log(error);
-                    response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR)
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .send(defaults.getDefaultSave());
                 }
             );
@@ -158,7 +159,7 @@ export namespace database2 {
                 id : file,
                 data : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants.HttpStatus.OK).send("");
+                response.status(HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -168,7 +169,7 @@ export namespace database2 {
                 image : file,
                 data : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants.HttpStatus.OK).send("");
+                response.status(HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -181,7 +182,7 @@ export namespace database2 {
                 name: null,
                 save : JSON.parse(data)
             }).then(function(result: any) {
-                response.status(constants.HttpStatus.OK).send("");
+                response.status(HttpStatus.OK).send("");
             }, function(error: any) {
                 manageQueryError(response, error);
             });
@@ -192,7 +193,7 @@ export namespace database2 {
             let callbackSuccess = function() {
                 counter--;
                 if(counter <= 0) {
-                    response.status(constants.HttpStatus.OK).send("");
+                    response.status(HttpStatus.OK).send("");
                 }
             }
             let id = undefined;
@@ -266,11 +267,11 @@ export namespace database2 {
                         }
                     }, function(error: any) {
                         console.log(error);
-                        response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
                     });
                 }, function(error: any) {
                     console.log(error);
-                    response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
                 });
             } else {
                 // Add user id to session
@@ -282,7 +283,7 @@ export namespace database2 {
             }
         }, function(error: any) {
             console.log(error);
-            response.status(constants.HttpStatus.INTERNAL_SERVER_ERROR).send("");
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
         });
     }
 

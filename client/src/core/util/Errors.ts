@@ -1,16 +1,22 @@
+import { AbstractGrid } from "../AbstractGrid"
+
 /**
  * Module for error handling methods
  */
-namespace Errors {
+export namespace Errors {
     
-    //TODO fargli recuperare da solo il contesto??
-    export function showError(context: CanvasRenderingContext2D, grid: AbstractGrid) {
-        if(!Utils.isEmpty(context) && !Utils.isEmpty(grid)) {
-            grid.clear(context);
+    //TODO Retrieve context by yourself?
+    export function showError(context: CanvasRenderingContext2D | null, grid?: AbstractGrid) {
+        if(context !== null) {
+            if(grid !== undefined) {
+                grid.clear(context);
+            }
+            context.fillStyle = "#000000";
+            context.font = "bold 20px Arial";
+            context.fillText("An error occurred :(", 60, 60);
+        } else {
+            console.error("Context is null");
         }
-        context.fillStyle = "#000000";
-        context.font = "bold 20px Arial";
-        context.fillText("An error occurred :(", 60, 60);
     };
     
 }

@@ -51,11 +51,11 @@ ga('send', 'pageview');
 <script type='text/javascript'>
 window.onload = function(){
 	requirejs(["lib/jquery3.min.js"],function($){
-	    requirejs(["lib/jquery-ui.min.js","js/l4w-client.min"],function(l4w){
+	    requirejs(["lib/jquery-ui.min.js","js/l4w-game.min"],function(l4w){
 	        finishedLoading();
 	    },function(err){
 	        // If min version is unavailable, use the full version
-	        requirejs(["js/l4w-client"],function(l4w){
+	        requirejs(["js/l4w-game"],function(l4w){
 	            finishedLoading();
 	        });
 	    });
@@ -63,7 +63,7 @@ window.onload = function(){
 	
 	function finishedLoading(){
 		let canvas = document.getElementById("canvas1");
-	    Game.start(canvas);
+	    L4W_game.Game.start(canvas);
 	};
 }
 </script>

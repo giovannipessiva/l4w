@@ -1,14 +1,17 @@
-///<reference path="Commons.ts" />
-///<reference path="Constant.ts" />
-///<reference path="../events/script/AbstractScript.ts" />
-///<reference path="../events/Conditions.ts" />
+import { IPropertiesCallback, IResponseCallback } from "./Commons"
+import { Utils } from "./Utils"
+import { Constant } from "./Constant"
+import * as Constants from "../../../../common/src/Constants"
+import { AbstractScript } from "../events/script/AbstractScript"
+import { Condition } from "../events/Conditions"
+import * as Script from "../events/script/ScriptsRoot"
 
 declare var base_path: string;
 
 /**
  * Module for resources loading
  */
-namespace Resource {
+export namespace Resource {
 
     const DATA_PATH = base_path + "data/";
     const ASSET_PATH = base_path + "assets/";
@@ -81,12 +84,25 @@ namespace Resource {
 
     function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback) {
         let request = new XMLHttpRequest();
-        request.onload = function(this: XMLHttpRequest, e: ProgressEvent): any {
-            callback(this.responseText);
+        request.onload = function(this: XMLHttpRequest, ev: ProgressEvent): any {
+            if(this.status !== Constants.HttpStatus.MOVED_PERMANENTLY) {
+                callback(this.responseText);
+            } else {
+                // Handle a 301 error with a redirect
+                let newUri = this.getResponseHeader(Constants.HttpResponseHeader.LOCATION);
+                if(newUri !== null) {
+                    console.warn("Request returned code: " +  Constants.HttpStatus.MOVED_PERMANENTLY + ", attempting a redirect");
+                    console.warn("from: " + uri);
+                    console.warn("to: " + newUri);
+                    sendRequest(requestType, data, newUri, callback);
+                } else {
+                    callback(this.responseText);
+                }
+            }
         };
-        request.onerror = function(this: XMLHttpRequest, e: ProgressEvent): any {
+        request.onerror = function(this: XMLHttpRequest, ev: ProgressEvent): any {
             console.error("Error while getting " + uri);
-            console.error(e);
+            console.error(ev);
             callback(undefined);
         };
         request.ontimeout = function() {
@@ -290,7 +306,7 @@ namespace Resource {
         let scriptClasses = allVars.filter(function (key) {
             try {
                 let obj = Script[key];
-                return obj.prototype instanceof Script.AbstractScript;
+                return obj.prototype instanceof AbstractScript;
             } catch (e) {
                 return false;
             }
@@ -298,7 +314,7 @@ namespace Resource {
         // Retrieve the tooltip for every Script class
         let map = new Map<string, string>();
         for(let c of scriptClasses) {
-            map.set(c, (<typeof Script.AbstractScript> Script[c]).tooltip);
+            map.set(c, (<typeof AbstractScript> Script[c]).tooltip);
         }
         return map;
     }

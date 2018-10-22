@@ -1,10 +1,14 @@
-/// <reference path="manager/CharacterManager.ts" />
-/// <reference path="manager/MapManager.ts" />
-/// <reference path="AbstractGrid.ts" />
-/// <reference path="../../../common/src/model/Commons.ts" />
-/// <reference path="util/Constant.ts" />
-/// <reference path="util/Commons.ts" />
-/// <reference path="util/Utils.ts" />
+import { TilesetManager } from "./manager/TilesetManager"
+import { MapManager } from "./manager/MapManager"
+import {  } from "./AbstractGrid"
+import { IMap } from "../../../common/src/model/Map"
+import { IPoint, ICell, DirectionEnum } from "../../../common/src/model/Commons"
+import { ITileset } from "../../../common/src/model/Tileset"
+import { Constant } from "./util/Constant"
+import { RenderConfiguration, IRange } from "./util/Commons"
+import { Utils } from "./util/Utils"
+import { Resource } from "./util/Resource"
+import { AbstractGrid } from "./AbstractGrid"
 
 var _requestAnimationFrame =
     window.requestAnimationFrame ||
@@ -18,13 +22,13 @@ var _cancelAnimationFrame = window.cancelAnimationFrame
 /**
  * Abstract class for handling rendering operations
  */
-abstract class AbstractScene {
+export abstract class AbstractScene {
 
     map: IMap;
 
     focus: IPoint;
 
-    pointer: ICell;
+    pointer?: ICell;
 
     renderingConfiguration: RenderConfiguration;
     layers: number;
@@ -90,7 +94,7 @@ abstract class AbstractScene {
     }
 
     protected renderPointer(): void {
-        if (this.pointer.i != null && this.pointer.j != null) {
+        if (this.pointer !== undefined) {
             let mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
             this.context.save();
             this.context.beginPath();
@@ -185,9 +189,11 @@ abstract class AbstractScene {
             this.renderingConfiguration.enableAntialiasing = !this.renderingConfiguration.enableAntialiasing;
         }
         if ("webkitImageSmoothingEnabled" in this.context) {
+            //@ts-ignore Retrocompatibility
             this.context["webkitImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
         if ("msImageSmoothingEnabled" in this.context) {
+            //@ts-ignore Retrocompatibility
             this.context["msImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
         if ("imageSmoothingEnabled" in this.context) {
@@ -195,11 +201,15 @@ abstract class AbstractScene {
         }
     }
 
-    updatePointer(i: number, j: number) {
-        this.pointer = {
-            i: i,
-            j: j
-        };
+    updatePointer(i?: number, j?: number) {
+        if(i === undefined || j === undefined) {
+            this.pointer = undefined;
+        } else {
+            this.pointer = {
+                i: i,
+                j: j
+            };
+        }
     }
 
     moveFocusToDirection(direction?: DirectionEnum) {
@@ -248,6 +258,9 @@ abstract class AbstractScene {
             this.pauseStartTime = Utils.now();
         } else {
             // Save the pause total duration
+            if(this.pauseStartTime === undefined) {
+                this.pauseStartTime = 0;
+            }
             this.pauseDuration = Utils.now() - this.pauseStartTime;
             this.pauseStartTime = undefined;
         }
@@ -262,7 +275,6 @@ abstract class AbstractScene {
             console.trace();
         }
         scene.map = map;
-        let grid = this.grid;
         scene.changeTile(map.tileset.image, function(scene) {
             setTimeout(function() {
                 MapManager.initTransientData(scene);
@@ -275,10 +287,15 @@ abstract class AbstractScene {
 
     changeTile(tile: string, callback: { (scene: AbstractScene): void }) {
         let scene: AbstractScene = this;
-        TilesetManager.loadTileset(tile, this.context, function(tileset: ITileset) {
+        TilesetManager.loadTileset(tile, this.context, function(tileset?: ITileset) {
+            if(tileset === undefined) {
+                console.error("Cannot change tile, tileset not found: " + tile);
+                callback(scene);
+                return;
+            }
             scene.map.tileset = tileset;
-            Resource.load(tileset.image, Resource.TypeEnum.TILE, function(image: HTMLImageElement) {
-                tileset.imageData = image;
+            Resource.load(tileset.image, Resource.TypeEnum.TILE, function(image) {
+                tileset.imageData = <HTMLImageElement> image;
                 callback(scene);
             });
         });
@@ -300,7 +317,7 @@ abstract class AbstractScene {
                     
                     let cellIndex = Utils.cellToGid({i:i,j:j},map.width);
                     
-                    for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
+                    for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) { 
 
                         let layer = this.map.layers[layerIndex];
                         if (layer === undefined || layer.data === undefined || layer.data.length < cellIndex) {
@@ -313,14 +330,14 @@ abstract class AbstractScene {
                         // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                         let zindex = Constant.ZIndex.LV0;
                         if(map.tileset.onTop !== undefined) {
-                            zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                            zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID!]);
                         }
                         if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
                             this.applyLayerCustomizations(layerIndex);
                             if (!Utils.isEmpty(layer.opacity)) {
-                                context.globalAlpha = layer.opacity;
+                                context.globalAlpha = layer.opacity!;
                             }
-                            this.renderCell(context, map.tileset, tileGID, i, j);
+                            this.renderCell(context, map.tileset, tileGID!, i, j);
                             context.globalAlpha = 1;
                             this.removeLayerCustomizations(layerIndex);
                         }
@@ -354,14 +371,14 @@ abstract class AbstractScene {
                             // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                             let zindex = Constant.ZIndex.LV0;
                             if(map.tileset.onTop !== undefined) {
-                                zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID]);
+                                zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID!]);
                             }
                             if(zindex > 0 && j_real + zindex === j) {
                                 this.applyLayerCustomizations(layerIndex);
                                 if (!Utils.isEmpty(layer.opacity)) {
-                                    context.globalAlpha = layer.opacity;
+                                    context.globalAlpha = layer.opacity!;
                                 }
-                                this.renderCell(context, map.tileset, tileGID, i, j_real);
+                                this.renderCell(context, map.tileset, tileGID!, i, j_real);
                                 context.globalAlpha = 1;
                                 this.removeLayerCustomizations(layerIndex);
                             }
@@ -388,7 +405,7 @@ abstract class AbstractScene {
         this.renderFocus();
     }
     
-    private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {
+    private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {  
         let tileCell = Utils.gidToCell(tileGID, Math.floor(tileset.imagewidth / this.grid.cellW)); //TODO precalculate
         context.drawImage(
             tileset.imageData,
@@ -396,7 +413,7 @@ abstract class AbstractScene {
             Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }
     
-    protected abstract renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i: number, j: number, onTop: boolean);
+    protected abstract renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean): void;
 
     protected applyLayerCustomizations(layerIndex: number) {
     }

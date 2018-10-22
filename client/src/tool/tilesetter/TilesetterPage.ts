@@ -1,20 +1,21 @@
-/// <reference path="../../core/util/Resource.ts" />
-/// <reference path="../../core/util/Commons.ts" />
+import { Resource } from "../../core/util/Resource"
+import { IPropertiesCallback } from "../../core/util/Commons"
+import { Constant } from "../../core/util/Constant"
+import { Compatibility } from "../../core/util/Compatibility"
+import { Tilesetter } from "./Tilesetter"
 
 declare var base_path: string;
 
-namespace TilesetterPage {
+export namespace TilesetterPage {
 
     export const PAGE_TITLE = document.title;
-
-    let flagEdited: boolean = false;
 
     export function start() {
         Compatibility.check(); 
         
         // Resize the panel to match the tileset
         let resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
-            let width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
+            let width = +props.get("cellWidth")! * +props.get("tileColumns")! + 2;
             $("#toolsPanel").width(width);
         };
         Resource.loadProperties(resizerCallback);
@@ -26,7 +27,7 @@ namespace TilesetterPage {
             }
             Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0], getEditMode(), function() {
                 let tile = $("#tiles").val();
-                Tilesetter.loadTile(tile, function(result, w, h) { });
+                Tilesetter.loadTile(tile, function(result, w: number, h: number) { });
             });
         });
 
@@ -35,7 +36,7 @@ namespace TilesetterPage {
 
     export function loadNews() {
         $.getJSON(base_path + "news", function(data) {
-            let news = $("#news");
+            //let news = $("#news");
             //TODO manage json response
         });
     }
@@ -83,7 +84,6 @@ namespace TilesetterPage {
     }
 
     export function changeEditState(edited: boolean, mapChanged: boolean = true) {
-        flagEdited = edited;
         if (edited) {
             document.title = PAGE_TITLE + "*";
         } else {

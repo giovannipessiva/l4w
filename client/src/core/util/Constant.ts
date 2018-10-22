@@ -1,7 +1,7 @@
 /**
  * Module for constants values
  */
-namespace Constant {
+export namespace Constant {
 
     export const DOUBLE_PI = Math.PI * 2;
 

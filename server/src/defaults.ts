@@ -1,4 +1,4 @@
-namespace defaults {
+export namespace defaults {
 
     export function getDefaultMap() {
         return {
@@ -52,4 +52,3 @@ namespace defaults {
         return "";
     }
 };
-export default defaults;

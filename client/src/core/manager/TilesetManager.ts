@@ -1,18 +1,21 @@
-/// <reference path="../../../../common/src/model/Tileset.ts" />
+import { ITileset, ITilesetData } from "../../../../common/src/model/Tileset"
+import { Utils } from "../util/Utils"
+import { Resource } from "../util/Resource"
+import { Errors } from "../util/Errors"
 
 /**
  * Helper class for handling tilesets and autotile
  */
-namespace TilesetManager {
+export namespace TilesetManager {
    
-     export function loadTileset(tilesetImage: string, context: CanvasRenderingContext2D, callback: (tileset: ITileset) => void) {
-        Resource.load(tilesetImage+"", Resource.TypeEnum.TILESET, function(resourceText: string) {
+     export function loadTileset(tilesetImage: string, context: CanvasRenderingContext2D, callback: (tileset?: ITileset) => void) {
+        Resource.load(tilesetImage+"", Resource.TypeEnum.TILESET, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading tileset: " + tilesetImage);
-                callback(null);
+                callback();
             } else {
                 try {
-                    let tileset: ITileset = JSON.parse(resourceText);
+                    let tileset: ITileset = JSON.parse(<string> resourceText);
                     callback(tileset);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -23,25 +26,23 @@ namespace TilesetManager {
                         console.error(exception);
                     }
                     Errors.showError(context);
-                    callback(null);
+                    callback();
                 }
             }
         });
     }
     
     export function initTransientData(tileset: ITileset) {
-        if(!Utils.isEmpty(tileset.imageData)) {
+        if(tileset.imageData !== undefined) {
             tileset.imagewidth = tileset.imageData.width;
             tileset.imageheight = tileset.imageData.height;
         }
     }
     
-    export function getNewTileset(name: string): ITileset {
+    export function getNewTileset(): ITilesetData {
         return {
             "firstgid": 1,
             "image": "002-Woods01.png",
-            "imageheight": 800,
-            "imagewidth": 256,
             "blocks": [],
             "onTop": []
         };

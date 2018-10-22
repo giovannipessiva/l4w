@@ -1,6 +1,7 @@
 //@ts-ignore TS1192
 import fs from "fs"
-import constants from "./constants"
+
+import { HttpStatus } from "../../common/src/Constants"
 import { Response } from "express";
 
 const placeholder = "404.png";
@@ -26,15 +27,15 @@ export function sendFile(path: string, file: string, response: Response) {
         path + "/" + file,
         options,
         function(err: Error | any) {
-            if (err && response.statusCode !== constants.HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
-                if (response.statusCode === constants.HttpStatus.NOT_FOUND && file !== placeholder) {
+            if (err && response.statusCode !== HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
+                if (response.statusCode === HttpStatus.NOT_FOUND && file !== placeholder) {
                     sendFile(path, placeholder, response);
                 } else {
                     // Do not log:
                     // - Requests aborted
                     // - 404 on minified script
                     if(err.message !== "Request aborted"
-                        && !file.includes("l4w-client.min.js")) {
+                        && file.match(/l4w\-.*\.min\.js/) === null) {
                         console.log("utils.sendFile - " + err);
                         console.error("error msg:" + err.message);
                         console.error("error name:" + err.name);
@@ -42,7 +43,7 @@ export function sendFile(path: string, file: string, response: Response) {
                     if(err.status !== undefined) {
                         response.status(err.status).send("");
                     } else {
-                        response.status(constants.HttpStatus.NO_CONTENT).send("");
+                        response.status(HttpStatus.NO_CONTENT).send("");
                     }
                 }
             }
@@ -89,7 +90,7 @@ export function listFiles(filePath: string, response: Response) {
                 i--;
             }    
         }
-        if(err !== undefined) {
+        if(!isEmpty(err)) {
             console.error(err);
         }
         response.json(files);

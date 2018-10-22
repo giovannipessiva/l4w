@@ -1,15 +1,15 @@
-/// <reference path="../../../../common/src/model/Commons.ts" />
+import { ICell } from "../../../../common/src/model/Commons"
 
 /**
  * Module for common type structures and function interfaces
  */
 
-interface IRange {
+export interface IRange {
     min: number;
     max: number;
 };
 
-class RenderConfiguration {
+export class RenderConfiguration {
     showGrid: boolean = false;
     showEditorGrid: boolean = false;
     showFPS: boolean = false;
@@ -21,29 +21,37 @@ class RenderConfiguration {
     enableAntialiasing: boolean = true;
 
     fps: number = 0;
-    selectCellStart: ICell;
-    selectCellEnd: ICell;
-    selectEventCell: ICell;
+    selectCellStart?: ICell;
+    selectCellEnd?: ICell;
+    selectEventCell?: ICell;
 }
 
-interface IPropertiesCallback {
+export interface IPropertiesCallback {
     (props: Map<string, number>): void;
 };
 
-interface IResponseCallback {
+export interface IResponseCallback {
     (response?: any): void;
 };
-interface IProgressCallback {
+export interface IProgressCallback {
     (this: XMLHttpRequest, e: ProgressEvent): any;
 };
 
-interface IBooleanCallback {
+export interface IBooleanCallback {
     (success: boolean): void;
 };
 
-interface IEmptyCallback {
+export interface ICoordinatesCallback {
+    (x: number, y: number): void,
+};
+
+export interface ICellCallback {
+    (c: ICell): void,
+};
+
+export interface IEmptyCallback {
     (): void;
 };
 
-function emptyFz(): void {
-}
+export function emptyFz(): void {
+};

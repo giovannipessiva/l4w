@@ -1,6 +1,7 @@
-/// <reference path="script/AbstractScript.ts" />
+import { AbstractScript } from "./script/AbstractScript"
+import { IEvent } from "../../../../common/src/model/Event"
 
-namespace Condition {
+export namespace Condition {
 
     export function always(event: IEvent): boolean {
         return true;
@@ -47,7 +48,7 @@ namespace Condition {
     }
 
     function chechStateVar(event: IEvent, val: number): boolean {
-        let stateVar: string = event.memory[Script.AbstractScript.STATE_VAR];
+        let stateVar: string = event.memory[AbstractScript.STATE_VAR];
         let stateVarNum: number = Number.parseInt(stateVar);
         if (!Number.isNaN(stateVarNum)) {
             return stateVarNum === val;

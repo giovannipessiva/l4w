@@ -1,11 +1,18 @@
-/// <reference path="../util/Constant.ts" />
-/// <reference path="../../../../common/src/model/Map.ts" />
-/// <reference path="../../../../common/src/model/Dialog.ts" />
+import {  } from "../util/Constant"
+import { Utils } from "../util/Utils"
+import { Resource } from "../util/Resource"
+import { Condition } from "../events/Conditions"
+import { DynamicScene } from "../../game/DynamicScene"
+import { IEmptyCallback, IBooleanCallback } from "../util/Commons"
+import {  } from "../../../../common/src/model/Map"
+import { IGenericMessage, IDialogNode, IDialogEdge, DialogInputTypeEnum, IGenericMessageValue } from "../../../../common/src/model/Dialog"
+import { LanguageEnum } from "../../../../common/src/model/Commons"
+import { IEvent } from "../../../../common/src/model/Event"
 
 /**
  * Helper class for managing dialogs and alfanumeric input/output
  */
-namespace DialogManager {
+export namespace DialogManager {
     
     export const languages: string[] = [];
     languages[LanguageEnum.IT] = "Italiano 🇮🇹";
@@ -280,13 +287,13 @@ namespace DialogManager {
     }
 
     export function launchAction(edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameters?: any): boolean {
-        let script = edge.script;
-        if(script === undefined) {
+        let scriptClassName = edge.script;
+        if(scriptClassName === undefined) {
             return false;
         }
-        let scriptClass = new Script[script](event, hero, scene);
+        let scriptClass = new scriptClassName[scriptClassName](event, hero, scene);
         if (Utils.isEmpty(scriptClass)) {
-            console.error("Script \"" + script + "\" not found (dialog edge: " + edge.id + ")");
+            console.error("Script \"" + scriptClassName + "\" not found (dialog edge: " + edge.id + ")");
             return false;
         }
         let action = edge.action;
@@ -294,7 +301,7 @@ namespace DialogManager {
             return false;
         }
         if (!(action in scriptClass)) {
-            console.error("Action \"" + action + "\" not found in script \"" + script + "\" (dialog edge: " + edge.id + ")");
+            console.error("Action \"" + action + "\" not found in script \"" + scriptClassName + "\" (dialog edge: " + edge.id + ")");
             return false;
         }
         try {

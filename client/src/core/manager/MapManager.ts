@@ -1,23 +1,33 @@
-/// <reference path="../util/Constant.ts" />
-/// <reference path="../../../../common/src/model/Map.ts" />
-/// <reference path="../AbstractGrid.ts" />
-/// <reference path="../manager/CharacterManager.ts" />
+import { Constant } from "../util/Constant"
+import { RenderConfiguration } from "../util/Commons"
+import { Utils } from "../util/Utils"
+import { Errors } from "../util/Errors"
+import { Resource } from "../util/Resource"
+import { IMap, IMapData, IVertex } from "../../../../common/src/model/Map"
+import { BlockDirection, DirectionEnum, ICell } from "../../../../common/src/model/Commons"
+import { IEvent, IEventData } from "../../../../common/src/model/Event"
+import { AbstractGrid } from "../AbstractGrid"
+import { AbstractScene } from "../AbstractScene"
+import { DynamicScene } from "../../game/DynamicScene"
+import { EventManager } from "../manager/EventManager"
+import { TilesetManager } from "../manager/TilesetManager"
+import {  } from "../manager/CharacterManager"
 
 /**
  * Helper class for handling game maps
  */
-namespace MapManager {
+export namespace MapManager {
 
     export enum PathfinderEnum {
         BASIC,
         D_STAR_LITE
     }
 
-    export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map: IMap) => void) {
-        Resource.load(mapId + "", Resource.TypeEnum.MAP, function(resourceText: string) {
+    export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map?: IMap) => void) {
+        Resource.load(mapId + "", Resource.TypeEnum.MAP, function(resourceText: any) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
-                callback(null);
+                callback();
             } else {
                 try {
                     let map: IMap = JSON.parse(resourceText);
@@ -32,7 +42,7 @@ namespace MapManager {
                     }
                     console.error(resourceText);
                     Errors.showError(canvas.getContext("2d"));
-                    callback(null);
+                    callback();
                 }
             }
         });
@@ -62,11 +72,8 @@ namespace MapManager {
                 context.fillStyle = Constant.Color.YELLOW;
                 context.strokeStyle = Constant.Color.BLACK;
                 context.lineWidth = 2;
-                let blockMarkSize = 7;
-                let blockMarkHalfSize = Math.floor(blockMarkSize / 2);
-                let blockValue: number = Utils.isEmpty(map.blocks)? BlockDirection.NONE : map.blocks[j * map.width + i];
-                let dynamicBlockValue: number = Utils.isEmpty(map.dynamicBlocks)? BlockDirection.NONE : map.dynamicBlocks[j * map.width + i];
-                let x, y;
+                let blockValue: number = Utils.isEmpty(map.blocks)? BlockDirection.NONE : map.blocks![j * map.width + i];
+                let dynamicBlockValue: number = Utils.isEmpty(map.dynamicBlocks)? BlockDirection.NONE : map.dynamicBlocks![j * map.width + i];
 
                 if (blockValue > BlockDirection.NONE || dynamicBlockValue > BlockDirection.NONE) {
                     if(dynamicBlockValue > BlockDirection.NONE) {
@@ -166,18 +173,18 @@ namespace MapManager {
     }
 
     export function renderGlobalUI(grid: AbstractGrid, context: CanvasRenderingContext2D, renderingConfiguration: RenderConfiguration) {
-        if (!Utils.isEmpty(renderingConfiguration) && renderingConfiguration.enableSelection) {
-            if (!Utils.isEmpty(renderingConfiguration.selectCellStart) || !Utils.isEmpty(renderingConfiguration.selectEventCell)) {
+        if (renderingConfiguration.enableSelection) {
+            if (renderingConfiguration.selectCellStart !== undefined || renderingConfiguration.selectEventCell  !== undefined) {
                 context.save();
                 let x;
                 let y;
                 let w = grid.cellW;
                 let h = grid.cellH;
 
-                if(!Utils.isEmpty(renderingConfiguration.selectCellStart)) {
+                if(renderingConfiguration.selectCellStart !== undefined) {
                     x = renderingConfiguration.selectCellStart.i * grid.cellW;
                     y = renderingConfiguration.selectCellStart.j * grid.cellH;
-                    if (!Utils.isEmpty(renderingConfiguration.selectCellEnd)) {
+                    if (renderingConfiguration.selectCellEnd !== undefined) {
                         let x2 = renderingConfiguration.selectCellEnd.i * grid.cellW;
                         let y2 = renderingConfiguration.selectCellEnd.j * grid.cellH;
                         if (x > x2) {
@@ -197,9 +204,9 @@ namespace MapManager {
                     }
                     context.strokeStyle = Constant.Color.RED;
                     context.lineWidth = 3;
-                } else {    
-                    x = renderingConfiguration.selectEventCell.i * grid.cellW;
-                    y = renderingConfiguration.selectEventCell.j * grid.cellH;
+                } else {
+                    x = renderingConfiguration.selectEventCell!.i * grid.cellW;
+                    y = renderingConfiguration.selectEventCell!.j * grid.cellH;
                     context.strokeStyle = Constant.Color.LIME;
                     context.lineWidth = 2;
                 }
@@ -218,25 +225,29 @@ namespace MapManager {
             return;
         }
         let referenceIndex: number = Math.min(oldWidth, newWidth);
+        let removedColumns: number | undefined;
+        let newColumns: any;
         if (newWidth < oldWidth) {
-            var removedColumns: number = oldWidth - newWidth;
+            removedColumns = oldWidth - newWidth;
         } else {
-            var newColumns = [];
+            newColumns = [];
             for (let n = 0; n < newWidth - oldWidth; n++) {
-                newColumns[n] = null;
+                newColumns[n] = undefined;
             }
         }
 
         for (let i = 0; i < map.layers.length; i++) {
             let layer = map.layers[i];
-            if (!Utils.isEmpty(layer.data)) {
+            if (layer.data !== undefined) {
                 // Correct existing rows
                 if (oldWidth !== newWidth) {
                     for (let y = 0; y < oldHeight; y++) {
-                        if (!Utils.isEmpty(removedColumns)) {
+                        if (removedColumns !== undefined) {
                             layer.data.splice(referenceIndex + y * newWidth, removedColumns);
-                        } else {
+                        } else if (newColumns !== undefined) {
                             Array.prototype.splice.apply(layer.data, [referenceIndex + y * newWidth, 0].concat(newColumns));
+                        } else {
+                            console.error("Unexpected case");
                         }
                     }
                 }
@@ -246,12 +257,12 @@ namespace MapManager {
                 }
                 // Add more rows
                 if (oldHeight < newHeight) {
-                    let newData: number[] = [];
+                    let newData: any = [];
                     for (let n = 0; n < newWidth - oldWidth; n++) {
-                        newData[n] = null;
+                        newData[n] = undefined;
                     }
                     for (let i = oldWidth; i < newWidth; i++) {
-                        layer.data.concat(newData);
+                        layer.data!.concat(newData);
                     }
                 }
             }
@@ -262,7 +273,7 @@ namespace MapManager {
     }
     
     export function initTransientData(scene: AbstractScene) {
-        let hero: IEvent;
+        let hero: IEvent | undefined = undefined;
         let map: IMap = scene.map;
         let grid: AbstractGrid = scene.grid;
         
@@ -274,7 +285,7 @@ namespace MapManager {
         loadDynamicBlocks(hero, map);
         if(!Utils.isEmpty(map.events)) {
             for(let event of map.events) {
-                EventManager.initTransientData(map, grid, event);    
+                EventManager.initTransientData(map, grid, <IEvent> event);    
             }
         } else {
             map.events = [];    
@@ -285,7 +296,7 @@ namespace MapManager {
         TilesetManager.initTransientData(map.tileset);
     }
     
-    export function updateDynamicData(hero: IEvent, map) {
+    export function updateDynamicData(hero: IEvent, map: IMap) {
         loadDynamicBlocks(hero, map);
     }
 
@@ -300,18 +311,18 @@ namespace MapManager {
             }
             for (let l = 0; l < map.layers.length; l++) {
                 let layer = map.layers[l];
-                if (!Utils.isEmpty(layer.data)) {
-                    for (let gid = 0; gid < layer.data.length; gid++) { 
+                if (layer.data !== undefined) {
+                    for (let gid = 0; gid < layer.data!.length; gid++) { 
                         let tileCell = layer.data[gid];
                         // Ignore invalid cells
-                        if (Utils.isEmpty(tileCell) || tileCell<0 || tileCell >= map.tileset.blocks.length) {   
+                        if (Utils.isEmpty(tileCell) || tileCell! < 0 || tileCell! >= map.tileset.blocks.length) {   
                             continue;
                         }
                         // Ignore cells onTop
-                        if(map.tileset.onTop !== undefined && Utils.normalizeZIndex(map.tileset.onTop[tileCell]) > Constant.ZIndex.LV0) {
+                        if(map.tileset.onTop !== undefined && Utils.normalizeZIndex(map.tileset.onTop[tileCell!]) > Constant.ZIndex.LV0) {
                             continue;  
                         }
-                        let blockValue = map.tileset.blocks[tileCell];
+                        let blockValue = map.tileset.blocks[tileCell!];
                         if(Utils.isEmpty(blockValue)) {
                             blockValue = BlockDirection.NONE;
                         }
@@ -327,20 +338,20 @@ namespace MapManager {
     /**
      * Read the block in every event, and save them in the map.dynamicBlock array
      */
-    function loadDynamicBlocks(hero: IEvent, map: IMap) {
+    function loadDynamicBlocks(hero: IEvent | undefined, map: IMap) {
         map.dynamicBlocks = [];
         for (let j = 0; j < map.height * map.width; j++) {
             map.dynamicBlocks[j] = 0;
         }
-        let events = new Array<IEvent>();
-        if(!Utils.isEmpty(hero)) {
+        let events = new Array<IEventData>();
+        if(hero !== undefined) {
             events.push(hero);
         }
-        if (!Utils.isEmpty(map.events)) {
+        if (map.events !== undefined) {
             events = events.concat(map.events);
         } 
         for (let e of events) {
-            let state = EventManager.getState(e);
+            let state = EventManager.getState(<IEvent> e);
             if(state === undefined || Utils.isEmpty(state.block) || state.block) {
                 let gid = Utils.cellToGid(e, map.width);
                 map.dynamicBlocks[gid] = BlockDirection.ALL;
@@ -369,7 +380,7 @@ namespace MapManager {
             // Stop
             return DirectionEnum.NONE;
         } else {
-            let direction: DirectionEnum;
+            let direction: DirectionEnum = DirectionEnum.NONE;
             switch (pathfinder) {
                 case PathfinderEnum.BASIC:
                     // Basic pathfinder
@@ -422,8 +433,7 @@ namespace MapManager {
                         const MAX = Number.MAX_SAFE_INTEGER; // Approximation of infinity
                         var s_start: IVertex;// Start vertex
                         var s_goal: IVertex; // Target vertex
-                        var s_last: IVertex;
-                        let km; // Assuming constant edge costs, this will always be 0
+                        let km: number = 0; // Assuming constant edge costs, this will always be 0
 
                         var width = map.width;
 
@@ -482,12 +492,12 @@ namespace MapManager {
                         };
 
                         function computeShortestPath() {
-                            while (compareKeys(queueTop().key, calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {  //FIXME ciclo infinito
+                            while (compareKeys(queueTop().key!, calculateKey(s_start)) < 0 || rhs(s_start) > g(s_start)) {  //FIXME ciclo infinito
                                 let uTop = queueTop();
                                 let u = uTop;
                                 let k_old = uTop.key;
                                 let k_new = calculateKey(u);
-                                if (compareKeys(k_old, k_new) < 0) {
+                                if (compareKeys(k_old!, k_new) < 0) {
                                     u.key = k_new;
                                     queueUpdate(u);
                                 } else if (g(u) > rhs(u)) {
@@ -517,7 +527,7 @@ namespace MapManager {
                                                         min = tmpMin;
                                                     }
                                                 }
-                                                setRhs(s, min);
+                                                setRhs(s, min!);
                                             }
                                         }
                                         updateVertex(s);
@@ -527,14 +537,13 @@ namespace MapManager {
                         };
 
                         function main(): DirectionEnum {
-                            s_last = s_start;
                             initialize();
                             computeShortestPath();
 
                             while (!isVertexEqual(s_start, s_goal)) {
                                 // Find the successor vertex with lowes g value
                                 // If (rhs(s_start) === MAX) then there is no known path */
-                                let s_min;
+                                let s_min: IVertex;
                                 let s_min_c;
                                 for (let s1 of succ(s_start)) {
                                     let tmp = c(s_start, s1) + g(s1);
@@ -543,7 +552,7 @@ namespace MapManager {
                                         s_min = s1;
                                     }
                                 }
-                                s_start = s_min;
+                                s_start = s_min!;
 
                                 // Move to s_start
                                 return Utils.getDirection(s_start.cell, event);
@@ -734,9 +743,9 @@ namespace MapManager {
 
                         /** Returns a vertex with the smallest priority in the priority queue */
                         function queueTop(): IVertex {
-                            let uMin: IVertex;
+                            let uMin: IVertex | undefined = undefined;
                             for (let u2 of U) {
-                                if (uMin === undefined || compareKeys(u2.key, uMin.key) < 0) {
+                                if (uMin === undefined || compareKeys(u2.key!, uMin.key!) < 0) {
                                     uMin = u2;
                                 }
                             }
@@ -744,7 +753,10 @@ namespace MapManager {
                                 // If U is empty, the TopKey is [ infinite, infinite ]
                                 // no need to define a cell, this is a fake vertex
                                 uMin = {
-                                    cell: undefined,
+                                    cell: {
+                                        i: -1,
+                                        j: -1
+                                    },
                                     key: [MAX, MAX]
                                 };
                             }
@@ -757,6 +769,9 @@ namespace MapManager {
                 // Save direction in the path
                 EventManager.addDirectionToPath(event, direction, 3);
                 // Check if the pathfinder is in loop
+                if(event.path === undefined) {
+                    event.path = [];
+                }
                 if (event.path.length === 3 && event.path[0] === event.path[2] && Utils.isDirectionsOpposed(event.path[0], event.path[1])) {
                     // If a block is detected, stop
                     direction = DirectionEnum.NONE;
@@ -770,21 +785,15 @@ namespace MapManager {
         }
     }
 
-    export function getNewMap(name: string): IMap {
+    export function getNewMap(name: string): IMapData {
         return {
-            id: undefined,
+            id: 0,
             name: name,
             height: 20,
             width: 25,
             layers: [],
             events: [],
-            nextobjectid: 2,
-            tileset: {
-                firstgid: 0,
-                image: "002-Woods01.png",
-                blocks: [],
-                onTop: []
-            }
+            nextobjectid: 2
         };
     }
 }

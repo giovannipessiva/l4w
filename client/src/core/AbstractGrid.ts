@@ -1,15 +1,15 @@
-/// <reference path="../../../common/src/model/Commons.ts" />
-/// <reference path="util/Resource.ts" />
-/// <reference path="util/Commons.ts" />
+import { IPoint, ICell, IExtendedCell } from "../../../common/src/model/Commons"
+import { Resource } from "./util/Resource"
+import { IRange } from "./util/Commons"
 
-enum GridTypeEnum {
+export enum GridTypeEnum {
     game, mapper, tilePicker
 };
 
 /**
  * Module for managing canvas sizing
  */
-class AbstractGrid {
+export class AbstractGrid {
 
     protected canvas: HTMLCanvasElement;
     protected baseH: number;
@@ -45,10 +45,10 @@ class AbstractGrid {
     }
 
     deferredInit(props: Map<string, number>) {
-        this.cellH = props.get("cellHeight");
-        this.cellW = props.get("cellWidth");
-        this.rows = props.get(GridTypeEnum[this.gridType] + "Rows");
-        this.columns = props.get(GridTypeEnum[this.gridType] + "Columns");
+        this.cellH = props.get("cellHeight")!;
+        this.cellW = props.get("cellWidth")!;
+        this.rows = props.get(GridTypeEnum[this.gridType] + "Rows")!;
+        this.columns = props.get(GridTypeEnum[this.gridType] + "Columns")!;
     }
 
     updateSizingDerivates() {

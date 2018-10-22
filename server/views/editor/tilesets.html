@@ -17,18 +17,22 @@
 var base_path = "../";
 
 requirejs([base_path + "lib/jquery3.min.js"],function($){
-    requirejs([base_path + "js/l4w-client.min"],function(l4w){
+    requirejs([base_path + "js/l4w-tilesetter.min"],function(l4w){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version
-        requirejs([base_path + "js/l4w-client"],function(l4w){
+        requirejs([base_path + "js/l4w-tilesetter"],function(l4w){
             finishedLoading();
         });
     });
 });
 
 function finishedLoading(){
-    TilesetterPage.start();
+	if(L4W_tilesetter !== undefined) {
+		L4W_tilesetter.TilesetterPage.start();
+	} else {
+		setTimeout(finishedLoading, 500);
+	}
 };
 
 function signOut() {
@@ -70,8 +74,8 @@ ga('send', 'pageview');
 	<div style="border:1px solid black">
 		<table>
 			<tr>
-			<td><button id="saveButton" type="button" onclick="TilesetterPage.save();" disabled>Save</button></td>
-			<td><button id="reloadButton" type="button" onclick="TilesetterPage.reload();" disabled>Reload</button></td>
+			<td><button id="saveButton" type="button" onclick="L4W_tilesetter.TilesetterPage.save();" disabled>Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="L4W_tilesetter.TilesetterPage.reload();" disabled>Reload</button></td>
 			</tr>
 		</table>
 	</div>
@@ -80,7 +84,7 @@ ga('send', 'pageview');
 			<tr>
 				<td>Tile</td>
 				<td>
-					<select id="tiles" onchange="TilesetterPage.changeTile();"></select>
+					<select id="tiles" onchange="L4W_tilesetter.TilesetterPage.changeTile();"></select>
 				</td>
 				<td>
 				</td>
@@ -88,7 +92,7 @@ ga('send', 'pageview');
 			<tr>
 				<td>Edit mode</td>
 				<td>
-					<select id="editModes" onchange="TilesetterPage.changeTileEditMode();">
+					<select id="editModes" onchange="L4W_tilesetter.TilesetterPage.changeTileEditMode();">
 						<option value="BLOCKS" selected>Blocks</option>
 						<option value="ONTOP">On top</option>
 					</select>

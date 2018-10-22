@@ -1,21 +1,28 @@
-/// <reference path="../util/Commons.ts" />
-/// <reference path="../util/Utils.ts" />
-/// <reference path="../../../../common/src/model/Event.ts" />
-/// <reference path="../manager/MapManager.ts" />
-/// <reference path="../events/Conditions.ts" />
+import { ICoordinatesCallback, ICellCallback } from "../util/Commons"
+import { Constant } from "../util/Constant"
+import { Resource } from "../util/Resource"
+import { AbstractGrid } from "../AbstractGrid"
+import { Utils } from "../util/Utils"
+import { IEvent, IEventState } from "../../../../common/src/model/Event"
+import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { CharacterManager } from "../manager/CharacterManager"
+import { MapManager } from "../manager/MapManager"
+import { Condition } from "../events/Conditions"
+import { DynamicScene } from "../../game/DynamicScene"
 
 /**
  * Module to handle events
  */
-namespace EventManager {
+export namespace EventManager {
     
     const NO_STATE = -1;
     
-    export function update(event: IEvent, scene: DynamicScene, hero: IEvent, actionCell: ICell | undefined, time: number, pauseTimeOffset: number = 0) {
+    export function update(event: IEvent, scene: DynamicScene, hero: IEvent, actionCell: ICell | undefined, time: number, pauseTimeOffset: number = 0): number | undefined {
         if (!Utils.isEmpty(event.movementStartTime)) {
             // If the Character was moving, and there has been a pause,
             // correct the movementStartTime
-            event.movementStartTime += pauseTimeOffset;
+            event.movementStartTime! += pauseTimeOffset;
         }
         if(!Utils.isEmpty(event.states)) {
             // Check if there are activable states; the state with higher index wins, and get activated
@@ -35,9 +42,10 @@ namespace EventManager {
             }
             // Check if an action has been triggered
             if(isActionTriggered(event, event.currentState, hero, actionCell)) {
-                Script.launchAction(event, scene, hero, event.currentState);
+                return event.currentState;
             }
         }
+        return;
     }
     
     function isStateActivable(event: IEvent, s: number): boolean {
@@ -49,11 +57,11 @@ namespace EventManager {
         return Condition[condition](event);
     }
     
-    function isActionTriggered(event: IEvent, s: number, hero: IEvent, actionCell: ICell) {
+    function isActionTriggered(event: IEvent, s: number, hero: IEvent, actionCell?: ICell) {
         switch(event.states[s].trigger) {
             case ActionTriggerEnum.CLICK:
                 // If action is not on the event, exit
-                if(Utils.isEmpty(actionCell) || actionCell.i !== event.i || actionCell.j !== event.j) {
+                if(actionCell === undefined || actionCell.i !== event.i || actionCell.j !== event.j) {
                     return false;
                 }
                 // else, continue as "TOUCH" case
@@ -89,16 +97,20 @@ namespace EventManager {
     /**
      * Move max 1 step at a time, return true if a step has been made
      */
-    export function manageMovements(map: IMap, grid: AbstractGrid, e: IEvent, onCoordinatesChange, onCellChange, onTargetReached, timeToMove: number = 0): boolean {
+    export function manageMovements(map: IMap, grid: AbstractGrid, e: IEvent, onCoordinatesChange: ICoordinatesCallback, onCellChange: ICoordinatesCallback, onTargetReached: ICellCallback, timeToMove: number = 0): boolean {
         let stepCompleted: boolean = false;
         // If I am moving 
         if (!Utils.isEmpty(e.movementStartTime)) {
 
             if (timeToMove === 0) {
                 // Check how much time do I have
-                timeToMove = Utils.now() - e.movementStartTime;
+                timeToMove = Utils.now() - e.movementStartTime!;
             }
 
+            if(e.target === undefined) {
+                console.error("No target set for movement");
+                return true;
+            }
             let target: ICell = {
                 i: Math.floor(e.target.x / grid.cellW),
                 j: Math.floor(e.target.y / grid.cellH)
@@ -174,8 +186,10 @@ namespace EventManager {
                 // Move the hero
                 e.states[0].direction = direction;
                 e.movementDirection = direction;
-                e.position.x = e.i * grid.cellW + movementX;
-                e.position.y = e.j * grid.cellH + movementY;
+                e.position = {
+                    x: e.i * grid.cellW + movementX,
+                    y: e.j * grid.cellH + movementY
+                };
                 onCoordinatesChange(movementX, movementY);
 
                 // If I have finished one step
@@ -215,11 +229,14 @@ namespace EventManager {
     }
     
     function getMSpeed(e: IEvent): number {
-        let mSpeed = getState(e).mSpeed;
-        if (Utils.isEmpty(mSpeed)) {
-            mSpeed = Constant.MEDIUM_MSPEED;
+        let state = getState(e);
+        if(state !== undefined) {
+            let mSpeed = state.mSpeed;
+            if (!Utils.isEmpty(mSpeed)) {
+                return mSpeed!;
+            }
         }
-        return mSpeed;
+        return Constant.MEDIUM_MSPEED;
     }
 
     export function addDirectionToPath(e: IEvent, direction: DirectionEnum, stackLimit?: number) {
@@ -230,7 +247,7 @@ namespace EventManager {
         if (e.path[e.path.length - 1] !== direction) {
             e.path.push(direction);
         }
-        if (!Utils.isEmpty(stackLimit) && e.path.length > stackLimit) {
+        if (!Utils.isEmpty(stackLimit) && e.path.length > stackLimit!) {
             e.path.shift();
         }
     }
@@ -240,9 +257,9 @@ namespace EventManager {
         if(currentState === undefined) {
             return;    
         }
-        let image: HTMLImageElement;
+        let image: HTMLImageElement | undefined;
         if (!Utils.isEmpty(currentState.charaset)) {
-            image = Resource.loadImageFromCache(currentState.charaset, Resource.TypeEnum.CHAR);
+            image = Resource.loadImageFromCache(currentState.charaset!, Resource.TypeEnum.CHAR);
         } else if (!Utils.isEmpty(currentState.gid)) {
             //TODO Manage Event with tile grafic
         }
@@ -251,6 +268,11 @@ namespace EventManager {
 //        if (Utils.isEmpty(image)) {
 //            image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);
 //        }
+
+        if(e.position === undefined) {
+            console.error("Event position undefined: " + e);
+            return;
+        }
                       
         if(!dynamic) {
             // Draw a border
@@ -260,7 +282,7 @@ namespace EventManager {
             context.strokeRect(e.position.x, e.position.y, grid.cellW, grid.cellH);
         }
         
-        if (!Utils.isEmpty(image)) {
+        if (image !== undefined) {
             let charaWidth: number = Math.floor(image.width / 4);
             let charaHeight: number = Math.floor(image.height / 4);
             let charaWidthResized: number = charaWidth;
@@ -278,16 +300,18 @@ namespace EventManager {
             }
             
             let charaX: number = 0;
+            let frequency: number;
+            if(!Utils.isEmpty(currentState.frequencyVal)) {
+                frequency = currentState.frequencyVal!;
+            } else {
+                frequency = Constant.MEDIUM_FREQUENCY;    
+            }
             if (!Utils.isEmpty(e.target)) {
                 //If it's moving, change animation
                 if (Utils.isEmpty(currentState.animationStartTime)) {
                     currentState.animationStartTime = Utils.now();
                 }
-                let animationTime = Utils.now() - currentState.animationStartTime;
-                let frequency: number = currentState.frequencyVal;
-                if(Utils.isEmpty(frequency)) {
-                    frequency = Constant.MEDIUM_FREQUENCY;    
-                }
+                let animationTime = Utils.now() - currentState.animationStartTime!;
                 let position = Math.floor((animationTime * frequency) % 4);
                 switch (position) {
                     case 1: charaX = charaWidth; break;
@@ -299,14 +323,10 @@ namespace EventManager {
                 if (Utils.isEmpty(currentState.animationStartTime)) {
                     currentState.animationStartTime = Utils.now();
                 }
-                let animationTime = Utils.now() - currentState.animationStartTime;
-                let frequencyVal: number = currentState.frequencyVal;
-                if(Utils.isEmpty(frequencyVal)) {
-                    frequencyVal = Constant.MEDIUM_FREQUENCY;    
-                }
+                let animationTime = Utils.now() - currentState.animationStartTime!;
                 // Rotation frequency is a forth of movement rotation
-                frequencyVal /= 4;
-                let direction = Math.floor((animationTime * frequencyVal) % 4);
+                frequency /= 4;
+                let direction = Math.floor((animationTime * frequency) % 4);
                 if (currentState.rotation === RotationEnum.COUNTERCLOCKWISE) {
                     if(direction === DirectionEnum.LEFT) {
                         direction = DirectionEnum.RIGHT;
@@ -331,7 +351,7 @@ namespace EventManager {
             
             context.save();
             if (!Utils.isEmpty(currentState.opacity) && currentState.opacity !== 100) {
-                context.globalAlpha = currentState.opacity / 100;
+                context.globalAlpha = currentState.opacity! / 100;
             }
             if (pointer !== undefined) {
                 let isHighlighted: boolean = pointer.i === e.i && pointer.j === e.j;
@@ -371,7 +391,7 @@ namespace EventManager {
     
     export function getNewEvent(): IEvent {
         let event: IEvent = {
-            id: undefined,
+            id: 0,
             name: "NPC",
             i: 0,
             j: 0,
@@ -419,7 +439,7 @@ namespace EventManager {
         event.memory[key] = value;    
     };
     
-    export function loadMem(event: IEvent, key: string): string {
+    export function loadMem(event: IEvent, key: string): string | undefined {
         if(Utils.isEmpty(event.memory)) {
             return undefined;
         }
@@ -432,17 +452,20 @@ namespace EventManager {
         }  
     };
     
-    export function initTransientData(map: IMap, grid: AbstractGrid, e: IEvent): IEvent {
+    export function initTransientData(map: IMap, grid: AbstractGrid, e?: IEvent): IEvent | undefined {
         CharacterManager.initTransientData(grid, EventManager.getState(e));
-        stopMovement(e);
-        e.position = {
-            x: e.i * grid.cellW,
-            y: e.j * grid.cellH
-        };
-        return e;
+        if(e !== undefined) {
+            stopMovement(e);
+            e.position = {
+                x: e.i * grid.cellW,
+                y: e.j * grid.cellH
+            };
+            return e;
+        }
+        return undefined;
     }
     
-    export function getState(event: IEvent) {
+    export function getState(event?: IEvent) {
         if(event === undefined || event.currentState === undefined || event.states === undefined) {
             return undefined;
         }

@@ -1,10 +1,10 @@
-const enum DialogInputTypeEnum {
+export const enum DialogInputTypeEnum {
     TEXT,
     INTEGER
 }
 
 // Dialog node core model (only persistent data)
-interface IDialogNodeData {
+export interface IDialogNodeData {
     id: number; // ID of the dialog node
     message?: string; // String displayed for this dialog
     genericMessage?: number; // ID of the generic string displayed for this dialog
@@ -12,7 +12,7 @@ interface IDialogNodeData {
 }
 
 // Dialog edge core model (only persistent data)
-interface IDialogEdgeData {
+export interface IDialogEdgeData {
     id: number; // ID of the dialog edge
     message?: string; // String displayed for this edge
     inputType?: DialogInputTypeEnum; // Type of input required for this edge
@@ -24,23 +24,23 @@ interface IDialogEdgeData {
 }
 
 // Dialog node extended model (include transient data)
-interface IDialogNode extends IDialogNodeData {
+export interface IDialogNode extends IDialogNodeData {
     edges?: IDialogEdge[];  // Array of edges which start from this node
 }
 
 // Dialog edge extended model (include transient data)
-interface IDialogEdge extends IDialogEdgeData {
+export interface IDialogEdge extends IDialogEdgeData {
     node?: IDialogNode; // Node pointed by this edge
 }
 
 // Single value that could be used for a generic message
-interface IGenericMessageValue {
+export interface IGenericMessageValue {
     message: string; // String of the message
     conditionParams: string; // Parameters to be used for evaluating the condition
 }
 
 // A message that can be resolved to different strings, based on some conditions
-interface IGenericMessage {
+export interface IGenericMessage {
     id: number; // ID of the generic string
     description: string; // Description of the generic string
     condition?: string; // Name of function that returns true if this state can be active (see Conditions.ts)

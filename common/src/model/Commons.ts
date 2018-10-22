@@ -1,14 +1,14 @@
-interface IPoint {
+export interface IPoint {
     x: number;
     y: number;
 };
 
-interface ICell {
+export interface ICell {
     i: number;
     j: number;
 };
 
-interface ISize {
+export interface ISize {
     w: number;
     h: number;
 };
@@ -16,16 +16,16 @@ interface ISize {
 /**
  * Represent a point, and contains both the ICell and the IPoint representation
  */
-interface IExtendedCell extends IPoint, ICell {
+export interface IExtendedCell extends IPoint, ICell {
 };
 
 /**
  * Represent a rectangular area as the top-left vertex and its width and height
  */
-interface IRectangle extends IPoint, ISize {
+export interface IRectangle extends IPoint, ISize {
 };
 
-const enum DirectionEnum {
+export const enum DirectionEnum {
     UP,
     RIGHT,
     DOWN,
@@ -33,7 +33,7 @@ const enum DirectionEnum {
     NONE
 };
 
-const enum SelectionAreaEnum {
+export const enum SelectionAreaEnum {
     TOP,
     BOTTOM,
     LEFT,
@@ -41,7 +41,7 @@ const enum SelectionAreaEnum {
     CENTER
 };
 
-class BlockDirection {
+export class BlockDirection {
     static NONE: number = 0;
     static UP: number = Math.pow(2, 0);
     static DOWN: number = Math.pow(2, 1);
@@ -50,20 +50,20 @@ class BlockDirection {
     static ALL: number = BlockDirection.UP + BlockDirection.DOWN + BlockDirection.LEFT + BlockDirection.RIGHT;
 };
 
-const enum ActionTriggerEnum {
+export const enum ActionTriggerEnum {
     CLICK,
     TOUCH,
     OVER,
     AUTO
 };
 
-const enum RotationEnum {
+export const enum RotationEnum {
     OFF,
     CLOCKWISE,
     COUNTERCLOCKWISE
 };
 
-const enum ScaleEnum {
+export const enum ScaleEnum {
     VERY_LOW,
     LOW,
     MEDIUM_LOW,
@@ -73,7 +73,7 @@ const enum ScaleEnum {
     VERY_HIGH
 };
 
-const enum LanguageEnum {
+export const enum LanguageEnum {
     IT = "it",
     EN = "en"    
 }

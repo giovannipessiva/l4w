@@ -1,3 +1,5 @@
+const webpackConfig = require('./webpack.config.js');
+
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"), 
@@ -18,9 +20,6 @@ module.exports = function(grunt) {
         },
         
         ts: {
-            client: {
-                tsconfig: "./client/tsconfig-client.json"
-            },
             server: {
                 tsconfig: "./server/tsconfig-server.json"
             }
@@ -46,6 +45,11 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        
+        webpack: {
+            prod: webpackConfig,
+            dev: webpackConfig
+        },
 
         clean: {
             options: { 
@@ -59,6 +63,7 @@ module.exports = function(grunt) {
             },
             post: {
                 src: [
+                    "./client/dist/l4w",
                     "./server/dist/**/*.js",
                     "!./server/dist/**/models/*.js",
                     "./server/dist/**/models/index.js"
@@ -72,7 +77,10 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "./client/dist/<%= pkg.name %>-client.es5.js": "./client/dist/<%= pkg.name %>-client.js"
+                    "./client/dist/<%= pkg.name %>-game.es5.js": "./client/dist/<%= pkg.name %>-game.js",
+                    "./client/dist/<%= pkg.name %>-mapper.es5.js": "./client/dist/<%= pkg.name %>-mapper.js",
+                    "./client/dist/<%= pkg.name %>-tilesetter.es5.js": "./client/dist/<%= pkg.name %>-tilesetter.js",
+                    "./client/dist/<%= pkg.name %>-tester.es5.js": "./client/dist/<%= pkg.name %>-tester.js"
                 }
             }
         },
@@ -94,7 +102,10 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "./client/dist/<%= pkg.name %>-client.min.js": ["./client/dist/<%= pkg.name %>-client.es5.js"]
+                    "./client/dist/<%= pkg.name %>-game.min.js": ["./client/dist/<%= pkg.name %>-game.es5.js"],
+                    "./client/dist/<%= pkg.name %>-mapper.min.js": ["./client/dist/<%= pkg.name %>-mapper.es5.js"],
+                    "./client/dist/<%= pkg.name %>-tilesetter.min.js": ["./client/dist/<%= pkg.name %>-tilesetter.es5.js"],
+                    "./client/dist/<%= pkg.name %>-tester.min.js": ["./client/dist/<%= pkg.name %>-tester.es5.js"],
                 }
             }
         }
@@ -106,15 +117,16 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-webpack");
     
     grunt.registerTask("task_lint", "Clean the dist folders and execute tslint (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["clean:pre","tslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:client","ts:server","copy","clean:post"]);
-    grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack"]);
+    grunt.registerTask("task_minify", "Execute last cleanup, babel and uglify (can fail)", function () {
         grunt.option("force", true);
-        grunt.task.run(["babel","uglify"]);
+        grunt.task.run(["clean:post","babel","uglify"]);
     });
     grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
 	grunt.registerTask("default","l4w-build-pipeline");

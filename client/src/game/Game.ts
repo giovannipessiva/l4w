@@ -1,17 +1,21 @@
-/// <reference path="../../../common/src/model/Commons.ts" />
-/// <reference path="../core/util/Input.ts" />
-/// <reference path="../core/util/Compatibility.ts" />
-/// <reference path="../core/util/Workers.ts" />
-/// <reference path="../../../common/src/model/Save.ts" />
-/// <reference path="../core/AbstractGrid.ts" />
-/// <reference path="../core/AbstractScene.ts" />
-/// <reference path="DynamicScene.ts" />
-/// <reference path="DynamicGrid.ts" />
+import { DirectionEnum, ICell, IPoint } from "../../../common/src/model/Commons"
+import { Input } from "../core/util/Input"
+import { Compatibility } from "../core/util/Compatibility"
+import { Workers } from "../core/util/Workers"
+import { Utils } from "../core/util/Utils"
+import { Launcher } from "../core/events/Launcher"
+import { emptyFz } from "../core/util/Commons"
+import { Errors } from "../core/util/Errors"
+import { SaveManager } from "../core/manager/SaveManager"
+import { Resource } from "../core/util/Resource"
+import { ISave } from "../../../common/src/model/Save"
+import { DynamicScene } from "./DynamicScene"
+import { DynamicGrid } from "./DynamicGrid"
 
 /**
  * Module for initializing and launching a game
  */
-namespace Game {
+export namespace Game {
 
     var scene: DynamicScene;
 
@@ -19,10 +23,10 @@ namespace Game {
         Compatibility.check();
         Workers.registerServiceWorker();
 
-        new DynamicGrid(canvas, function(grid: DynamicGrid) {
-            scene = new DynamicScene(grid, canvas);
-            initInput(canvas, scene, grid);
-            loadSave(canvas, function(save: ISave) {
+        new DynamicGrid(canvas, function(grid) {
+            scene = new DynamicScene(<DynamicGrid> grid, canvas, Launcher.launchAction);
+            initInput(canvas, scene, <DynamicGrid> grid);
+            loadSave(canvas, function(save?: ISave) {
                 scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
                     scene.moveFocusToDirection();
@@ -34,7 +38,7 @@ namespace Game {
 
     export function load() {
         let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
-        loadSave(canvas, function(save: ISave) {
+        loadSave(canvas, function(save?: ISave) {
             scene.loadSave(save, function(success: boolean) {
                 scene.moveFocusToDirection();
                 if (success) {
@@ -50,8 +54,8 @@ namespace Game {
     export function save() {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        let currentState: ISave = SaveManager.getSave(scene.map, scene.hero);
-        if (!Utils.isEmpty(currentState)) {
+        let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
+        if (currentState !== undefined) {
             saveId = currentState.id + "";
         }
         Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(success: boolean) {
@@ -61,15 +65,15 @@ namespace Game {
         });
     }
 
-    function loadSave(canvas: HTMLCanvasElement, callback: (save: ISave) => void) {
+    function loadSave(canvas: HTMLCanvasElement, callback: (save?: ISave) => void) {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText: string) {
+        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
-                callback(null);
+                callback();
             } else {
                 try {
-                    let save: ISave = JSON.parse(resourceText);;
+                    let save: ISave = JSON.parse(<string> resourceText);;
                     callback(save);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -80,7 +84,7 @@ namespace Game {
                         console.error(exception);
                     }
                     Errors.showError(canvas.getContext("2d"));
-                    callback(null);
+                    callback();
                 }
             }
         });
@@ -89,15 +93,15 @@ namespace Game {
     function moveToDirection(scene: DynamicScene, direction: DirectionEnum) {
         let startingCell: ICell = scene.hero;
         // If hero is currently moving
-        let currentTargetPoint: IPoint = scene.hero.target;
-        if(Utils.isEmpty(currentTargetPoint)) {
+        let currentTargetPoint: IPoint | undefined = scene.hero.target;
+        if(currentTargetPoint === undefined) {
             currentTargetPoint = scene.hero.newTarget;
         }
-        if(!Utils.isEmpty(currentTargetPoint)) {
-            let distance = Utils.getPointDistance(scene.hero.position, scene.hero.target);
+        if(currentTargetPoint !== undefined) {
+            let distance = Utils.getPointDistance(scene.hero.position!, currentTargetPoint);
             if(distance <= Math.floor(scene.grid.cellH / 2)) {
                 // If currentTarget is half-cell away, start new movement from target (not from hero's current position)
-                startingCell = scene.grid.mapCanvasToCell(scene.hero.target);
+                startingCell = scene.grid.mapCanvasToCell(currentTargetPoint);
             }
         }
         let target = Utils.getDirectionTarget(startingCell, direction);
@@ -155,11 +159,11 @@ namespace Game {
             actionCallback,
             emptyFz,
             emptyFz,
-            function(i, j) {
+            function(i?, j?) {
                 //Ongoing
                 scene.updatePointer(i, j);
             },
-            function(i, j) {
+            function(i?, j?) {
                 //Hover
                 scene.updatePointer(i, j);
             },

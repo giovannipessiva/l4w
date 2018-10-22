@@ -1,12 +1,12 @@
-/// <reference path="../core/AbstractGrid.ts" />
-/// <reference path="../core/util/Utils.ts" />
+import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
+import { Utils } from "../core/util/Utils"
+import { IRange } from "../core/util/Commons"
 
 /**
  * Module for managing canvas autosizing
  */
-class StaticGrid extends AbstractGrid {
+export class StaticGrid extends AbstractGrid {
 
-    private tileColumns: number;
     private rowsList: number[];
     private columnsList: number[];
     private canvasScales: number[];
@@ -18,8 +18,12 @@ class StaticGrid extends AbstractGrid {
         gridType: GridTypeEnum,
         overriddenProperties?: Map<string, number>
         ) {
-        super(canvas, onCompleted, gridType);
-        this.overriddenProps = overriddenProperties;
+        super(canvas, <{ (grid: AbstractGrid): void }> onCompleted, gridType);
+        if(overriddenProperties !== undefined) {
+            this.overriddenProps = overriddenProperties;
+        } else {
+            this.overriddenProps = new Map<string, number>();
+        }
     }
 
     deferredInit(props: Map<string, number>) {
@@ -27,15 +31,14 @@ class StaticGrid extends AbstractGrid {
             props = Utils.mergeMaps(this.overriddenProps, props);
         }
         super.deferredInit(props);
-        this.tileColumns = props.get("tileColumns");
 
         switch (this.gridType) {
             case GridTypeEnum.mapper:
                 this.canvasScales = [];
-                this.canvasScales.push(props.get("canvasScaleD"));
-                this.canvasScales.push(props.get("canvasScaleC"));
-                this.canvasScales.push(props.get("canvasScaleB"));
-                this.canvasScales.push(props.get("canvasScaleA"));
+                this.canvasScales.push(props.get("canvasScaleD")!);
+                this.canvasScales.push(props.get("canvasScaleC")!);
+                this.canvasScales.push(props.get("canvasScaleB")!);
+                this.canvasScales.push(props.get("canvasScaleA")!);
 
                 var totCanvasScales = this.canvasScales.length;
                 this.rowsList = new Array(totCanvasScales);

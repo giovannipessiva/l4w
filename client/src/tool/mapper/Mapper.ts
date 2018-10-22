@@ -1,10 +1,21 @@
-/// <reference path="../../../../common/src/model/Commons.ts" />
-/// <reference path="../../core/util/Utils.ts" />
-/// <reference path="../../core/util/Constant.ts" />
-/// <reference path="../../core/util/Errors.ts" />
-/// <reference path="MapperPage.ts" />
+import { DirectionEnum } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { IEvent } from "../../../../common/src/model/Event"
+import { Utils } from "../../core/util/Utils"
+import { StaticGrid } from "../StaticGrid"
+import { MapManager } from "../../core/manager/MapManager"
+import { EventManager } from "../../core/manager/EventManager"
+import { Constant } from "../../core/util/Constant"
+import { Resource } from "../../core/util/Resource"
+import { Input } from "../../core/util/Input"
+import { emptyFz, IBooleanCallback, IEmptyCallback } from "../../core/util/Commons"
+import { GridTypeEnum } from "../../core/AbstractGrid"
+import { MapperPage } from "./MapperPage"
+import { MapperScene } from "./MapperScene"
+import { TilePickerScene } from "./TilePickerScene"
+import { TilePicker } from "./TilePicker"
 
-namespace Mapper {
+export namespace Mapper {
 
     export var mapper: MapperScene;
 
@@ -25,10 +36,15 @@ namespace Mapper {
         }
     }
     
-    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number, callback) {
+    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number, callback: IEmptyCallback) {
         TilePicker.setMapper(scene);
         scene.setTilePicker(tilePicker);
-        MapManager.loadMap(mapId, canvas, function(map: IMap) {
+        MapManager.loadMap(mapId, canvas, function(map?: IMap) {
+            if(map === undefined) {
+                console.error("Cannot init mapper, cannot load map: " + mapId);
+                callback();
+                return;
+            }
             scene.changeMap(map, function() {
                 setMode(Constant.EditMode.APPLY);
                 callback();
@@ -48,10 +64,14 @@ namespace Mapper {
         mapper.resizeMap(rows, columns);
     }
     
-    export function reloadMap(callback) {
+    export function reloadMap(callback: IBooleanCallback) {
         let mapId = MapperPage.getActiveMap();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        MapManager.loadMap(mapId, canvas, function(map: IMap) {
+        MapManager.loadMap(mapId, canvas, function(map?: IMap) {
+            if(map === undefined) {
+                callback(false);
+                return;
+            }
             let result = mapper.changeMap(map, function() {
                 MapperPage.changeEditState(false);
             });
@@ -59,9 +79,9 @@ namespace Mapper {
         });
     }
 
-    export function saveMap(callback: IBooleanCallback = null): void {
+    export function saveMap(callback: IBooleanCallback): void {
         let mapId = MapperPage.getActiveMap();
-        let mapJSON = JSON.stringify(this.mapper.getMap());
+        let mapJSON = JSON.stringify(mapper.getMap());
         Resource.save(mapId + "", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
             if(callback !== null) {
                 callback(success);
@@ -126,7 +146,7 @@ namespace Mapper {
             function(i, j, mouseButton) {
                 // Ongoing action
                 if (mouseButton === Input.MouseButtons.LEFT) {
-                    if(scene.apply(i, j)) {
+                    if(scene.apply(i!, j!)) {
                         MapperPage.changeEditState(true);
                     }
                 } else {
@@ -202,7 +222,7 @@ namespace Mapper {
             return;    
         }
         for(let i = 0; i < mapper.map.events.length; i++) {
-            let e: IEvent = mapper.map.events[i];
+            let e = <IEvent> mapper.map.events[i];
             if(event.id === e.id) {
                 mapper.map.events.splice(i, 1);
                 return;
@@ -219,12 +239,12 @@ namespace Mapper {
         // Create new event
         let newId = 0;
         if(!Utils.isEmpty(mapper.map.maxEventId)) {
-            newId = mapper.map.maxEventId + 1;
+            newId = mapper.map.maxEventId! + 1;
         }
         event.id = newId;
         mapper.map.maxEventId = newId;
         mapper.map.events.push(event);
-        EventManager.initTransientData(mapper.map, this.mapper.grid, event);
+        EventManager.initTransientData(mapper.map, mapper.grid, event);
         MapperPage.changeEditState(true);
     };
     

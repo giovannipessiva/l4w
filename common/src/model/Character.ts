@@ -1,7 +1,7 @@
-/// <reference path="Commons.ts" />
+import { RotationEnum, ScaleEnum, DirectionEnum } from "./Commons"
 
 // Character core model (only persistent data)
-interface ICharacterData {
+export interface ICharacterData {
     charaset?: string; // Name of the charaset (alternative to GID)
     gid?: number; // GID from a Tilemap (alternative to charaset)
     visible?: boolean; // Whether Character should be rendered
@@ -15,7 +15,7 @@ interface ICharacterData {
 }
 
 // Character extended model (include transient data)
-interface ICharacter extends ICharacterData {
+export interface ICharacter extends ICharacterData {
     mSpeed?: number; // Speed (as pixels/milliseconds)
     frequencyVal?: number; // Animation change speed (frame/milliseconds)
     animationStartTime?: number; // ms since last animation change

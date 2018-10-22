@@ -4,14 +4,14 @@ import path from "path"
 import express from "express";
 //@ts-ignore TS1192
 import compression from "compression";
+import { NextFunction, Request, Response } from "express-serve-static-core";
 
-import constants from "./constants"
+import { HttpStatus } from "../../common/src/Constants"
 import { session } from "./session"
 import * as utils2 from "./utils"
 import { security } from "./security"
 import { database2 } from "./database"
 import { mapper } from "./mapper"
-import { NextFunction, Request, Response } from "express-serve-static-core";
 
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
@@ -96,8 +96,12 @@ app.get("/logout", function(request: Request, response: Response) {
 
 // Resources redirection
 app.get("/js/:script", function(request: Request, response: Response) {
-    var file = request.params.script;
-    var filePath = path.resolve(dirname + "/../client/dist");
+    let file: string = request.params.script;
+    let filePath = path.resolve(dirname + "/../client/dist");
+    if(security.isDevEnv()) {
+        // In development, use files with sourcemaps
+        file = file.replace(".min.",".");
+    }
     utils2.sendFile(filePath, file, response);
 });
 app.get("/lib/:script", function(request: Request, response: Response) {
@@ -105,7 +109,7 @@ app.get("/lib/:script", function(request: Request, response: Response) {
     var filePath = path.resolve(dirname + "/../client/lib");
     utils2.sendFile(filePath, file, response);
 });
-app.get("/data/:type", function(request: Request, response: Response) {
+app.get("/data/:type/", function(request: Request, response: Response) {
     var type = request.params.type;
     var user = null;
     if(session.isAuthenticated(request)) {
@@ -135,7 +139,7 @@ app.get("/assets/:type/:file", function(request: Request, response: Response) {
     var filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils2.sendFile(filePath, file, response);
 });
-app.get("/assetlist/:type", function(request: Request, response: Response) {
+app.get("/assetlist/:type/", function(request: Request, response: Response) {
     var type = request.params.type;
     var filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils2.listFiles(filePath, response);
@@ -165,7 +169,7 @@ app.post("/edit/maps", function(request: Request, response: Response) {
             mapper.updateMaps(data, session.getUser(request), response);
         });
     } else {
-        response.status(constants.HttpStatus.FORBIDDEN).send("");
+        response.status(HttpStatus.FORBIDDEN).send("");
     }
 });
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
@@ -184,14 +188,14 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
             }
         });
     } else {
-        response.status(constants.HttpStatus.FORBIDDEN).send("");
+        response.status(HttpStatus.FORBIDDEN).send("");
     }
 });
 app.get("/news", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
        database2.getNews(session.getUser(request), response);
     } else {
-        response.status(constants.HttpStatus.FORBIDDEN).send("");
+        response.status(HttpStatus.FORBIDDEN).send("");
     }
 });
 

@@ -1,10 +1,11 @@
-/// <reference path="../../../../common/src/model/Commons.ts" />
-/// <reference path="../../core/util/Utils.ts" />
-/// <reference path="../../core/util/Constant.ts" />
-/// <reference path="../../core/util/Errors.ts" />
-/// <reference path="../../core/manager/MapManager.ts" />
+import { ICell, DirectionEnum } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { IEvent } from "../../../../common/src/model/Event"
+import { Utils } from "../../core/util/Utils"
+import { MapManager } from "../../core/manager/MapManager"
+import { EventManager } from "../../core/manager/EventManager"
 
-namespace Tester {
+export namespace Tester {
     
     interface IPathfinderTestResult {
         cell: ICell,
@@ -12,7 +13,7 @@ namespace Tester {
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
-        let map: IMap = MapManager.getNewMap("Test");
+        let map = <IMap> MapManager.getNewMap("Test");
         map.width = width;
         map.height = height;
         map.blocks = blocks;

@@ -1,11 +1,20 @@
-/// <reference path="../../interfaces/jstree.d.ts" />
-/// <reference path="../../interfaces/jstree.d.extended.ts" />
-/// <reference path="../../core/util/Resource.ts" />
-/// <reference path="../../core/util/Commons.ts" />
+//import { } from "../../interfaces/jstree.d.ts"
+//import { } from "../../interfaces/jstree.d.extended.ts"
+import { Resource } from "../../core/util/Resource"
+import { Compatibility } from "../../core/util/Compatibility"
+import { IPropertiesCallback } from "../../core/util/Commons"
+import { Constant } from "../../core/util/Constant"
+import { Utils } from "../../core/util/Utils"
+import { IEvent, IEventState } from "../../../../common/src/model/Event"
+import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../../common/src/model/Commons"
+import { Mapper } from "./Mapper"
+import { TilePicker } from "./TilePicker"
+import { TilePickerScene } from "./TilePickerScene"
+import { EventManager } from "../../core/manager/EventManager"
 
 declare var base_path: string;
 
-namespace MapperPage {
+export namespace MapperPage {
 
     export const PAGE_TITLE = document.title;
     export const BUTTON_ID_MODE = "mode";
@@ -15,7 +24,7 @@ namespace MapperPage {
     let flagEdited: boolean = false;
     let flagEventModified: boolean = false;
     let currentState: IEventState;
-    let currentEvent: IEvent;
+    let currentEvent: IEvent | undefined;
 
     const scaleOptions: string[] = [
         "Very low",
@@ -104,8 +113,8 @@ namespace MapperPage {
         });
 
         // Resize the panel to match the tileset
-        var resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
-            var width = +props.get("cellWidth") * +props.get("tileColumns") + 2;
+        let resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
+            let width = +props.get("cellWidth")! * +props.get("tileColumns")! + 2;
             $("#toolsPanel").width(width);
         };
         Resource.loadProperties(resizerCallback);
@@ -135,7 +144,7 @@ namespace MapperPage {
 
     export function loadNews() {
         $.getJSON(base_path + "news", function(data) {
-            let news = $("#news");
+            //let news = $("#news");
             //TODO manage json response
         });
     }
@@ -156,10 +165,10 @@ namespace MapperPage {
                 return;
             }
         }
-        Mapper.saveMap(function(result1) {
+        Mapper.saveMap(function(result1: boolean) {
             if (result1) {
                 MapperPage.changeEditState(false);
-                TilePicker.saveData(function(result2) {
+                TilePicker.saveData(function(result2: boolean) {
                     if (!result2) {
                         console.error("Salvataggio fallito");
                     }
@@ -216,6 +225,10 @@ namespace MapperPage {
     }
 
     export function changeEventPosition() {
+        if(currentEvent === undefined) {
+            console.error("Current event undefined, cannot change its position");
+            return;
+        }
         let i = (<HTMLInputElement>document.getElementById("eventi")).valueAsNumber;
         let j = (<HTMLInputElement>document.getElementById("eventj")).valueAsNumber;
         if (Mapper.isCellAvailable(currentEvent, i, j)) {
@@ -236,12 +249,20 @@ namespace MapperPage {
     }
 
     export function deleteEvent() {
+        if(currentEvent === undefined) {
+            console.error("Current event undefined, cannot delete it");
+            return;
+        }
         Mapper.deleteEvent(currentEvent);
         eventModified();
         loadEvent(undefined, false);
     }
 
     export function deleteEventState() {
+        if(currentEvent === undefined) {
+            console.error("Current event undefined, cannot delete its state");
+            return;
+        }
         let currentEventState = (<HTMLInputElement>document.getElementById("state")).valueAsNumber;
         if ((currentEventState > 1 || (currentEventState === 1 && currentEvent.states.length > 1))
             && currentEventState <= currentEvent.states.length) {
@@ -255,6 +276,10 @@ namespace MapperPage {
     }
 
     export function loadEventState(readPreviousState: boolean = true) {
+        if(currentEvent === undefined) {
+            console.error("Current event undefined, cannot load its state");
+            return;
+        }
         if (readPreviousState) {
             readEventStateDetails();
         }
@@ -307,7 +332,7 @@ namespace MapperPage {
         let actionOptions: HTMLOptionsCollection = selectActions.options;
         let i = 0;
         Utils.resetSelect(selectActions);
-        selectActions.selectedIndex = undefined;
+        selectActions.selectedIndex = -1;
         for (let a of actions) {
             actionOptions[i] = new Option(a);
             if (a === currentState.action) {
@@ -404,8 +429,8 @@ namespace MapperPage {
         }
         (<HTMLSelectElement>document.getElementById("ontop")).selectedIndex = ontop;
 
-        let block: boolean = currentState.block;
-        if (Utils.isEmpty(block)) {
+        let block: boolean | undefined = currentState.block;
+        if (block === undefined) {
             block = true;
         }
         (<HTMLInputElement>document.getElementById("block")).checked = block;
@@ -417,26 +442,26 @@ namespace MapperPage {
         currentState.action = (<HTMLInputElement>document.getElementById("action")).value;
         currentState.charaset = (<HTMLSelectElement>document.getElementById("charasets")).value;
 
-        let visible: boolean = (<HTMLInputElement>document.getElementById("visible")).checked;
+        let visible: boolean | undefined = (<HTMLInputElement>document.getElementById("visible")).checked;
         if (visible) {
             visible = undefined;
         }
         currentState.visible = visible;
 
-        let opacity: number = (<HTMLInputElement>document.getElementById("opacity")).valueAsNumber;
+        let opacity: number | undefined = (<HTMLInputElement>document.getElementById("opacity")).valueAsNumber;
         if (Utils.isEmpty(opacity) || Number.isNaN(opacity) || opacity < 0 || opacity >= 100) {
             opacity = undefined;
         }
         currentState.opacity = opacity;
 
-        let direction: number = (<HTMLSelectElement>document.getElementById("direction")).selectedIndex;
+        let direction: number | undefined = (<HTMLSelectElement>document.getElementById("direction")).selectedIndex;
         if (Utils.isEmpty(direction) || direction < DirectionEnum.UP || direction > DirectionEnum.LEFT) {
             direction = undefined;
         }
         currentState.direction = direction;
 
-        let speed: number = (<HTMLSelectElement>document.getElementById("speed")).selectedIndex;
-        let frequency: number = (<HTMLSelectElement>document.getElementById("frequency")).selectedIndex;
+        let speed: number | undefined = (<HTMLSelectElement>document.getElementById("speed")).selectedIndex;
+        let frequency: number | undefined = (<HTMLSelectElement>document.getElementById("frequency")).selectedIndex;
         if (Utils.isEmpty(speed) || speed < ScaleEnum.VERY_LOW || speed > ScaleEnum.VERY_HIGH || speed === ScaleEnum.MEDIUM) {
             speed = undefined;
         }
@@ -446,19 +471,19 @@ namespace MapperPage {
         currentState.speed = speed;
         currentState.frequency = frequency;
 
-        let rotation: number = (<HTMLSelectElement>document.getElementById("rotation")).selectedIndex;
+        let rotation: number | undefined = (<HTMLSelectElement>document.getElementById("rotation")).selectedIndex;
         if (Utils.isEmpty(rotation) || rotation <= RotationEnum.OFF || rotation > RotationEnum.COUNTERCLOCKWISE) {
             rotation = undefined;
         }
         currentState.rotation = rotation;
 
-        let ontop: number = (<HTMLSelectElement>document.getElementById("ontop")).selectedIndex;
+        let ontop: number | undefined = (<HTMLSelectElement>document.getElementById("ontop")).selectedIndex;
         if (Utils.isEmpty(ontop) || ontop <= Constant.ZIndex.LV0 || ontop > Constant.ZIndex.LV4) {
             ontop = undefined;
         }
         currentState.onTop = ontop;
 
-        let block: boolean = (<HTMLInputElement>document.getElementById("block")).checked;
+        let block: boolean | undefined = (<HTMLInputElement>document.getElementById("block")).checked;
         if (block) {
             block = undefined;
         }
@@ -485,7 +510,6 @@ namespace MapperPage {
         (<HTMLInputElement>document.getElementById("name")).value = event.name;
         (<HTMLInputElement>document.getElementById("eventi")).valueAsNumber = event.i;
         (<HTMLInputElement>document.getElementById("eventj")).valueAsNumber = event.j;
-        let scriptClasses: Map<string, string> = Resource.listScriptClasses();
         let selectScript = (<HTMLSelectElement>document.getElementById("script"));
         Utils.resetSelect(selectScript);
         let classes: Map<string, string> = Resource.listScriptClasses();
@@ -549,6 +573,10 @@ namespace MapperPage {
     }
 
     export function addMemory() {
+        if(currentEvent === undefined) {
+            console.error("Current event undefined, cannot add to its memory");
+            return;
+        }
         let key = (<HTMLInputElement>document.getElementById("key")).value
         let value = (<HTMLInputElement>document.getElementById("val")).value
         if (!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
@@ -565,7 +593,7 @@ namespace MapperPage {
         (<HTMLInputElement>document.getElementById("val")).value = "";
         let table: HTMLTableElement = (<HTMLTableElement>document.getElementById("memory"));
         while (table.hasChildNodes()) {
-            table.removeChild(table.lastChild);
+            table.removeChild(table.lastChild!);
         }
     }
 
@@ -621,7 +649,12 @@ namespace MapperPage {
                     break;
                 }
             }
-            EventManager.deleteMem(currentEvent, key);
+            if(currentEvent === undefined) {
+                console.error("Current event undefined, cannot delete memory");
+                return;
+            } else {
+                EventManager.deleteMem(currentEvent, key);
+            }
         };
         button.innerText = "-";
         td.appendChild(button);

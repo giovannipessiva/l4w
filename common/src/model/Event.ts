@@ -1,7 +1,8 @@
-/// <reference path="Commons.ts" />
+import { ICell, IPoint, DirectionEnum } from "./Commons"
+import { ICharacter } from "./Character"
 
 // Event core model (only persistent data)
-interface IEventData extends ICell {
+export interface IEventData extends ICell {
     id: number; // ID of this event (unique in its map)
     name: string; // String assigned to name field in editor
     states: IEventState[]; // Array of states of this Event
@@ -10,7 +11,7 @@ interface IEventData extends ICell {
 }
 
 // Event extended model (include transient data)
-interface IEvent extends IEventData  {
+export interface IEvent extends IEventData  {
     currentState: number; // Index of current valid state
     position?: IPoint; // Exact coordinate in pixels (derived from event.i, event.j)
     movementStartTime?: number; // ms since last step started
@@ -20,7 +21,7 @@ interface IEvent extends IEventData  {
     path?: DirectionEnum[]; // Path computed for current target
 }
 
-interface IEventState extends ICharacter {
+export interface IEventState extends ICharacter {
     condition: string; // Name of function that returns true if this state can be active (see Conditions.ts)
     trigger: number; // Type of interaction which will start the action
     action: string; // Method of the script that will be invoked by the trigger

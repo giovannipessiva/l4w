@@ -23,11 +23,11 @@ var base_path = "./";
 
 window.onload = function(){
 	requirejs(["lib/jquery3.min.js"],function($){
-	    requirejs(["lib/jquery-ui.min.js","js/l4w-client"],function(l4w){
+	    requirejs(["lib/jquery-ui.min.js","js/l4w-tester.min"],function(l4w){
 	        finishedLoading();
 	    },function(err){
 	        // If full version version (better for test) is unavailable, use the minified
-	        requirejs(["js/l4w-client.min"],function(l4w){
+	        requirejs(["js/l4w-tester"],function(l4w){
 	            finishedLoading();
 	        });
 	    });
@@ -100,7 +100,7 @@ function pathfinding(){
 	let tableWidth = parseInt(document.getElementById("width").value);
 	let tableHeight = parseInt(document.getElementById("height").value);
 	
-	let path = Tester.testPathfinding(tableWidth,tableHeight,eventX,eventY,targetX,targetY,blocks);
+	let path = L4W_tester.Tester.testPathfinding(tableWidth,tableHeight,eventX,eventY,targetX,targetY,blocks);
 
 	// Disable all input fields
 	document.getElementById("eventX").disabled=true;

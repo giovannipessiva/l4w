@@ -1,14 +1,22 @@
-/// <reference path="../../core/util/Utils.ts" />
-/// <reference path="../../../../common/src/model/Tileset.ts" />
+import { Utils } from "../../core/util/Utils"
+import { Resource } from "../../core/util/Resource"
+import { Input } from "../../core/util/Input"
+import { emptyFz, IBooleanCallback, IEmptyCallback } from "../../core/util/Commons"
+import { TilesetterPage } from "./TilesetterPage"
+import { TilesetterScene } from "./TilesetterScene"
+import { Constant } from "../../core/util/Constant"
+import { StaticGrid } from "../StaticGrid"
+import { GridTypeEnum } from "../../core/AbstractGrid"
+import { ITilesetData, ITileset } from "../../../../common/src/model/Tileset"
 
-namespace Tilesetter {
+export namespace Tilesetter {
 
     let tilesetterScene: TilesetterScene;
 
     /**
      * This funcion will be called only at the first page load
      */
-    export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode, callback) {
+    export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode, callback: IEmptyCallback) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
             new TilesetterScene(grid, canvas.height, canvas.width, editMode, function(scene: TilesetterScene) {
                 initInput(canvas, grid);
@@ -24,24 +32,24 @@ namespace Tilesetter {
         tilesetterScene.changeTileEditMode(editMode);
     }
 
-    export function loadTile(tile: string, callback) {
+    export function loadTile(tile: string, callback: (result: boolean, w: number, h: number)=> void) {
         // Clear the canvas
         let canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
         let contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
         let canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage: HTMLImageElement) {
+        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage) {
             // Resize the canvas
             let image: HTMLImageElement = new Image();
-            image.src = tileImage.src;
+            image.src = (<HTMLImageElement> tileImage).src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilesetter.height = image.naturalHeight;
             canvasTilesetter.width = image.naturalWidth;
             // Paint the img in the canvas
-            contextTile.drawImage(tileImage, 0, 0);
+            contextTile.drawImage(<HTMLImageElement> tileImage, 0, 0);
             // Load tileset data
             loadTilesetData(function(result) {
                 tilesetterScene.map.tileset.imageData = image;
@@ -113,8 +121,11 @@ namespace Tilesetter {
         );
     };
 
-    export function saveTilesetData(callback: IBooleanCallback = null) {
-        let blocks: number[] = tilesetterScene.map.blocks;
+    export function saveTilesetData(callback: IBooleanCallback) {
+        let blocks: number[] | undefined = tilesetterScene.map.blocks;
+        if(blocks === undefined) {
+            blocks = [];
+        }
         tilesetterScene.map.tileset.blocks = blocks;
         $.ajax({
             url: "/edit/tileset/" + tilesetterScene.map.tileset.image,
@@ -131,7 +142,7 @@ namespace Tilesetter {
         });
     }
 
-    export function loadTilesetData(callback: IBooleanCallback = null) {
+    export function loadTilesetData(callback: IBooleanCallback) {
         let tileImage = $("#tiles").val();
         $.ajax({
             url: "/data/tileset/" + tileImage,
@@ -139,7 +150,7 @@ namespace Tilesetter {
             contentType: Constant.MimeType.JSON,
             success: function(result: ITilesetData) {
                 let image = tilesetterScene.map.tileset.imageData;  
-                tilesetterScene.map.tileset = result;
+                tilesetterScene.map.tileset = <ITileset> result;
                 tilesetterScene.map.tileset.imageData = image;
                 if (!Utils.isEmpty(tilesetterScene)) {
                     if (tilesetterScene.map.tileset.blocks === undefined) {

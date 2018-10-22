@@ -1,9 +1,10 @@
-/// <reference path="AbstractStaticScene.ts" />
+import { AbstractStaticScene } from "./AbstractStaticScene"
+import { StaticGrid } from "./StaticGrid"
 
 /**
  * Abstract scene for managing Tileset logics
  */
-abstract class AbstractTileScene extends AbstractStaticScene {
+export abstract class AbstractTileScene extends AbstractStaticScene {
 
     private width: number;
     private height: number;

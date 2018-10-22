@@ -1,14 +1,15 @@
-/// <reference path="../util/Commons.ts" />
-/// <reference path="../util/Utils.ts" />
-/// <reference path="../../../../common/src/model/Character.ts" />
-/// <reference path="../manager/MapManager.ts" />
+import { Constant } from "../util/Constant"
+import { Utils } from "../util/Utils"
+import { ICharacter } from "../../../../common/src/model/Character"
+import { ScaleEnum } from "../../../../common/src/model/Commons"
+import { AbstractGrid } from "../AbstractGrid"
 
 /**
  * Module to handle a Character
  */
-namespace CharacterManager {
+export namespace CharacterManager {
     
-    export function setFrequency(c: ICharacter, frequency: number) {
+    export function setFrequency(c: ICharacter, frequency?: number) {
         switch (parseInt(frequency + "")) {
             case ScaleEnum.VERY_LOW:
                 c.frequencyVal = Constant.VERY_LOW_FREQUENCY;
@@ -35,7 +36,7 @@ namespace CharacterManager {
         }
     }
 
-    export function setSpeed(c: ICharacter, speed: number) {
+    export function setSpeed(c: ICharacter, speed?: number) {
         switch (parseInt(speed + "")) {
             case ScaleEnum.VERY_LOW:
                 c.mSpeed = Constant.VERY_LOW_MSPEED;
@@ -62,7 +63,7 @@ namespace CharacterManager {
         }
     }
     
-    export function isVisible(c: ICharacter, onTop: boolean) {
+    export function isVisible(c: ICharacter | undefined, onTop: boolean) {
         if(c === undefined) {
             return false;    
         }
@@ -89,7 +90,7 @@ namespace CharacterManager {
         return c;
     };
      
-    export function initTransientData(grid: AbstractGrid, c: ICharacter): ICharacter {
+    export function initTransientData(grid: AbstractGrid, c?: ICharacter): ICharacter {
         if(c === undefined) {
             c = getNewCharacter();
         }

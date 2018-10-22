@@ -1,12 +1,13 @@
-///<reference path="../../../../common/src/model/Commons.ts" />
-
+import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum } from "../../../../common/src/model/Commons"
+import { IMap } from "../../../../common/src/model/Map"
+import { Constant } from "./Constant"
 /**
  * Module for generic utility methods
  */
-namespace Utils {
+export namespace Utils {
 
     export function isEmpty(obj: any): boolean {
-        if (obj === null || typeof obj === "undefined") {
+        if (obj === null || obj === undefined || typeof obj === "undefined") {
             return true;
         } else if (typeof obj === "string") {
             return obj === "";
@@ -104,7 +105,7 @@ namespace Utils {
         return cell.i + cell.j * width;
     }
     
-    export function getDirectionTarget(start: ICell, direction: DirectionEnum) {
+    export function getDirectionTarget(start: ICell, direction?: DirectionEnum) {
         let target: ICell = {
             i: start.i,
             j: start.j
@@ -209,14 +210,19 @@ namespace Utils {
         return getOpposedDirections(d1) === d2;
     }
 
-    export function getOpposedDirections(direction: DirectionEnum): DirectionEnum {
+    export function getOpposedDirections(direction?: DirectionEnum): DirectionEnum {
         switch (direction) {
-            case DirectionEnum.UP: return DirectionEnum.DOWN;
-            case DirectionEnum.DOWN: return DirectionEnum.UP;
-            case DirectionEnum.LEFT: return DirectionEnum.RIGHT;
-            case DirectionEnum.RIGHT: return DirectionEnum.LEFT;
+            case DirectionEnum.UP:
+                return DirectionEnum.DOWN;
+            case DirectionEnum.DOWN:
+                return DirectionEnum.UP;
+            case DirectionEnum.LEFT:
+                return DirectionEnum.RIGHT;
+            case DirectionEnum.RIGHT:
+                return DirectionEnum.LEFT;
+            default:
+                return DirectionEnum.NONE;
         }
-        return DirectionEnum.NONE;
     }
 
     /** Return the direction from start to target */
@@ -281,9 +287,9 @@ namespace Utils {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    export function normalizeZIndex(zindex: number): number {
-        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex) && zindex >= Constant.ZIndex.LV0 && zindex <= Constant.ZIndex.LV4) {
-            return zindex;
+    export function normalizeZIndex(zindex: number | undefined): number {
+        if(!Utils.isEmpty(zindex) && !Number.isNaN(zindex!) && zindex! >= Constant.ZIndex.LV0 && zindex! <= Constant.ZIndex.LV4) {
+            return zindex!;
         }
         return Constant.ZIndex.LV0;
     }

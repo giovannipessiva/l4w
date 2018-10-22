@@ -1,10 +1,20 @@
-/// <reference path="../AbstractStaticScene.ts" />
-/// <reference path="MapperPage.ts" />
+import { AbstractStaticScene } from "../AbstractStaticScene"
+import { StaticGrid } from "../StaticGrid"
+import { Constant } from "../../core/util/Constant"
+import { IRectangle, ICell } from "../../../../common/src/model/Commons"
+import { IEvent } from "../../../../common/src/model/Event"
+import { IMap } from "../../../../common/src/model/Map"
+import { Utils } from "../../core/util/Utils"
+import { EventManager } from "../../core/manager/EventManager"
+import { MapManager } from "../../core/manager/MapManager"
+import { MapperPage } from "./MapperPage"
+import { TilePickerScene } from "./TilePickerScene"
+import { AbstractScene } from "../../core/AbstractScene"
 
 /**
  * Scene implementation for managing Mapper logics
  */
-class MapperScene extends AbstractStaticScene {
+export class MapperScene extends AbstractStaticScene {
 
     public static LOWER_LEVEL_OPACITY: number = 0.8;
     public static UPPER_LEVEL_OPACITY: number = 0.4;
@@ -22,9 +32,9 @@ class MapperScene extends AbstractStaticScene {
     }
 
     protected renderPointer() {
-        if (this.pointer.i != null && this.pointer.j != null) {
-            let selectionArea: IRectangle = this.getSelectionArea();
-            if (Utils.isEmpty(selectionArea)) {
+        if (this.pointer !== undefined) {
+            let selectionArea: IRectangle | undefined = this.getSelectionArea();
+            if (selectionArea === undefined) {
                 super.renderPointer();
             } else {
                 // Pointer with selected tile cells
@@ -47,14 +57,17 @@ class MapperScene extends AbstractStaticScene {
 
     apply(i_apply: number, j_apply: number): boolean {
         let changed: boolean = false;
-        let pickerArea: IRectangle = this.tilePicker.getSelectionArea();
+        let pickerArea: IRectangle | undefined = this.tilePicker.getSelectionArea();
+        if(pickerArea === undefined) {
+
+        }
         let changedCell: number = i_apply + j_apply * this.map.width;
         if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
             this.map.layers[this.activeLayer].data = [];
         }
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
-                if (Utils.isEmpty(pickerArea)) {
+                if (pickerArea === undefined) {
                     return false;
                 }
                 let tileColumns: number = Math.floor(this.map.tileset.imagewidth / this.grid.cellW); //TODO questa non cambia mai, ottimizzabile
@@ -64,16 +77,16 @@ class MapperScene extends AbstractStaticScene {
                         if (i_apply + i < this.map.width) {
                             let appliedTileOffset: number = i + j * tileColumns;
                             let changedCellOffset: number = i + j * this.map.width;
-                            if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
+                            if (this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
                                 changed = true;
-                                this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+                                this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
                             }
                         }
                     }
                 }
                 break;
             case Constant.EditMode.ERASE:
-                if (Utils.isEmpty(pickerArea)) {
+                if (pickerArea === undefined) {
                     pickerArea = {
                         x: 0, y: 0, w: 0, h: 0
                     };
@@ -82,9 +95,9 @@ class MapperScene extends AbstractStaticScene {
                     for (let i = 0; i <= pickerArea.w; i++) {
                         if (i_apply + i < this.map.width) {
                             let changedCellOffset: number = i + j * this.map.width;
-                            if (this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] !== null) {
+                            if (this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] !== undefined) {
                                 changed = true;
-                                this.map.layers[this.activeLayer].data[changedCell + changedCellOffset] = null;
+                                this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] = undefined;
                             }
                         }
                     }
@@ -111,11 +124,11 @@ class MapperScene extends AbstractStaticScene {
         if(!confirmed) {
             return false;
         }
-        let event: IEvent;
+        let event: IEvent | undefined;
         if(!Utils.isEmpty(this.map.events)) {
             for(let e of this.map.events) {
                 if(e.i === i && e.j === j) {
-                    event = e;
+                    event = <IEvent> e;
                     break;    
                 }
             }
@@ -129,20 +142,20 @@ class MapperScene extends AbstractStaticScene {
         return true;
     }
 
-    getSelectionArea(): IRectangle {
+    getSelectionArea(): IRectangle | undefined {
         if (!Utils.isEmpty(this.tilePicker)) {
             return this.tilePicker.getSelectionArea();
         } else {
-            return null;
+            return undefined;
         }
     }
 
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
+    protected renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean) {
         // Render events
         if (!Utils.isEmpty(this.map.events)) {
             for (let event of this.map.events) {
                 try {
-                    EventManager.render(this.grid, event, this.context, false);
+                    EventManager.render(this.grid, <IEvent> event, this.context, false);
                 } catch(e) {
                     console.error(e);    
                 }
@@ -186,7 +199,7 @@ class MapperScene extends AbstractStaticScene {
         this.activeLayer = activeLayer;
     }
 
-    setSelectedEventCell(cell: ICell) {
+    setSelectedEventCell(cell?: ICell) {
         this.renderingConfiguration.selectEventCell = cell;    
     }
     

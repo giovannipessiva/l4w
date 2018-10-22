@@ -1,9 +1,9 @@
-/// <reference path="../core/AbstractGrid.ts" />
+import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
 
 /**
  * Module for managing canvas autosizing
  */
-class DynamicGrid extends AbstractGrid {
+export class DynamicGrid extends AbstractGrid {
 
     protected canvasRatio: number;
     protected scaleStepX: number;
@@ -45,10 +45,10 @@ class DynamicGrid extends AbstractGrid {
     }
 
     private width() {
-        return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 0;
+        return window.innerWidth || (document.documentElement !== null? document.documentElement.clientWidth : document.body.clientWidth || 0);
     }
 
     private height() {
-        return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+        return window.innerHeight || (document.documentElement !== null? document.documentElement.clientHeight : document.body.clientHeight || 0);
     }
 }

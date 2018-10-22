@@ -1,8 +1,16 @@
-/// <reference path="../../core/util/Utils.ts" />
+import { Utils } from "../../core/util/Utils"
+import { Resource } from "../../core/util/Resource"
+import { Input } from "../../core/util/Input"
+import { emptyFz, IBooleanCallback } from "../../core/util/Commons"
+import { Constant } from "../../core/util/Constant"
+import { MapperScene } from "./MapperScene"
+import { TilePickerScene } from "./TilePickerScene"
+import { StaticGrid } from "../StaticGrid"
+import { GridTypeEnum } from "../../core/AbstractGrid"
 
-namespace TilePicker {
+export namespace TilePicker {
 
-    var tilePicker: TilePickerScene;
+    let tilePicker: TilePickerScene;
 
     export function start(canvas: HTMLCanvasElement, callback: (tilePicker: TilePickerScene) => void) {
         if(tilePicker !== undefined) {
@@ -26,17 +34,17 @@ namespace TilePicker {
         var canvasTilePicker = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage: HTMLImageElement) {
+        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage) {
             // Resize the canvas
             var image = new Image();
-            image.src = tileImage.src;
+            image.src = (<HTMLImageElement> tileImage).src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilePicker.height = image.naturalHeight;
             canvasTilePicker.width = image.naturalWidth;
             // Paint the img in the canvas
-            contextTile.drawImage(tileImage, 0, 0);
+            contextTile.drawImage(<HTMLImageElement> tileImage, 0, 0);
             // Manage the tile selector canvas
             TilePicker.start(canvasTilePicker, calback);
         });
@@ -86,7 +94,7 @@ namespace TilePicker {
         );
     };
 
-    export function saveData(callback: IBooleanCallback = null) {
+    export function saveData(callback: IBooleanCallback) {
         var updatedData = $("#mapPanel").jstree(true).get_json("#");
         $.ajax({
             url: "edit/maps",
@@ -96,7 +104,7 @@ namespace TilePicker {
             success: function(result) {
                 console.log("Maps updated");
                 if(callback !== null) {
-                    //TODO come capire se il salvataggio è fallito?
+                    //TODO come capire se il salvataggio ï¿½ fallito?
                     callback(true);
                 }
             }

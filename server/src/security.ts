@@ -1,4 +1,4 @@
-import constants from "./constants"
+import { HttpStatus } from "../../common/src/Constants"
 import * as utils from "./utils"
 import { models } from "./models/index"
 
@@ -30,9 +30,9 @@ export namespace security {
             request.on("data", function(data: any) {
                 queryData += data;
                 if(queryData.length > 1e6) {
-                    logSecurityEvent(constants.HttpStatus.REQUEST_TOO_LONG,queryData);
+                    logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData);
                     queryData = "";
-                    response.status(constants.HttpStatus.REQUEST_TOO_LONG).send("");
+                    response.status(HttpStatus.REQUEST_TOO_LONG).send("");
                     request.connection.destroy();  
                 }
             });

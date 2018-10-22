@@ -19,18 +19,18 @@
 var base_path = "./";
 
 requirejs(["lib/jquery3.min.js"],function($){
-    requirejs(["lib/jquery-ui.min.js","js/l4w-client.min"],function(l4w){
+    requirejs(["lib/jquery-ui.min.js","js/l4w-game.min"],function(l4w){
         finishedLoading();
     },function(err){
         // If min version is unavailable, use the full version
-        requirejs(["js/l4w-client"],function(l4w){
+        requirejs(["js/l4w-game"],function(l4w){
             finishedLoading();
         });
     });
 });
 
 function finishedLoading(){
-    Game.start(canvas);
+    L4W_game.Game.start(canvas);
 };
 
 function signOut() {
@@ -57,7 +57,8 @@ ga('send', 'pageview');
 		<div style="padding:0.5em; width:20em; margin-left:auto; margin-right:0px;">
 			Bentornato!
 			<button onclick="signOut();">Sign out</button>
-			<button onclick="Game.save()">Save</button><button onclick="Game.load()">Load</button>
+			<button onclick="L4W_game.Game.save()">Save</button>
+			<button onclick="L4W_game.Game.load()">Load</button>
 			<!-- The button is required for initialization purposes -->
 			<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
 		</div>

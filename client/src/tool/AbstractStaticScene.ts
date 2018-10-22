@@ -1,9 +1,14 @@
-/// <reference path="../core/AbstractScene.ts" />
+import { AbstractScene } from "../core/AbstractScene"
+import { StaticGrid } from "./StaticGrid"
+import { IRange } from "../core/util/Commons"
+import { Constant } from "../core/util/Constant"
+import { IMap } from "../../../common/src/model/Map"
+import { IRectangle } from "../../../common/src/model/Commons"
 
 /**
  * Abstract scene class for managing static rendering
  */
-abstract class AbstractStaticScene extends AbstractScene {
+export abstract class AbstractStaticScene extends AbstractScene {
 
     constructor(grid: StaticGrid) {
         super(grid);
@@ -36,7 +41,7 @@ abstract class AbstractStaticScene extends AbstractScene {
     }
 
     protected renderPointer() {
-        if (this.pointer.i != null && this.pointer.j != null) {
+        if (this.pointer !== undefined) {
             this.context.save();
             this.context.globalAlpha = 0.4;
             this.context.fillStyle = Constant.Color.YELLOW;
@@ -49,18 +54,18 @@ abstract class AbstractStaticScene extends AbstractScene {
         }
     }
     
-    select(i: number, j: number) {
-        if (i !== null && j !== null) {
+    select(i?: number, j?: number) {
+        if (i !== undefined && j !== undefined) {
             this.renderingConfiguration.selectCellStart = {
                 i: i,
                 j: j
             };
-            this.renderingConfiguration.selectCellEnd = null;
+            this.renderingConfiguration.selectCellEnd = undefined;
         }
     }
 
-    selectEnd(i: number, j: number) {
-        if (i != null && j != null) {
+    selectEnd(i?: number, j?: number) {
+        if (i !== undefined && j !== undefined) {
             this.renderingConfiguration.selectCellEnd = {
                 i: i,
                 j: j
@@ -69,8 +74,8 @@ abstract class AbstractStaticScene extends AbstractScene {
     }
 
     cleanSelection() {
-        this.renderingConfiguration.selectCellStart = null;
-        this.renderingConfiguration.selectCellEnd = null;
+        this.renderingConfiguration.selectCellStart = undefined;
+        this.renderingConfiguration.selectCellEnd = undefined;
     }
 
     /**
@@ -78,16 +83,16 @@ abstract class AbstractStaticScene extends AbstractScene {
      * Both the top-left point (x,y) and the bottom-right point
      * (x+w, y+h) are included in the area
      */
-    public getSelectionArea(): IRectangle {
-        if (Utils.isEmpty(this.renderingConfiguration.selectCellStart)) {
-            return null;
+    public getSelectionArea(): IRectangle | undefined {
+        if (this.renderingConfiguration.selectCellStart === undefined) {
+            return undefined;
         }
         let x1 = this.renderingConfiguration.selectCellStart.i;
         let y1 = this.renderingConfiguration.selectCellStart.j;
    
         let x2;
         let y2;
-        if (!Utils.isEmpty(this.renderingConfiguration.selectCellEnd)) {
+        if (this.renderingConfiguration.selectCellEnd !== undefined) {
             x2 = this.renderingConfiguration.selectCellEnd.i;
             y2 = this.renderingConfiguration.selectCellEnd.j;
             if (x1 > x2) {
@@ -113,6 +118,6 @@ abstract class AbstractStaticScene extends AbstractScene {
         };
     }
        
-    protected renderDynamicElements(minRow, maxRow, minColumn, maxColumn, i, j, onTop) {
+    protected renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean) {
     }
 }

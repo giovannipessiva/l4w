@@ -1,4 +1,5 @@
-/// <reference path="../AbstractGrid.ts" />
+import { AbstractGrid } from "../AbstractGrid"
+import { IExtendedCell, IPoint } from "../../../../common/src/model/Commons"
 
 /**
  * Module for input handling:
@@ -8,7 +9,7 @@
  * - visibility change
  * - screen resize and rotation change
  */
-namespace Input {
+export namespace Input {
 
     export class Keys {
         static UP = "38";
@@ -42,7 +43,7 @@ namespace Input {
     }
 
     export interface IPositionCallback {
-        (i: number, j: number, mouseButton?: number): void;
+        (i: number | undefined, j: number | undefined, mouseButton?: number): void;
     };
     export interface IExactPositionCallback {
         (i: number, j: number, x: number, y: number, mouseButton?: number): void;
@@ -85,83 +86,82 @@ namespace Input {
                 flagPause = true;
             }
         };
-        
         // Mouse events 
         let flagMouseDown: boolean = false;
-        canvas.addEventListener("click", function(e) {
-            let precisePosition: IExtendedCell = mapEvent(e);
+        canvas.addEventListener("click", function(e: Event) {
+            let precisePosition: IExtendedCell = mapEvent(<PointerEvent> e);
             actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
         });
-        canvas.addEventListener("mousemove", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("mousemove", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             if (flagMouseDown) {
-                ongoingActionCallback(position.i, position.j, e.buttons);
+                ongoingActionCallback(position.i, position.j, (<PointerEvent> e).buttons);
             } else {
                 hoverCallback(position.i, position.j);
             }
         });
-        canvas.addEventListener("mousedown", function(e: PointerEvent) {
+        canvas.addEventListener("mousedown", function(e: Event) {
             flagMouseDown = true;
-            let precisePosition = mapEvent(e);
-            startActionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y, e.buttons);
+            let precisePosition = mapEvent(<PointerEvent> e);
+            startActionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y, (<PointerEvent> e).buttons);
         });
-        canvas.addEventListener("mouseup", function(e: PointerEvent) {
+        canvas.addEventListener("mouseup", function(e: Event) {
             flagMouseDown = false;
-            let position = mapEvent(e);
-            endActionCallback(position.i, position.j, e.buttons);
+            let position = mapEvent(<PointerEvent> e);
+            endActionCallback(position.i, position.j, (<PointerEvent> e).buttons);
         });
-        canvas.addEventListener("mouseout", function(e: PointerEvent) {
+        canvas.addEventListener("mouseout", function(e: Event) {
             if (flagMouseDown) {
-                ongoingActionCallback(undefined, undefined, e.buttons);
+                ongoingActionCallback(undefined, undefined, (<PointerEvent> e).buttons);
             } else {
                 hoverCallback(undefined, undefined);
             }
         });
-        canvas.addEventListener("contextmenu", function(e) {
+        canvas.addEventListener("contextmenu", function(e: Event) {
             e.preventDefault();
-            let position = mapEvent(e);
+            let position = mapEvent(<PointerEvent> e);
             rightClickCallback(position.i, position.j);
         });
-        canvas.addEventListener("dblclick", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("dblclick", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             doubleClickCallback(position.i, position.j);
         });
-        canvas.addEventListener("wheel", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("wheel", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             wheelCallback(position.i, position.j);
         });
         
         // Touch events
-        canvas.addEventListener("touchstart", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("touchstart", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             startActionCallback(position.i, position.j, position.x, position.y);
         });
-        canvas.addEventListener("touchend", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("touchend", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
 
         });
-        canvas.addEventListener("touchcancel", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("touchcancel", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
         });
-        canvas.addEventListener("touchmove", function(e) {
-            let position = mapEvent(e);
+        canvas.addEventListener("touchmove", function(e: Event) {
+            let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(position.i, position.j);
         });
         
         // Keyboard events
-        document.addEventListener("keydown", function(e) {
-            let callback = inputCallbacks[String(e.keyCode)];
+        document.addEventListener("keydown", function(e: Event) {
+            let callback = inputCallbacks[String((<KeyboardEvent> e).keyCode)];
             if (callback !== undefined) {
                 callback(e);
             }
-            lastKey = e.keyCode;
+            lastKey = (<KeyboardEvent> e).keyCode;
         });
-        document.addEventListener("keyup", function(e) {
-            if (e.keyCode === lastKey) {
+        document.addEventListener("keyup", function(e: Event) {
+            if ((<KeyboardEvent> e).keyCode === lastKey) {
                 resetCallback();
             }
         });
@@ -178,14 +178,14 @@ namespace Input {
         });
         
         // Screen change events
-        window.addEventListener("resize", function(event) {
+        window.addEventListener("resize", function(e) {
             resizeCallback();
         });
         document.addEventListener("orientationchange", function() {
             resizeCallback();
         });
 
-        function mapEvent(e): IExtendedCell {
+        function mapEvent(e: PointerEvent): IExtendedCell {
             let position: IPoint = {
                 x: e.clientX,
                 y: e.clientY
