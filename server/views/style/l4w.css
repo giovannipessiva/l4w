@@ -23,11 +23,12 @@ p {
 	right: 1em;
 	bottom: 1em;
 	text-align: left;
+	text-shadow: 0px 0px 0.1em lightgrey;
 	font-family: Oldenburg;
-	background-color: hsl(271, 76%, 53%, 80%);
+	background-color: rgba(120, 110, 255, 0.9);
 	resize: both;
 	overflow: auto;
-	border: 16px solid hsl(271, 76%, 53%, 80%);
+	border: 16px solid rgba(255, 255, 255, 0.9);
 	border-image: url("/assets/skin/ld3-webskin1.png") 16 16 16 16 repeat;
 }
 
@@ -56,6 +57,7 @@ p {
 
 .l4wDialog {
 	color: black;
+	font-size: 120%;
 }
 
 .dialogEdgeArea {
@@ -67,6 +69,7 @@ p {
 	padding-right: 0.5em;
 	font-style: italic;
 	cursor: pointer;
+	font-size: 120%;
 }
 
 .l4wDialogEdge:before {
@@ -79,7 +82,7 @@ p {
 	border: 1px solid black;
 	border-radius: 0.5em;
 	*/
-	text-shadow: 1px 1px lightgray;
+	text-shadow: 0px 0px 0.5em yellow;
 }
 
 .l4wCanvas:active {
