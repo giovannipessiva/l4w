@@ -7,10 +7,13 @@ import { Constant } from "../../core/util/Constant"
 import { Utils } from "../../core/util/Utils"
 import { IEvent, IEventState } from "../../../../common/src/model/Event"
 import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../../common/src/model/Commons"
-import { Mapper } from "./Mapper"
 import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
 import { EventManager } from "../../core/manager/EventManager"
+import { Mapper } from "./Mapper"
+
+export { Constant } from "../../core/util/Constant"
+export { Mapper } from "./Mapper";
 
 declare var base_path: string;
 

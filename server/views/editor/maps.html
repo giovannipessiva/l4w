@@ -117,17 +117,17 @@ ga('send', 'pageview');
 		-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
 		<table style="width:100%">
 			<tr>
-				<td><button id="mode0" type="button" onclick="Mapper.setMode(Constant.EditMode.APPLY);">Apply</button></td>
-				<td><button id="mode1" type="button" onclick="Mapper.setMode(Constant.EditMode.ERASE);">Erase</button></td>
+				<td><button id="mode0" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.APPLY);">Apply</button></td>
+				<td><button id="mode1" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.ERASE);">Erase</button></td>
 				<td></td>
-				<td><button id="mode2" type="button" onclick="Mapper.setMode(Constant.EditMode.EVENTS);">Events</button></td>
+				<td><button id="mode2" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.EVENTS);">Events</button></td>
 			</tr>
 		</table>
 		<table id="layersPanel" style="width:100%">
 			<tr>
-				<td><button id="layer0" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.LOW);">Low</button></td>
-				<td><button id="layer1" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.MID);">Mid</button></td>
-				<td><button id="layer2" type="button" onclick="Mapper.setActiveLayer(Constant.MapLayer.TOP);">Top</button></td>
+				<td><button id="layer0" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.LOW);">Low</button></td>
+				<td><button id="layer1" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.MID);">Mid</button></td>
+				<td><button id="layer2" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.TOP);">Top</button></td>
 			</tr>
 		</table>
 	</div>
