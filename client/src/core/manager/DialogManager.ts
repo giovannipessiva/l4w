@@ -1,13 +1,12 @@
-import {  } from "../util/Constant"
-import { Utils } from "../util/Utils"
-import { Resource } from "../util/Resource"
-import { Condition } from "../events/Conditions"
-import { DynamicScene } from "../../game/DynamicScene"
-import { IEmptyCallback, IBooleanCallback } from "../util/Commons"
-import {  } from "../../../../common/src/model/Map"
-import { IGenericMessage, IDialogNode, IDialogEdge, DialogInputTypeEnum, IGenericMessageValue } from "../../../../common/src/model/Dialog"
-import { LanguageEnum } from "../../../../common/src/model/Commons"
-import { IEvent } from "../../../../common/src/model/Event"
+import { LanguageEnum } from "../../../../common/src/model/Commons";
+import { DialogInputTypeEnum, IDialogEdge, IDialogNode, IGenericMessage, IGenericMessageValue } from "../../../../common/src/model/Dialog";
+import { IEvent } from "../../../../common/src/model/Event";
+import { DynamicScene } from "../../game/DynamicScene";
+import { Condition } from "../events/Conditions";
+import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
+import { Resource } from "../util/Resource";
+import { Utils } from "../util/Utils";
+import { Input } from "../util/Input";
 
 /**
  * Helper class for managing dialogs and alfanumeric input/output
@@ -186,15 +185,30 @@ export namespace DialogManager {
             }
         }
 
-        function selectEdge(edge: IDialogEdge) {
-            let input: HTMLElement | null = document.getElementById(DIALOG_USER_INPUT_ID);
-            if(input !== null) {
-                launchAction(edge, scene, hero, (<HTMLInputElement> input).value);                
-            }
-            if(edge.node !== undefined) {
+        /**
+         * Follow a dialog edge
+         */
+        let selectEdge = function (edge: IDialogEdge) {
+            if(edge.action !== undefined) {
+                // Before following the edge to next node,
+                // execute its action
+                let parameter: string | undefined;
+                let input: HTMLElement | null = document.getElementById(DIALOG_USER_INPUT_ID);
+                if(input !== null) {
+                    // Read user input, sanitize it and use it
+                    parameter = (<HTMLInputElement> input).value;
+                    parameter = parameter.trim();
+                    parameter = Input.escapeText(parameter);
+                }
+                launchAction(edge, scene, hero, parameter);
+            } else if(edge.node !== undefined) {
+                // Follow the edge to next node
                 showDialog(scene, hero, name, edge.node, skin, callback, faceset);
+            } else {
+                // Nothing to do here
+                console.log("Dialog finished."); //TODO remove
             }
-        }
+        };
 
         if(activeEdges.length > 0) {
             if(activeEdges.length === 1 && activeEdges[0].message === undefined) {
@@ -217,15 +231,14 @@ export namespace DialogManager {
                             console.error("Unexpected DialogInputType for edge: " + activeEdges[0].id);
                     }
                     input.id = DIALOG_USER_INPUT_ID;
-                    dialogEdgeArea.appendChild(input);
-                            
+                    dialogEdgeArea.appendChild(input);   
                 }
             } else {
                 //Display active edges messages
                 for(let edge of activeEdges) {
                     let div: HTMLDivElement = new HTMLDivElement();
                     if(edge.message !== undefined) {
-                        div.innerText = edge.message!; 
+                        div.innerText = edge.message; 
                     }
                     div.onclick = function() {
                         selectEdge(edge);
@@ -286,7 +299,10 @@ export namespace DialogManager {
         return message;
     }
 
-    export function launchAction(edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameters?: any): boolean {
+    /**
+     * Execute an action associated to an edge 
+     */
+    export function launchAction(edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): boolean {
         let scriptClassName = edge.script;
         if(scriptClassName === undefined) {
             return false;
@@ -305,14 +321,10 @@ export namespace DialogManager {
             return false;
         }
         try {
-            if (Utils.isEmpty(parameters)) {
-                return scriptClass[action]();
-            } else {
-                return scriptClass[action](parameters);
-            }
-         } catch(e) {
+            return scriptClass[action](parameter);
+        } catch(e) {
             console.error(e);
-         }
+        }
         return false;
     };
 };

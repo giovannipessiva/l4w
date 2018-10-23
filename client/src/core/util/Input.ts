@@ -1,5 +1,5 @@
-import { AbstractGrid } from "../AbstractGrid"
-import { IExtendedCell, IPoint } from "../../../../common/src/model/Commons"
+import { IExtendedCell, IPoint } from "../../../../common/src/model/Commons";
+import { AbstractGrid } from "../AbstractGrid";
 
 /**
  * Module for input handling:
@@ -194,4 +194,16 @@ export namespace Input {
         }
 
     };
+
+    /**
+     * Escape HTML special chars to avoid script injection
+     */
+    export function escapeText(unsafe: string): string {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 }
