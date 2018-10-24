@@ -14,8 +14,19 @@ p {
 	cursor: url("/assets/pointer/sword-off.png"), pointer;
 }
 
+.visibleFadeIn {
+	visibility: visible;
+	opacity: 1;
+	transition: opacity 0.2s linear;
+}
+  
+.hiddenFadeOut {
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s 0.2s, opacity 0.2s linear;
+}
+
 .l4wDialogFrame {
-	display: none; /* TEST */ 
 	position: absolute;
 	margin: auto;
 	width: 50%;

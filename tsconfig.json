@@ -3,9 +3,9 @@
     "compilerOptions": {
         "noEmit": true,
         "types": [
-            "node",
-            "connect-session-sequelize"
+            "node"
         ],
+        "baseUrl": ".",
         "paths": {
             "*": [
                 "./node_modules/@types/*",

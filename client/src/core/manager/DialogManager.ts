@@ -24,6 +24,8 @@ export namespace DialogManager {
     const DIALOG_EDGE_AREA_ID = "dialogEdgeArea";
     const DIALOG_USER_INPUT_ID = "userInput";
 
+    const MIN_TIME_BEFORE_MANAL_CLOSE = 500;
+
     let genericMessages: Map<number, IGenericMessage>;
 
     let onDialogClose: IEmptyCallback | undefined;
@@ -32,16 +34,36 @@ export namespace DialogManager {
      * Method called when the dialog is to be closed
      */
     export function closeDialog() {
-        let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);      
+        let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID); 
         if(dlgFrame === null) {
             console.error("Element not foud: " + DIALOG_FRAME_ID);
             return;
         }
-        dlgFrame.style.display = "none";
+        dlgFrame.classList.remove("visibleFadeIn");
+        dlgFrame.classList.add("hiddenFadeOut");
         if(onDialogClose !== undefined) {
             onDialogClose();
         }
     };
+
+    /**
+     * Defines how the dialog will be closed
+     */
+    function defineClosingCondition(closingTimeout?: number): void {
+        if(closingTimeout !== undefined) {
+            // Close on timeout
+            setTimeout(function() {
+                closeDialog();
+            }, closingTimeout);
+        } else {
+            // Close on user action, not less than "MIN_TIME_BEFORE_MANAL_CLOSE" ms after showing it
+            setTimeout(function() {
+                Input.addActionCallback(function() {
+                    closeDialog();
+                })
+            }, MIN_TIME_BEFORE_MANAL_CLOSE);
+        }
+    }
 
     export function loadString(stringId: number, language: LanguageEnum, callback: (str?: string) => void): void {
         if(isNaN(stringId)) {
@@ -143,14 +165,9 @@ export namespace DialogManager {
         if(dlgFrame === null) {
             console.error("Element not foud: " + DIALOG_FRAME_ID);
             return;
-        } else {
-            // TODO il messaggio deve sparire solo quanto l'utente clicca
-            setTimeout(function() {
-                closeDialog();
-            }, 3000);
         }
-
-        dlgFrame.style.display = "block";
+    
+        dlgFrame.classList.replace("hiddenFadeOut", "visibleFadeIn");
         dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
         if(faceset !== undefined) {
             dlgFace.style.display = "block";
@@ -184,7 +201,7 @@ export namespace DialogManager {
                 }
             }
         }
-
+        
         /**
          * Follow a dialog edge
          */
@@ -199,21 +216,28 @@ export namespace DialogManager {
                     parameter = (<HTMLInputElement> input).value;
                     parameter = parameter.trim();
                     parameter = Input.escapeText(parameter);
+                } else {
+                    // No input, block this action
+                    console.warn("Input required");
+                    return;
                 }
                 launchAction(edge, scene, hero, parameter);
             } else if(edge.node !== undefined) {
                 // Follow the edge to next node
                 showDialog(scene, hero, name, edge.node, skin, callback, faceset);
             } else {
-                // Nothing to do here
-                console.log("Dialog finished."); //TODO remove
+                // Nothing to do here, close the dialog
+                defineClosingCondition(0);
             }
         };
 
-        if(activeEdges.length > 0) {
+        if(activeEdges.length === 0) {
+            // No edges to follow, the dialog will be closed
+            defineClosingCondition(dialog.closingTimeout);
+        } else {
             if(activeEdges.length === 1 && activeEdges[0].message === undefined) {
                 if(activeEdges[0].inputType === undefined) {
-                    // Nothing to show
+                    // Nothing to show, will follow edge when the dialog is closed
                     onDialogClose = function() {
                         selectEdge(activeEdges[0]);
                     }

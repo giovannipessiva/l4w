@@ -1,5 +1,6 @@
 import { IExtendedCell, IPoint } from "../../../../common/src/model/Commons";
 import { AbstractGrid } from "../AbstractGrid";
+import { IEmptyCallback } from "./Commons";
 
 /**
  * Module for input handling:
@@ -10,6 +11,8 @@ import { AbstractGrid } from "../AbstractGrid";
  * - screen resize and rotation change
  */
 export namespace Input {
+
+    let onActionCallbacks: IEmptyCallback[] = [];
 
     export class Keys {
         static UP = "38";
@@ -91,6 +94,7 @@ export namespace Input {
         canvas.addEventListener("click", function(e: Event) {
             let precisePosition: IExtendedCell = mapEvent(<PointerEvent> e);
             actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
+            executeActionCallback();
         });
         canvas.addEventListener("mousemove", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
@@ -104,6 +108,7 @@ export namespace Input {
             flagMouseDown = true;
             let precisePosition = mapEvent(<PointerEvent> e);
             startActionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y, (<PointerEvent> e).buttons);
+            executeActionCallback();
         });
         canvas.addEventListener("mouseup", function(e: Event) {
             flagMouseDown = false;
@@ -135,6 +140,7 @@ export namespace Input {
         canvas.addEventListener("touchstart", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             startActionCallback(position.i, position.j, position.x, position.y);
+            executeActionCallback();
         });
         canvas.addEventListener("touchend", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
@@ -205,5 +211,25 @@ export namespace Input {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    }
+
+    /**
+     * Register a callback which will be called
+     * only once on next user action (click, touch)
+     */
+    export function addActionCallback(callback: IEmptyCallback) {
+        onActionCallbacks.push(callback);
+    }
+
+    function executeActionCallback() {
+        for(let callback of onActionCallbacks) {
+            try {
+                callback();
+            } catch (e) {
+                console.error("Error executing onAction callback:");
+                console.error(e);
+            }
+        }
+        onActionCallbacks = [];
     }
 }

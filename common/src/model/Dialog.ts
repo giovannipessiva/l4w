@@ -9,6 +9,7 @@ export interface IDialogNodeData {
     message?: string; // String displayed for this dialog
     genericMessage?: number; // ID of the generic string displayed for this dialog
     edgeIds?: number[]; // Array of ID of edges which start from this node
+    closingTimeout?: number; // Timeout before closing the dialog (milliseconds)
 }
 
 // Dialog edge core model (only persistent data)
