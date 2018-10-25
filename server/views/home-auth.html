@@ -61,12 +61,15 @@ ga('send', 'pageview');
 			<button onclick="L4W_game.Game.load()">Load</button>
 			<!-- The button is required for initialization purposes -->
 			<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
+			<br/>
+			<select id="comboLang" onchange="L4W_game.Game.changeLanguage()">
+			</select> 
 		</div>
 		<div id="canvasArea">
 			<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
 			Your browser does not support HTML5 Canvas!
 			</canvas>
-			<div id="dialog1" class="l4wDialogFrame hiddenFadeOut">
+			<div id="dialog1" class="l4wDialogFrame hiddenFadeOut" style="visibility:hidden">
 				<div id="dialog1Header" class="l4wDialogHeader">
 					&#x205e;&#x205e;&#x205e;	
 				</div>

@@ -76,12 +76,15 @@ window.onload = function(){
 		<div style="border:1px solid black;float:left;padding:1em;">
 			Benvenuto!<br/>
 			<div id="login" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+			<br/>
+			<select id="comboLang" onchange="L4W_game.Game.changeLanguage()">
+			</select> 
 		</div>
 		<div id="canvasArea">
 			<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
 			Your browser does not support HTML5 Canvas!
 			</canvas>
-			<div id="dialog1" class="l4wDialogFrame hiddenFadeOut">
+			<div id="dialog1" class="l4wDialogFrame hiddenFadeOut" style="visibility:hidden">
 				<div id="dialog1Header" class="l4wDialogHeader">
 					&#x205e;&#x205e;&#x205e;	
 				</div>

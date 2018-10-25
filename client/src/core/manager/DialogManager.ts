@@ -4,18 +4,14 @@ import { IEvent } from "../../../../common/src/model/Event";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
 import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
+import { Input } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { Utils } from "../util/Utils";
-import { Input } from "../util/Input";
 
 /**
  * Helper class for managing dialogs and alfanumeric input/output
  */
 export namespace DialogManager {
-    
-    export const languages: string[] = [];
-    languages[LanguageEnum.IT] = "Italiano 🇮🇹";
-    languages[LanguageEnum.EN] = "English 🇬🇧";
 
     const DIALOG_FRAME_ID = "dialog1";
     const DIALOG_FACE_ID = "dialogFace";
@@ -172,6 +168,7 @@ export namespace DialogManager {
     
         dlgFrame.classList.replace("hiddenFadeOut", "visibleFadeIn");
         dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
+        dlgFrame.style.visibility = null;
         if(faceset !== undefined) {
             dlgFace.style.display = "block";
             dlgFace.style.backgroundImage = "url('/assets/faceset/" + faceset + "')";

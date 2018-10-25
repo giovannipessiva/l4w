@@ -1,14 +1,14 @@
-import { AbstractScene } from "../core/AbstractScene"
-import { EventManager } from "../core/manager/EventManager"
-import { MapManager } from "../core/manager/MapManager"
-import { SaveManager } from "../core/manager/SaveManager"
-import { Utils } from "../core/util/Utils"
-import { IRange, IBooleanCallback, emptyFz } from "../core/util/Commons"
-import { Constant } from "../core/util/Constant"
-import { DynamicGrid } from "./DynamicGrid"
-import { ICell } from "../../../common/src/model/Commons"
-import { IEvent } from "../../../common/src/model/Event"
-import { ISave } from "../../../common/src/model/Save"
+import { ICell, LanguageEnum } from "../../../common/src/model/Commons";
+import { IEvent } from "../../../common/src/model/Event";
+import { ISave } from "../../../common/src/model/Save";
+import { AbstractScene } from "../core/AbstractScene";
+import { EventManager } from "../core/manager/EventManager";
+import { MapManager } from "../core/manager/MapManager";
+import { SaveManager } from "../core/manager/SaveManager";
+import { emptyFz, IBooleanCallback, IRange } from "../core/util/Commons";
+import { Constant } from "../core/util/Constant";
+import { Utils } from "../core/util/Utils";
+import { DynamicGrid } from "./DynamicGrid";
 
 export interface ILauncher {
     (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean
@@ -205,5 +205,12 @@ export class DynamicScene extends AbstractScene {
     
     isDialogOpen() {
         return this.dialogName !== undefined && this.dialogSkin !== undefined;
+    }
+
+    setLanguage(lang: LanguageEnum) {
+        if(this.save === undefined) {
+            this.save = SaveManager.getNewSave();
+        }
+        this.save.config.lang = lang;
     }
 }

@@ -73,7 +73,7 @@ export const enum ScaleEnum {
     VERY_HIGH
 };
 
-export const enum LanguageEnum {
+export enum LanguageEnum {
     IT = "it",
     EN = "en"    
 }

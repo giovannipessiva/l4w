@@ -1,12 +1,12 @@
-import { LanguageEnum, ICell, DirectionEnum } from "../../../../../common/src/model/Commons"
-import { IEmptyCallback } from "../../util/Commons"
-import { Utils } from "../../util/Utils"
-import { DialogManager } from "../../manager/DialogManager"
-import { EventManager } from "../../manager/EventManager"
-import { SaveManager } from "../../manager/SaveManager"
-import { IEvent } from "../../../../../common/src/model/Event"
-import { IConfig } from "../../../../../common/src/model/Save"
-import { DynamicScene } from "../../../game/DynamicScene"
+import { DirectionEnum, ICell } from "../../../../../common/src/model/Commons";
+import { IEvent } from "../../../../../common/src/model/Event";
+import { IConfig } from "../../../../../common/src/model/Save";
+import { DynamicScene } from "../../../game/DynamicScene";
+import { DialogManager } from "../../manager/DialogManager";
+import { EventManager } from "../../manager/EventManager";
+import { SaveManager } from "../../manager/SaveManager";
+import { IEmptyCallback } from "../../util/Commons";
+import { Utils } from "../../util/Utils";
 
 export abstract class AbstractScript {
     
@@ -23,12 +23,15 @@ export abstract class AbstractScript {
         this.scene = scene;
     }
 
-    protected showSimpleDialog(messageId: number, callback: IEmptyCallback): boolean {
-        //TODO load cfg
-        let cfg: IConfig = {
-            lang: LanguageEnum.IT,
-            skin: "ld3-webskin1.png"
+    getConfig(): IConfig {
+        if(this.scene.save !== undefined && this.scene.save.config !== undefined) {
+            return this.scene.save.config;
         }
+        return SaveManager.getNewConfig();
+    }
+
+    protected showSimpleDialog(messageId: number, callback: IEmptyCallback): boolean {
+        let cfg = this.getConfig();
         //TODO use faceset
         let faceset: string | undefined = undefined;
         DialogManager.showSimpleDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
@@ -36,11 +39,7 @@ export abstract class AbstractScript {
     }
 
     protected showComplexDialog(messageId: number, callback: IEmptyCallback): boolean {
-        //TODO load cfg
-        let cfg: IConfig = {
-            lang: LanguageEnum.IT,
-            skin: "ld3-webskin1.png"
-        }
+        let cfg = this.getConfig();
         //TODO use faceset
         let faceset: string | undefined = undefined;
         DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);

@@ -1,4 +1,4 @@
-import { ISave } from "../../../../common/src/model/Save"
+import { ISave, IConfig } from "../../../../common/src/model/Save"
 import { LanguageEnum, ICell } from "../../../../common/src/model/Commons"
 import { IMap } from "../../../../common/src/model/Map"
 import { IEvent } from "../../../../common/src/model/Event"
@@ -15,18 +15,21 @@ import { IBooleanCallback } from "../util/Commons";
 export namespace SaveManager {
 
     export function getNewSave(): ISave {
-        let save: ISave = {
+        return {
             id: 0,
             timestamp: Utils.now(),
             currentMap: 0,
             hero: EventManager.getNewHero(),
             maps: [],
-            config: {
-                lang: LanguageEnum.EN,
-                skin: "ld3skin.png"
-            }
+            config: getNewConfig()
         };
-        return save;
+    }
+
+    export function getNewConfig(): IConfig {
+        return {
+            lang: LanguageEnum.EN,
+            skin: "ld3-webskin1.png"
+        };
     }
     
     export function getSave(map: IMap, hero: IEvent): ISave | undefined {

@@ -1,23 +1,23 @@
-import { DirectionEnum, ICell, IPoint } from "../../../common/src/model/Commons"
-import { Input } from "../core/util/Input"
-import { Compatibility } from "../core/util/Compatibility"
-import { Workers } from "../core/util/Workers"
-import { Utils } from "../core/util/Utils"
-import { Launcher } from "../core/events/Launcher"
-import { emptyFz } from "../core/util/Commons"
-import { Errors } from "../core/util/Errors"
-import { SaveManager } from "../core/manager/SaveManager"
-import { Resource } from "../core/util/Resource"
-import { ISave } from "../../../common/src/model/Save"
-import { DynamicScene } from "./DynamicScene"
-import { DynamicGrid } from "./DynamicGrid"
+import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../../common/src/model/Commons";
+import { ISave } from "../../../common/src/model/Save";
+import { Launcher } from "../core/events/Launcher";
+import { SaveManager } from "../core/manager/SaveManager";
+import { emptyFz } from "../core/util/Commons";
+import { Compatibility } from "../core/util/Compatibility";
+import { Errors } from "../core/util/Errors";
+import { Input } from "../core/util/Input";
+import { Resource } from "../core/util/Resource";
+import { Utils } from "../core/util/Utils";
+import { Workers } from "../core/util/Workers";
+import { DynamicGrid } from "./DynamicGrid";
+import { DynamicScene } from "./DynamicScene";
 
 /**
  * Module for initializing and launching a game
  */
 export namespace Game {
 
-    var scene: DynamicScene;
+    let scene: DynamicScene;
 
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
@@ -30,10 +30,33 @@ export namespace Game {
                 scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
                     scene.moveFocusToDirection();
+ 
+                    // Load languages combobox
+                    let combo: HTMLElement | null = document.getElementById("comboLang");
+                    if(combo !== null && combo instanceof HTMLSelectElement) {
+                        combo.options.add(new Option("English 🇬🇧", LanguageEnum.EN, true));
+                        combo.options.add(new Option("Italiano 🇮🇹", LanguageEnum.IT));
+                        scene.setLanguage(LanguageEnum.EN);
+                    } else {
+                        console.error("Element \"comboLang\" undefined as select element");
+                    }
                 });
 
             });
         });
+    }
+
+    export function changeLanguage() {
+        let combo: HTMLElement | null = document.getElementById("comboLang");
+        if(combo !== null && combo instanceof HTMLSelectElement) {
+            let option = combo.selectedOptions.item(0);
+            if(option !== null) {
+                let lang = LanguageEnum[option.value];
+                if(lang !== undefined) {
+                    scene.setLanguage(LanguageEnum[option.value]);
+                }
+            }
+        }
     }
 
     export function load() {
