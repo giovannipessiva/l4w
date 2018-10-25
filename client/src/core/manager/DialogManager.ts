@@ -82,13 +82,16 @@ export namespace DialogManager {
 
     export function saveString(id: number, strings: string[], callback: (nmb?: number) => void) {
         let value : string = JSON.stringify(strings);
-        Resource.save(id + "", value, Resource.TypeEnum.STRING, function(stringId: number) {
-            if (Utils.isEmpty(stringId)) {
-                console.error("Error while saving string");
-                callback();
-            } else {
-                callback(stringId);
+        Resource.save(id + "", value, Resource.TypeEnum.STRING, function(stringId?: string, result?: boolean) {
+            if(stringId !== undefined) {
+                let id = parseInt(stringId);
+                if (isNaN(id!)) {
+                    console.error("Error while saving string");
+                    callback();
+                    return;
+                }
             }
+            callback(id);
         });
     }
 

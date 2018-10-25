@@ -183,8 +183,8 @@ export namespace EventManager {
             };
 
             if (direction !== DirectionEnum.NONE) {
-                // Move the hero
-                e.states[0].direction = direction;
+                // Move the event
+                e.states[e.currentState].direction = direction;
                 e.movementDirection = direction;
                 e.position = {
                     x: e.i * grid.cellW + movementX,

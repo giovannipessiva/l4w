@@ -58,7 +58,7 @@ export namespace Game {
         if (currentState !== undefined) {
             saveId = currentState.id + "";
         }
-        Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(success: boolean) {
+        Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Game saved successfully");
             }

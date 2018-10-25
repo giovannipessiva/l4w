@@ -31,8 +31,13 @@ export interface IPropertiesCallback {
 };
 
 export interface IResponseCallback {
-    (response?: any): void;
+    (response?: string): void;
 };
+
+export interface IListCallback {
+    (values?: string[]): void;
+};
+
 export interface IProgressCallback {
     (this: XMLHttpRequest, e: ProgressEvent): any;
 };

@@ -82,9 +82,12 @@ export namespace Mapper {
     export function saveMap(callback: IBooleanCallback): void {
         let mapId = MapperPage.getActiveMap();
         let mapJSON = JSON.stringify(mapper.getMap());
-        Resource.save(mapId + "", mapJSON, Resource.TypeEnum.MAP, function(success: boolean) {
-            if(callback !== null) {
+        Resource.save(mapId + "", mapJSON, Resource.TypeEnum.MAP, function(response?: string, success?: boolean) {
+            if(success !== undefined) {
                 callback(success);
+            } else {
+                console.error("Undefined save result");
+                callback(false);
             }
         });
     }

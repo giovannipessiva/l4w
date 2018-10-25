@@ -1,10 +1,10 @@
-import { IPropertiesCallback, IResponseCallback } from "./Commons"
-import { Utils } from "./Utils"
-import { Constant } from "./Constant"
-import * as Constants from "../../../../common/src/Constants"
-import { AbstractScript } from "../events/script/AbstractScript"
-import { Condition } from "../events/Conditions"
-import * as Script from "../events/script/ScriptsRoot"
+import * as Constants from "../../../../common/src/Constants";
+import { Condition } from "../events/Conditions";
+import { AbstractScript } from "../events/script/AbstractScript";
+import * as Script from "../events/script/ScriptsRoot";
+import { IPropertiesCallback, IResponseCallback, IListCallback } from "./Commons";
+import { Constant } from "./Constant";
+import { Utils } from "./Utils";
 
 declare var base_path: string;
 
@@ -36,15 +36,20 @@ export namespace Resource {
         TILESET
     }
 
-    var propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+    let propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
 
     export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
         if (propertiesCache.has(file)) {
             onLoadCallback(propertiesCache.get(file)!);
         } else {
-            function parsePropertiesCallback(responseText: string) {
-                let props: Map<string, number> = parseProperties(responseText);
-                propertiesCache.set(file, props);
+            function parsePropertiesCallback(responseText?: string) {
+                let props: Map<string, number>;
+                if(responseText !== undefined) {
+                    props = parseProperties(responseText);
+                    propertiesCache.set(file, props);
+                } else {
+                    props = new Map<string, number>();
+                }                
                 onLoadCallback(props);
             }
             sendGETRequest(DATA_PATH + "properties/" + file + ".properties", parsePropertiesCallback);
@@ -52,13 +57,13 @@ export namespace Resource {
     };
 
     function parseProperties(content: string): Map<string, number> {
-        var props: Map<string, number> = new Map<string, number>();
-        var lines = content.split("\n");
+        let props: Map<string, number> = new Map<string, number>();
+        let lines = content.split("\n");
         for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
+            let line = lines[i].trim();
             if (line !== "" && line.indexOf("#") !== 0) {
-                var lineTokens = line.split("=");
-                var value: number = +lineTokens[1];
+                let lineTokens = line.split("=");
+                let value: number = +lineTokens[1];
                 if (!isNaN(value)) {
                     props.set(lineTokens[0], value);
                 } else {
@@ -88,6 +93,7 @@ export namespace Resource {
             if(this.status !== Constants.HttpStatus.MOVED_PERMANENTLY) {
                 callback(this.responseText);
             } else {
+                //TODO this needs to be tested
                 // Handle a 301 error with a redirect
                 let newUri = this.getResponseHeader(Constants.HttpResponseHeader.LOCATION);
                 if(newUri !== null) {
@@ -103,11 +109,11 @@ export namespace Resource {
         request.onerror = function(this: XMLHttpRequest, ev: ProgressEvent): any {
             console.error("Error while getting " + uri);
             console.error(ev);
-            callback(undefined);
+            callback();
         };
         request.ontimeout = function() {
             console.error("Timeout while getting " + uri);
-            callback(undefined);
+            callback();
         };
         request.open(requestType, uri, true);
         try {
@@ -123,7 +129,7 @@ export namespace Resource {
                 console.error(exception);
                 console.trace();
             }
-            callback(undefined);
+            callback();
         }
     }
 
@@ -195,18 +201,18 @@ export namespace Resource {
     /**
      * Save an asset to server
      */
-    export function save(id: string, data: string, assetType: TypeEnum, callback: IResponseCallback) {
+    export function save(id: string, data: string, assetType: TypeEnum, callback: (response?: string, result?: boolean)=>void) {
         let path = getEditPath(id, assetType);
-        sendPOSTRequest(path, data, function(this: XMLHttpRequest, e?: ProgressEvent) {
-            if (this.status === 200) {
+        sendPOSTRequest(path, data, function(response?: string) {
+            if (response !== undefined) {
                 if(assetType === TypeEnum.STRING || assetType === TypeEnum.DIALOG || assetType === TypeEnum.GENERIC_MESSAGES) {
-                    callback(this.responseText);
+                    callback(response);
                 } else {
-                    callback(true);
+                    callback(undefined, true);
                 }
             } else {
-                console.error(this.status + " - " + this.response);
-                callback(false);
+                console.error("Empty response for: " + path);
+                callback(undefined, false);
             }
         });
     }
@@ -286,17 +292,18 @@ export namespace Resource {
         return path + resourceTypeFolder + file;
     }
     
-    export function listResources(assetType: TypeEnum, callback: IResponseCallback) {
+    export function listResources(assetType: TypeEnum, callback: IListCallback) {
         let resourceTypeFolder = getResourceTypeFolder(assetType);
-        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(responseTxt: string, e?: ProgressEvent) {
-            let list: Array<string>;
+        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(responseTxt?: string) {
             if(responseTxt !== undefined) {
-                list = JSON.parse(responseTxt);
-            } else {
-                console.error("Empty respose from " + ASSETLIST_PATH);
-                list = [];
+                let list = JSON.parse(responseTxt);
+                if(list !== undefined) {
+                    callback(list);
+                    return;
+                }
             }
-            callback(list);
+            console.error("Empty response from " + ASSETLIST_PATH);
+            callback([]);
         }); 
     }
     

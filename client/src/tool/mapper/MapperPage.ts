@@ -347,14 +347,16 @@ export namespace MapperPage {
 
     function loadCharacterProperties() {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
-        Resource.listResources(Resource.TypeEnum.CHAR, function(list: string[]) {
+        Resource.listResources(Resource.TypeEnum.CHAR, function(list?: string[]) {
             Utils.resetSelect(selectCharasets);
             let options: HTMLOptionsCollection = selectCharasets.options;
             options[0] = new Option("");
-            for (let i = 0; i < list.length; i++) {
-                options[i + 1] = new Option(list[i]);
-                if (list[i] === currentState.charaset) {
-                    selectCharasets.selectedIndex = i + 1;
+            if(list !== undefined) {
+                for (let i = 0; i < list.length; i++) {
+                    options[i + 1] = new Option(list[i]);
+                    if (list[i] === currentState.charaset) {
+                        selectCharasets.selectedIndex = i + 1;
+                    }
                 }
             }
         });
