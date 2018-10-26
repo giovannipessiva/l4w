@@ -29,7 +29,7 @@ export namespace DialogManager {
     /**
      * Method called when the dialog is to be closed
      */
-    export function closeDialog() {
+    export function closeDialog(stopIt: boolean = false) {
         let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID); 
         if(dlgFrame === null) {
             console.error("Element not foud: " + DIALOG_FRAME_ID);
@@ -37,7 +37,7 @@ export namespace DialogManager {
         }
         dlgFrame.classList.remove("visibleFadeIn");
         dlgFrame.classList.add("hiddenFadeOut");
-        if(onDialogClose !== undefined) {
+        if(onDialogClose !== undefined && !stopIt) {
             onDialogClose();
         }
     };

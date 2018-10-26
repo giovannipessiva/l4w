@@ -1,6 +1,7 @@
 import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../../common/src/model/Commons";
 import { ISave } from "../../../common/src/model/Save";
 import { Launcher } from "../core/events/Launcher";
+import { DialogManager } from "../core/manager/DialogManager";
 import { SaveManager } from "../core/manager/SaveManager";
 import { emptyFz } from "../core/util/Commons";
 import { Compatibility } from "../core/util/Compatibility";
@@ -60,6 +61,7 @@ export namespace Game {
     }
 
     export function load() {
+        DialogManager.closeDialog(true);
         let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
         loadSave(canvas, function(save?: ISave) {
             scene.loadSave(save, function(success: boolean) {
