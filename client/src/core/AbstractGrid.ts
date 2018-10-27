@@ -44,7 +44,7 @@ export class AbstractGrid {
         })(this);
     }
 
-    deferredInit(props: Map<string, number>) {
+    protected deferredInit(props: Map<string, number>) {
         this.cellH = props.get("cellHeight")!;
         this.cellW = props.get("cellWidth")!;
         this.rows = props.get(GridTypeEnum[this.gridType] + "Rows")!;

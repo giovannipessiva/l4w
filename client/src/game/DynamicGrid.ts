@@ -15,7 +15,7 @@ export class DynamicGrid extends AbstractGrid {
         super(cnvs, onCompleted, GridTypeEnum.game);
     }
 
-    public deferredInit(props: Map<string, number>) {
+    protected deferredInit(props: Map<string, number>) {
         super.deferredInit(props);
         let tmpRatio = props.get("canvasRatio");
         if(tmpRatio === undefined) {

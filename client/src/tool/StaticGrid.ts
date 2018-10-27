@@ -26,7 +26,7 @@ export class StaticGrid extends AbstractGrid {
         }
     }
 
-    public deferredInit(props: Map<string, number>) {
+    protected deferredInit(props: Map<string, number>) {
         if (!Utils.isEmpty(this.overriddenProps)) {
             props = Utils.mergeMaps(this.overriddenProps, props);
         }
