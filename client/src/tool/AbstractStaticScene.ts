@@ -29,6 +29,7 @@ export abstract class AbstractStaticScene extends AbstractScene {
     }
 
     protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number) {
+        AbstractStaticScene.prototype; //This fixes a mysterious Babel transpilation problem
         super.render(map, context, minRow, maxRow, minColumn, maxColumn, false);
     }
 

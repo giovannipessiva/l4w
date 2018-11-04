@@ -11,7 +11,7 @@ export class StaticGrid extends AbstractGrid {
     private columnsList: number[];
     private canvasScales: number[];
     private overriddenProps: Map<string, number>;
-
+    
     constructor(
         canvas: HTMLCanvasElement,
         onCompleted: { (grid: StaticGrid): void },
@@ -30,6 +30,7 @@ export class StaticGrid extends AbstractGrid {
         if (!Utils.isEmpty(this.overriddenProps)) {
             props = Utils.mergeMaps(this.overriddenProps, props);
         }
+        StaticGrid.prototype; //This fixes a mysterious Babel transpilation problem
         super.deferredInit(props);
 
         switch (this.gridType) {
