@@ -51,4 +51,8 @@ export namespace defaults {
     export function getDefaultSave() {
         return "";
     }
+
+    export function getDefaultString() {
+        return "";
+    }
 };

@@ -4,3 +4,5 @@ set local_db=l4w
 set local_data=.\database\data
 set local_user=postgres
 set local_password=postgres
+
+rem Some of these needs to be set also in .env file
