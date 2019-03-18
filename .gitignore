@@ -2,6 +2,5 @@ node_modules
 .tscache
 /npm-debug.log
 database/data
-server/config/setRemoteConnectionConfig.bat
 database/setRemoteConnectionConfig.bat
 database/setLocalConnectionConfig.bat

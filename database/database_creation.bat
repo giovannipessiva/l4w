@@ -1,13 +1,16 @@
 @echo off
 setlocal
 
-:PROMPT
-SET /P AREYOUSURE=This will destroy local database. Are you sure?  (Y/N)
-IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
-
-
 rem This script will set variables for the connection to the local PG database:
 call .\setLocalConnectionConfig.bat
+
+IF "%local_data%"=="" (
+    exit
+)
+
+:PROMPT
+SET /P AREYOUSURE=This will destroy local database and delete folder "%cd%\.%local_data%". Are you sure?  (Y/N)
+IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
 
 rem Stop the server and delete the folder
 taskkill /im postgres.exe /f /t
@@ -28,7 +31,6 @@ psql -p %local_port% -d %local_db% -c "ALTER DATABASE %local_db% OWNER TO %local
 
 rem Start the copy from Production
 call .\database_migration.bat
-
 
 :END
 endlocal

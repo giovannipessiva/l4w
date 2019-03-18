@@ -135,7 +135,8 @@ export namespace database2 {
                     if (!utils.isEmpty(result)) {
                         response.send(result.dataValues.value);
                     } else {
-                        response.send("???");
+                        response.status(HttpStatus.NOT_FOUND)
+                            .send(defaults.getDefaultString());
                     }
                 },
                 function(error: any) {
