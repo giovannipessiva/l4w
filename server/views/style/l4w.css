@@ -34,9 +34,10 @@ p {
 	right: 1em;
 	bottom: 1em;
 	text-align: left;
-	text-shadow: 0px 0px 0.1em lightgrey;
+	text-shadow: 1px 1px 0.2em darkblue;
+	color: lightgoldenrodyellow; 
 	font-family: Oldenburg;
-	background-image: linear-gradient(to bottom right, rgba(112, 118, 176, 0.9), rgba(41, 42, 67, 0.9));
+	background-image: linear-gradient(to bottom right, rgba(110, 110, 170, 0.9), rgba(41, 42, 67, 0.9));
 	background-origin: border-box; /* this is needed for transparent border on gradient background */ 
 	resize: both;
 	overflow: auto;
@@ -51,7 +52,7 @@ p {
 	float: left;
 	padding-right: 0.5em;
 	position: relative;
-	color: lightgrey;
+	color: lightgoldenrodyellow;
 	/* background-color: hsl(240, 100%, 50%, 80%); */
 }
 
@@ -68,11 +69,6 @@ p {
 	font-weight: bold;
 }
 
-.l4wDialog {
-	color: black;
-	font-size: 120%;
-}
-
 .dialogEdgeArea {
 	margin: 0.5em;
 }
@@ -82,7 +78,6 @@ p {
 	padding-right: 0.5em;
 	font-style: italic;
 	cursor: pointer;
-	font-size: 120%;
 }
 
 .l4wDialogEdge:before {
