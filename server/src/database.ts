@@ -6,6 +6,7 @@ import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { defaults } from "./defaults"
+import { IDialogNodeData, IDialogEdgeData } from "../../common/src/model/Dialog";
 
 export namespace database2 {
 
@@ -146,8 +147,12 @@ export namespace database2 {
                 }
             );
             break;
+        case "dialog":
+            //TODO next
+            //Query custom ricorsiva sui dati, avevo la bozza su txt.txt?
         default:
-            console.error("Unexpected case:" + type);
+            console.error("Unexpected case: " + type);
+            response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
         };
     }
 
@@ -212,8 +217,17 @@ export namespace database2 {
                 });
             }
             break;
+        case "dialog":
+            //Scomponi il dialog in nodes e edges, e salvali a DB
+            let dialogNode: IDialogNodeData = JSON.parse(data);
+            let nodesList: IDialogNodeData[];
+            let edgesList: IDialogEdgeData[];
+
+            //TODO next
+         
         default:
-            console.error("Unexpected case:" + type);
+            console.error("Unexpected case: " + type);
+            response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
         }
     }
 
