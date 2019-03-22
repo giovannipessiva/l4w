@@ -12,6 +12,7 @@ import { DynamicScene } from "../../game/DynamicScene"
 import { EventManager } from "../manager/EventManager"
 import { TilesetManager } from "../manager/TilesetManager"
 import {  } from "../manager/CharacterManager"
+import { ResourceType } from "../../../../common/src/Constants";
 
 /**
  * Helper class for handling game maps
@@ -24,7 +25,7 @@ export namespace MapManager {
     }
 
     export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map?: IMap) => void) {
-        Resource.load(mapId + "", Resource.TypeEnum.MAP, function(resourceText: any) {
+        Resource.load(mapId + "", ResourceType.MAP, function(resourceText: any) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
                 callback();

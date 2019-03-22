@@ -1,6 +1,7 @@
-import { LanguageEnum } from "../../../../common/src/model/Commons";
+import { LanguageEnum, } from "../../../../common/src/model/Commons";
 import { DialogInputTypeEnum, IDialogEdge, IDialogNode, IGenericMessage, IGenericMessageValue } from "../../../../common/src/model/Dialog";
 import { IEvent } from "../../../../common/src/model/Event";
+import { ResourceType } from "../../../../common/src/Constants";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
 import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
@@ -66,7 +67,7 @@ export namespace DialogManager {
             callback();
             return;    
         }
-        Resource.load(stringId + "", Resource.TypeEnum.STRING, function(resourceText) {
+        Resource.load(stringId + "", ResourceType.STRING, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading string: " + stringId);
                 callback();
@@ -78,7 +79,7 @@ export namespace DialogManager {
 
     export function saveString(id: number, strings: string[], callback: (nmb?: number) => void) {
         let value : string = JSON.stringify(strings);
-        Resource.save(id + "", value, Resource.TypeEnum.STRING, function(stringId?: string, result?: boolean) {
+        Resource.save(id + "", value, ResourceType.STRING, function(stringId?: string, result?: boolean) {
             if(stringId !== undefined) {
                 let id = parseInt(stringId);
                 if (isNaN(id!)) {
@@ -96,7 +97,7 @@ export namespace DialogManager {
             callback();
             return;    
         }
-        Resource.load(dialogId + "", Resource.TypeEnum.DIALOG, function(resourceText) {
+        Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading dialog: " + dialogId);
                 callback();
@@ -112,7 +113,7 @@ export namespace DialogManager {
             callback(false);
             return;    
         }
-        Resource.load(genericMessageId + "", Resource.TypeEnum.DIALOG, function(resourceText) {
+        Resource.load(genericMessageId + "", ResourceType.GENERIC_MESSAGE, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading dialog: " + genericMessageId);
                 callback(false);
@@ -311,8 +312,15 @@ export namespace DialogManager {
                     return isConditionActivable(generic!.condition, val.conditionParams);
                 });
             }
-            // Select a random value
-            let selectedVal = Utils.getRandomInteger(0, activeValues.length - 1);
+            let selectedVal;
+            if(activeValues.length === 0) {
+                return undefined;    
+            } else if(activeValues.length === 1) {
+                selectedVal = 0; 
+            } else {
+                // Select a random value
+                selectedVal = Utils.getRandomInteger(0, activeValues.length - 1);
+            }
             return activeValues[selectedVal].message;
         }
         return undefined;

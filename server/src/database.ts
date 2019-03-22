@@ -1,7 +1,7 @@
 //@ts-ignore TS1192
 import sequelize from "sequelize"
 
-import { HttpStatus } from "../../common/src/Constants"
+import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
@@ -10,11 +10,12 @@ import { IDialogNodeData, IDialogEdgeData } from "../../common/src/model/Dialog"
 
 export namespace database2 {
 
+    //TODO this is nonsense, please cleanse it
     function getDefaults(type: string, file: string | undefined) {
         if (!utils.isEmpty(file)) {
             return file!;
         }
-        if ("map" === type) {
+        if (ResourceType.MAP === type) {
             // TODO ora c'è un record di default, dovrei fare l'upsert sul solo
             // record interessato
             return "%MAPS%";
@@ -54,10 +55,10 @@ export namespace database2 {
         });
     }
 
-    export function read(type: string, file: string | undefined, user: string, response: any) {
+    export function read(type: ResourceType, file: string | undefined, user: string, response: any) {
         file = getDefaults(type, file);
         switch (type) {
-        case "map":
+        case ResourceType.MAP:
             models.l4w_map.findOne({
                 where : {
                     id : file
@@ -79,7 +80,7 @@ export namespace database2 {
                                 defaults.getDefaultMap());
                     });
             break;
-        case "tileset":
+        case ResourceType.TILESET:
             models.l4w_tileset.findOne({
                 where : {
                     image : file
@@ -100,7 +101,7 @@ export namespace database2 {
                                 defaults.getDefaultTileset());
                     });
             break;
-        case "save":
+        case ResourceType.SAVE:
             if (!utils.isEmpty(user)) {
                 models.usr_save.findOne({
                     where : {
@@ -125,7 +126,7 @@ export namespace database2 {
                 response.status(HttpStatus.OK).send(defaults.getDefaultSave());
             }
             break;
-        case "string":
+        case ResourceType.STRING:
             models.l4w_string.findOne({
                 where : {
                     id : file
@@ -160,7 +161,7 @@ export namespace database2 {
         file = getDefaults(type, file);
 
         switch (type) {
-        case "map":
+        case ResourceType.MAP:
             models.l4w_map.upsert({
                 id : file,
                 data : JSON.parse(data)
@@ -170,7 +171,7 @@ export namespace database2 {
                 manageQueryError(response, error);
             });
             break;
-        case "tileset":
+        case ResourceType.TILESET:
             models.l4w_tileset.upsert({
                 image : file,
                 data : JSON.parse(data)
@@ -180,7 +181,7 @@ export namespace database2 {
                 manageQueryError(response, error);
             });
             break;
-        case "save":
+        case ResourceType.SAVE:
             models.usr_save.upsert({
                 user: user,
                 id : file,
@@ -193,7 +194,7 @@ export namespace database2 {
                 manageQueryError(response, error);
             });
             break;
-        case "string":
+        case ResourceType.STRING:
             let strings = JSON.parse(data);
             let counter = strings.length;
             let callbackSuccess = function() {

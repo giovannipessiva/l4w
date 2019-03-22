@@ -6,7 +6,7 @@ import express from "express";
 import compression from "compression";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
-import { HttpStatus } from "../../common/src/Constants"
+import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { session } from "./session"
 import * as utils2 from "./utils"
 import { security } from "./security"
@@ -27,7 +27,7 @@ app.set("port",(process.env.PORT || 5000));
 app.use(function(req: Request, res: Response, next: NextFunction) {
     // Remove trailing slash
     if (req.path.substr(-1) === "/" && req.path.length > 1) {
-        var query = req.url.slice(req.path.length);
+        let query = req.url.slice(req.path.length);
         res.redirect(301, req.path.slice(0, -1) + query);
     } else {
         next();
@@ -105,59 +105,59 @@ app.get("/js/:script", function(request: Request, response: Response) {
     utils2.sendFile(filePath, file, response);
 });
 app.get("/lib/:script", function(request: Request, response: Response) {
-    var file = request.params.script;
-    var filePath = path.resolve(dirname + "/../client/lib");
+    let file = request.params.script;
+    let filePath = path.resolve(dirname + "/../client/lib");
     utils2.sendFile(filePath, file, response);
 });
 app.get("/data/:type/", function(request: Request, response: Response) {
-    var type = request.params.type;
-    var user = null;
+    let type: ResourceType = request.params.type;
+    let user = null;
     if(session.isAuthenticated(request)) {
         user = session.getUser(request);
     }
     database2.read(type, undefined, user, response);
 });
 app.get("/data/:type/:file", function(request: Request, response: Response) {
-    var file = request.params.file;
-    var type = request.params.type;
-    // FIXME properties could be in a configuration file client side
-    if (type === "properties") {
-        var filePath = path.resolve(dirname + "/../client/data/" + type);
+    let file = request.params.file;
+    let type: ResourceType = request.params.type;
+    // FIXME properties should be in a configuration file client side
+    if (type === ResourceType.PROPERTIES) {
+        let filePath = path.resolve(dirname + "/../client/data/" + type);
         utils2.sendFile(filePath, file, response);
         return;
     }
     database2.read(type, file, session.getUser(request), response);
 });
 app.get("/assets/:file", function(request: Request, response: Response) {
-    var file = request.params.file;
-    var filePath = path.resolve(dirname + "/../client/assets");
+    let file = request.params.file;
+    let filePath = path.resolve(dirname + "/../client/assets");
     utils2.sendFile(filePath, file, response);
 });
 app.get("/assets/:type/:file", function(request: Request, response: Response) {
-    var file = request.params.file;
-    var type = request.params.type;
-    var filePath = path.resolve(dirname + "/../client/assets/" + type);
+    let file = request.params.file;
+    let type: ResourceType = request.params.type;
+    let filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils2.sendFile(filePath, file, response);
 });
 app.get("/assetlist/:type/", function(request: Request, response: Response) {
-    var type = request.params.type;
-    var filePath = path.resolve(dirname + "/../client/assets/" + type);
+    let type: ResourceType = request.params.type;
+    let filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils2.listFiles(filePath, response);
 });
 app.get("/style/:file", function(request: Request, response: Response) {
-    var file = request.params.file;
-    var filePath = path.resolve(dirname + "/views/style");
+    let file = request.params.file;
+    let filePath = path.resolve(dirname + "/views/style");
     utils2.sendFile(filePath, file, response);
 });
 app.get("/style/:type/:file", function(request: Request, response: Response) {
-    var type = request.params.type;
-    var file = request.params.file;
-    var filePath = path.resolve(dirname + "/views/style/"+type);
+    let type: ResourceType = request.params.type;
+    let file = request.params.file;
+    let filePath = path.resolve(dirname + "/views/style/"+type);
     utils2.sendFile(filePath, file, response);
 });
 app.get("/workers/:script", function(request: Request, response: Response) {
-    var file = request.params.script;
-    var filePath = path.resolve(dirname + "/../workers");
+    let file = request.params.script;
+    let filePath = path.resolve(dirname + "/../workers");
     response.set("Service-Worker-Allowed", "..")
     utils2.sendFile(filePath, file, response);
 });
@@ -174,15 +174,15 @@ app.post("/edit/maps", function(request: Request, response: Response) {
 });
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
-        var fileId = request.params.id;
-        var type = request.params.type;
+        let fileId = request.params.id;
+        let type: ResourceType = request.params.type;
         security.getBodyData(request, response, function(data: any){
             switch(type) {
-            case "map":
+            case ResourceType.MAP:
                 mapper.updateMap(fileId, data, session.getUser(request), response);
                 break;
-            case "save":
-            case "tileset":
+            case ResourceType.SAVE:
+            case ResourceType.TILESET:
                database2.write(type, fileId, data, session.getUser(request), response);
                 break;
             }

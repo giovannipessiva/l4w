@@ -14,3 +14,17 @@ export enum HttpStatus {
 export enum HttpResponseHeader {
     LOCATION = "Location"
 }
+
+export const enum ResourceType {
+    CHAR = "charset",
+    FACE = "faceset",
+    SKIN = "skin",
+    TILE = "tile",
+    MAP = "map",
+    SAVE = "save",
+    STRING = "string",
+    DIALOG = "dialog",
+    GENERIC_MESSAGE = "generic-message",
+    TILESET = "tileset",
+    PROPERTIES = "properties"
+}

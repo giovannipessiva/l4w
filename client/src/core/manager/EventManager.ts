@@ -10,6 +10,7 @@ import { CharacterManager } from "../manager/CharacterManager"
 import { MapManager } from "../manager/MapManager"
 import { Condition } from "../events/Conditions"
 import { DynamicScene } from "../../game/DynamicScene"
+import { ResourceType } from "../../../../common/src/Constants";
 
 /**
  * Module to handle events
@@ -259,14 +260,14 @@ export namespace EventManager {
         }
         let image: HTMLImageElement | undefined;
         if (!Utils.isEmpty(currentState.charaset)) {
-            image = Resource.loadImageFromCache(currentState.charaset!, Resource.TypeEnum.CHAR);
+            image = Resource.loadImageFromCache(currentState.charaset!, ResourceType.CHAR);
         } else if (!Utils.isEmpty(currentState.gid)) {
             //TODO Manage Event with tile grafic
         }
 
         //TODO manage 404 errors
 //        if (Utils.isEmpty(image)) {
-//            image = Resource.loadDefaultImage(Resource.TypeEnum.CHAR);
+//            image = Resource.loadDefaultImage(ResourceType.CHAR);
 //        }
 
         if(e.position === undefined) {

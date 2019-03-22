@@ -1,4 +1,4 @@
-import * as Constants from "../../../../common/src/Constants";
+import { ResourceType, HttpStatus, HttpResponseHeader } from "../../../../common/src/Constants";
 import { Condition } from "../events/Conditions";
 import { AbstractScript } from "../events/script/AbstractScript";
 import * as Script from "../events/script/ScriptsRoot";
@@ -15,26 +15,13 @@ export namespace Resource {
 
     const DATA_PATH = base_path + "data/";
     const ASSET_PATH = base_path + "assets/";
-    const ASSETLIST_PATH = base_path + "assetlist";
+    const ASSETLIST_PATH = base_path + "assetlist/";
     const EDIT_PATH = base_path + "edit/";
 
     const CACHE_SEPARATOR = "@";
     const DEFAULT_NAME = "404.png";
 
     var resourceCache: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
-
-    export const enum TypeEnum {
-        CHAR,
-        FACE,
-        SKIN,
-        TILE,
-        MAP,
-        SAVE,
-        STRING,
-        DIALOG,
-        GENERIC_MESSAGES,
-        TILESET
-    }
 
     let propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
 
@@ -90,14 +77,14 @@ export namespace Resource {
     function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback) {
         let request = new XMLHttpRequest();
         request.onload = function(this: XMLHttpRequest, ev: ProgressEvent): any {
-            if(this.status !== Constants.HttpStatus.MOVED_PERMANENTLY) {
+            if(this.status !== HttpStatus.MOVED_PERMANENTLY) {
                 callback(this.responseText);
             } else {
                 //TODO this needs to be tested
                 // Handle a 301 error with a redirect
-                let newUri = this.getResponseHeader(Constants.HttpResponseHeader.LOCATION);
+                let newUri = this.getResponseHeader(HttpResponseHeader.LOCATION);
                 if(newUri !== null) {
-                    console.warn("Request returned code: " +  Constants.HttpStatus.MOVED_PERMANENTLY + ", attempting a redirect");
+                    console.warn("Request returned code: " +  HttpStatus.MOVED_PERMANENTLY + ", attempting a redirect");
                     console.warn("from: " + uri);
                     console.warn("to: " + newUri);
                     sendRequest(requestType, data, newUri, callback);
@@ -136,7 +123,7 @@ export namespace Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: TypeEnum, callback: { (response?: HTMLImageElement | string): void }) {
+    export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
@@ -149,10 +136,10 @@ export namespace Resource {
         }
 
         switch (assetType) {
-            case TypeEnum.CHAR:
-            case TypeEnum.FACE:
-            case TypeEnum.SKIN:
-            case TypeEnum.TILE:
+            case ResourceType.CHAR:
+            case ResourceType.FACE:
+            case ResourceType.SKIN:
+            case ResourceType.TILE:
                 // Load image file
                 let image = new Image();
                 image.onload = function() {
@@ -161,12 +148,12 @@ export namespace Resource {
                 };
                 image.src = path;
                 break;
-            case TypeEnum.MAP:
-            case TypeEnum.SAVE:
-            case TypeEnum.STRING:
-            case TypeEnum.DIALOG:
-            case TypeEnum.GENERIC_MESSAGES:
-            case TypeEnum.TILESET:
+            case ResourceType.MAP:
+            case ResourceType.SAVE:
+            case ResourceType.STRING:
+            case ResourceType.DIALOG:
+            case ResourceType.GENERIC_MESSAGE:
+            case ResourceType.TILESET:
                 // read data from DB
                 sendGETRequest(path, callback);
                 break;
@@ -180,7 +167,7 @@ export namespace Resource {
     /**
      * Return an already loaded asset
      */
-    export function loadImageFromCache(file: string, assetType: TypeEnum) {
+    export function loadImageFromCache(file: string, assetType: ResourceType) {
         let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
         if (Utils.isEmpty(image)) {
             load(file, assetType, function(image?: HTMLImageElement | string) {
@@ -194,18 +181,18 @@ export namespace Resource {
         return image;
     }
 
-    export function loadDefaultImage(assetType: TypeEnum) {
+    export function loadDefaultImage(assetType: ResourceType) {
         return loadImageFromCache(DEFAULT_NAME, assetType);
     }
 
     /**
      * Save an asset to server
      */
-    export function save(id: string, data: string, assetType: TypeEnum, callback: (response?: string, result?: boolean)=>void) {
+    export function save(id: string, data: string, assetType: ResourceType, callback: (response?: string, result?: boolean)=>void) {
         let path = getEditPath(id, assetType);
         sendPOSTRequest(path, data, function(response?: string) {
             if (response !== undefined) {
-                if(assetType === TypeEnum.STRING || assetType === TypeEnum.DIALOG || assetType === TypeEnum.GENERIC_MESSAGES) {
+                if(assetType === ResourceType.STRING || assetType === ResourceType.DIALOG || assetType === ResourceType.GENERIC_MESSAGE) {
                     callback(response);
                 } else {
                     callback(undefined, true);
@@ -217,84 +204,37 @@ export namespace Resource {
         });
     }
 
-    function getResourcePath(file: string, assetType: TypeEnum): string | undefined {
+    function getResourcePath(file: string, assetType: ResourceType): string | undefined {
         let path;
         switch (assetType) {
-            case TypeEnum.CHAR:
-            case TypeEnum.FACE:
-            case TypeEnum.SKIN:
-            case TypeEnum.TILE:
+            case ResourceType.CHAR:
+            case ResourceType.FACE:
+            case ResourceType.SKIN:
+            case ResourceType.TILE:
                 path = ASSET_PATH;
                 break;
-            case TypeEnum.MAP:
-            case TypeEnum.SAVE:
-            case TypeEnum.STRING:
-            case TypeEnum.DIALOG:
-            case TypeEnum.GENERIC_MESSAGES:
-            case TypeEnum.TILESET:
+            case ResourceType.MAP:
+            case ResourceType.SAVE:
+            case ResourceType.STRING:
+            case ResourceType.DIALOG:
+            case ResourceType.GENERIC_MESSAGE:
+            case ResourceType.TILESET:
                 path = DATA_PATH;
                 break;
             default:
                 console.error("Unexpected resource type");
                 console.trace();
         };
-        let resourceTypeFolder = getResourceTypeFolder(assetType);
-        if(resourceTypeFolder === undefined) {
-            console.error("Can't find resource path:" + file + "/" + assetType);
-            return undefined;
-        }
-        return path + resourceTypeFolder + file;
-    }
-    
-    function getResourceTypeFolder(assetType: TypeEnum): string | undefined {
-        let folder;
-        switch (assetType) {
-            case TypeEnum.CHAR:
-                folder = "charset/";
-                break;
-            case TypeEnum.FACE:
-                folder = "faceset/";
-                break;
-            case TypeEnum.SKIN:
-                folder = "skin/";
-                break;
-            case TypeEnum.TILE:
-                folder = "tile/";
-                break;
-            case TypeEnum.MAP:
-                folder = "map/";
-                break;
-            case TypeEnum.SAVE:
-                folder = "save/";
-                break;
-            case TypeEnum.STRING:
-                folder = "string/";
-                break;
-            case TypeEnum.DIALOG:
-                folder = "dialog/";
-                break;
-            case TypeEnum.GENERIC_MESSAGES:
-                folder = "generic-messages/";
-                break;
-            case TypeEnum.TILESET:
-                folder = "tileset/";
-                break;
-            default:
-                console.error("Unexpected resource type");
-                console.trace();
-        };   
-        return folder;
+        return path + assetType + "/" + file;
     }
 
-    function getEditPath(file: string, assetType: TypeEnum): string {
+    function getEditPath(file: string, assetType: ResourceType): string {
         let path = EDIT_PATH;
-        let resourceTypeFolder = getResourceTypeFolder(assetType);
-        return path + resourceTypeFolder + file;
+        return path + assetType + "/" + file;
     }
     
-    export function listResources(assetType: TypeEnum, callback: IListCallback) {
-        let resourceTypeFolder = getResourceTypeFolder(assetType);
-        sendGETRequest(ASSETLIST_PATH + "/" + resourceTypeFolder, function(responseTxt?: string) {
+    export function listResources(assetType: ResourceType, callback: IListCallback) {
+        sendGETRequest(ASSETLIST_PATH + assetType, function(responseTxt?: string) {
             if(responseTxt !== undefined) {
                 let list = JSON.parse(responseTxt);
                 if(list !== undefined) {

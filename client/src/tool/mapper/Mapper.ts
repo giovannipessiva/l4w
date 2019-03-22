@@ -14,6 +14,7 @@ import { MapperPage } from "./MapperPage"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { TilePicker } from "./TilePicker"
+import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace Mapper {
 
@@ -82,7 +83,7 @@ export namespace Mapper {
     export function saveMap(callback: IBooleanCallback): void {
         let mapId = MapperPage.getActiveMap();
         let mapJSON = JSON.stringify(mapper.getMap());
-        Resource.save(mapId + "", mapJSON, Resource.TypeEnum.MAP, function(response?: string, success?: boolean) {
+        Resource.save(mapId + "", mapJSON, ResourceType.MAP, function(response?: string, success?: boolean) {
             if(success !== undefined) {
                 callback(success);
             } else {

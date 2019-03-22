@@ -2,6 +2,7 @@ import { ITileset, ITilesetData } from "../../../../common/src/model/Tileset"
 import { Utils } from "../util/Utils"
 import { Resource } from "../util/Resource"
 import { Errors } from "../util/Errors"
+import { ResourceType } from "../../../../common/src/Constants";
 
 /**
  * Helper class for handling tilesets and autotile
@@ -9,7 +10,7 @@ import { Errors } from "../util/Errors"
 export namespace TilesetManager {
    
      export function loadTileset(tilesetImage: string, context: CanvasRenderingContext2D, callback: (tileset?: ITileset) => void) {
-        Resource.load(tilesetImage+"", Resource.TypeEnum.TILESET, function(resourceText) {
+        Resource.load(tilesetImage+"", ResourceType.TILESET, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading tileset: " + tilesetImage);
                 callback();

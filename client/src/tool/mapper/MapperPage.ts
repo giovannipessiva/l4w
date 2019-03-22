@@ -11,6 +11,7 @@ import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
 import { EventManager } from "../../core/manager/EventManager"
 import { Mapper } from "./Mapper"
+import { ResourceType } from "../../../../common/src/Constants";
 
 export { Constant } from "../../core/util/Constant"
 export { Mapper } from "./Mapper";
@@ -347,7 +348,7 @@ export namespace MapperPage {
 
     function loadCharacterProperties() {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
-        Resource.listResources(Resource.TypeEnum.CHAR, function(list?: string[]) {
+        Resource.listResources(ResourceType.CHAR, function(list?: string[]) {
             Utils.resetSelect(selectCharasets);
             let options: HTMLOptionsCollection = selectCharasets.options;
             options[0] = new Option("");

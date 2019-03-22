@@ -12,6 +12,7 @@ import { Utils } from "../core/util/Utils";
 import { Workers } from "../core/util/Workers";
 import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
+import { ResourceType } from "../../../common/src/Constants";
 
 /**
  * Module for initializing and launching a game
@@ -83,7 +84,7 @@ export namespace Game {
         if (currentState !== undefined) {
             saveId = currentState.id + "";
         }
-        Resource.save(saveId, JSON.stringify(currentState), Resource.TypeEnum.SAVE, function(response?: string, success?: boolean) {
+        Resource.save(saveId, JSON.stringify(currentState), ResourceType.SAVE, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Game saved successfully");
             }
@@ -93,7 +94,7 @@ export namespace Game {
     function loadSave(canvas: HTMLCanvasElement, callback: (save?: ISave) => void) {
         //TODO l'id del salvataggio va selezionato dal giocatore
         let saveId: string = "0";
-        Resource.load(saveId, Resource.TypeEnum.SAVE, function(resourceText) {
+        Resource.load(saveId, ResourceType.SAVE, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
                 callback();
             } else {

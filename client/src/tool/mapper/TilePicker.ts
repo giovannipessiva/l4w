@@ -7,6 +7,7 @@ import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
+import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace TilePicker {
 
@@ -34,7 +35,7 @@ export namespace TilePicker {
         var canvasTilePicker = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage) {
+        Resource.load(tile, ResourceType.TILE, function(tileImage) {
             // Resize the canvas
             var image = new Image();
             image.src = (<HTMLImageElement> tileImage).src;

@@ -9,6 +9,7 @@ import { RenderConfiguration, IRange } from "./util/Commons"
 import { Utils } from "./util/Utils"
 import { Resource } from "./util/Resource"
 import { AbstractGrid } from "./AbstractGrid"
+import { ResourceType } from "../../../common/src/Constants";
 
 var _requestAnimationFrame =
     window.requestAnimationFrame ||
@@ -294,7 +295,7 @@ export abstract class AbstractScene {
                 return;
             }
             scene.map.tileset = tileset;
-            Resource.load(tileset.image, Resource.TypeEnum.TILE, function(image) {
+            Resource.load(tileset.image, ResourceType.TILE, function(image) {
                 tileset.imageData = <HTMLImageElement> image;
                 callback(scene);
             });

@@ -8,6 +8,7 @@ import { Constant } from "../../core/util/Constant"
 import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { ITilesetData, ITileset } from "../../../../common/src/model/Tileset"
+import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace Tilesetter {
 
@@ -39,7 +40,7 @@ export namespace Tilesetter {
         let canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
-        Resource.load(tile, Resource.TypeEnum.TILE, function(tileImage) {
+        Resource.load(tile, ResourceType.TILE, function(tileImage) {
             // Resize the canvas
             let image: HTMLImageElement = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
