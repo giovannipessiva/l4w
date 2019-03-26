@@ -9,6 +9,7 @@ export interface IRange {
     max: number;
 };
 
+//TODO omg why config flags together with positions???
 export class RenderConfiguration {
     showGrid: boolean = false;
     showEditorGrid: boolean = false;

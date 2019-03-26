@@ -132,4 +132,8 @@ export abstract class AbstractScript {
             EventManager.stopMovement(scene.hero);
         });
     }
+
+    protected changeSkin(newSkin: string) {
+        this.scene.save.config.skin = newSkin;
+    }
 }

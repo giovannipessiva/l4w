@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum } from "../../../../common/src/model/Commons"
+import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle } from "../../../../common/src/model/Commons"
 import { IMap } from "../../../../common/src/model/Map"
 import { Constant } from "./Constant"
 /**
@@ -86,6 +86,44 @@ export namespace Utils {
         secondary.forEach(addToNewMap);
         primary.forEach(addToNewMap);
         return newMap;
+    }
+
+    /**
+     * Return the bigger rectangle which contains both input rectangles
+     */
+    export function mergeRectangles(r1: IRectangle, r2: IRectangle): IRectangle {
+        if(r1 === undefined) {
+            return r2;
+        } else if(r2 === undefined) {
+            return r1;
+        }
+        let x, y, h, w;
+        if(r1.x < r2.x) {
+            x = r1.x;
+        } else {
+            x = r2.x;
+        }
+        if(r1.y < r2.y) {
+            y = r1.y;
+        } else {
+            y = r2.y;
+        }
+        if(r1.x + r1.w > r2.x + r2.w) {
+            w = r1.x + r1.w - x;
+        } else {
+            w = r2.x + r2.w - x;
+        }
+        if(r1.y + r1.h > r2.y + r2.h) {
+            h = r1.y + r1.h - y;
+        } else {
+            h = r2.y + r2.h - y;
+        }
+        return {
+            x: x,
+            y: y,
+            w: w,
+            h: h
+        }
     }
 
     export function resetSelect(select: HTMLSelectElement) {

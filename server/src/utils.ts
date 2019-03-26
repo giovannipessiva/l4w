@@ -96,4 +96,20 @@ export function listFiles(filePath: string, response: Response) {
         response.json(files);
     })
 }
-   
+
+/**
+ * Return a copy of the input object, containing only number/string/boolean fields
+ */
+export function pruneObject(obj: any): any {
+    let out = {};
+    for(let field in obj) {
+        let val = obj[field];
+        while(Array.isArray(val) && val.length > 0) {
+            val = val[0];
+        }
+        if(typeof val === "string" || typeof val === "boolean" || typeof val === "number") {
+            out[field] = obj[field];
+        }
+    }
+    return out;
+}

@@ -6,7 +6,7 @@ import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { defaults } from "./defaults"
-import { IDialogNodeData, IDialogEdgeData } from "../../common/src/model/Dialog";
+import { IDialogNodeData, IDialogEdgeData, IDialogNode } from "../../common/src/model/Dialog";
 
 export namespace database2 {
 
@@ -219,16 +219,80 @@ export namespace database2 {
             }
             break;
         case "dialog":
-            //Scomponi il dialog in nodes e edges, e salvali a DB
-            let dialogNode: IDialogNodeData = JSON.parse(data);
-            let nodesList: IDialogNodeData[];
-            let edgesList: IDialogEdgeData[];
+            // Extract a list of nodes and edges from the dialog tree, and save them to DB
+            let dialogNode: IDialogNode = JSON.parse(data);
+            let nodesList: IDialogNodeData[] = [];
+            let edgesList: IDialogEdgeData[] = [];
 
-            //TODO next
-         
+            traverseDialogTree(nodesList, edgesList, dialogNode);
+
+            // Save the two lists
+            if(nodesList.length > 0) {
+                let counter = nodesList.length;
+                let callbackSuccess = function() {
+                    counter--;
+                    if(counter <= 0) {
+                        response.status(HttpStatus.OK).send("");
+                    }
+                }
+                for(let node of nodesList) {
+                    models.l4w_dialog_node.upsert({
+                        id : node.id,
+                        string : node.message,
+                        genericString: node.genericMessage
+                    }).then(callbackSuccess, function(error: any) {
+                        counter = 999;
+                        manageQueryError(response, error);
+                    });
+                    if(node.edgeIds !== undefined) {
+                        for(let edge of node.edgeIds) {
+                            models.l4w_dialog_node_edges.upsert({
+                                node : node.id,
+                                edge: edge
+                            }).then(undefined, function(error: any) {
+                                manageQueryError(response, error);
+                            });
+                        }
+                    }
+                }
+            }
+            if(edgesList.length > 0) {
+                let counter = edgesList.length;
+                let callbackSuccess = function() {
+                    counter--;
+                    if(counter <= 0) {
+                        response.status(HttpStatus.OK).send("");
+                    }
+                }
+                for(let edge of edgesList) {
+                    models.l4w_dialog_edge.upsert({
+                        id : edge.id,
+                        string : edge.message,
+                        condition: edge.condition,
+                        condition_params: edge.conditionParams,
+                        script: edge.script,
+                        action: edge.action
+                    }).then(callbackSuccess, function(error: any) {
+                        counter = 999;
+                        manageQueryError(response, error);
+                    });
+                }
+            }
         default:
             console.error("Unexpected case: " + type);
             response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
+        }
+    }
+
+    function traverseDialogTree(nodesList: IDialogNodeData[], edgesList: IDialogEdgeData[], dialogNode?: IDialogNode) {
+        if(dialogNode !== undefined) {
+            if(dialogNode.edges !== undefined) {
+                for(let edge of dialogNode.edges) {
+                    traverseDialogTree(nodesList, edgesList, edge.node);
+                    edgesList.push(utils.pruneObject(edge));
+                }
+            }
+            nodesList.push(utils.pruneObject(dialogNode));
         }
     }
 

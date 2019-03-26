@@ -8,3 +8,4 @@ call .\database\setLocalConnectionConfig.bat
 
 rem Start PostgreSQL server
 pg_ctl -o "-p %local_port%" restart -w -D "%local_data%"
+pause
