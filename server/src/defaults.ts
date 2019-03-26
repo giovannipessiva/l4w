@@ -57,7 +57,7 @@ export namespace defaults {
             imagewidth: 256,
             blocks: [],
             onTop: [],
-            imageData: new HTMLImageElement,
+            imageData: new Image(256, 800),
         };
     }
 
