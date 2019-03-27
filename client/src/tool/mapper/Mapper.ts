@@ -18,7 +18,7 @@ import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace Mapper {
 
-    export var mapper: MapperScene;
+    export let mapper: MapperScene;
 
     export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number) {
         if(!Utils.isEmpty(mapper)) {
@@ -30,7 +30,8 @@ export namespace Mapper {
                     initInput(canvas, scene, grid);
                     initWidgets(canvas, scene, grid);
                     initMapperData(scene, canvas, tilePicker, mapId, function() {
-                        scene.start(canvas);    
+                        scene.start(canvas);
+                        onMapSizeChange();
                     });
                 });
             }, GridTypeEnum.mapper);
@@ -47,6 +48,7 @@ export namespace Mapper {
                 return;
             }
             scene.changeMap(map, function() {
+                onMapSizeChange();
                 setMode(Constant.EditMode.APPLY);
                 callback();
             });
@@ -63,20 +65,32 @@ export namespace Mapper {
     
     export function changeSize(rows: number, columns: number) {
         mapper.resizeMap(rows, columns);
+        mapper.requestedNewFrame = true;
+        onMapSizeChange();
+    }
+
+    export function onMapSizeChange() {
+        // Adapt canvas size
+        let width = Math.round(mapper.getSceneWidth() * mapper.grid.cellW * mapper.grid.scaleX);
+        let height = Math.round(mapper.getSceneHeight() * mapper.grid.cellH * mapper.grid.scaleY);
+        let canvas = <HTMLCanvasElement> document.getElementById("canvas1");
+        canvas.width = width;
+        canvas.height = height;
     }
     
     export function reloadMap(callback: IBooleanCallback) {
         let mapId = MapperPage.getActiveMap();
-        let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
+        let canvas = <HTMLCanvasElement> document.getElementById("canvas1");
         MapManager.loadMap(mapId, canvas, function(map?: IMap) {
             if(map === undefined) {
                 callback(false);
                 return;
             }
             let result = mapper.changeMap(map, function() {
+                callback(result);
+                onMapSizeChange();
                 MapperPage.changeEditState(false);
             });
-            callback(result);
         });
     }
 
@@ -181,6 +195,9 @@ export namespace Mapper {
             grid.refresh();
             scene.changeScale(canvas);
             scene.resetTranslation();
+            scene.requestedNewFrame = true;
+            //TODO next - fix canvas responsive size
+            //onMapSizeChange();
         };
     };
 

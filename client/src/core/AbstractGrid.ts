@@ -1,4 +1,4 @@
-import { IPoint, ICell, IExtendedCell } from "../../../common/src/model/Commons"
+import { IPoint, ICell, IExtendedCell, IRectangle } from "../../../common/src/model/Commons"
 import { Resource } from "./util/Resource"
 import { IRange } from "./util/Commons"
 
@@ -59,16 +59,26 @@ export class AbstractGrid {
     }
 
     refresh() {
-        this.canvas.width = this.baseW * this.scaleX;
-        this.canvas.height = this.baseH * this.scaleY;
+        this.canvas.width = Math.round(this.baseW * this.scaleX);
+        this.canvas.height = Math.round(this.baseH * this.scaleY);
     }
 
-    clear(context: CanvasRenderingContext2D) {
-        context.clearRect(
-            this.currentTranslation.x,
-            this.currentTranslation.y,
-            this.baseW + this.currentTranslation.x,
-            this.baseH + this.currentTranslation.y);
+    clear(context: CanvasRenderingContext2D, clearArea?: IRectangle) {
+        if(clearArea === undefined) {
+            context.clearRect(
+                this.currentTranslation.x,
+                this.currentTranslation.y,
+                this.baseW,
+                this.baseH
+            );
+        } else {
+            context.clearRect(
+                this.currentTranslation.x + clearArea.x * this.cellW,
+                this.currentTranslation.y + clearArea.y * this.cellH,
+                (clearArea.w + 1) * this.cellW,
+                (clearArea.h + 1) * this.cellH
+            );
+        }
     }
 
     /**
@@ -197,13 +207,17 @@ export class AbstractGrid {
      * Adjust the values of min and max visible cells checking the grid limits,
      * so that there is no scrolling near the border
      */
-    private checkBoundariesLimit(min: number, max: number, maxLimit: number): IRange {
+    protected checkBoundariesLimit(min: number, max: number, maxLimit: number, truncate?: boolean): IRange {
         if (min < 0) {
-            max -= min;
+            if(truncate === undefined || !truncate) {
+                max -= min;
+            }
             min = 0;
         }
         if (max >= maxLimit) {
-            min -= (max - maxLimit + 1);
+            if(truncate === undefined || !truncate) {
+                min -= (max - maxLimit + 1);
+            }
             max = maxLimit - 1;
         }
         return {

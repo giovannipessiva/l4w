@@ -162,6 +162,7 @@ export namespace Tilesetter {
                     }
                     tilesetterScene.map.blocks = tilesetterScene.map.tileset.blocks;
                 }
+                tilesetterScene.requestedNewFrame = true;
                 callback(true);
             },
             error: function(ajaxrequest, ajaxOptions, thrownError) {

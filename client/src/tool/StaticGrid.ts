@@ -1,6 +1,7 @@
 import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
 import { Utils } from "../core/util/Utils"
 import { IRange } from "../core/util/Commons"
+import { ICell, IRectangle } from "../../../common/src/model/Commons";
 
 /**
  * Module for managing canvas autosizing
@@ -41,12 +42,12 @@ export class StaticGrid extends AbstractGrid {
                 this.canvasScales.push(props.get("canvasScaleB")!);
                 this.canvasScales.push(props.get("canvasScaleA")!);
 
-                var totCanvasScales = this.canvasScales.length;
+                let totCanvasScales = this.canvasScales.length;
                 this.rowsList = new Array(totCanvasScales);
                 this.columnsList = new Array(totCanvasScales);
 
-                var selectedScaleId = totCanvasScales - 1;
-                for (var i = 0; i < totCanvasScales; i++) {
+                let selectedScaleId = totCanvasScales - 1;
+                for (let i = 0; i < totCanvasScales; i++) {
                     this.rowsList[i] = Math.floor(this.rows / this.canvasScales[i]);
                     this.columnsList[i] = Math.floor(this.columns / this.canvasScales[i]);
                 }
@@ -80,14 +81,62 @@ export class StaticGrid extends AbstractGrid {
         this.updateSizingDerivates();
     }
 
-    getBoundariesX(focusX: number, columns: number): IRange {
-        //TODO seleziona solo il range che puo' essere cambiato
-        return super.getBoundariesX(focusX, columns);
+    getBoundariesX(focusX: number, columns: number, pointer?: ICell, selectionArea?: IRectangle): IRange {
+        if(pointer !== undefined) {
+            // First of all, check if there is a selection area
+            if(selectionArea !== undefined) {
+                return {
+                    min: pointer.i,
+                    max: pointer.i + selectionArea.w
+                }
+            } else {
+                // If there is no selection area, return only the cell where the pointer is 
+                return {
+                    min: pointer.i,
+                    max: pointer.i
+                }
+            }
+        } else {
+            // Redraw the whole visible canvas area
+            return super.getBoundariesX(focusX, columns);
+        }
     }
 
-    getBoundariesY(focusY: number, rows: number): IRange {
-        //TODO seleziona solo il range che puo' essere cambiato
-        return super.getBoundariesY(focusY, rows);
+    getBoundariesY(focusY: number, rows: number, pointer?: ICell, selectionArea?: IRectangle): IRange {
+        if(pointer !== undefined) {
+            // First of all, check if there is a selection area
+            if(selectionArea !== undefined) {
+                return {
+                    min: pointer.j,
+                    max: pointer.j + selectionArea.h
+                }
+            } else {
+                // If there is no selection area, return only the cell where the pointer is 
+                return {
+                    min: pointer.j,
+                    max: pointer.j
+                }
+            }
+        } else {
+            // Redraw the whole visible canvas area
+            return super.getBoundariesY(focusY, rows);
+        }
+    }
+
+    /**
+     * Given an input Rectangle, return an output Rectangle <= input,
+     * which is entirely contained in the visible area of the canvas
+     */
+    getVisibleRectangle(r: IRectangle, maxW: number, maxH: number): IRectangle {
+        let xRange = this.checkBoundariesLimit(r.x, r.x + r.w, maxW, true);
+        let yRange = this.checkBoundariesLimit(r.y, r.y + r.h, maxH, true);
+
+        return {
+            x: xRange.min,
+            y: yRange.min,
+            w: xRange.max - xRange.min,
+            h: yRange.max - yRange.min
+        };
     }
 
     refresh() {

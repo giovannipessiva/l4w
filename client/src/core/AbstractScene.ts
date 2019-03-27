@@ -2,10 +2,10 @@ import { TilesetManager } from "./manager/TilesetManager"
 import { MapManager } from "./manager/MapManager"
 import {  } from "./AbstractGrid"
 import { IMap } from "../../../common/src/model/Map"
-import { IPoint, ICell, DirectionEnum } from "../../../common/src/model/Commons"
+import { IPoint, ICell, DirectionEnum, IRectangle } from "../../../common/src/model/Commons"
 import { ITileset } from "../../../common/src/model/Tileset"
 import { Constant } from "./util/Constant"
-import { RenderConfiguration, IRange } from "./util/Commons"
+import { RenderConfiguration } from "./util/Commons"
 import { Utils } from "./util/Utils"
 import { Resource } from "./util/Resource"
 import { AbstractGrid } from "./AbstractGrid"
@@ -41,6 +41,8 @@ export abstract class AbstractScene {
     pauseStartTime: number | undefined;
     pauseDuration: number | undefined;
 
+    redrawArea: IRectangle;
+
     constructor(grid: AbstractGrid) {
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
@@ -72,26 +74,19 @@ export abstract class AbstractScene {
             _cancelAnimationFrame(frameId);
             return;
         }
-        
-        let boundariesY = this.grid.getBoundariesY(this.focus.y, this.getSceneHeight());
-        let minRow = boundariesY.min;
-        let maxRow = boundariesY.max;
-        let boundariesX = this.grid.getBoundariesX(this.focus.x, this.getSceneWidth());
-        let minColumn = boundariesX.min;
-        let maxColumn = boundariesX.max;
 
-        // Rendering
-        this.render(this.map, this.context, minRow, maxRow, minColumn, maxColumn);
+        this.render(this.map, this.context);
 
-        this.mainGameLoop_post(boundariesX, boundariesY);
+        this.mainGameLoop_post();
     }
 
+    protected abstract getRedrawArea(redrawAll?: boolean): IRectangle;
+
     protected mainGameLoop_pre(): boolean {
-        this.grid.clear(this.context);
         return true;
     }
 
-    protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
+    protected mainGameLoop_post() {
     }
 
     protected renderPointer(): void {
@@ -310,7 +305,12 @@ export abstract class AbstractScene {
         return this.map.width;
     }
 
-    protected render(map: IMap, context: CanvasRenderingContext2D, minRow: number, maxRow: number, minColumn: number, maxColumn: number, renderOnTop: boolean = true) {
+    protected render(map: IMap, context: CanvasRenderingContext2D, renderOnTop: boolean = true) {
+        let minRow = this.redrawArea.y;
+        let maxRow = this.redrawArea.y + this.redrawArea.h;
+        let minColumn = this.redrawArea.x;
+        let maxColumn = this.redrawArea.x + this.redrawArea.w;
+
         if (!Utils.isEmpty(map)) {
             // Render base cells and events
             for (let j = minRow; j <= maxRow; j++) {

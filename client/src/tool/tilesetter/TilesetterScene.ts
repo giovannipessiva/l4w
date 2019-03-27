@@ -42,6 +42,7 @@ export class TilesetterScene extends AbstractTileScene {
             default:
                 console.error("Unexpected case");
         };
+        this.requestedNewFrame = true;
     }
 
     selectPrecisely(i: number, j: number, x: number, y: number) {

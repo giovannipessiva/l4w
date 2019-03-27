@@ -51,6 +51,26 @@ export class MapperScene extends AbstractStaticScene {
         }
     }
 
+    protected mainGameLoop_pre() {
+        if (!super.mainGameLoop_pre()) {
+            return false;
+        }
+        return true;
+    }
+
+    protected getRedrawArea(redrawAll?: boolean): IRectangle {
+        let selectionArea = this.tilePicker.getSelectionArea();
+        return super.getRedrawArea(redrawAll, selectionArea);
+    }
+
+    getSceneHeight() {
+        return this.map.height;
+    }
+
+    getSceneWidth() {
+        return this.map.width;
+    }
+
     select(i: number, j: number) {
         super.select(i, j);
     }
@@ -187,7 +207,11 @@ export class MapperScene extends AbstractStaticScene {
                 return false;
             }
         }
-        super.changeMap(map, callback);
+        let mapperScene = this;
+        super.changeMap(map, function(scene: AbstractScene) {
+            callback(scene);
+            mapperScene.requestedNewFrame = true;
+        });
         return true;   
     }
 
@@ -197,6 +221,7 @@ export class MapperScene extends AbstractStaticScene {
 
     setActiveLayer(activeLayer: Constant.MapLayer) {
         this.activeLayer = activeLayer;
+        this.requestedNewFrame = true;
     }
 
     setSelectedEventCell(cell?: ICell) {
@@ -205,6 +230,7 @@ export class MapperScene extends AbstractStaticScene {
     
     setEditMode(editMode: Constant.EditMode) {
         this.editMode = editMode;
+        this.requestedNewFrame = true;
     }
     getMap(): IMap {
         return this.map;

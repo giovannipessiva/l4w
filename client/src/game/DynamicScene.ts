@@ -1,11 +1,11 @@
-import { ICell, LanguageEnum } from "../../../common/src/model/Commons";
+import { ICell, LanguageEnum, IRectangle } from "../../../common/src/model/Commons";
 import { IEvent } from "../../../common/src/model/Event";
 import { ISave } from "../../../common/src/model/Save";
 import { AbstractScene } from "../core/AbstractScene";
 import { EventManager } from "../core/manager/EventManager";
 import { MapManager } from "../core/manager/MapManager";
 import { SaveManager } from "../core/manager/SaveManager";
-import { emptyFz, IBooleanCallback, IRange } from "../core/util/Commons";
+import { emptyFz, IBooleanCallback } from "../core/util/Commons";
 import { Constant } from "../core/util/Constant";
 import { Utils } from "../core/util/Utils";
 import { DynamicGrid } from "./DynamicGrid";
@@ -97,11 +97,12 @@ export class DynamicScene extends AbstractScene {
         // Events logic
         //this.manageMovements();
 
+        this.redrawArea = this.getRedrawArea();
         return true;
     }
 
-    protected mainGameLoop_post(boundariesX: IRange, boundariesY: IRange) {
-        super.mainGameLoop_post(boundariesX, boundariesY);
+    protected mainGameLoop_post() {
+        super.mainGameLoop_post();
 
         //TODO rimuovere a regime
         this.context.fillStyle = "#000000";
@@ -109,6 +110,17 @@ export class DynamicScene extends AbstractScene {
         this.context.fillText("(it's not ready yet)", this.grid.getCurrentTranslation().x + 20, this.grid.getCurrentTranslation().y + 40);
 
         this.renderFPS();
+    }
+
+    protected getRedrawArea(redrawAll?: boolean): IRectangle {
+        let boundariesX = this.grid.getBoundariesX(this.focus.x, this.getSceneWidth());
+        let boundariesY = this.grid.getBoundariesY(this.focus.y, this.getSceneHeight());
+        return {
+            x: boundariesX.min,
+            y: boundariesY.min,
+            h: boundariesY.max - boundariesY.min,
+            w: boundariesX.max - boundariesX.min
+        }
     }
 
     toggleFPS(enable?: boolean) {

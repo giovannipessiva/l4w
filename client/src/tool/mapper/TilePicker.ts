@@ -52,7 +52,7 @@ export namespace TilePicker {
     }
 
     function initInput(canvas: HTMLCanvasElement, grid: StaticGrid) {
-        var inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
+        let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
 
         Input.init(
             canvas,
@@ -74,6 +74,7 @@ export namespace TilePicker {
             },
             function(i, j, mouseButton) {
                 //Ongoing
+                tilePicker.requestedNewFrame = true;
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     tilePicker.selectEnd(i, j);
                 }
