@@ -3,15 +3,15 @@
  */
 export namespace Compatibility {
 
-    //TODO usa su https, per evitare errore "Bloccato il caricamento di contenuto misto attivo (mixed active content)"
-//    const THIRDPARTY_COOKIE_CHECK_URL = "http://rpt.altervista.org/api/3rdpartycookiecheck/start.html";
-
     export function check() {
+        // Mandatory
         canvas();
+
+        // Optionals
         serviceWorker();
         webWorker();
         webSpeech();
-        thirdPartyCookies();
+        passiveEventListeners();
     }
 
     function canvas(): boolean {
@@ -47,17 +47,21 @@ export namespace Compatibility {
         return true;
     }
 
-    function thirdPartyCookies() {
-//        let receiveMessage = function(event) {
-//            if (event.data === "MM:3PCunsupported") {
-//                console.error("Thid party cookies are not supported");
-//            }
-//        };
-//        window.addEventListener("message", receiveMessage, false);
-//
-//        let iframe: HTMLIFrameElement = document.createElement("iframe");
-//        iframe.src = THIRDPARTY_COOKIE_CHECK_URL;
-//        iframe.style.display = "none";
-//        document.body.appendChild(iframe);
+    /**
+     * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+     */
+    export function passiveEventListeners(): boolean {
+        // Test via a getter in the options object to see if the passive property is accessed
+        let supportsPassive = false;
+        try {
+            let opts = Object.defineProperty({}, "passive", {
+                get: function() {
+                    supportsPassive = true;
+                }
+            });
+            window.addEventListener("testPassive", null!, opts);
+            window.removeEventListener("testPassive", null!, opts);
+        } catch (e) {}
+        return supportsPassive;
     }
 }

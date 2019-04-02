@@ -198,6 +198,7 @@ export class MapperScene extends AbstractStaticScene {
 
     resizeMap(rows: number, columns: number) {
         MapManager.resizeMap(this.map, rows, columns);
+        (<StaticGrid> this.grid).updateSize(rows, columns);
     }
     
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }): boolean {
@@ -210,6 +211,7 @@ export class MapperScene extends AbstractStaticScene {
         let mapperScene = this;
         super.changeMap(map, function(scene: AbstractScene) {
             callback(scene);
+            mapperScene.resizeMap(map.height, map.width);
             mapperScene.requestedNewFrame = true;
         });
         return true;   

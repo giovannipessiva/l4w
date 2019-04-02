@@ -203,7 +203,7 @@ export namespace Game {
             },
             function() {
                 scene.togglePause(true);
-                grid.refresh();
+                grid.refreshCanvasSize();
                 scene.changeScale(canvas);
                 scene.reapplyTranslation();
                 scene.togglePause(false);

@@ -12,7 +12,7 @@ export class StaticGrid extends AbstractGrid {
     private columnsList: number[];
     private canvasScales: number[];
     private overriddenProps: Map<string, number>;
-    
+
     constructor(
         canvas: HTMLCanvasElement,
         onCompleted: { (grid: StaticGrid): void },
@@ -56,28 +56,28 @@ export class StaticGrid extends AbstractGrid {
             case GridTypeEnum.tilePicker:
                 this.scaleX = 1;
                 this.scaleY = 1;
-                // Use the canvas size, which have been set according to the tile
-                this.updateSize(this.canvas.width,this.canvas.height);
+                break;
+            default:
+                console.error("Unexpected gridType case: " + this.gridType);
         }
     }
 
     /**
-     * Usato quando cambia la scala
+     * Should be called on scale changes (only Mapper)
      */
     selectScale(scaleId: number) {
-        this.rows = this.rowsList[scaleId];
-        this.columns = this.columnsList[scaleId];
-        this.updateSizingDerivates();
         this.scaleX = this.canvasScales[scaleId];
         this.scaleY = this.canvasScales[scaleId];
     }
     
     /**
-     * Usato quando cambia la dimensione 
+     * Should be called on canvas size changes:
+     * - on tileset change 
+     * - on map change
      */
-    updateSize(widthPx: number, heightPx: number) {
-        this.rows = Math.floor(heightPx / this.cellH);
-        this.columns = Math.floor(widthPx / this.cellW);
+    updateSize(rows: number, columns: number) {
+        this.rows = rows;
+        this.columns = columns;
         this.updateSizingDerivates();
     }
 
@@ -137,10 +137,5 @@ export class StaticGrid extends AbstractGrid {
             w: xRange.max - xRange.min,
             h: yRange.max - yRange.min
         };
-    }
-
-    refresh() {
-        super.refresh();
-
     }
 }

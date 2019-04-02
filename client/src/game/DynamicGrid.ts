@@ -26,7 +26,7 @@ export class DynamicGrid extends AbstractGrid {
         this.scaleStepY = this.cellH * Math.pow(2,-10);
     }
 
-    public refresh() {
+    refreshCanvasSize() {
         let ratioH = this.baseH / this.height();
         let ratioW = this.baseW / this.width();
         let newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
@@ -37,11 +37,7 @@ export class DynamicGrid extends AbstractGrid {
         */
         this.scaleX = newScale - (newScale % this.scaleStepX);
         this.scaleY = newScale - (newScale % this.scaleStepY);
-        super.refresh();
-    }
-    
-    public updateSizingDerivates() {
-        super.updateSizingDerivates();
+        super.refreshCanvasSize();
     }
 
     private width() {

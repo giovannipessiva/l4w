@@ -31,7 +31,6 @@ export namespace Mapper {
                     initWidgets(canvas, scene, grid);
                     initMapperData(scene, canvas, tilePicker, mapId, function() {
                         scene.start(canvas);
-                        onMapSizeChange();
                     });
                 });
             }, GridTypeEnum.mapper);
@@ -48,7 +47,6 @@ export namespace Mapper {
                 return;
             }
             scene.changeMap(map, function() {
-                onMapSizeChange();
                 setMode(Constant.EditMode.APPLY);
                 callback();
             });
@@ -59,6 +57,7 @@ export namespace Mapper {
         mapper.togglePause(true);
         mapper.changeTile(tile, function(scene) {
             mapper.togglePause(false);
+            mapper.requestedNewFrame = true;
         });
         mapper.setTilePicker(tilePicker);
     }
@@ -66,18 +65,8 @@ export namespace Mapper {
     export function changeSize(rows: number, columns: number) {
         mapper.resizeMap(rows, columns);
         mapper.requestedNewFrame = true;
-        onMapSizeChange();
     }
 
-    export function onMapSizeChange() {
-        // Adapt canvas size
-        let width = Math.round(mapper.getSceneWidth() * mapper.grid.cellW * mapper.grid.scaleX);
-        let height = Math.round(mapper.getSceneHeight() * mapper.grid.cellH * mapper.grid.scaleY);
-        let canvas = <HTMLCanvasElement> document.getElementById("canvas1");
-        canvas.width = width;
-        canvas.height = height;
-    }
-    
     export function reloadMap(callback: IBooleanCallback) {
         let mapId = MapperPage.getActiveMap();
         let canvas = <HTMLCanvasElement> document.getElementById("canvas1");
@@ -88,7 +77,6 @@ export namespace Mapper {
             }
             let result = mapper.changeMap(map, function() {
                 callback(result);
-                onMapSizeChange();
                 MapperPage.changeEditState(false);
             });
         });
@@ -192,12 +180,10 @@ export namespace Mapper {
         let inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         inputRange.onchange = function(e: Event) {
             grid.selectScale(+inputRange.value);
-            grid.refresh();
+            grid.refreshCanvasSize();
             scene.changeScale(canvas);
             scene.resetTranslation();
             scene.requestedNewFrame = true;
-            //TODO next - fix canvas responsive size
-            //onMapSizeChange();
         };
     };
 

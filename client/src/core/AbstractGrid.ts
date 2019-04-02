@@ -38,7 +38,7 @@ export class AbstractGrid {
             Resource.loadProperties(function(props: Map<string, number>) {
                 grid.deferredInit(props);
                 grid.updateSizingDerivates();
-                grid.refresh();
+                grid.refreshCanvasSize();
                 onCompleted(grid);
             });
         })(this);
@@ -51,6 +51,9 @@ export class AbstractGrid {
         this.columns = props.get(GridTypeEnum[this.gridType] + "Columns")!;
     }
 
+    /**
+     * Needs to be called when max rows and columns change
+     */
     updateSizingDerivates() {
         this.baseH = this.cellH * this.rows;
         this.baseW = this.cellW * this.columns;
@@ -58,9 +61,13 @@ export class AbstractGrid {
         this.halfColumns = Math.floor(this.columns / 2);
     }
 
-    refresh() {
-        this.canvas.width = Math.round(this.baseW * this.scaleX);
-        this.canvas.height = Math.round(this.baseH * this.scaleY);
+    /**
+     * Update canvas size based on context size
+     * Needs to be called on scale changes
+     */
+    refreshCanvasSize() {
+        this.canvas.width = Math.floor(this.baseW * this.scaleX);
+        this.canvas.height = Math.floor(this.baseH * this.scaleY);
     }
 
     clear(context: CanvasRenderingContext2D, clearArea?: IRectangle) {

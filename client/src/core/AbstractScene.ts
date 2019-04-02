@@ -239,8 +239,13 @@ export abstract class AbstractScene {
         //TODO sposta l'inizializzazione del context
         this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
         // Reset and reapply scale
-        this.context.setTransform(1,0,0,1,0,0);
-        this.context.scale(this.grid.scaleX, this.grid.scaleY);
+        try {
+            this.context.setTransform(1,0,0,1,0,0);
+            this.context.scale(this.grid.scaleX, this.grid.scaleY);
+        } catch(e) {
+            // This can occur on Firefox for a canvas of abnormal size
+            console.error(e);
+        }
     }
         
     togglePause(pause?: boolean) {

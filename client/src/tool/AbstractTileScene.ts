@@ -7,6 +7,7 @@ import { IRectangle } from "../../../common/src/model/Commons";
  */
 export abstract class AbstractTileScene extends AbstractStaticScene {
 
+    //TODO why cant I use map.width here?
     private width: number;
     private height: number;
 
@@ -23,7 +24,7 @@ export abstract class AbstractTileScene extends AbstractStaticScene {
         this.map.width = this.width;
         this.map.height = this.height;
         
-        (<StaticGrid> this.grid).updateSize(widthPx, heightPx);
+        (<StaticGrid> this.grid).updateSize(this.width, this.height);
         this.requestedNewFrame = true;
     }
 
