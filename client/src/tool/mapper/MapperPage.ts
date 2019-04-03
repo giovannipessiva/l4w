@@ -6,6 +6,7 @@ import { IPropertiesCallback } from "../../core/util/Commons"
 import { Constant } from "../../core/util/Constant"
 import { Utils } from "../../core/util/Utils"
 import { IEvent, IEventState } from "../../../../common/src/model/Event"
+import { isNumeric } from "../../../../common/src/Utils"
 import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../../common/src/model/Commons"
 import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
@@ -59,7 +60,7 @@ export namespace MapperPage {
             }
         });
 
-        var canvas = <HTMLCanvasElement>document.getElementById("canvas1");
+        let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
         $("#mapPanel").on("create_node.jstree rename_node.jstree delete_node.jstree", function(e, data) {
             switch (e.type) {
@@ -92,7 +93,7 @@ export namespace MapperPage {
                         flagFirstLoad = false;
                     }
                     $("#mapDetailPanel").show();
-                    var node: JSTreeNode = getSelectedNode();
+                    let node: JSTreeNode = getSelectedNode();
                     if (Utils.isEmpty(node.data)) {
                         //TODO l'inizilizzazione va fatta da un'altra parte
                         node.data = {
@@ -305,7 +306,12 @@ export namespace MapperPage {
             options[ActionTriggerEnum.OVER] = new Option("Over");
             options[ActionTriggerEnum.AUTO] = new Option("(auto)");
         }
-        select.selectedIndex = state.trigger;
+        if(state.trigger !== undefined && isNumeric(state.trigger)) {
+            select.selectedIndex = state.trigger;
+        } else {
+            // Default value
+            select.selectedIndex = ActionTriggerEnum.CLICK;
+        }
         
         loadActions();
         
