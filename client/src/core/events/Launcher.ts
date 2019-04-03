@@ -15,6 +15,10 @@ export namespace Launcher {
             return false;
         }
         let action = event.states[state].action;
+        if(action === undefined) {
+            // No action to perform
+            return false;
+        }
         if (!(action in scriptClass)) {
             console.error("Action \"" + action + "\" not found in script \"" + script + "\" (event: " + event.name + ")");
             return false;
@@ -42,9 +46,9 @@ export namespace Launcher {
             } else {
                 return scriptClass[action](parameters);
             }
-         } catch(e) {
+        } catch(e) {
             console.error(e);
-         }
+        }
         return false;
     };
 }

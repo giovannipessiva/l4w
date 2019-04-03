@@ -23,6 +23,6 @@ export interface IEvent extends IEventData  {
 
 export interface IEventState extends ICharacter {
     condition: string; // Name of function that returns true if this state can be active (see Conditions.ts)
-    trigger: number; // Type of interaction which will start the action
-    action: string; // Method of the script that will be invoked by the trigger
+    trigger?: number; // Type of interaction which will start the action
+    action?: string; // Method of the script that will be invoked by the trigger
 }

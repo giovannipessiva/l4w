@@ -2,7 +2,7 @@ import { ResourceType } from "../../common/src/Constants";
 import { IMap } from "../../common/src/model/Map";
 import { ITileset } from "../../common/src/model/Tileset";
 import { ISave, IConfig } from "../../common/src/model/Save";
-import { IEvent } from "../../common/src/model/Event";
+import { IEvent, IEventState } from "../../common/src/model/Event";
 import { LanguageEnum } from "../../common/src/model/Commons"
 
 export namespace defaults {
@@ -72,13 +72,22 @@ export namespace defaults {
         };
     }
 
+    export function getDefaultEventState(): IEventState {
+        return {
+            condition: "always",
+            charaset: "fart.png"
+        };
+    }
+
     export function getDefaultEvent(): IEvent {
         return {
             i: 0,
             j: 0,
             id: 0,
-            name: "",
-            states: [],
+            name: "Fart",
+            states: [
+                getDefaultEventState()
+            ],
             memory: {},
             script: "",
             currentState: 0

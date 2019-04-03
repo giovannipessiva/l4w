@@ -185,7 +185,9 @@ export namespace EventManager {
 
             if (direction !== DirectionEnum.NONE) {
                 // Move the event
-                e.states[e.currentState].direction = direction;
+                if(e.states[e.currentState] !== undefined) {
+                    e.states[e.currentState].direction = direction;
+                }
                 e.movementDirection = direction;
                 e.position = {
                     x: e.i * grid.cellW + movementX,
