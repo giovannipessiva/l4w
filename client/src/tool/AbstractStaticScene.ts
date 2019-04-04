@@ -118,6 +118,7 @@ export abstract class AbstractStaticScene extends AbstractScene {
     cleanSelection() {
         this.renderingConfiguration.selectCellStart = undefined;
         this.renderingConfiguration.selectCellEnd = undefined;
+        this.requestedNewFrame = true;
     }
 
     /**

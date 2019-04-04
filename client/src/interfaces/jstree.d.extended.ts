@@ -17,7 +17,5 @@ interface JSTreeNodeState {
 };
 
 interface JSTreeNodeData {
-    w: number;
-    h: number;
-    tile: string;
+    // No additional data
 };

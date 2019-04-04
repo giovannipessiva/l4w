@@ -59,7 +59,10 @@ export class MapperScene extends AbstractStaticScene {
     }
 
     protected getRedrawArea(redrawAll?: boolean): IRectangle {
-        let selectionArea = this.tilePicker.getSelectionArea();
+        let selectionArea;
+        if(this.tilePicker !== undefined) {
+            selectionArea = this.tilePicker.getSelectionArea();
+        }
         return super.getRedrawArea(redrawAll, selectionArea);
     }
 
@@ -212,9 +215,18 @@ export class MapperScene extends AbstractStaticScene {
         super.changeMap(map, function(scene: AbstractScene) {
             callback(scene);
             mapperScene.resizeMap(map.height, map.width);
-            mapperScene.requestedNewFrame = true;
+            MapperScene.onMapSizeChange(mapperScene);
         });
         return true;   
+    }
+
+    static onMapSizeChange(scene: MapperScene) {
+        let inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
+        (<StaticGrid> scene.grid).selectScale(+inputRange.value);
+        (<StaticGrid> scene.grid).refreshCanvasSize();
+        let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
+        scene.changeScale(canvas);
+        scene.requestedNewFrame = true;
     }
 
     setTilePicker(tilePicker: TilePickerScene) {

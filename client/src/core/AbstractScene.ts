@@ -270,7 +270,7 @@ export abstract class AbstractScene {
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }) {
         // Pause rendering
         this.togglePause(true);
-        var scene: AbstractScene = this;
+        let scene: AbstractScene = this;
         if (Utils.isEmpty(map)) {
             console.error("Uninitialized map");
             console.trace();

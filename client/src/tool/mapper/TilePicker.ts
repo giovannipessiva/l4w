@@ -28,16 +28,16 @@ export namespace TilePicker {
         }
     }
 
-    export function loadTile(tile: string, calback: (tilePicker: TilePickerScene) => void) {
+    export function loadTile(tile: string, callback: (tilePicker: TilePickerScene) => void) {
         // Clear the canvas
-        var canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
-        var contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
-        var canvasTilePicker = <HTMLCanvasElement>$("#canvasSelector")[0];
+        let canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
+        let contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
+        let canvasTilePicker = <HTMLCanvasElement>$("#canvasSelector")[0];
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         Resource.load(tile, ResourceType.TILE, function(tileImage) {
             // Resize the canvas
-            var image = new Image();
+            let image = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
             $("#tilePanel").height(image.naturalHeight);
             canvasTile.height = image.naturalHeight;
@@ -47,7 +47,7 @@ export namespace TilePicker {
             // Paint the img in the canvas
             contextTile.drawImage(<HTMLImageElement> tileImage, 0, 0);
             // Manage the tile selector canvas
-            TilePicker.start(canvasTilePicker, calback);
+            TilePicker.start(canvasTilePicker, callback);
         });
     }
 

@@ -12,6 +12,7 @@ import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
 import { EventManager } from "../../core/manager/EventManager"
 import { Mapper } from "./Mapper"
+import { MapperScene } from "./MapperScene"
 import { ResourceType } from "../../../../common/src/Constants";
 
 export { Constant } from "../../core/util/Constant"
@@ -94,22 +95,25 @@ export namespace MapperPage {
                     }
                     $("#mapDetailPanel").show();
                     let node: JSTreeNode = getSelectedNode();
-                    if (Utils.isEmpty(node.data)) {
-                        //TODO l'inizilizzazione va fatta da un'altra parte
-                        node.data = {
-                            w: 25,
-                            h: 20,
-                            tile: "002-Woods01.png"
-                        };
-                    }
-                    $("#mapSizeW").val(node.data.w + "");
-                    $("#mapSizeH").val(node.data.h + "");
-                    if ((<HTMLSelectElement>document.getElementById("tiles")).value !== node.data.tile) {
-                        $("#tiles").val(node.data.tile);
-                        TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
-                            Mapper.start(canvas, tilePicker, parseInt(node.id));
-                        });
-                    }
+
+                    Mapper.start(canvas, parseInt(node.id), function(mapperScene: MapperScene) {
+                        if(mapperScene.map === undefined) {
+                            console.error("Map is undefined, for id: " + node.id);
+                            return;
+                        }
+                        // Update map size input fields
+                        $("#mapSizeW").val(mapperScene.map.width + "");
+                        $("#mapSizeH").val(mapperScene.map.height + "");
+                        // Update the tile
+                        if (mapperScene.map.tileset !== undefined
+                            && (<HTMLSelectElement> document.getElementById("tiles")).value !== mapperScene.map.tileset.image) {
+                            $("#tiles").val(mapperScene.map.tileset.image);
+                            TilePicker.loadTile(mapperScene.map.tileset.image, function(tilePicker: TilePickerScene) {
+                                mapperScene.setTilePicker(tilePicker);
+                                TilePicker.setMapper(mapperScene);
+                            });
+                        }
+                    });
                     break;
                 default:
                     console.log("Action: " + data.action);
@@ -130,10 +134,9 @@ export namespace MapperPage {
     }
 
     export function changeSize() {
-        let node = getSelectedNode();
-        node.data.w = parseInt($("#mapSizeW").val());
-        node.data.h = parseInt($("#mapSizeH").val());
-        Mapper.changeSize(node.data.h, node.data.w);
+        let w = parseInt($("#mapSizeW").val());
+        let h = parseInt($("#mapSizeH").val());
+        Mapper.changeSize(h, w);
         changeEditState(true);
     }
 

@@ -8,28 +8,28 @@ import { EventManager } from "../../core/manager/EventManager"
 import { Constant } from "../../core/util/Constant"
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
-import { emptyFz, IBooleanCallback, IEmptyCallback } from "../../core/util/Commons"
+import { emptyFz, IBooleanCallback } from "../../core/util/Commons"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { MapperPage } from "./MapperPage"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
-import { TilePicker } from "./TilePicker"
 import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace Mapper {
 
     export let mapper: MapperScene;
 
-    export function start(canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number) {
+    export function start(canvas: HTMLCanvasElement, mapId: number, callback: (mapperScene: MapperScene)=>void) {
         if(!Utils.isEmpty(mapper)) {
-            initMapperData(mapper, canvas, tilePicker, mapId, emptyFz);
+            initMapperData(mapper, canvas, mapId, callback);
         } else {
             new StaticGrid(canvas, function(grid: StaticGrid) {
                 new MapperScene(grid, function(scene: MapperScene) {
                     mapper = scene;
                     initInput(canvas, scene, grid);
                     initWidgets(canvas, scene, grid);
-                    initMapperData(scene, canvas, tilePicker, mapId, function() {
+                    initMapperData(scene, canvas, mapId, function(mapperScene: MapperScene, tileset?: string) {
+                        callback(scene);
                         scene.start(canvas);
                     });
                 });
@@ -37,18 +37,16 @@ export namespace Mapper {
         }
     }
     
-    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, tilePicker: TilePickerScene, mapId: number, callback: IEmptyCallback) {
-        TilePicker.setMapper(scene);
-        scene.setTilePicker(tilePicker);
+    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, mapId: number, callback: (mapperScene: MapperScene)=>void) {
         MapManager.loadMap(mapId, canvas, function(map?: IMap) {
             if(map === undefined) {
                 console.error("Cannot init mapper, cannot load map: " + mapId);
-                callback();
+                callback(scene,);
                 return;
             }
             scene.changeMap(map, function() {
                 setMode(Constant.EditMode.APPLY);
-                callback();
+                callback(scene);
             });
         });    
     }
@@ -179,12 +177,8 @@ export namespace Mapper {
     function initWidgets(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid) {
         let inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         inputRange.onchange = function(e: Event) {
-            grid.selectScale(+inputRange.value);
-            grid.refreshCanvasSize();
-            scene.changeScale(canvas);
-            scene.resetTranslation();
-            scene.requestedNewFrame = true;
-        };
+            MapperScene.onMapSizeChange(scene);
+        }
     };
 
     export function setMode(editMode: Constant.EditMode) {
