@@ -10,7 +10,7 @@ import https from "https"
 import * as utils from "./utils"
 import { security } from "./security"
 import { models } from "./models/index"
-import { database2 } from "./database"
+import { database } from "./database"
 
 export namespace session {
         
@@ -70,7 +70,7 @@ export namespace session {
                             try {
                                 let auth = JSON.parse(authResponse);
                                 if(security.validateTokeninfoResponse(auth)) {
-                                    database2.logUser(auth.email, request, response);
+                                    database.logUser(auth.email, request, response);
                                     onSuccess();
                                 } else {
                                     // Authentication failed
@@ -94,7 +94,7 @@ export namespace session {
             });
         } else {
             // Valid session found
-            database2.logUserSessionAccess(request.session.user);
+            database.logUserSessionAccess(request.session.user);
             onSuccess();
         }
     }

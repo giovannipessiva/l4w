@@ -155,6 +155,10 @@ export namespace Mapper {
                     }
                 } else {
                     scene.selectEnd(i, j);
+                    // Ongoing right-click selection
+                    //TODO Don't request a whole new frame,
+                    // only redraw the selection area
+                    scene.requestedNewFrame = true;
                 }
                 scene.updatePointer(i, j);
             },

@@ -10,7 +10,7 @@ import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { session } from "./session"
 import * as utils2 from "./utils"
 import { security } from "./security"
-import { database2 } from "./database"
+import { database } from "./database"
 import { mapper } from "./mapper"
 
 //TODO import.meta require target=esnext and module=esnext
@@ -45,7 +45,7 @@ app.get("/", function(request: Request, response: Response) {
         });
     } else {
         if(session.isAuthenticated(request)) {
-           database2.logUserSessionAccess(session.getUser(request));
+           database.logUserSessionAccess(session.getUser(request));
             utils2.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
         } else {
             utils2.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
@@ -63,7 +63,7 @@ app.get("/edit", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
         utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
-       database2.logUserSessionAccess(session.getUser(request));
+       database.logUserSessionAccess(session.getUser(request));
         utils2.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
     }
 });
@@ -78,7 +78,7 @@ app.get("/edit/:editor", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
         utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
-       database2.logUserSessionAccess(session.getUser(request));
+       database.logUserSessionAccess(session.getUser(request));
         let editor = request.params.editor;
         utils2.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
     }
@@ -115,7 +115,7 @@ app.get("/data/:type/", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         user = session.getUser(request);
     }
-    database2.read(type, undefined, user, response);
+    database.read(type, undefined, user, response);
 });
 app.get("/data/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
@@ -126,7 +126,7 @@ app.get("/data/:type/:file", function(request: Request, response: Response) {
         utils2.sendFile(filePath, file, response);
         return;
     }
-    database2.read(type, file, session.getUser(request), response);
+    database.read(type, file, session.getUser(request), response);
 });
 app.get("/assets/:file", function(request: Request, response: Response) {
     let file = request.params.file;
@@ -183,7 +183,7 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
                 break;
             case ResourceType.SAVE:
             case ResourceType.TILESET:
-               database2.write(type, fileId, data, session.getUser(request), response);
+               database.write(type, fileId, data, session.getUser(request), response);
                 break;
             }
         });
@@ -193,14 +193,14 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
 });
 app.get("/news", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
-       database2.getNews(session.getUser(request), response);
+       database.getNews(session.getUser(request), response);
     } else {
         response.status(HttpStatus.FORBIDDEN).send("");
     }
 });
 
 // Initialize DB connection
-database2.init().then(
+database.init().then(
     function() {
         app.listen(app.get("port"), function() {
             console.log("L4W is running on port", app.get("port"));

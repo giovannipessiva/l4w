@@ -8,7 +8,7 @@ import { constants } from "./constants"
 import { defaults } from "./defaults"
 import { IDialogNodeData, IDialogEdgeData, IDialogNode } from "../../common/src/model/Dialog";
 
-export namespace database2 {
+export namespace database {
 
     //TODO this is nonsense, please cleanse it
     function getDefaults(type: string, file: string | undefined) {

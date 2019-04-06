@@ -13,7 +13,7 @@
     "express-session": "1.15.6",
     "npm": "6.9.0",
     "pg": "7.9.0",
-    "sequelize": "5.2.9"
+    "sequelize": "5.2.12"
   },
   "devDependencies": {
     "@babel/core": "7.4.3",
@@ -35,7 +35,7 @@
     "sequelize-auto": "0.4.29",
     "ts-loader": "5.3.3",
     "tslint": "5.15.0",
-    "typescript": "3.4.1",
+    "typescript": "3.4.2",
     "webpack": "4.29.6"
   },
   "engines": {

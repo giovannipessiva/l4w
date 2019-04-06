@@ -97,18 +97,19 @@ export namespace TilePicker {
     };
 
     export function saveData(callback: IBooleanCallback) {
-        var updatedData = $("#mapPanel").jstree(true).get_json("#");
+        let updatedData = $("#mapPanel").jstree(true).get_json("#");
         $.ajax({
             url: "edit/maps",
             type: Constant.RequestType.POST,
             contentType: Constant.MimeType.JSON,
             data: JSON.stringify(updatedData),
-            success: function(result) {
-                console.log("Maps updated");
-                if(callback !== null) {
-                    //TODO come capire se il salvataggio � fallito?
-                    callback(true);
-                }
+            success: function(data: any, textStatus: string, jqXHR: JQueryXHR) {
+                console.log("Maps updated: " + data);
+                callback(true);
+            },
+            error: function(jqXHR: JQueryXHR, textStatus: string, errorThrown: string) {
+                console.error("Maps update failed: " + textStatus + " - " + errorThrown);
+                callback(false);
             }
         });
     }
