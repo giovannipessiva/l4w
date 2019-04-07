@@ -24,7 +24,6 @@ export namespace MapperPage {
     export const BUTTON_ID_MODE = "mode";
     export const BUTTON_ID_LAYER = "layer";
 
-    let flagFirstLoad: boolean = true;
     let flagEventModified: boolean = false;
     let currentState: IEventState;
     let currentEvent: IEvent | undefined;
@@ -43,25 +42,41 @@ export namespace MapperPage {
         Compatibility.check();
 
         $("#mapPanel").jstree({
-            "core": {
-                "animation": 0,
-                "data": {
-                    "url": base_path + "data/map",
-                    "dataType": "json"
+            core: {
+                animation: 0,
+                data: {
+                    url: base_path + "data/map",
+                    dataType: "json"
                 },
-                "check_callback": true,
+                check_callback: true,
             },
-            "multiple": false,
-            "plugins": ["dnd", "contextmenu"],
-            "themes": {
-                "dots": false
+            multiple: false,
+            plugins: ["dnd", "contextmenu"],
+            themes: {
+                dots: false
             }
         });
 
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
-        $("#mapPanel").on("create_node.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
+        $("#mapPanel").on("create_node.jstree ready.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
             switch (e.type) {
+                case "ready":
+                    // If no node is selected, select the first
+                    let currentNode = getSelectedNode();
+                    if(currentNode === undefined) {
+                        let nodeList = $("#mapPanel").jstree(true).get_json("#", {
+                            "flat": true,
+                            "no_state": true,
+                            "no_id": false,
+                            "no_children": false,
+                            "no_data": true
+                        });
+                        if(nodeList.length > 0) {
+                            $("#mapPanel").jstree(true).select_node(nodeList[0]);
+                        }
+                    }
+                    break;
                 case "create_node":
                 case "rename_node":
                 case "delete_node":
@@ -80,9 +95,6 @@ export namespace MapperPage {
                             break;
                         case "model":
                         case "select_node":
-                            if (flagFirstLoad) {
-                                flagFirstLoad = false;
-                            }
                             $("#mapDetailPanel").show();
                             let node: JSTreeNode = getSelectedNode();
         
@@ -139,10 +151,9 @@ export namespace MapperPage {
 
     function loadTiles() {
         $.getJSON(base_path + "assetlist/tile", function(data) {
-            let sel = $("#tiles");
+            let sel = <HTMLSelectElement> document.getElementById("tiles");
             for (let i = 0; i < data.length; i++) {
-                sel.append("<option value='" + data[i] + "'>" + data[i]
-                    + "</option>");
+                sel.options.add(new Option( data[i], data[i]));
             }
         });
     }
@@ -155,10 +166,9 @@ export namespace MapperPage {
     }
 
     export function changeTile() {
-        let node = $("#mapPanel").jstree(true).get_selected(true)[0];
-        node.data.tile = $("#tiles").val();
-        TilePicker.loadTile(node.data.tile, function(tilePicker: TilePickerScene) {
-            Mapper.changeTile(node.data.tile, tilePicker);
+        let tile = $("#tiles").val();
+        TilePicker.loadTile(tile, function(tilePicker: TilePickerScene) {
+            Mapper.changeTile(tile, tilePicker);
         });
         changeEditState(true);
     }
@@ -189,7 +199,7 @@ export namespace MapperPage {
     export function reload() {
         Mapper.reloadMap(function(result: boolean) {
             if (result) {
-                $("#mapPanel").jstree(true).refresh(false, true);
+                $("#mapPanel").jstree(true).refresh(true, false);
             }
         });
     }

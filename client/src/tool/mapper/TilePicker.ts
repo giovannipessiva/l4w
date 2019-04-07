@@ -29,9 +29,9 @@ export namespace TilePicker {
 
     export function loadTile(tile: string, callback: (tilePicker: TilePickerScene) => void) {
         // Clear the canvas
-        let canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
-        let contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
-        let canvasTilePicker = <HTMLCanvasElement>$("#canvasSelector")[0];
+        let canvasTile = <HTMLCanvasElement> document.getElementById("canvasTile");
+        let contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");
+        let canvasTilePicker = <HTMLCanvasElement> document.getElementById("canvasSelector");
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         Resource.load(tile, ResourceType.TILE, function(tileImage) {
