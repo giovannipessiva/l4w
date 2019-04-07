@@ -1,8 +1,7 @@
 import { Utils } from "../../core/util/Utils"
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
-import { emptyFz, IBooleanCallback } from "../../core/util/Commons"
-import { Constant } from "../../core/util/Constant"
+import { emptyFz } from "../../core/util/Commons"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { StaticGrid } from "../StaticGrid"
@@ -96,21 +95,16 @@ export namespace TilePicker {
         );
     };
 
-    export function saveData(callback: IBooleanCallback) {
-        let updatedData = $("#mapPanel").jstree(true).get_json("#");
-        $.ajax({
-            url: "edit/maps",
-            type: Constant.RequestType.POST,
-            contentType: Constant.MimeType.JSON,
-            data: JSON.stringify(updatedData),
-            success: function(data: any, textStatus: string, jqXHR: JQueryXHR) {
-                console.log("Maps updated: " + data);
-                callback(true);
-            },
-            error: function(jqXHR: JQueryXHR, textStatus: string, errorThrown: string) {
-                console.error("Maps update failed: " + textStatus + " - " + errorThrown);
-                callback(false);
-            }
+    export function saveData(callback: (result: boolean, data?: string)=>void) {
+        let updatedData = $("#mapPanel").jstree(true).get_json("#", {
+            "flat": false,
+            "no_state": true,
+            "no_id": false,
+            "no_children": false,
+            "no_data": false
+        });
+        Resource.sendPOSTRequest("/edit/maps", JSON.stringify(updatedData), function(response?: string) {
+            callback(response !== undefined, response);
         });
     }
 

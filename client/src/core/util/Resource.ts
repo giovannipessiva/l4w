@@ -66,11 +66,11 @@ export namespace Resource {
         return props;
     };
 
-    function sendGETRequest(uri: string, callback: IResponseCallback) {
+    export function sendGETRequest(uri: string, callback: IResponseCallback) {
         sendRequest(Constant.RequestType.GET, undefined, uri, callback);
     };
 
-    function sendPOSTRequest(uri: string, data: string, callback: IResponseCallback) {
+    export function sendPOSTRequest(uri: string, data: string, callback: IResponseCallback) {
         sendRequest(Constant.RequestType.POST, data, uri, callback);
     };
 

@@ -20,6 +20,7 @@ export namespace session {
         let secret: string =  process.env.SESSION_SECRET!;
         let sessionOptions : Session.SessionOptions = {
             cookie: {
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
                 secure: security.getSecureCookieSetting(),
                 sameSite: "lax"
             },

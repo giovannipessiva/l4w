@@ -1,5 +1,3 @@
-//import { } from "../../interfaces/jstree.d.ts"
-//import { } from "../../interfaces/jstree.d.extended.ts"
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
 import { IPropertiesCallback } from "../../core/util/Commons"
@@ -27,7 +25,6 @@ export namespace MapperPage {
     export const BUTTON_ID_LAYER = "layer";
 
     let flagFirstLoad: boolean = true;
-    let flagEdited: boolean = false;
     let flagEventModified: boolean = false;
     let currentState: IEventState;
     let currentEvent: IEvent | undefined;
@@ -63,61 +60,61 @@ export namespace MapperPage {
 
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
-        $("#mapPanel").on("create_node.jstree rename_node.jstree delete_node.jstree", function(e, data) {
+        $("#mapPanel").on("create_node.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
             switch (e.type) {
                 case "create_node":
-                    if (flagEdited) {
-                        $("#mapPanel").jstree(true).disable_node(data.node);
-                    }
                 case "rename_node":
                 case "delete_node":
-                    changeEditState(true, false);
+                    // Disable every node, to avoid map changes before save
+                    changeEditState(true);
                     break;
-                default:
-                    console.log("Type: " + e.type);
-            }
-        });
-
-        $("#mapPanel").on("changed.jstree", function(e, data) {
-            switch (data.action) {
-                case "ready":
-                    // Prevent double call at start
-                    return;
-                case "delete_node":
-                    // Select another node
-                    let previousNode = $("#mapPanel").jstree(true).get_prev_dom(data.node);
-                    $("#mapPanel").jstree(true).select_node(previousNode);
-                    return;
-                case "model":
-                case "select_node":
-                    if (flagFirstLoad) {
-                        flagFirstLoad = false;
-                    }
-                    $("#mapDetailPanel").show();
-                    let node: JSTreeNode = getSelectedNode();
-
-                    Mapper.start(canvas, parseInt(node.id), function(mapperScene: MapperScene) {
-                        if(mapperScene.map === undefined) {
-                            console.error("Map is undefined, for id: " + node.id);
-                            return;
-                        }
-                        // Update map size input fields
-                        $("#mapSizeW").val(mapperScene.map.width + "");
-                        $("#mapSizeH").val(mapperScene.map.height + "");
-                        // Update the tile
-                        if (mapperScene.map.tileset !== undefined
-                            && (<HTMLSelectElement> document.getElementById("tiles")).value !== mapperScene.map.tileset.image) {
-                            $("#tiles").val(mapperScene.map.tileset.image);
-                            TilePicker.loadTile(mapperScene.map.tileset.image, function(tilePicker: TilePickerScene) {
-                                mapperScene.setTilePicker(tilePicker);
-                                TilePicker.setMapper(mapperScene);
+                case "changed":
+                    switch (data.action) {
+                        case "ready":
+                            // Prevent double call at start
+                            break;
+                        case "delete_node":
+                            // Select another node
+                            let previousNode = $("#mapPanel").jstree(true).get_prev_dom(data.node);
+                            $("#mapPanel").jstree(true).select_node(previousNode);
+                            break;
+                        case "model":
+                        case "select_node":
+                            if (flagFirstLoad) {
+                                flagFirstLoad = false;
+                            }
+                            $("#mapDetailPanel").show();
+                            let node: JSTreeNode = getSelectedNode();
+        
+                            Mapper.start(canvas, parseInt(node.id), function(mapperScene: MapperScene) {
+                                if(mapperScene.map === undefined) {
+                                    console.error("Map is undefined, for id: " + node.id);
+                                    return;
+                                }
+                                // Update map size input fields
+                                $("#mapSizeW").val(mapperScene.map.width + "");
+                                $("#mapSizeH").val(mapperScene.map.height + "");
+                                // Update the tile
+                                if (mapperScene.map.tileset !== undefined
+                                    && (<HTMLSelectElement> document.getElementById("tiles")).value !== mapperScene.map.tileset.image) {
+                                    $("#tiles").val(mapperScene.map.tileset.image);
+                                    TilePicker.loadTile(mapperScene.map.tileset.image, function(tilePicker: TilePickerScene) {
+                                        mapperScene.setTilePicker(tilePicker);
+                                        TilePicker.setMapper(mapperScene);
+                                    });
+                                }
                             });
-                        }
-                    });
+                            break;
+                        case "deselect_all":
+                            // Nothing to do here.
+                            break;
+                        default:
+                            console.error("Unexpected event \"changed\" action: " + data.action);
+                            break;
+                    }
                     break;
                 default:
-                    console.log("Action: " + data.action);
-                    break;
+                    console.error("Unexpected event type: " + e.type);
             }
         });
 
@@ -173,16 +170,18 @@ export namespace MapperPage {
                 return;
             }
         }
-        Mapper.saveMap(function(result1: boolean) {
-            if (result1) {
-                MapperPage.changeEditState(false);
-                TilePicker.saveData(function(result2: boolean) {
-                    if (!result2) {
-                        console.error("Salvataggio fallito");
+        TilePicker.saveData(function(result_tree: boolean, response?: string) {
+            if (result_tree) {
+                //TODO next - Read from response the new ids, and propagate them
+                Mapper.saveMap(function(result_map: boolean) {
+                    if (result_map) {
+                        MapperPage.changeEditState(false);
+                    } else {
+                        console.error("Map save failed");
                     }
                 });
             } else {
-                console.error("Salvataggio fallito");
+                console.error("Tilepicker save failed");
             }
         });
     }
@@ -190,7 +189,7 @@ export namespace MapperPage {
     export function reload() {
         Mapper.reloadMap(function(result: boolean) {
             if (result) {
-                $("#mapPanel").jstree(true).refresh(false, false);
+                $("#mapPanel").jstree(true).refresh(false, true);
             }
         });
     }
@@ -203,8 +202,9 @@ export namespace MapperPage {
         return $("#mapPanel").jstree(true).get_selected(true)[0];
     }
 
-    export function changeEditState(edited: boolean, mapChanged: boolean = true) {
-        flagEdited = edited;
+    export function changeEditState(edited: boolean) {
+        // TODO change to statefull, in order to avoid useless operations
+        // when the state is still the same
         if (edited) {
             document.title = PAGE_TITLE + "*";
         } else {
@@ -213,23 +213,22 @@ export namespace MapperPage {
         (<HTMLButtonElement>$("#saveButton")[0]).disabled = !edited;
         (<HTMLButtonElement>$("#reloadButton")[0]).disabled = !edited;
 
-        if (mapChanged) {
-            // Disable maps selection
-            let test = $("#mapPanel").jstree(true).get_json("#", {
-                "flat": true,
-                "no_state": false,
-                "no_id": false,
-                "no_children": false,
-                "no_data": false
-            });
-            $.each(test, function(key: string, node: JSTreeNode) {
-                if (edited) {
-                    $("#mapPanel").jstree("disable_node", node.id);
-                } else {
-                    $("#mapPanel").jstree("enable_node", node.id);
-                }
-            });
-        }
+        let jsTree = $("#mapPanel").jstree(true);
+        // Disable maps selection
+        let nodeList = jsTree.get_json("#", {
+            "flat": true,
+            "no_state": true,
+            "no_id": false,
+            "no_children": false,
+            "no_data": true
+        });
+        $.each(nodeList, function(key: string, node: JSTreeNode) {
+            if (edited) {
+                jsTree.disable_node(node.id);
+            } else {
+                jsTree.enable_node(node.id);
+            }
+        });
     }
 
     export function changeEventPosition() {
