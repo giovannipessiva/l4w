@@ -412,9 +412,9 @@ export abstract class AbstractScene {
     }
     
     private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {  
-        let tileCell = Utils.gidToCell(tileGID, Math.floor(tileset.imagewidth / this.grid.cellW)); //TODO precalculate
+        let tileCell = Utils.gidToCell(tileGID, Math.floor(tileset.imageWidth! / this.grid.cellW)); //TODO precalculate
         context.drawImage(
-            tileset.imageData,
+            tileset.imageData!,
             Math.floor(tileCell.i * this.grid.cellW), Math.floor(tileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,
             Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }

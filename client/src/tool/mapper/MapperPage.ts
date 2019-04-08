@@ -38,6 +38,8 @@ export namespace MapperPage {
         "Very high"
     ];
 
+    const JSTREE_ID_PREFIX = "j1_";
+
     export function start() {
         Compatibility.check();
 
@@ -51,7 +53,11 @@ export namespace MapperPage {
                 check_callback: true,
             },
             multiple: false,
-            plugins: ["dnd", "contextmenu"],
+            plugins: [
+                "contextmenu", // Makes it possible to right click nodes and shows a list of configurable actions in a menu
+                "dnd", // Makes it possible to drag and drop tree nodes and rearrange the tree
+                "unique" // Enforces that no nodes with the same name can coexist as siblings
+            ],
             themes: {
                 dots: false
             }
@@ -78,6 +84,12 @@ export namespace MapperPage {
                     }
                     break;
                 case "create_node":
+                    // Remove the prefix from the id
+                    let numericId = data.node.id.replace(JSTREE_ID_PREFIX,"");
+                    if(isNaN(parseInt(numericId))) {
+                        console.error("Cannot generate a numeric id for node: " + data.node.id);
+                    }
+                    $("#mapPanel").jstree(true).set_id(data.node, numericId);
                 case "rename_node":
                 case "delete_node":
                     // Disable every node, to avoid map changes before save
@@ -182,7 +194,6 @@ export namespace MapperPage {
         }
         TilePicker.saveData(function(result_tree: boolean, response?: string) {
             if (result_tree) {
-                //TODO next - Read from response the new ids, and propagate them
                 Mapper.saveMap(function(result_map: boolean) {
                     if (result_map) {
                         MapperPage.changeEditState(false);

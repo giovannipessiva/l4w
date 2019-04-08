@@ -24,8 +24,8 @@ export class TilesetterScene extends AbstractTileScene {
         this.map.tileset = <ITileset> TilesetManager.getNewTileset();
         this.map.width = this.getSceneWidth();
         this.map.height = this.getSceneHeight();
-        this.map.tileset.imagewidth = this.getSceneWidth();
-        this.map.tileset.imageheight = this.getSceneHeight();
+        this.map.tileset.imageWidth = this.getSceneWidth();
+        this.map.tileset.imageHeight = this.getSceneHeight();
         callback(this);
     }
 

@@ -93,7 +93,7 @@ export class MapperScene extends AbstractStaticScene {
                 if (pickerArea === undefined) {
                     return false;
                 }
-                let tileColumns: number = Math.floor(this.map.tileset.imagewidth / this.grid.cellW); //TODO questa non cambia mai, ottimizzabile
+                let tileColumns: number = Math.floor(this.map.tileset.imageWidth! / this.grid.cellW); //TODO questa non cambia mai, ottimizzabile
                 let appliedTile: number = pickerArea.x + pickerArea.y * tileColumns;
                 for (let j = 0; j <= pickerArea.h; j++) {
                     for (let i = 0; i <= pickerArea.w; i++) {

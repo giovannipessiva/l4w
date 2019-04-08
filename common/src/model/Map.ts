@@ -2,8 +2,9 @@ import { IEventData } from "./Event"
 import { ICell } from "./Commons"
 import { ITileset } from "./Tileset"
 
-//Map core model (only persistent data)
-export interface IMapData {
+//Map model
+export interface IMap {
+    // Only persistent data
     id: number; //Id of the map
     name: string; //Name of the map
     width: number; //Number of tile columns
@@ -11,14 +12,12 @@ export interface IMapData {
     layers: IMapLayer[]; //Array of Layers
     maxEventId?: number; // Max id of events in this map
     events: IEventData[]; //Events
-    nextobjectid: number; //Auto-increments for each placed 
-};
+    nextobjectid: number; //Auto-increments for each placed
+    tileset: ITileset; //Tileset object for this map
 
-//Map extended model (include transient data)
-export interface IMap extends IMapData {
+    // Transient data)
     blocks?: number[]; //Array of codes representing the block attributes from layers
     dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
-    tileset: ITileset; //Tileset object for this map
 };
 
 export interface IVertex {

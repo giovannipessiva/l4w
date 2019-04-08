@@ -7,7 +7,7 @@ import { TilesetterScene } from "./TilesetterScene"
 import { Constant } from "../../core/util/Constant"
 import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
-import { ITilesetData, ITileset } from "../../../../common/src/model/Tileset"
+import { ITileset } from "../../../../common/src/model/Tileset"
 import { ResourceType } from "../../../../common/src/Constants";
 
 export namespace Tilesetter {
@@ -149,7 +149,7 @@ export namespace Tilesetter {
             url: "/data/tileset/" + tileImage,
             type: Constant.RequestType.GET,
             contentType: Constant.MimeType.JSON,
-            success: function(result: ITilesetData) {
+            success: function(result: ITileset) {
                 let image = tilesetterScene.map.tileset.imageData;  
                 tilesetterScene.map.tileset = <ITileset> result;
                 tilesetterScene.map.tileset.imageData = image;

@@ -1,4 +1,4 @@
-import { ITileset, ITilesetData } from "../../../../common/src/model/Tileset"
+import { ITileset } from "../../../../common/src/model/Tileset"
 import { Utils } from "../util/Utils"
 import { Resource } from "../util/Resource"
 import { Errors } from "../util/Errors"
@@ -35,12 +35,12 @@ export namespace TilesetManager {
     
     export function initTransientData(tileset: ITileset) {
         if(tileset.imageData !== undefined) {
-            tileset.imagewidth = tileset.imageData.width;
-            tileset.imageheight = tileset.imageData.height;
+            tileset.imageWidth = tileset.imageData.width;
+            tileset.imageHeight = tileset.imageData.height;
         }
     }
     
-    export function getNewTileset(): ITilesetData {
+    export function getNewTileset(): ITileset {
         return {
             "firstgid": 1,
             "image": "002-Woods01.png",

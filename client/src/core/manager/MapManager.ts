@@ -3,7 +3,7 @@ import { RenderConfiguration } from "../util/Commons"
 import { Utils } from "../util/Utils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
-import { IMap, IMapData, IVertex } from "../../../../common/src/model/Map"
+import { IMap, IVertex } from "../../../../common/src/model/Map"
 import { BlockDirection, DirectionEnum, ICell } from "../../../../common/src/model/Commons"
 import { IEvent, IEventData } from "../../../../common/src/model/Event"
 import { AbstractGrid } from "../AbstractGrid"
@@ -786,7 +786,7 @@ export namespace MapManager {
         }
     }
 
-    export function getNewMap(name: string): IMapData {
+    export function getNewMap(name: string): IMap {
         return {
             id: 0,
             name: name,
@@ -794,7 +794,8 @@ export namespace MapManager {
             width: 25,
             layers: [],
             events: [],
-            nextobjectid: 2
+            nextobjectid: 2,
+            tileset: TilesetManager.getNewTileset()
         };
     }
 }

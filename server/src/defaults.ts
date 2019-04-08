@@ -53,11 +53,8 @@ export namespace defaults {
         return  {
             firstgid: 1,
             image: "002-Woods01.png",
-            imageheight: 800,
-            imagewidth: 256,
             blocks: [],
-            onTop: [],
-            imageData: new Image(256, 800),
+            onTop: []
         };
     }
 

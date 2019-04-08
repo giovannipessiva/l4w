@@ -1,17 +1,16 @@
-//Tileset core model (only persistent data)
-export interface ITilesetData {
+//Tileset model
+export interface ITileset {
+    // Persistent data
     firstgid: number; //GID corresponding to the first tile in the set
     image: string; //Image used for tiles in this set (also used as key)
     autotiles?: IAutoTile[]; //Array of Terrains (optional)
     blocks: number[]; //Array of codes representing the block attributes
     onTop: number[]; //Array of z-index for over-the-event positioning
-};
-
-//Tileset extended model (include transient data)
-export interface ITileset extends ITilesetData {
-    imageData: HTMLImageElement; //Image loaded as data
-    imagewidth: number; //Width of source image in pixels
-    imageheight: number; //Height of source image in pixels
+    
+    // Transient data
+    imageData?: HTMLImageElement; //Image loaded as data
+    imageWidth?: number; //Width of source image in pixels
+    imageHeight?: number; //Height of source image in pixels
 };
 
 export interface IAutoTile {
