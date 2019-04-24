@@ -88,6 +88,12 @@ body {
 .l4wMenuFrame {
 	right: 1em;
 	top: 1em;
+
+	/* Uselectable, to avoid annoyances on mobile */
+	-webkit-user-select: none;       
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 /* Dialog panel */

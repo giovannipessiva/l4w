@@ -28,13 +28,16 @@ export namespace SaveManager {
     export function getNewConfig(): IConfig {
         return {
             lang: LanguageEnum.EN,
-            skin: "ld3-webskin1.png"
+            skin: "ld3-webskin1.png",
+            flagAntialiasing: true,
+            flagDouble: false,
+            flagNatural: false
         };
     }
     
-    export function getSave(map: IMap, hero: IEvent): ISave | undefined {
+    export function getSave(map: IMap, hero: IEvent): ISave {
         if (Utils.isEmpty(map) || Utils.isEmpty(hero)) {
-            return undefined;
+            return getNewSave();
         }
         let events: IEventSave[] = new Array<IEventSave>();
         if(!Utils.isEmpty(map.events)) {
