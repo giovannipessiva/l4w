@@ -66,6 +66,8 @@ module.exports = function(grunt) {
                 ]
             },
             post: {
+                // This is important for the server, in order to remove .js modules
+                // and make it use the .mjs modules
                 src: [
                     "./client/dist/l4w",
                     "./server/dist/**/*.js",
@@ -128,16 +130,16 @@ module.exports = function(grunt) {
         grunt.option("force", true);
         grunt.task.run(["clean:client","clean:server","tslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack"]);
-    grunt.registerTask("task_minify", "Execute last cleanup, babel and uglify (can fail)", function () {
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack","clean:post"]);
+    grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
-        grunt.task.run(["clean:post","babel","uglify"]);
+        grunt.task.run(["babel","uglify"]);
     });
     grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
 
     // Fast L4W build tasks (no linter, only client or server)
     grunt.registerTask("l4w-build-client", ["clean:client","webpack"]);
-    grunt.registerTask("l4w-build-server", ["clean:server","ts:server","copy"]);
+    grunt.registerTask("l4w-build-server", ["clean:server","ts:server","copy","clean:post"]);
 
     // Default task
     grunt.registerTask("default","l4w-build-pipeline");

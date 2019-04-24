@@ -54,22 +54,33 @@ ga('send', 'pageview');
 </head>
 <body>
 	<div style="text-align:center">
-		<div style="padding:0.5em; width:20em; margin-left:auto; margin-right:0px;">
-			Bentornato!
-			<button onclick="signOut();">Sign out</button>
-			<button onclick="L4W_game.Game.save()">Save</button>
-			<button onclick="L4W_game.Game.load()">Load</button>
-			<!-- The button is required for initialization purposes -->
-			<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
-			<br/>
-			<select id="comboLang" onchange="L4W_game.Game.changeLanguage()">
-			</select> 
+		<div class="l4wPanel l4wMenuFrame">
+			<p>
+				<button onclick="signOut();">Sign out</button>
+				<br/>
+				<button onclick="L4W_game.Game.save()">Save</button>
+				<button onclick="L4W_game.Game.load()">Load</button>
+				<!-- The button is required for initialization purposes -->
+				<div style="display:none" class="g-signin2" data-onsuccess="function(){}"></div>
+			</p>
+			<p>
+				<select id="comboLang" onchange="L4W_game.Game.changeLanguage()"></select>
+			</p>
+			<p>
+				<select id="comboScreen" onchange="L4W_game.Game.changeScreen()">
+					<option value="apt" selected>Adapt to window</option>
+					<option value="full">FullScreen mode</option>
+					<option value="nat">Natural look</option>
+				</select>
+				<br/>
+				<input id="checkAntialiasing" onchange="L4W_game.Game.changeAntialiasing()" type="checkbox" checked>Antialiasing</input>
+			</p>
 		</div>
 		<div id="canvasArea">
 			<canvas id="canvas1" class="l4wCanvas" width="672" height="512">
 			Your browser does not support HTML5 Canvas!
 			</canvas>
-			<div id="dialog1" class="l4wDialogFrame hiddenFadeOut" style="visibility:hidden">
+			<div id="dialog1" class="l4wPanel l4wDialogFrame hiddenFadeOut" style="visibility:hidden">
 				<div id="dialog1Header" class="l4wDialogHeader">
 					&#x205e;&#x205e;&#x205e;	
 				</div>

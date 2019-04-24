@@ -20,7 +20,7 @@ let sequelizeOptions: Sequelize.Options = {
 
 let sequelizeInstance = new Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
-export var models: any = {};
+export let models: any = {};
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
 //let dirname = path.dirname(new URL(import.meta.url).pathname);

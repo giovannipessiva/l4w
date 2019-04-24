@@ -225,7 +225,7 @@ export class MapperScene extends AbstractStaticScene {
         (<StaticGrid> scene.grid).selectScale(+inputRange.value);
         (<StaticGrid> scene.grid).refreshCanvasSize();
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        scene.changeScale(canvas);
+        scene.changeScale(canvas.getContext("2d")!);
         scene.requestedNewFrame = true;
     }
 

@@ -8,6 +8,7 @@ export class DynamicGrid extends AbstractGrid {
     protected canvasRatio: number;
     protected scaleStepX: number;
     protected scaleStepY: number;
+    protected naturalScale: boolean;
     
     constructor(
         cnvs: HTMLCanvasElement,
@@ -27,16 +28,21 @@ export class DynamicGrid extends AbstractGrid {
     }
 
     refreshCanvasSize() {
-        let ratioH = this.baseH / this.height();
-        let ratioW = this.baseW / this.width();
-        let newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
-        /*
-            Not sure why, but this works against white rumor at cells border
-            (the white rumor become more visible when the scale is high)
-            SCALE_STEP = CELL_SIZE * 2^-10
-        */
-        this.scaleX = newScale - (newScale % this.scaleStepX);
-        this.scaleY = newScale - (newScale % this.scaleStepY);
+        if(!this.naturalScale) {
+            let ratioH = this.baseH / this.height();
+            let ratioW = this.baseW / this.width();
+            let newScale = this.canvasRatio / (ratioH > ratioW ? ratioH : ratioW);
+            /*
+                Not sure why, but this works against white rumor at cells border
+                (the white rumor become more visible when the scale is high)
+                SCALE_STEP = CELL_SIZE * 2^-10
+            */
+            this.scaleX = newScale - (newScale % this.scaleStepX);
+            this.scaleY = newScale - (newScale % this.scaleStepY);
+        } else {
+            this.scaleX = 1;
+            this.scaleY = 1;
+        }
         super.refreshCanvasSize();
     }
 
@@ -46,5 +52,9 @@ export class DynamicGrid extends AbstractGrid {
 
     private height() {
         return window.innerHeight || (document.documentElement !== null? document.documentElement.clientHeight : document.body.clientHeight || 0);
+    }
+
+    toggleNaturalScale(enabled?: boolean) {
+        this.naturalScale = enabled !== undefined? enabled : !this.toggleNaturalScale;
     }
 }

@@ -225,4 +225,11 @@ export class DynamicScene extends AbstractScene {
         }
         this.save.config.lang = lang;
     }
+
+    toggleNaturalScale(enabled?: boolean) {
+        (<DynamicGrid> this.grid).toggleNaturalScale(enabled);
+        this.grid.refreshCanvasSize();
+        this.changeScale(this.context);
+        this.reapplyTranslation();
+    }
 }

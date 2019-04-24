@@ -168,7 +168,11 @@ export namespace DialogManager {
         }
     
         dlgFrame.classList.replace("hiddenFadeOut", "visibleFadeIn");
-        dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
+        if(Utils.isEmpty(skin)) {
+            console.error("skin is not defined!");
+        } else {
+            dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
+        }
         dlgFrame.style.visibility = null;
         if(faceset !== undefined) {
             dlgFace.style.display = "block";

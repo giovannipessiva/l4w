@@ -1,5 +1,6 @@
 body {
 	font-size: 100%;
+	margin: 0px;
 }
 
 p {
@@ -26,24 +27,36 @@ p {
 	transition: visibility 0s 0.2s, opacity 0.2s linear;
 }
 
-.l4wDialogFrame {
+/* Generic dialog widget */
+.l4wPanel {
+	z-index: 1; /* Need to be above the canvas */
 	position: absolute;
 	margin: auto;
-	width: 50%;
-	left:0px;
-	right: 1em;
-	bottom: 1em;
 	text-align: left;
 	text-shadow: 1px 1px 0.2em darkblue;
 	color: lightgoldenrodyellow; 
 	font-family: Oldenburg;
 	background-image: linear-gradient(to bottom right, rgba(110, 110, 170, 0.9), rgba(41, 42, 67, 0.9));
 	background-origin: border-box; /* this is needed for transparent border on gradient background */ 
-	resize: both;
 	overflow: auto;
 	border-image: url("/assets/skin/ld3-webskin1.png") 16 16 16 16 repeat;
 	border-width: 16px;
 	border-style: solid;
+}
+
+/* Menu panel */
+.l4wMenuFrame {
+	right: 1em;
+	top: 1em;
+}
+
+/* Dialog panel */
+.l4wDialogFrame {
+	width: 50%;
+	left:0px;
+	right: 1em;
+	bottom: 1em;
+	resize: both;
 }
 
 .l4wDialogHeader {

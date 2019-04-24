@@ -7,33 +7,18 @@ import { IRectangle } from "../../../common/src/model/Commons";
  */
 export abstract class AbstractTileScene extends AbstractStaticScene {
 
-    //TODO why cant I use map.width here?
-    private width: number;
-    private height: number;
-
     constructor(grid: StaticGrid, heightPx: number, widthPx: number) {
         super(grid);
-        this.height = Math.floor(heightPx / grid.cellH);
-        this.width = Math.floor(widthPx / grid.cellW);
+        this.map.height = Math.floor(heightPx / grid.cellH);
+        this.map.width = Math.floor(widthPx / grid.cellW);
     }
 
     updateSize(widthPx: number, heightPx: number) {
-        this.width = Math.floor(widthPx / this.grid.cellW);
-        this.height = Math.floor(heightPx / this.grid.cellH);
-       
-        this.map.width = this.width;
-        this.map.height = this.height;
+        this.map.width = Math.floor(widthPx / this.grid.cellW);
+        this.map.height = Math.floor(heightPx / this.grid.cellH);
         
-        (<StaticGrid> this.grid).updateSize(this.width, this.height);
+        (<StaticGrid> this.grid).updateSize(this.map.width, this.map.height);
         this.requestedNewFrame = true;
-    }
-
-    getSceneHeight(): number {
-        return this.height;
-    }
-
-    getSceneWidth(): number {
-        return this.width;
     }
 
     protected getRedrawArea(redrawAll?: boolean): IRectangle {

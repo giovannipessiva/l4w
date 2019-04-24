@@ -24,6 +24,7 @@ export namespace Game {
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
         Workers.registerServiceWorker();
+        registerFullscreenListener();
 
         new DynamicGrid(canvas, function(grid) {
             scene = new DynamicScene(<DynamicGrid> grid, canvas, Launcher.launchAction);
@@ -204,7 +205,7 @@ export namespace Game {
             function() {
                 scene.togglePause(true);
                 grid.refreshCanvasSize();
-                scene.changeScale(canvas);
+                scene.changeScale(canvas.getContext("2d")!);
                 scene.reapplyTranslation();
                 scene.togglePause(false);
             },
@@ -218,4 +219,92 @@ export namespace Game {
             scene.startMovement(i, j);
         };
     };
+
+    /**
+     * Change the screen size strategy
+     */
+    export function changeScreen() {
+        let comboScreen = <HTMLInputElement> document.getElementById("comboScreen");
+        let checkAntialiasing = <HTMLInputElement> document.getElementById("checkAntialiasing");
+        switch(comboScreen.value) {
+            case "apt":
+                scene.toggleNaturalScale(false);
+                closeFullscreen();
+                checkAntialiasing.disabled = false;
+                break;
+            case "full":
+                scene.toggleNaturalScale(false);
+                openFullscreen();
+                checkAntialiasing.disabled = false;
+                break;
+            case "nat":
+                scene.toggleNaturalScale(true);
+                closeFullscreen();
+                checkAntialiasing.checked = false;
+                checkAntialiasing.disabled = true;
+                break;
+            default:
+                console.error("Unexpected comboScreen value:" + comboScreen.value);
+        }
+    };
+
+    /**
+     * Change the antialiasing option
+     */
+    export function changeAntialiasing() {
+        let checkAntialiasing = <HTMLInputElement> document.getElementById("checkAntialiasing");
+        scene.toggleAntialiasing(checkAntialiasing.checked);
+    };
+
+    function registerFullscreenListener() {
+        document.documentElement.onfullscreenchange = function(this: Element, ev: Event): any {
+            if(document["fullscreenElement"] === null) {
+                let comboScreen = <HTMLInputElement> document.getElementById("comboScreen");
+                if(comboScreen.value === "full") {
+                    comboScreen.value = "apt";
+                }
+            }
+        }
+    };
+
+    /**
+     * Open fullscreen mode (only on user interaction)
+     */
+    export function openFullscreen() {
+        if(document["fullscreenElement"] === null) {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem["mozRequestFullScreen"]) { /* Firefox */
+                elem["mozRequestFullScreen"]();
+            } else if (elem["webkitRequestFullscreen"]) { /* Chrome, Safari and Opera */
+                elem["webkitRequestFullscreen"]();
+            } else if (elem["msRequestFullscreen"]) { /* IE/Edge */
+                elem["msRequestFullscreen("];
+            } else {
+                console.error("Cannot request FullScreen");
+                return;
+            }
+        }
+    }
+    
+    /**
+     * Close fullscreen
+     */
+    export function closeFullscreen() {
+        if(document["fullscreenElement"] !== null) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document["mozCancelFullScreen"]) { /* Firefox */
+                document["mozCancelFullScreen"]();
+            } else if (document["webkitExitFullscreen"]) { /* Chrome, Safari and Opera */
+                document["webkitExitFullscreen"]();
+            } else if (document["msExitFullscreen"]) { /* IE/Edge */
+                document["msExitFullscreen"]();
+            } else {
+                console.error("Cannot request FullScreen");
+                return;
+            }
+        }
+    }
 }
