@@ -43,7 +43,10 @@ export namespace Game {
                         console.error("Element \"comboLang\" undefined as select element");
                     }
 
+                    // Last graphic changes
                     updateCanvasCentering();
+                    canvas.classList.add("l4wCanvas");
+                    document.getElementById("footer")!.style.visibility = "visible";
                 });
 
             });

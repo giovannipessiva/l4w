@@ -9,16 +9,38 @@ body {
 	text-align: center;
 }
 
+@keyframes looseFocus {
+	0% {
+		-webkit-filter: blur(0px) grayscale(0%);
+		-moz-filter: blur(0px) grayscale(0%);
+		-moz-filter: blur(0px) grayscale(0%);
+		-ms-filter: blur(0px) grayscale(0%);
+		-o-filter: blur(0px) grayscale(0%);
+		filter: blur(0px) grayscale(0%);		
+	}
+}
+  
 .bg-image {
 	position: absolute;
-	height: 100%;
-	width: 100%;
-	background-image: url("/assets/picture/background1.jpg");
+	background-image: url("/assets/picture/background2.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	filter: blur(6px);
-	-webkit-filter: blur(6px);
+
+	/* 1% clipped border, in order to hide the blurred white edge */
+	left: -1%;
+	top: -1%;
+	height: 101%;
+	width: 101%;
+
+	animation: 2s ease-in 0s 1 looseFocus;
+
+	-webkit-filter: blur(5px) grayscale(20%);
+	-moz-filter: blur(5px) grayscale(20%);
+	-moz-filter: blur(5px) grayscale(20%);
+	-ms-filter: blur(5px) grayscale(20%);
+	-o-filter: blur(5px) grayscale(20%);
+	filter: blur(5px) grayscale(20%);
 }
 
 .l4wCanvas {
@@ -27,6 +49,10 @@ body {
 	margin-right: auto;
 	border: 1px solid black;
 	cursor: url("/assets/pointer/sword-off.png"), pointer;
+}
+
+.l4wCanvas:active {
+    cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
 }
 
 .visibleFadeIn {
@@ -50,9 +76,9 @@ body {
 	text-shadow: 1px 1px 0.2em darkblue;
 	color: lightgoldenrodyellow; 
 	font-family: Oldenburg;
+	overflow: auto;
 	background-image: linear-gradient(to bottom right, rgba(110, 110, 170, 0.9), rgba(41, 42, 67, 0.9));
 	background-origin: border-box; /* this is needed for transparent border on gradient background */ 
-	overflow: auto;
 	border-image: url("/assets/skin/ld3-webskin1.png") 16 16 16 16 repeat;
 	border-width: 16px;
 	border-style: solid;
@@ -120,10 +146,6 @@ body {
 	text-shadow: 0px 0px 0.5em yellow;
 }
 
-.l4wCanvas:active {
-    cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
-}
-
 .editor {
 	border: 1px solid black;
 	padding: 1em;
@@ -138,6 +160,7 @@ body {
 }
 
 .footer {
+	visibility: hidden;
 	position: relative;
 	margin-top: 1em;
 	margin-bottom: 1em;
