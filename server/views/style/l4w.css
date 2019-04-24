@@ -1,10 +1,24 @@
-body {
-	font-size: 100%;
-	margin: 0px;
+html {
+	height: 100%;
 }
 
-p {
-	font: 1em Verdana, Geneva, Arial, Helvetica, sans-serif;
+body {
+	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	margin: 0px;
+	height: 100%;
+	text-align: center;
+}
+
+.bg-image {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background-image: url("/assets/picture/background1.jpg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	filter: blur(6px);
+	-webkit-filter: blur(6px);
 }
 
 .l4wCanvas {
@@ -121,4 +135,13 @@ p {
 .editor:hover {
     border: 2px solid black;
     font-weight: bold;
+}
+
+.footer {
+	position: relative;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 15%;
+	margin-right: 15%;
+	background-color: rgba(255,255,255,0.6);
 }

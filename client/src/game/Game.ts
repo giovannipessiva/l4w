@@ -24,7 +24,6 @@ export namespace Game {
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
         Workers.registerServiceWorker();
-        registerFullscreenListener();
 
         new DynamicGrid(canvas, function(grid) {
             scene = new DynamicScene(<DynamicGrid> grid, canvas, Launcher.launchAction);
@@ -43,6 +42,8 @@ export namespace Game {
                     } else {
                         console.error("Element \"comboLang\" undefined as select element");
                     }
+
+                    updateCanvasCentering();
                 });
 
             });
@@ -208,6 +209,7 @@ export namespace Game {
                 scene.changeScale(canvas.getContext("2d")!);
                 scene.reapplyTranslation();
                 scene.togglePause(false);
+                updateCanvasCentering();
             },
             emptyFz,
             emptyFz,
@@ -225,27 +227,40 @@ export namespace Game {
      */
     export function changeScreen() {
         let comboScreen = <HTMLInputElement> document.getElementById("comboScreen");
-        let checkAntialiasing = <HTMLInputElement> document.getElementById("checkAntialiasing");
         switch(comboScreen.value) {
             case "apt":
                 scene.toggleNaturalScale(false);
-                closeFullscreen();
-                checkAntialiasing.disabled = false;
-                break;
-            case "full":
-                scene.toggleNaturalScale(false);
-                openFullscreen();
-                checkAntialiasing.disabled = false;
                 break;
             case "nat":
-                scene.toggleNaturalScale(true);
-                closeFullscreen();
-                checkAntialiasing.checked = false;
-                checkAntialiasing.disabled = true;
+                scene.toggleNaturalScale(true, false);
+                break;
+            case "nat2":
+                scene.toggleNaturalScale(true, true);
                 break;
             default:
                 console.error("Unexpected comboScreen value:" + comboScreen.value);
         }
+        updateCanvasCentering();
+    };
+
+    function updateCanvasCentering() {
+        let canvasElement = <HTMLDivElement> document.getElementById("canvas1");
+        let margin = Math.round((window.innerHeight - canvasElement.clientHeight) / 2) + "px"
+        canvasElement.style.marginTop = margin;
+        canvasElement.style.marginBottom = margin;
+    }
+
+    /**
+     * Change the fullscreen option
+     */
+    export function changeFullscreen() {
+        let checkFullscreen = <HTMLInputElement> document.getElementById("checkFullscreen");
+        if(checkFullscreen.checked) {
+            openFullscreen();
+        } else {
+            closeFullscreen();
+        }
+        updateCanvasCentering();
     };
 
     /**
@@ -254,17 +269,6 @@ export namespace Game {
     export function changeAntialiasing() {
         let checkAntialiasing = <HTMLInputElement> document.getElementById("checkAntialiasing");
         scene.toggleAntialiasing(checkAntialiasing.checked);
-    };
-
-    function registerFullscreenListener() {
-        document.documentElement.onfullscreenchange = function(this: Element, ev: Event): any {
-            if(document["fullscreenElement"] === null) {
-                let comboScreen = <HTMLInputElement> document.getElementById("comboScreen");
-                if(comboScreen.value === "full") {
-                    comboScreen.value = "apt";
-                }
-            }
-        }
     };
 
     /**

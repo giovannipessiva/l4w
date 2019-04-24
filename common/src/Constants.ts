@@ -26,5 +26,6 @@ export const enum ResourceType {
     DIALOG = "dialog",
     GENERIC_MESSAGE = "generic-message",
     TILESET = "tileset",
-    PROPERTIES = "properties"
+    PROPERTIES = "properties",
+    PICTURE = "picture"
 }

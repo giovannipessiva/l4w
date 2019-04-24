@@ -78,8 +78,8 @@ export namespace defaults {
 
     export function getDefaultEvent(): IEvent {
         return {
-            i: 0,
-            j: 0,
+            i: 6,
+            j: 12,
             id: 0,
             name: "Fart",
             states: [

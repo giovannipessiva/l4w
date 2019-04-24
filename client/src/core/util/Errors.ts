@@ -12,7 +12,7 @@ export namespace Errors {
                 grid.clear(context);
             }
             context.fillStyle = "#000000";
-            context.font = "bold 20px Arial";
+            context.font = "bold 20px Oldenburg";
             context.fillText("An error occurred :(", 60, 60);
         } else {
             console.error("Context is null");

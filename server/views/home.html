@@ -72,7 +72,9 @@ window.onload = function(){
 
 </head>
 <body>
-	<div style="text-align:center">
+	<div>
+		<div class="bg-image"></div>
+
 		<div class="l4wPanel l4wMenuFrame">
 			<p>
 				<div id="login" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
@@ -83,9 +85,11 @@ window.onload = function(){
 			<p>
 				<select id="comboScreen" onchange="L4W_game.Game.changeScreen()">
 					<option value="apt" selected>Adapt to window</option>
-					<option value="full">FullScreen mode</option>
-					<option value="nat">Natural look</option>
+					<option value="nat">Fixed size</option>
+					<option value="nat2">Fixed size x2</option>
 				</select>
+				<br/>
+				<input id="checkFullscreen" onchange="L4W_game.Game.changeFullscreen()" type="checkbox">FullScreen</input>
 				<br/>
 				<input id="checkAntialiasing" onchange="L4W_game.Game.changeAntialiasing()" type="checkbox" checked>Antialiasing</input>
 			</p>
@@ -111,12 +115,11 @@ window.onload = function(){
 			</div>
 		</div>
 	</div>
-	<p>
+	<div class="footer">
 		Editors: <a href="edit">/edit</a><br/>
 		Test page: <a href="test">/test</a><br/>
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Game">https://github.com/giovannipessiva/l4w/wiki/Game</a>
-	</p>
-
+	</div>
 	
 		<script type='text/javascript'>	
 let canvas = document.getElementById("canvas1");

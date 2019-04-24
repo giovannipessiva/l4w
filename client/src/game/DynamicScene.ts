@@ -149,7 +149,7 @@ export class DynamicScene extends AbstractScene {
 
         if (this.renderingConfiguration.showFPS) {
             this.context.fillStyle = Constant.Color.RED;
-            this.context.font = "bold 18px Arial";
+            this.context.font = "bold 18px Oldenburg";
             this.context.fillText("" + this.lastFPS, this.grid.getCurrentTranslation().x + 10, this.grid.getCurrentTranslation().y + 20);
         }
     }
@@ -226,8 +226,8 @@ export class DynamicScene extends AbstractScene {
         this.save.config.lang = lang;
     }
 
-    toggleNaturalScale(enabled?: boolean) {
-        (<DynamicGrid> this.grid).toggleNaturalScale(enabled);
+    toggleNaturalScale(enabled?: boolean, double?: boolean) {
+        (<DynamicGrid> this.grid).toggleNaturalScale(enabled, double);
         this.grid.refreshCanvasSize();
         this.changeScale(this.context);
         this.reapplyTranslation();

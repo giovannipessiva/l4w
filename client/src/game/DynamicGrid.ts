@@ -8,7 +8,9 @@ export class DynamicGrid extends AbstractGrid {
     protected canvasRatio: number;
     protected scaleStepX: number;
     protected scaleStepY: number;
+
     protected naturalScale: boolean;
+    protected doubleScale: boolean;
     
     constructor(
         cnvs: HTMLCanvasElement,
@@ -39,6 +41,9 @@ export class DynamicGrid extends AbstractGrid {
             */
             this.scaleX = newScale - (newScale % this.scaleStepX);
             this.scaleY = newScale - (newScale % this.scaleStepY);
+        } else if(this.doubleScale) {
+            this.scaleX = 2;
+            this.scaleY = 2;
         } else {
             this.scaleX = 1;
             this.scaleY = 1;
@@ -54,7 +59,8 @@ export class DynamicGrid extends AbstractGrid {
         return window.innerHeight || (document.documentElement !== null? document.documentElement.clientHeight : document.body.clientHeight || 0);
     }
 
-    toggleNaturalScale(enabled?: boolean) {
+    toggleNaturalScale(enabled?: boolean, double?: boolean) {
         this.naturalScale = enabled !== undefined? enabled : !this.toggleNaturalScale;
+        this.doubleScale = double? double : false;
     }
 }

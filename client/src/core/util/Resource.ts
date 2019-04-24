@@ -140,6 +140,7 @@ export namespace Resource {
             case ResourceType.FACE:
             case ResourceType.SKIN:
             case ResourceType.TILE:
+            case ResourceType.PICTURE:
                 // Load image file
                 let image = new Image();
                 image.onload = function() {
@@ -210,6 +211,7 @@ export namespace Resource {
             case ResourceType.CHAR:
             case ResourceType.FACE:
             case ResourceType.SKIN:
+            case ResourceType.PICTURE:
             case ResourceType.TILE:
                 path = ASSET_PATH;
                 break;
