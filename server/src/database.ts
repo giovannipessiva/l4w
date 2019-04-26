@@ -151,8 +151,10 @@ export namespace database {
         case "dialog":
             //TODO next
             //Query custom ricorsiva sui dati, avevo la bozza su txt.txt?
+            response.json({});
+            break;
         default:
-            console.error("Unexpected case: " + type);
+            console.error("database.read - Unexpected case: " + type);
             response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
         };
     }

@@ -1,3 +1,4 @@
+/************ Common styles ************/
 html {
 	height: 100%;
 }
@@ -9,6 +10,30 @@ body {
 	text-align: center;
 }
 
+input {
+	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+button {
+	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	border-radius: 4px;
+}
+
+select {
+	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.footer {
+	visibility: hidden;
+	position: relative;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 15%;
+	margin-right: 15%;
+	background-color: rgba(255,255,255,0.6);
+}
+
+/************ Game styles ************/
 @keyframes looseFocus {
 	0% {
 		-webkit-filter: blur(0px) grayscale(0%);
@@ -28,10 +53,10 @@ body {
 	background-size: cover;
 
 	/* 1% clipped border, in order to hide the blurred white edge */
-	left: -1%;
-	top: -1%;
-	height: 101%;
-	width: 101%;
+	left: -2%;
+	top: -2%;
+	height: 102%;
+	width: 102%;
 
 	animation: 2s ease-in 0s 1 looseFocus;
 
@@ -152,6 +177,7 @@ body {
 	text-shadow: 0px 0px 0.5em yellow;
 }
 
+/************ Editors styles ************/
 .editor {
 	border: 1px solid black;
 	padding: 1em;
@@ -165,12 +191,39 @@ body {
     font-weight: bold;
 }
 
-.footer {
-	visibility: hidden;
-	position: relative;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-left: 15%;
-	margin-right: 15%;
-	background-color: rgba(255,255,255,0.6);
+#dialogEditorArea{
+	float: none;
+
+	border: 10px solid red;
+}
+
+#dialogTree {
+	float: left;
+	
+	border: 10px solid black;
+	margin: 0.5em;
+}
+
+#dialogSelectionDetails{
+	float: left;
+	text-align: left;
+	
+	border: 10px solid black;
+}
+
+#dialogEdgeDetails{
+	border: 10px solid blue;
+	margin: 0.5em;
+}
+
+#dialogNodeDetails{
+	border: 10px solid blue;
+	margin: 0.5em;
+}
+
+#dialogMessage{
+	float: left;
+
+	border: 10px solid black;
+	margin: 0.5em;
 }

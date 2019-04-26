@@ -1,34 +1,39 @@
-// Type definitions for jsTree v3.0.9 
+// Type definitions for jsTree v3.3.4
 // Project: http://www.jstree.com/
 // Definitions by: Adam Pluciński <https://github.com/adaskothebeast>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
-// 45 commit df38535 2015-03-02 13:23 +2:00
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// TypeScript Version: 2.3
 
 ///<reference path="jquery.d.ts" />
 
 interface JQueryStatic {
     /**
-    * holds all jstree related functions and variables, 
-    * including the actual class and methods to create, 
+    * holds all jstree related functions and variables,
+    * including the actual class and methods to create,
     * access and manipulate instances.
     * @property jstree
     * @type {JSTreeStatic}
     */
     jstree?: JSTreeStatic;
+
+    /**
+     * helpers
+     */
+    vakata?: VakataStatic;
 }
 
 interface JQuery {
     /**
-     * Create an instance, get an instance or invoke a command on a instance. 
-     * 
-     * If there is no instance associated with the current node a new one is created 
+     * Create an instance, get an instance or invoke a command on a instance.
+     *
+     * If there is no instance associated with the current node a new one is created
      * and `arg` is used to extend `$.jstree.defaults` for this new instance. There would be no return value (chaining is not broken).
-     * 
-     * If there is an existing instance and `arg` is a string the command specified by `arg` is executed on the instance, 
+     *
+     * If there is an existing instance and `arg` is a string the command specified by `arg` is executed on the instance,
      * with any additional arguments passed to the function. If the function returns a value it will be returned (chaining could break depending on function).
-     * 
+     *
      * If there is an existing instance and `arg` is not a string the instance itself is returned (similar to `$.jstree.reference`).
-     * 
+     *
      * In any other case - nothing is returned and chaining is not broken.
      *
      * __Examples__
@@ -65,10 +70,12 @@ interface JSTreeStatic {
 
     /**
     * stores all loaded jstree plugins (used internally)
+    * @name $.jstree.plugins
     */
     plugins: any[];
     path: string;
     idregex: any;
+    root: string;
 
     /**
      * creates a jstree instance
@@ -77,7 +84,7 @@ interface JSTreeStatic {
      * @param {Object} options options for this instance (extends `$.jstree.defaults`)
      * @return {jsTree} the new instance
      */
-    create(el: any, options?: JSTreeStaticDefaults): JSTree;
+    create(el: HTMLElement|JQuery|string, options?: JSTreeStaticDefaults): JSTree;
 
     /**
      * remove all traces of jstree from the DOM and destroy all instances
@@ -94,45 +101,26 @@ interface JSTreeStatic {
     core(id: number): void;
 
     /**
-    * get a reference to an existing instance
-    * 
-    * __Examples__
-    *
-    * $.jstree.reference('tree');
-    * $.jstree.reference('#tree');
-    * $.jstree.reference('branch');
-    * $.jstree.reference('#branch');
-    *
-    * @param {String} selector 
-    * @returns {JSTree|null} the instance or `null` if not found
-    */
-    reference(selector: string): JSTree;
-
-    /**
-    * get a reference to an existing instance
-    * 
-    * __Examples__
-    *
-    * $.jstree.reference(document.getElementByID('tree'));
-    * $.jstree.reference(document.getElementByID('branch'));
-    *
-    * @param {HTMLElement} element 
-    * @returns {JSTree|null} the instance or `null` if not found
-    */
-    reference(element: HTMLElement): JSTree;
-
-    /**
-    * get a reference to an existing instance
-    * 
-    * __Examples__
-    *
-    * $.jstree.reference($('#tree'));
-    * $.jstree.reference($('#branch'));
-    *
-    * @param {JQuery} object 
-    * @returns {JSTree|null} the instance or `null` if not found
-    */
-    reference(object: JQuery): JSTree;
+	 * get a reference to an existing instance
+	 *
+	 * __Examples__
+	 *
+	 *	// provided a container with an ID of "tree", and a nested node with an ID of "branch"
+	 *	// all of there will return the same instance
+	 *	$.jstree.reference('tree');
+	 *	$.jstree.reference('#tree');
+	 *	$.jstree.reference($('#tree'));
+	 *	$.jstree.reference(document.getElementByID('tree'));
+	 *	$.jstree.reference('branch');
+	 *	$.jstree.reference('#branch');
+	 *	$.jstree.reference($('#branch'));
+	 *	$.jstree.reference(document.getElementByID('branch'));
+	 *
+	 * @name $.jstree.reference(needle)
+	 * @param {DOMElement|jQuery|String} needle
+	 * @return {jsTree|null} the instance or `null` if not found
+	 */
+    reference(needle: HTMLElement|JQuery|string): JSTree;
 }
 
 interface JSTreeStaticDefaults {
@@ -190,17 +178,17 @@ interface JSTreeStaticDefaults {
 
     /**
     * An object storing all types as key value pairs,
-    * where the key is the type name and the value is an object 
+    * where the key is the type name and the value is an object
     * that could contain following keys (all optional).
     * max_children the maximum number of immediate children this node type can have.
     * Do not specify or set to -1 for unlimited.
-    * max_depth the maximum number of nesting this node type can have. 
-    * A value of 1 would mean that the node can have children, but no grandchildren. 
+    * max_depth the maximum number of nesting this node type can have.
+    * A value of 1 would mean that the node can have children, but no grandchildren.
     * Do not specify or set to -1 for unlimited.
-    * valid_children an array of node type strings, that nodes of this type can have as children. 
+    * valid_children an array of node type strings, that nodes of this type can have as children.
     * Do not specify or set to -1 for no limits.
-    * icon a string - can be a path to an icon or a className, if using an image 
-    * that is in the current directory use a ./ prefix, otherwise it will be detected as a class. 
+    * icon a string - can be a path to an icon or a className, if using an image
+    * that is in the current directory use a ./ prefix, otherwise it will be detected as a class.
     * Omit to use the default icon from your theme.
     * There are two predefined types:
     * # represents the root of the tree, for example max_children would control the maximum number of root nodes.
@@ -219,14 +207,14 @@ interface JSTreeStaticDefaults {
 interface JSTreeStaticDefaultsCore {
     /**
     * data configuration
-    * 
+    *
     * If left as `false` the HTML inside the jstree container element is used to populate the tree (that should be an unordered list with list items).
     *
     * You can also pass in a HTML string or a JSON array here.
-    * 
-    * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree. 
+    *
+    * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree.
     * In addition to the standard jQuery ajax options here you can suppy functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used.
-    * 
+    *
     * The last option is to specify a function, that function will receive the node being loaded as argument and a second param which is a function which should be called with the result.
     *
     * __Examples__
@@ -255,7 +243,7 @@ interface JSTreeStaticDefaultsCore {
     *				}
     *			]
     *		});
-    *	
+    *
     *	// function
     *	$('#tree').jstree({
     *		'core' : {
@@ -263,7 +251,7 @@ interface JSTreeStaticDefaultsCore {
     *				callback.call(this, ['Root 1', 'Root 2']);
     *			}
     *		});
-    * 
+    *
     * @name $.jstree.defaults.core.data
     */
     data?: any;
@@ -299,13 +287,13 @@ interface JSTreeStaticDefaultsCore {
     *	$('#tree').jstree({
     *		'core' : {
     *			'check_callback' : function (operation, node, node_parent, node_position, more) {
-    *				// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
+    *				// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
     *				// in case of 'rename_node' node_position is filled with the new node name
     *				return operation === 'rename_node' ? true : false;
     *			}
     *		}
     *	});
-    * 
+    *
     * @name $.jstree.defaults.core.check_callback
     */
     check_callback?: any;
@@ -341,7 +329,7 @@ interface JSTreeStaticDefaultsCore {
     expand_selected_onload?: boolean;
 
     /**
-    * if left as `true` web workers will be used to parse incoming JSON data where possible, so that the UI will not be blocked by large requests. 
+    * if left as `true` web workers will be used to parse incoming JSON data where possible, so that the UI will not be blocked by large requests.
     * Workers are however about 30% slower. Defaults to `true`
     * @name $.jstree.defaults.core.worker
     */
@@ -392,6 +380,12 @@ interface JSTreeStaticDefaultsCoreThemes {
     icons?: boolean;
 
     /**
+    * a boolean indicating if node ellipsis should be shown - this only works with a fixed with on the container
+    * @name $.jstree.defaults.core.themes.ellipsis
+    */
+    ellipsis?: boolean;
+
+    /**
     * a boolean indicating if the tree background is striped
     * @name $.jstree.defaults.core.themes.stripes
     */
@@ -440,22 +434,36 @@ interface JSTreeStaticDefaultsCheckbox {
     keep_selected_style: boolean;
 
     /**
-    * This setting controls how cascading and undetermined nodes are applied. 
-    * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used. 
+    * This setting controls how cascading and undetermined nodes are applied.
+    * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used.
     * If `three_state` is set to `true` this setting is automatically set to 'up+down+undetermined'. Defaults to ''.
     * @name $.jstree.defaults.checkbox.cascade
     * @plugin checkbox
     */
-    cascade: boolean;
+    cascade: string;
 
     /**
-    * This setting controls if checkbox are bound to the general tree selection 
-    * or to an internal array maintained by the checkbox plugin. 
-    * Defaults to `true`, only set to `false` if you know exactly what you are doing. 
+    * This setting controls if checkbox are bound to the general tree selection
+    * or to an internal array maintained by the checkbox plugin.
+    * Defaults to `true`, only set to `false` if you know exactly what you are doing.
     * @name $.jstree.defaults.checkbox.tie_selection
     * @plugin checkbox
     */
     tie_selection: boolean;
+
+    /**
+     * This setting controls if cascading down affects disabled checkboxes
+     * @name $.jstree.defaults.checkbox.cascade_to_disabled
+     * @plugin checkbox
+     */
+    cascade_to_disabled : boolean;
+        
+    /**
+     * This setting controls if cascading down affects hidden checkboxes
+     * @name $.jstree.defaults.checkbox.cascade_to_hidden
+     * @plugin checkbox
+     */
+    cascade_to_hidden : boolean;
 }
 
 interface JSTreeStaticDefaultsContextMenu {
@@ -475,18 +483,20 @@ interface JSTreeStaticDefaultsContextMenu {
 
     /**
     * an object of actions, or a function that accepts a node and a callback function and calls the callback function with an object of actions available for that node (you can also return the items too).
-    * 
-    * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required):
-    * 
+    *
+    * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required). Once a menu item is activated the `action` function will be invoked with an object containing the following keys: item - the contextmenu item definition as seen below, reference - the DOM node that was used (the tree node), element - the contextmenu DOM element, position - an object with x/y properties indicating the position of the menu.
+    *
     * * `separator_before` - a boolean indicating if there should be a separator before this item
     * * `separator_after` - a boolean indicating if there should be a separator after this item
     * * `_disabled` - a boolean indicating if this action should be disabled
     * * `label` - a string - the name of the action (could be a function returning a string)
-    * * `action` - a function to be executed if this item is chosen
+    * * `title` - a string - an optional tooltip for the item
+    * * `action` - a function to be executed if this item is chosen, the function will receive
     * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
     * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
     * * `shortcut_label` - shortcut label (like for example `F2` for rename)
-    * 
+    * * `submenu` - an object with the same structure as $.jstree.defaults.contextmenu.items which can be used to create a submenu - each key will be rendered as a separate option in a submenu that will appear once the current item is hovered
+    *
     * @name $.jstree.defaults.contextmenu.items
     * @plugin contextmenu
     */
@@ -563,6 +573,14 @@ interface JSTreeStaticDefaultsDragNDrop {
     * @plugin dnd
     */
     large_drag_target: boolean;
+
+    /**
+    * controls whether use HTML5 dnd api instead of classical. That will allow better integration of dnd events with other HTML5 controls.
+    * @reference http://caniuse.com/#feat=dragndrop
+    * @name $.jstree.defaults.dnd.use_html5
+    * @plugin dnd
+    */
+    use_html5: boolean;
 }
 
 interface JSTreeStaticDefaultsMassload {
@@ -580,7 +598,7 @@ interface JSTreeStaticDefaultsMassload {
     *		"id1" : [{ "text" : "Child of ID1", "id" : "c1" }, { "text" : "Another child of ID1", "id" : "c2" }],
     *		"id2" : [{ "text" : "Child of ID2", "id" : "c3" }]
     *	}
-    * 
+    *
     * @name $.jstree.defaults.massload
     * @plugin massload
     */
@@ -592,14 +610,14 @@ interface JSTreeStaticDefaultsMassload {
 
 interface JSTreeStaticDefaultsSearch {
     /**
-    * a jQuery-like AJAX config, which jstree uses if a server should be queried for results. 
-    * 
-    * A `str` (which is the search string) parameter will be added with the request, 
-    * an optional `inside` parameter will be added if the search is limited to a node id. 
+    * a jQuery-like AJAX config, which jstree uses if a server should be queried for results.
+    *
+    * A `str` (which is the search string) parameter will be added with the request,
+    * an optional `inside` parameter will be added if the search is limited to a node id.
     * The expected result is a JSON array with nodes that need to be opened so that matching nodes will be revealed.
-    * Leave this setting as `false` to not query the server. You can also set this to a function, 
-    * which will be invoked in the instance's scope and receive 3 parameters - the search string, 
-    * the callback to call with the array of nodes to load, and the optional node ID to limit the search to 
+    * Leave this setting as `false` to not query the server. You can also set this to a function,
+    * which will be invoked in the instance's scope and receive 3 parameters - the search string,
+    * the callback to call with the array of nodes to load, and the optional node ID to limit the search to
     * @name $.jstree.defaults.search.ajax
     * @plugin search
     */
@@ -620,7 +638,7 @@ interface JSTreeStaticDefaultsSearch {
     case_sensitive: boolean;
 
     /**
-    * Indicates if the tree should be filtered (by default) to show only matching nodes 
+    * Indicates if the tree should be filtered (by default) to show only matching nodes
     * (keep in mind this can be a heavy on large trees in old browsers).
     * This setting can be changed at runtime when calling the search method. Default is `false`.
     * @name $.jstree.defaults.search.show_only_matches
@@ -629,7 +647,15 @@ interface JSTreeStaticDefaultsSearch {
     show_only_matches: boolean;
 
     /**
-    * Indicates if all nodes opened to reveal the search result, 
+	* Indicates if the children of matched element are shown (when show_only_matches is true)
+	* This setting can be changed at runtime when calling the search method. Default is `false`.
+	* @name $.jstree.defaults.search.show_only_matches_children
+	* @plugin search
+	*/
+	show_only_matches_children: boolean;
+
+    /**
+    * Indicates if all nodes opened to reveal the search result,
     * should be closed when the search is cleared or a new search is performed. Default is `true`.
     * @name $.jstree.defaults.search.close_opened_onclear
     * @plugin search
@@ -644,9 +670,9 @@ interface JSTreeStaticDefaultsSearch {
     search_leaves_only: boolean;
 
     /**
-    * If set to a function it wil be called in the instance's scope with two arguments - 
+    * If set to a function it wil be called in the instance's scope with two arguments -
     * search string and node (where node will be every node in the structure, so use with caution).
-    * If the function returns a truthy value the node will be considered a match 
+    * If the function returns a truthy value the node will be considered a match
     * (it might not be displayed if search_only_leaves is set to true and the node is not a leaf). Default is `false`.
     * @name $.jstree.defaults.search.search_callback
     * @plugin search
@@ -692,13 +718,50 @@ interface JSTreeStaticDefaultsUnique {
     */
     case_sensitive: boolean;
     /**
-    * A callback executed in the instance's scope when a new node is created 
-    * and the name is already taken, the two arguments are the conflicting name and the counter. 
+    * A callback executed in the instance's scope when a new node is created
+    * and the name is already taken, the two arguments are the conflicting name and the counter.
     * The default will produce results like `New node (2)`.
     * @name $.jstree.defaults.unique.duplicate
     * @plugin unique
     */
     duplicate: (name: string, counter: number) => string;
+}
+
+interface VakataStatic {
+    /**
+     * collect attributes
+     */
+    attributes: (node: any, with_values: any) => any;
+
+    /**
+     * returns array with unique elements
+     */
+    array_unique: (array: Array<any>) => Array<any>;
+
+    /**
+     * remove item from array
+     */
+    array_remove: (array: Array<any>, from: number) => Array<any>;
+    
+    /**
+     * remove item from array
+     */
+    array_remove_item: (array: Array<any>, item: any) => Array<any>;
+
+    /**
+     * filter array
+     */
+    array_filter: (c: any, a: any, b: any, d: Array<any>, e: any) => Array<any>;
+
+    context: any;
+
+    html: any;
+
+    dnd: any;
+
+    search: any;
+
+    storage: any;
 }
 
 interface JSTree extends JQuery {
@@ -720,7 +783,7 @@ interface JSTree extends JQuery {
     * @param {Object} options options for this instance
     * @trigger init.jstree, loading.jstree, loaded.jstree, ready.jstree, changed.jstree
     */
-    init: (el:any, options:any) => void;
+    init: (el: HTMLElement|JQuery|string, options:any) => void;
 
     /**
     * destroy an instance
@@ -735,6 +798,11 @@ interface JSTree extends JQuery {
     * @name teardown()
     */
     teardown: () => void;
+
+    /**
+    * Create prototype node
+    */
+    _create_prototype_node: () => HTMLElement;
 
     /**
     * bind all events. Used internally.
@@ -761,7 +829,7 @@ interface JSTree extends JQuery {
      * defined in JQuery
      */
     // trigger: (ev: string, data?: Object) => any;
-    
+
     /**
     * returns the jQuery extended instance container
     * @name get_container()
@@ -830,7 +898,7 @@ interface JSTree extends JQuery {
     * @param  {Boolean} ids if set to true build the path using ID, otherwise node text is used
     * @return {mixed}
     */
-    get_path: (obj: any, glue: string, ids: boolean) => any;
+    get_path: (obj: any, glue?: string, ids?: boolean) => any;
 
     /**
     * get the next visible node that is below the `obj` node. If `strict` is set to `true` only sibling nodes are returned.
@@ -859,12 +927,12 @@ interface JSTree extends JQuery {
     get_parent: (obj: any) => string;
 
     /**
-    * get a jQuery collection of all the children of a node (node must be rendered)
+    * get a jQuery collection of all the children of a node (node must be rendered), returns false on error
     * @name get_children_dom(obj)
     * @param  {mixed} obj
     * @return {jQuery}
     */
-    get_children_dom: (obj: any) => JQuery;
+    get_children_dom: (obj: any) => JQuery|boolean;
 
     /**
     * checks if a node has children
@@ -918,7 +986,7 @@ interface JSTree extends JQuery {
     * loads a node (fetches its children using the `core.data` setting). Multiple nodes can be passed to by using an array.
     * @name load_node(obj [, callback])
     * @param  {mixed} obj
-    * @param  {function} callback a function to be executed once loading is conplete, the function is executed in the instance's scope 
+    * @param  {function} callback a function to be executed once loading is conplete, the function is executed in the instance's scope
     * and receives two arguments - the node and a boolean status
     * @return {Boolean}
     * @trigger load_node.jstree
@@ -932,8 +1000,9 @@ interface JSTree extends JQuery {
     * @param  {array} nodes
     * @param  {function} callback a function to be executed once loading is complete, the function is executed in the instance's scope and receives one argument - the array passed to _load_nodes
     * @param  {Boolean} is_callback - if false reloads node (AP - original comment missing in source code)
+    * @param  {Boolean} force_reload - if true force reloads node (AP - original comment missing in source code)
     */
-    _load_nodes: (nodes: any[], callback?: (nodes: any[]) => void, is_callback?: boolean) => void;
+    _load_nodes: (nodes: any[], callback?: (nodes: any[]) => void, is_callback?: boolean, force_reload?: boolean) => void;
 
     /**
     * loads all unloaded nodes
@@ -953,7 +1022,7 @@ interface JSTree extends JQuery {
     * @return {Boolean}
     */
     _load_node: (obj: any, callback?: (status: boolean) => void) => boolean;
-    
+
     /**
     * adds a node to the list of nodes to redraw. Used only internally.
     * @private
@@ -1025,7 +1094,7 @@ interface JSTree extends JQuery {
     * @trigger redraw.jstree
     */
     _redraw: () => void ;
-    
+
     /**
     * redraws all nodes that need to be redrawn or optionally - the whole tree
     * @name redraw([full])
@@ -1057,7 +1126,7 @@ interface JSTree extends JQuery {
     * @name open_node(obj [, callback, animation])
     * @param {mixed} obj the node to open
     * @param {Function} callback a function to execute once the node is opened
-    * @param {Number} animation the animation duration in milliseconds 
+    * @param {Number} animation the animation duration in milliseconds
     * when opening the node (overrides the `core.animation` setting). Use `false` for no animation.
     * @trigger open_node.jstree, after_open.jstree, before_open.jstree
     */
@@ -1075,7 +1144,7 @@ interface JSTree extends JQuery {
     * closes a node, hiding its children
     * @name close_node(obj [, animation])
     * @param {mixed} obj the node to close
-    * @param {Number} animation the animation duration in milliseconds 
+    * @param {Number} animation the animation duration in milliseconds
     * when closing the node (overrides the `core.animation` setting). Use `false` for no animation.
     * @trigger close_node.jstree, after_close.jstree
     */
@@ -1130,6 +1199,45 @@ interface JSTree extends JQuery {
     * @trigger disable_node.jstree
     */
     disable_node: (obj: any) => boolean;
+
+    /**
+    * determines if a node is hidden
+    * @name is_hidden(obj)
+    * @param {mixed} obj the node
+    */
+    is_hidden: (obj: any) => boolean;
+
+    /**
+	* hides a node - it is still in the structure but will not be visible
+	* @name hide_node(obj)
+	* @param {mixed} obj the node to hide
+	* @param {Boolean} skip_redraw internal parameter controlling if redraw is called
+	* @trigger hide_node.jstree
+	*/
+    hide_node: (obj: any, skip_redraw: boolean) => boolean;
+
+    /**
+    * shows a node
+    * @name show_node(obj)
+    * @param {mixed} obj the node to show
+    * @param {Boolean} skip_redraw internal parameter controlling if redraw is called
+    * @trigger show_node.jstree
+    */
+    show_node: (obj: any, skip_redraw: boolean) => boolean;
+
+    /**
+    * hides all nodes
+    * @name hide_all()
+    * @trigger hide_all.jstree
+    */
+	hide_all: (skip_redraw: boolean) => boolean;
+
+    /**
+    * shows all nodes
+    * @name show_all()
+    * @trigger show_all.jstree
+    */
+    show_all: (skip_redraw: boolean) => boolean;
 
     /**
     * called when a node is selected by the user. Used internally.
@@ -1248,7 +1356,7 @@ interface JSTree extends JQuery {
     * refreshes the tree - all nodes are reloaded with calls to `load_node`.
     * @name refresh()
     * @param {Boolean} skip_loading an option to skip showing the loading indicator
-    * @param {Mixed} forget_state if set to `true` state will not be reapplied, 
+    * @param {Mixed} forget_state if set to `true` state will not be reapplied,
     * if set to a function (receiving the current state as argument) the result of that function will be used as state
     * @trigger refresh.jstree
     */
@@ -1299,6 +1407,8 @@ interface JSTree extends JQuery {
     * @param  {Boolean} options.no_id do not return ID
     * @param  {Boolean} options.no_children do not include children
     * @param  {Boolean} options.no_data do not include node data
+    * @param  {Boolean} options.no_li_attr do not include LI attributes
+    * @param  {Boolean} options.no_a_attr do not include A attributes
     * @param  {Boolean} options.flat return flat JSON instead of nested
     * @return {Object}
     */
@@ -1432,17 +1542,18 @@ interface JSTree extends JQuery {
 
     /**
     * put a node in edit mode (input field to rename the node)
-    * @name edit(obj [, default_text])
+    * @name edit(obj [, default_text, callback])
     * @param  {mixed} obj
-    * @param  {String} default_text the text to populate the input with (if omitted the node text value is used)
+	* @param  {String} default_text the text to populate the input with (if omitted or set to a non-string value the node's text value is used)
+	* @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node, a status parameter (true if the rename is successful, false otherwise) and a boolean indicating if the user cancelled the edit. You can access the node's title using .text
     */
-    edit: (obj: any, default_text?: string) => void;
+    edit: (obj: any, default_text?: string, callback?: (node: any, status: boolean, canceled: boolean) => void) => void;
 
     /**
     * changes the theme
     * @name set_theme(theme_name [, theme_url])
     * @param {String} theme_name the name of the new theme to apply
-    * @param {mixed} theme_url  the location of the CSS file for this theme. Omit or set to `false` 
+    * @param {mixed} theme_url  the location of the CSS file for this theme. Omit or set to `false`
     * if you manually included the file. Set to `true` to autoload from the `core.themes.dir` directory.
     * @trigger set_theme.jstree
     */
@@ -1524,10 +1635,28 @@ interface JSTree extends JQuery {
     toggle_icons: () => void;
 
     /**
+    * show the node ellipsis
+    * @name show_icons()
+    */
+    show_ellipsis: () => void;
+
+    /**
+    * hide the node ellipsis
+    * @name hide_ellipsis()
+    */
+    hide_ellipsis: () => void;
+
+    /**
+    * toggle the node ellipsis
+    * @name toggle_icons()
+    */
+    toggle_ellipsis: () => void;
+
+    /**
     * set the node icon for a node
     * @name set_icon(obj, icon)
     * @param {mixed} obj
-    * @param {String} icon the new icon - can be a path to an icon or a className, 
+    * @param {String} icon the new icon - can be a path to an icon or a className,
     * if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
     */
     set_icon: (obj: any, icon: string) => void;
@@ -1553,6 +1682,10 @@ interface JSTree extends JQuery {
     * @param {mixed} obj
     */
     show_icon: (obj: any) => void;
+
+    /**
+    * checkbox plugin
+    */
 
     /**
     * set the undetermined state where and if necessary. Used internally.
@@ -1590,6 +1723,39 @@ interface JSTree extends JQuery {
     * @return {Boolean}
     */
     is_undetermined: (obj: any) => boolean;
+
+    /**
+    * disable a node's checkbox
+    * @name disable_checkbox(obj)
+    * @param {mixed} obj an array can be used too
+    * @trigger disable_checkbox.jstree
+    * @plugin checkbox
+    */
+    disable_checkbox: (obj: any) => boolean;
+
+    /**
+    * enable a node's checkbox
+    * @name disable_checkbox(obj)
+    * @param {mixed} obj an array can be used too
+    * @trigger enable_checkbox.jstree
+    * @plugin checkbox
+    */
+    enable_checkbox: (obj: any) => boolean;
+
+    /**
+     * Unchecks a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
+     * However if these unaffected nodes are already selected their ids will be included in the returned array.
+     * @param id
+     * @param checkedState
+     * @returns {Array} Array of all node id's (in this tree branch) that are checked.
+     */
+    _cascade_new_checked_state: (id: string, checkedState: string) => string[];
+
+    /**
+     * Gets ids of nodes selected in branch (of tree) specified by id (does not include the node specified by id)
+     * @param id
+     */
+    get_checked_descendants: (id: string) => string[];
 
     /**
     * check a node (only if tie_selection in checkbox settings is false, otherwise select_node will be called internally)
@@ -1660,7 +1826,7 @@ interface JSTree extends JQuery {
     * @plugin checkbox
     */
     get_bottom_checked: (full: any) => any[];
-    
+
     /**
     * context menu plugin
     */
@@ -1691,6 +1857,10 @@ interface JSTree extends JQuery {
     _show_contextmenu: (obj: any, x: number, y: number, i: number) => void;
 
     /**
+    * search plugin
+    */
+
+    /**
     * used to search the tree nodes for a given string
     * @name search(str [, skip_async])
     * @param {String} str the search string
@@ -1698,10 +1868,11 @@ interface JSTree extends JQuery {
     * @param {Boolean} show_only_matches if set to true only matching nodes will be shown (keep in mind this can be very slow on large trees or old browsers)
     * @param {mixed} inside an optional node to whose children to limit the search
     * @param {Boolean} append if set to true the results of this search are appended to the previous search
+    * @param {Boolean} show_only_matches_children show only matched children
     * @plugin search
     * @trigger search.jstree
     */
-    search: (str: string, skip_async?: boolean, show_only_matches?: boolean, inside?: any, append?: boolean) => void;
+    search: (str: string, skip_async?: boolean, show_only_matches?: boolean, inside?: any, append?: boolean, show_only_matches_children?: boolean) => void;
 
     /**
     * used to clear the last search (removes classes and shows all nodes if filtering is on)
@@ -1721,6 +1892,10 @@ interface JSTree extends JQuery {
     _search_open: (d: string[]) => void;
 
     /**
+    * sort plugin
+    */
+
+    /**
     * used to sort a node's children
     * @private
     * @name sort(obj [, deep])
@@ -1730,6 +1905,10 @@ interface JSTree extends JQuery {
     * @trigger search.jstree
     */
     sort: (obj: any, deep?: boolean) => void;
+
+    /**
+    * state plugin
+    */
 
     /**
     * save the state
@@ -1751,6 +1930,10 @@ interface JSTree extends JQuery {
     * @plugin state
     */
     clear_state: () => void;
+
+    /**
+    * types plugin
+    */
 
     /**
     * used to retrieve the type settings object for a node
@@ -1785,27 +1968,37 @@ interface JSTreeGetJsonOptions {
     /**
     * do not return state information
     */
-    no_state: boolean;
-    
+    no_state?: boolean;
+
     /**
     * do not return ID
     */
-    no_id: boolean;
-    
+    no_id?: boolean;
+
     /**
     * do not include children
     */
-    no_children: boolean;
+    no_children?: boolean;
 
     /**
     * do not include node data
     */
-    no_data: boolean;
+    no_data?: boolean;
+
+    /**
+    * do not include LI attributes
+    */
+    no_li_attr?: boolean;
+
+    /**
+    * do not include A attributes
+    */
+    no_a_attr?: boolean;
 
     /**
     * return flat JSON instead of nested
     */
-    flat: boolean;
+    flat?: boolean;
 }
 
 interface JSTreeBindOptions {

@@ -3,7 +3,7 @@
   <head>
   	<meta charset="UTF-8">
   	<title>L4W Editor login</title>
-	<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+		<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
   	<link rel='icon' href='style/favicon/edit.ico' />
   	<link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet"> 
   	
@@ -13,28 +13,28 @@
 	<script src="https://apis.google.com/js/platform.js"></script>
 
 	<script>
-      function onSignIn(googleUser) {
-      	document.getElementById("login").style.display="none";
 
-        var f = document.createElement("form");
-		f.setAttribute("method","post");
-		f.setAttribute("action","edit");
-        var i;
-        
-        i = document.createElement("input");
-		i.setAttribute("type","text");
-		i.setAttribute("name","token");
-		i.setAttribute("value",googleUser.getAuthResponse().id_token);
-		f.appendChild(i);
+		function onSignIn(googleUser) {
+			
+			document.getElementById("login").style.display = "none";
 
-		f.style.display="none";
-		document.body.appendChild(f);
-		f.submit();
-	  };
-      
-      window.onload=function(){
-      	document.getElementById("login").style.display="inline";
-      }
+			let f = document.createElement("form");
+			f.setAttribute("method","post");
+			f.setAttribute("action", "/edit");
+			let i = document.createElement("input");
+			i.setAttribute("type","text");
+			i.setAttribute("name","token");
+			i.setAttribute("value",googleUser.getAuthResponse().id_token);
+			f.appendChild(i);
+
+			f.style.display="none";
+			document.body.appendChild(f);
+			f.submit();
+		};
+				
+		window.onload = function(){
+			document.getElementById("login").style.display = "inline";
+		}
 	</script>
 	
 	<link rel="stylesheet" type="text/css" href="style/l4w.css">

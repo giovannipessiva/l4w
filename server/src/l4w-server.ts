@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 
 import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { session } from "./session"
-import * as utils2 from "./utils"
+import * as utils from "./utils"
 import { security } from "./security"
 import { database } from "./database"
 import { mapper } from "./mapper"
@@ -28,7 +28,7 @@ app.use(function(req: Request, res: Response, next: NextFunction) {
     // Remove trailing slash
     if (req.path.substr(-1) === "/" && req.path.length > 1) {
         let query = req.url.slice(req.path.length);
-        res.redirect(301, req.path.slice(0, -1) + query);
+        res.redirect(HttpStatus.MOVED_PERMANENTLY, req.path.slice(0, -1) + query);
     } else {
         next();
     }
@@ -39,58 +39,58 @@ app.use(function(req: Request, res: Response, next: NextFunction) {
 
 // Views redirection
 app.get("/", function(request: Request, response: Response) {
-    if(!utils2.isEmpty(request.query.logout) && request.query.logout === "1") {
+    if(!utils.isEmpty(request.query.logout) && request.query.logout === "1") {
         session.doLogout(request,response,function() {
-            utils2.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
+            utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
         });
     } else {
         if(session.isAuthenticated(request)) {
            database.logUserSessionAccess(session.getUser(request));
-            utils2.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
+            utils.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
         } else {
-            utils2.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
+            utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
         };
     }
 });
 app.post("/", function(request: Request, response: Response) {
     session.doLogin(request,response,function() {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
     }, function() {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
     });
 });
 app.get("/edit", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
        database.logUserSessionAccess(session.getUser(request));
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
     }
 });
 app.post("/edit", function(request: Request, response: Response) {
     session.doLogin(request,response,function() {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
     }, function() {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     });
 });
 app.get("/edit/:editor", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
        database.logUserSessionAccess(session.getUser(request));
         let editor = request.params.editor;
-        utils2.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
     }
 });
 
 app.all("/test", function(request: Request, response: Response) {
-    utils2.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
+    utils.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
 });
 
 app.get("/logout", function(request: Request, response: Response) {
     session.doLogout(request,response,function() {
-        utils2.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
+        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     });
 });
 
@@ -102,12 +102,12 @@ app.get("/js/:script", function(request: Request, response: Response) {
         // In development, use files with sourcemaps
         file = file.replace(".min.",".");
     }
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/lib/:script", function(request: Request, response: Response) {
     let file = request.params.script;
     let filePath = path.resolve(dirname + "/../client/lib");
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/data/:type/", function(request: Request, response: Response) {
     let type: ResourceType = request.params.type;
@@ -123,7 +123,7 @@ app.get("/data/:type/:file", function(request: Request, response: Response) {
     // FIXME properties should be in a configuration file client side
     if (type === ResourceType.PROPERTIES) {
         let filePath = path.resolve(dirname + "/../client/data/" + type);
-        utils2.sendFile(filePath, file, response);
+        utils.sendFile(filePath, file, response);
         return;
     }
     database.read(type, file, session.getUser(request), response);
@@ -131,35 +131,35 @@ app.get("/data/:type/:file", function(request: Request, response: Response) {
 app.get("/assets/:file", function(request: Request, response: Response) {
     let file = request.params.file;
     let filePath = path.resolve(dirname + "/../client/assets");
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/assets/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
     let type: ResourceType = request.params.type;
     let filePath = path.resolve(dirname + "/../client/assets/" + type);
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/assetlist/:type/", function(request: Request, response: Response) {
     let type: ResourceType = request.params.type;
     let filePath = path.resolve(dirname + "/../client/assets/" + type);
-    utils2.listFiles(filePath, response);
+    utils.listFiles(filePath, response);
 });
 app.get("/style/:file", function(request: Request, response: Response) {
     let file = request.params.file;
     let filePath = path.resolve(dirname + "/views/style");
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/style/:type/:file", function(request: Request, response: Response) {
     let type: ResourceType = request.params.type;
     let file = request.params.file;
     let filePath = path.resolve(dirname + "/views/style/"+type);
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 app.get("/workers/:script", function(request: Request, response: Response) {
     let file = request.params.script;
     let filePath = path.resolve(dirname + "/../workers");
     response.set("Service-Worker-Allowed", "..")
-    utils2.sendFile(filePath, file, response);
+    utils.sendFile(filePath, file, response);
 });
 
 // Server logic

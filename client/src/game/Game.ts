@@ -226,7 +226,7 @@ export namespace Game {
             function() {
                 scene.togglePause(true);
                 grid.refreshCanvasSize();
-                scene.changeScale(canvas.getContext("2d")!);
+                scene.changeScale();
                 scene.reapplyTranslation();
                 scene.togglePause(false);
                 updateCanvasCentering();

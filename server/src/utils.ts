@@ -6,7 +6,7 @@ import { Response } from "express";
 
 const placeholder = "404.png";
 
-export function sendFile(path: string, file: string, response: Response) {
+export function sendFile(path: string, filename: string, response: Response) {
     //Send a file as response
     let options = {
         dotfiles: "deny",
@@ -15,27 +15,36 @@ export function sendFile(path: string, file: string, response: Response) {
             "x-sent": true
         }
     };
-    if (endsWith(file, ".json")) {
-        response.type("application/json");
-    } else if (endsWith(file, ".properties")) {
-        response.type("text/x-java-properties");
-    } else if (endsWith(file, ".js")) {
-        response.type("text/javascript");
+    let extension = filename.split(".").pop();
+    switch(extension) {
+        case "json":
+            response.type("application/json");
+            break;
+        case "properties":
+            response.type("text/x-java-properties");
+            break;
+        case "js":
+            response.type("text/javascript");
+            break;
+        case "css":
+            response.type("text/css");
+            break;
     }
 
     response.sendFile(
-        path + "/" + file,
+        path + "/" + filename,
         options,
         function(err: Error | any) {
             if (err && response.statusCode !== HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
-                if (response.statusCode === HttpStatus.NOT_FOUND && file !== placeholder) {
+                if (response.statusCode === HttpStatus.NOT_FOUND && filename !== placeholder) {
                     sendFile(path, placeholder, response);
                 } else {
                     // Do not log:
                     // - Requests aborted
                     // - 404 on minified script
+                    //TODO is this still necessary?
                     if(err.message !== "Request aborted"
-                        && file.match(/l4w\-.*\.min\.js/) === null) {
+                        && filename.match(/l4w\-.*\.min\.js/) === null) {
                         console.log("utils.sendFile - " + err);
                         console.error("error msg:" + err.message);
                         console.error("error name:" + err.name);

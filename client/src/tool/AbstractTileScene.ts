@@ -1,6 +1,7 @@
 import { AbstractStaticScene } from "./AbstractStaticScene"
 import { StaticGrid } from "./StaticGrid"
 import { IRectangle } from "../../../common/src/model/Commons";
+import { MapManager } from "../core/manager/MapManager";
 
 /**
  * Abstract scene for managing Tileset logics
@@ -9,6 +10,7 @@ export abstract class AbstractTileScene extends AbstractStaticScene {
 
     constructor(grid: StaticGrid, heightPx: number, widthPx: number) {
         super(grid);
+        this.map = MapManager.getNewMap("tileSetter");
         this.map.height = Math.floor(heightPx / grid.cellH);
         this.map.width = Math.floor(widthPx / grid.cellW);
     }
