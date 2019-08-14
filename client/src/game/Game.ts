@@ -26,7 +26,7 @@ export namespace Game {
         Workers.registerServiceWorker();
 
         new DynamicGrid(canvas, function(grid) {
-            scene = new DynamicScene(<DynamicGrid> grid, canvas, Launcher.launchAction);
+            scene = new DynamicScene(<DynamicGrid> grid, Launcher.launchAction);
             initInput(canvas, scene, <DynamicGrid> grid);
             loadSave(canvas, function(save?: ISave) {
                 scene.loadSave(save, function(success: boolean) {
@@ -209,7 +209,7 @@ export namespace Game {
             function() {
                 scene.togglePause(true);
                 grid.refreshCanvasSize();
-                scene.changeScale(canvas.getContext("2d")!);
+                scene.changeScale();
                 scene.reapplyTranslation();
                 scene.togglePause(false);
                 updateCanvasCentering();

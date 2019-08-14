@@ -39,9 +39,8 @@ export class DynamicScene extends AbstractScene {
     dialogSkin: HTMLImageElement;
     dialogAction: (input?: string)=>void;
 
-    constructor(grid: DynamicGrid, canvas: HTMLCanvasElement, launcher: ILauncher) {
+    constructor(grid: DynamicGrid, launcher: ILauncher) {
         super(grid);
-        this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
         // Launcher method needs to be injected to avoid circular references
         // (which cause this: "TypeError: Class extends value undefined is not a constructor or null")
         this.launcher = launcher;
@@ -229,7 +228,7 @@ export class DynamicScene extends AbstractScene {
     toggleNaturalScale(enabled?: boolean, double?: boolean) {
         (<DynamicGrid> this.grid).toggleNaturalScale(enabled, double);
         this.grid.refreshCanvasSize();
-        this.changeScale(this.context);
+        this.changeScale();
         this.reapplyTranslation();
     }
 }

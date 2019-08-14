@@ -19,7 +19,7 @@ export namespace Tilesetter {
      */
     export function start(canvas: HTMLCanvasElement, editMode: Constant.TileEditMode, callback: IEmptyCallback) {
         new StaticGrid(canvas, function(grid: StaticGrid) {
-            new TilesetterScene(grid, canvas.height, canvas.width, editMode, function(scene: TilesetterScene) {
+            new TilesetterScene(grid, editMode, function(scene: TilesetterScene) {
                 initInput(canvas, grid);
                 tilesetterScene = scene;
                 tilesetterScene.start(canvas);

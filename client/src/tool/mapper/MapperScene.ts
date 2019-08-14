@@ -224,8 +224,7 @@ export class MapperScene extends AbstractStaticScene {
         let inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         (<StaticGrid> scene.grid).selectScale(+inputRange.value);
         (<StaticGrid> scene.grid).refreshCanvasSize();
-        let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
-        scene.changeScale(canvas.getContext("2d")!);
+        scene.changeScale();
         scene.requestedNewFrame = true;
     }
 

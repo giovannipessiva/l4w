@@ -46,6 +46,7 @@ export abstract class AbstractScene {
     constructor(grid: AbstractGrid) {
         this.renderingConfiguration = new RenderConfiguration();
         this.grid = grid;
+        this.context = grid.getContext();
         this.paused = false;
 
         this.focus = this.grid.mapCellToCanvas({
@@ -57,7 +58,7 @@ export abstract class AbstractScene {
     }
 
     start(canvas: HTMLCanvasElement) {
-        this.changeScale(this.context);
+        this.changeScale();
         let scene = this;
         let frameId = _requestAnimationFrame(function() {
             scene.mainGameLoop(frameId);
@@ -235,9 +236,7 @@ export abstract class AbstractScene {
         this.grid.reappyTranslation();    
     }
 
-    changeScale(context: CanvasRenderingContext2D) {
-        //TODO why is this initializing the context property?
-        this.context = context;
+    changeScale() {
         // Reset and reapply scale
         try {
             this.context.setTransform(1,0,0,1,0,0);

@@ -5,3 +5,4 @@ database/data
 database/setRemoteConnectionConfig.bat
 database/setLocalConnectionConfig.bat
 .vscode/tasks.json
+.vscode/tasks.json

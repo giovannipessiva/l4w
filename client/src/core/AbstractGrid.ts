@@ -169,7 +169,7 @@ export class AbstractGrid {
     }
     
     private applyTranslate(leftTopX: number, leftTopY: number) {
-        let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
+        let context = this.getContext();
         // Apply relative translation (
         context.translate(this.currentTranslation.x - leftTopX, this.currentTranslation.y - leftTopY);
         // Save new translation
@@ -185,7 +185,7 @@ export class AbstractGrid {
     }
 
     resetTranslation() {
-        let context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
+        let context = this.getContext();
         context.translate(this.currentTranslation.x, this.currentTranslation.y);
         this.currentTranslation = { x: 0, y: 0 };
     }
@@ -231,5 +231,9 @@ export class AbstractGrid {
             min: min,
             max: max
         };
+    }
+
+    public getContext(): CanvasRenderingContext2D {
+        return <CanvasRenderingContext2D> this.canvas.getContext("2d");
     }
 }

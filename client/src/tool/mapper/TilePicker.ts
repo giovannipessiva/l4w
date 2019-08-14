@@ -17,7 +17,7 @@ export namespace TilePicker {
             callback(tilePicker);
         } else {
             new StaticGrid(canvas, function(grid: StaticGrid) {
-                new TilePickerScene(grid, canvas.height, canvas.width, function(scene: TilePickerScene) {
+                new TilePickerScene(grid, function(scene: TilePickerScene) {
                     tilePicker = scene;
                     initInput(canvas, grid);
                     tilePicker.start(canvas);

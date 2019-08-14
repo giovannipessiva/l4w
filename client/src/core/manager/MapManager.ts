@@ -518,7 +518,7 @@ export namespace MapManager {
                                     for (let s of array) {
                                         if (rhs(s) === c(s, u) + g_old || (rhs(s) === MAX && (c(s, u) === MAX || g_old === MAX))) {
                                             if (!isVertexEqual(s, s_goal)) {
-                                                let min;
+                                                let min: number | undefined;
                                                 for (let s1 of succ(s)) {
                                                     let tmpMin = c(s, s1) + g(s1);
                                                     if (tmpMin > MAX) {

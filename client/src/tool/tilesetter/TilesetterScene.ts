@@ -14,8 +14,8 @@ import { ITileset } from "../../../../common/src/model/Tileset";
  */
 export class TilesetterScene extends AbstractTileScene {
     
-    constructor(grid: StaticGrid, heightPx: number, widthPx: number, tileEditMode: Constant.TileEditMode, callback: { (scene: TilesetterScene): void }) {
-        super(grid, heightPx, widthPx);
+    constructor(grid: StaticGrid, tileEditMode: Constant.TileEditMode, callback: { (scene: TilesetterScene): void }) {
+        super(grid);
         this.renderingConfiguration.enableSelection = false;
         this.changeTileEditMode(tileEditMode);
 

@@ -7,12 +7,6 @@ import { IRectangle } from "../../../common/src/model/Commons";
  */
 export abstract class AbstractTileScene extends AbstractStaticScene {
 
-    constructor(grid: StaticGrid, heightPx: number, widthPx: number) {
-        super(grid);
-        this.map.height = Math.floor(heightPx / grid.cellH);
-        this.map.width = Math.floor(widthPx / grid.cellW);
-    }
-
     updateSize(widthPx: number, heightPx: number) {
         this.map.width = Math.floor(widthPx / this.grid.cellW);
         this.map.height = Math.floor(heightPx / this.grid.cellH);
