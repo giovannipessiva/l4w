@@ -56,7 +56,7 @@ ga('send', 'pageview');
 </head>
 <body>
 <div style="position:fixed;top:10px;left:10px;">
-	<div>
+	<div id="canvasArea" style="display:block">
 		<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
 		Your browser does not support HTML5 Canvas!</canvas>
 			
@@ -64,14 +64,66 @@ ga('send', 'pageview');
 		let canvas = document.getElementById('canvas1');
 		let ctx = canvas.getContext('2d');
 		ctx.fillStyle='#000000';
-		ctx.font='38px Arial';
+		ctx.font='38px Oldenburg';
 		ctx.fillText("loading scripts...",10,40);
 		</script>
 	</div>
-	<p>
+	<div id="dialogEditorArea" style="display:none">
+		<!-- Interactive dialog graph, rendered with jsTree-->
+		<div id="dialogTree">
+			Loading...
+		</div>
+
+		<!-- Dialog selection details -->
+		<div id="dialogSelectionDetails">
+
+			<!-- Dialog edge editor -->
+			<div id="dialogEdgeDetails">
+				Link ID: <div id="edgeId"></div><br/>
+				Message: <input id="edgeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
+
+				Condition: <select id="edgeCondition"></select><br/>
+				Condition parameters: <input id="edgeConditionParameters" tye="text"> </input><br/>
+
+				Script: <select id="edgeScript"></select><br/>
+				Action: <select id="edgeAction"></select><br/>
+			</div>
+				
+			<!-- Dialog node editor -->
+			<div id="dialogNodeDetails">
+				Dialog ID: <div id="nodeId"></div><br/>
+				Message: <input id="nodeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
+				Generic message: <select id="nodeGenericMessage"></select><br/>
+				Autoclose in: <input id="nodeClosingTimeout" type="number">0</input> msec<br/>
+			</div>
+		</div>
+	</div>
+
+	<div id="genericMessageArea" style="display:none">
+		<!-- Message & GenericMessage editor -->
+		<div id="dialogMessage">
+			<!-- TODO -->
+			Message & GenericMessage editor
+
+			<!--
+			// A message that can be resolved to different strings, based on some conditions
+			IGenericMessage
+				id: number; // ID of the generic string
+				description: string; // Description of the generic string
+				condition?: string; // Name of function that returns true if this state can be active (see Conditions.ts)
+				values: IGenericMessageValue[]; // Array of possible values for this generic message
+				
+			// Single value that could be used for a generic message
+			IGenericMessageValue
+				message: string; // String of the message
+				conditionParams: string; // Parameters to be used for evaluating the condition
+			-->
+		</div>
+	</div>
+	<div id="footer" class="footer">
 		Game: <a href="/">/</a><br/>
-		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Mapper">https://github.com/giovannipessiva/l4w/wiki/Mapper</a>
-	</p>
+		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
+	</div>
 </div>
 <div id="toolsPanel" style="background-color:white;float:right;position:relative;width:256px">
 	<div style="border:1px solid black">

@@ -38,12 +38,14 @@ export namespace MapperPage {
         "Very high"
     ];
 
-    const JSTREE_ID_PREFIX = "j1_";
+    const JSTREE_ID_SEPARATOR = "_";
 
     export function start() {
         Compatibility.check();
 
-        $("#mapPanel").jstree({
+        loadDialogEditor(0); //TODO test
+
+        let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
                 animation: 0,
                 data: {
@@ -51,17 +53,18 @@ export namespace MapperPage {
                     dataType: "json"
                 },
                 check_callback: true,
+                error: function() {
+                    console.warn("jsTree error on dialogTree");
+                },
+                multiple: false
             },
-            multiple: false,
             plugins: [
                 "contextmenu", // Makes it possible to right click nodes and shows a list of configurable actions in a menu
                 "dnd", // Makes it possible to drag and drop tree nodes and rearrange the tree
                 "unique" // Enforces that no nodes with the same name can coexist as siblings
-            ],
-            themes: {
-                dots: false
-            }
-        });
+            ]
+        }
+        $("#mapPanel").jstree(jsTreeOptions);
 
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
@@ -85,7 +88,7 @@ export namespace MapperPage {
                     break;
                 case "create_node":
                     // Remove the prefix from the id
-                    let numericId = data.node.id.replace(JSTREE_ID_PREFIX,"");
+                    let numericId = data.node.id.split(JSTREE_ID_SEPARATOR).pop();
                     if(isNaN(parseInt(numericId))) {
                         console.error("Cannot generate a numeric id for node: " + data.node.id);
                     }
@@ -693,5 +696,123 @@ export namespace MapperPage {
         };
         button.innerText = "-";
         td.appendChild(button);
+    }
+
+    function loadDialogEditor(dialogId: number) {
+        let dialogTree = $("#dialogTree");
+
+        let contextOptions: JSTreeStaticDefaultsContextMenu = {
+            select_node: true,
+            show_at_node: true,
+            items: {
+                "Test": {
+                    label: "test",
+                    action: undefined
+                }
+
+                /*
+                Add child dialog
+                Add parallel branch
+                Delete
+                */
+
+                /*
+Once a menu item is activated the `action` function will be invoked with an object containing the following keys: item - the contextmenu item definition as seen below, reference - the DOM node that was used (the tree node), element - the contextmenu DOM element, position - an object with x/y properties indicating the position of the menu.
+- `separator_before` - a boolean indicating if there should be a separator before this item
+- `separator_after` - a boolean indicating if there should be a separator after this item
+- `_disabled` - a boolean indicating if this action should be disabled
+- `label` - a string - the name of the action (could be a function returning a string)
+- `title` - a string - an optional tooltip for the item
+- `action` - a function to be executed if this item is chosen, the function will receive
+- `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
+- `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
+- `shortcut_label` - shortcut label (like for example `F2` for rename)
+- `submenu` - an object with the same structure as $.jstree.defaults.contextmenu.items which can be used to create a submenu - each key will be rendered as a separate option in a submenu that will appear once the current item is hovered
+*/
+            }
+        };
+
+        let jsTreeOptions: JSTreeStaticDefaults = {
+            core: {
+                animation: 0,
+                data: {
+                    url: base_path + "data/dialog/" + dialogId,
+                    dataType: "json"
+                },
+                check_callback: true,
+                error: function() {
+                    console.warn("jsTree error on dialogTree");
+                },
+                multiple: false
+            },
+            plugins: [
+                "contextmenu", // Makes it possible to right click nodes and shows a list of configurable actions in a menu
+                "dnd", // Makes it possible to drag and drop tree nodes and rearrange the tree
+                "search" // Adds the possibility to search for items in the tree and even to show only matching nodes  
+            ],
+            contextmenu: contextOptions
+        };
+        dialogTree.jstree(jsTreeOptions);
+
+        dialogTree.on("create_node.jstree ready.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
+            switch (e.type) {
+                case "ready":
+                    // If no node is selected, select the first
+                    let currentNode = getSelectedNode();
+                    if(currentNode === undefined) {
+                        let nodeList = dialogTree.jstree(true).get_json("#", {
+                            "flat": true,
+                            "no_state": true,
+                            "no_id": false,
+                            "no_children": false,
+                            "no_data": true
+                        });
+                        if(nodeList.length > 0) {
+                            dialogTree.jstree(true).select_node(nodeList[0]);
+                        }
+                    }
+                    break;
+                case "create_node":
+                    // Remove the prefix from the id
+                    let numericId = data.node.id.split(JSTREE_ID_SEPARATOR).pop();
+                    if(isNaN(parseInt(numericId))) {
+                        console.error("Cannot generate a numeric id for node: " + data.node.id);
+                    }
+                    dialogTree.jstree(true).set_id(data.node, numericId);
+                case "rename_node":
+                case "delete_node":
+                    // Disable every node, to avoid map changes before save
+                    changeEditState(true);
+                    break;
+                case "changed":
+                    switch (data.action) {
+                        case "ready":
+                            // Prevent double call at start
+                            break;
+                        case "delete_node":
+                            // Select another node
+                            let previousNode = dialogTree.jstree(true).get_prev_dom(data.node);
+                            dialogTree.jstree(true).select_node(previousNode);
+                            break;
+                        case "model":
+                        case "select_node":
+                            $("#mapDetailPanel").show();
+                            //let node: JSTreeNode = getSelectedNode();
+                            //document.getElementById("");
+        
+                            //TODO next - show details
+                            break;
+                        case "deselect_all":
+                            // Nothing to do here.
+                            break;
+                        default:
+                            console.error("Unexpected event \"changed\" action: " + data.action);
+                            break;
+                    }
+                    break;
+                default:
+                    console.error("Unexpected event type: " + e.type);
+            }
+        });
     }
 }

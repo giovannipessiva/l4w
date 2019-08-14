@@ -12,7 +12,7 @@ import { Utils } from "../core/util/Utils";
 import { Workers } from "../core/util/Workers";
 import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
-import { ResourceType } from "../../../common/src/Constants";
+import { ResourceType, ScreenSize } from "../../../common/src/Constants";
 
 /**
  * Module for initializing and launching a game
@@ -28,27 +28,38 @@ export namespace Game {
         new DynamicGrid(canvas, function(grid) {
             scene = new DynamicScene(<DynamicGrid> grid, Launcher.launchAction);
             initInput(canvas, scene, <DynamicGrid> grid);
-            loadSave(canvas, function(save?: ISave) {
+            loadSave(canvas, function(save?: ISave) {                
                 scene.loadSave(save, function(success: boolean) {
                     scene.start(canvas);
                     scene.moveFocusToDirection();
- 
-                    // Load languages combobox
-                    let combo: HTMLElement | null = document.getElementById("comboLang");
-                    if(combo !== null && combo instanceof HTMLSelectElement) {
-                        combo.options.add(new Option("English 🇬🇧", LanguageEnum.EN, true));
-                        combo.options.add(new Option("Italiano 🇮🇹", LanguageEnum.IT));
-                        scene.setLanguage(LanguageEnum.EN);
-                    } else {
-                        console.error("Element \"comboLang\" undefined as select element");
+
+                    // Load saved config
+                    let languageCombo = <HTMLSelectElement> document.getElementById("comboLang");
+                    if(save !== undefined && save.config !== undefined) {
+                        if(save.config.lang !== undefined) {
+                             languageCombo.value = save.config.lang;
+                            changeLanguage();
+                        }
+                        if(save.config.flagAntialiasing !== undefined) {
+                            (<HTMLInputElement> document.getElementById("checkAntialiasing")).checked = save.config.flagAntialiasing;
+                            changeAntialiasing();
+                        }
+                        if(save.config.flagNatural !== undefined && save.config.flagDouble !== undefined) {
+                            (<HTMLSelectElement> document.getElementById("comboScreen")).value = save.config.flagNatural? (save.config.flagDouble? ScreenSize.NATURAL_X2 : ScreenSize.NATURAL) : ScreenSize.ADAPTIVE;
+                            changeScreen();
+                        }
                     }
+
+                    // Load languages combobox
+                    languageCombo.options.add(new Option("English 🇬🇧", LanguageEnum.EN));
+                    languageCombo.options.add(new Option("Italiano 🇮🇹", LanguageEnum.IT));
+                    languageCombo.value = scene.save.config.lang;
 
                     // Last graphic changes
                     updateCanvasCentering();
                     canvas.classList.add("l4wCanvas");
                     document.getElementById("footer")!.style.visibility = "visible";
                 });
-
             });
         });
     }
@@ -83,12 +94,18 @@ export namespace Game {
     }
 
     export function save() {
-        //TODO l'id del salvataggio va selezionato dal giocatore
+        //TODO should manage more than one save, maybe with a custom name
         let saveId: string = "0";
         let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
         if (currentState !== undefined) {
             saveId = currentState.id + "";
         }
+        // Set config preferences
+        currentState.config.lang = <LanguageEnum> (<HTMLSelectElement> document.getElementById("comboLang")).value;
+        currentState.config.flagAntialiasing = (<HTMLInputElement> document.getElementById("checkAntialiasing")).checked;
+        currentState.config.flagNatural = (<HTMLSelectElement> document.getElementById("comboScreen")).value !== ScreenSize.ADAPTIVE;
+        currentState.config.flagDouble = (<HTMLSelectElement> document.getElementById("comboScreen")).value === ScreenSize.NATURAL_X2;
+
         Resource.save(saveId, JSON.stringify(currentState), ResourceType.SAVE, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Game saved successfully");
@@ -231,13 +248,13 @@ export namespace Game {
     export function changeScreen() {
         let comboScreen = <HTMLInputElement> document.getElementById("comboScreen");
         switch(comboScreen.value) {
-            case "apt":
+            case ScreenSize.ADAPTIVE:
                 scene.toggleNaturalScale(false);
                 break;
-            case "nat":
+            case ScreenSize.NATURAL:
                 scene.toggleNaturalScale(true, false);
                 break;
-            case "nat2":
+            case ScreenSize.NATURAL_X2:
                 scene.toggleNaturalScale(true, true);
                 break;
             default:

@@ -29,3 +29,9 @@ export const enum ResourceType {
     PROPERTIES = "properties",
     PICTURE = "picture"
 }
+
+export const enum ScreenSize {
+    ADAPTIVE = "apt",
+    NATURAL = "nat",
+    NATURAL_X2 = "nat2"
+}

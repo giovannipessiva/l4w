@@ -94,7 +94,10 @@ export namespace defaults {
     export function getDefaultConfig(): IConfig {
         return {
             lang: LanguageEnum.EN,
-            skin: "ld3-webskin1.png"
+            skin: "ld3-webskin1.png",
+            flagAntialiasing: true,
+            flagNatural: false,
+            flagDouble: false
         };
     }
 

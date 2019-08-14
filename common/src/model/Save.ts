@@ -19,7 +19,11 @@ export interface IEventSave {
     memory: {}; // Map of generic key -> value pairs (override the default memory of this event)  
 }
 
+/* Does not include a flag for fullscreen, since it cannot be activated without user input */
 export interface IConfig {
     lang: LanguageEnum; // Language chosen by the user
     skin: string; // Current window skin
+    flagNatural: boolean; // Natural size (scale=1)
+    flagDouble: boolean; // Natural size x2 (scale=2)
+    flagAntialiasing: boolean; // Antialiasing flag
 }
