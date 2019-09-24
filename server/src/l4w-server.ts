@@ -7,6 +7,7 @@ import compression from "compression";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
 import { HttpStatus, ResourceType } from "../../common/src/Constants"
+import { convertStringToEnum } from "../../common/src/Utils"
 import { session } from "./session"
 import * as utils from "./utils"
 import { security } from "./security"
@@ -110,7 +111,7 @@ app.get("/lib/:script", function(request: Request, response: Response) {
     utils.sendFile(filePath, file, response);
 });
 app.get("/data/:type/", function(request: Request, response: Response) {
-    let type: ResourceType = request.params.type;
+    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let user = null;
     if(session.isAuthenticated(request)) {
         user = session.getUser(request);
@@ -119,7 +120,7 @@ app.get("/data/:type/", function(request: Request, response: Response) {
 });
 app.get("/data/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
-    let type: ResourceType = request.params.type;
+    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     // FIXME properties should be in a configuration file client side
     if (type === ResourceType.PROPERTIES) {
         let filePath = path.resolve(dirname + "/../client/data/" + type);
@@ -135,12 +136,12 @@ app.get("/assets/:file", function(request: Request, response: Response) {
 });
 app.get("/assets/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
-    let type: ResourceType = request.params.type;
+    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils.sendFile(filePath, file, response);
 });
 app.get("/assetlist/:type/", function(request: Request, response: Response) {
-    let type: ResourceType = request.params.type;
+    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let filePath = path.resolve(dirname + "/../client/assets/" + type);
     utils.listFiles(filePath, response);
 });
@@ -150,7 +151,7 @@ app.get("/style/:file", function(request: Request, response: Response) {
     utils.sendFile(filePath, file, response);
 });
 app.get("/style/:type/:file", function(request: Request, response: Response) {
-    let type: ResourceType = request.params.type;
+    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let file = request.params.file;
     let filePath = path.resolve(dirname + "/views/style/"+type);
     utils.sendFile(filePath, file, response);
@@ -175,7 +176,7 @@ app.post("/edit/maps", function(request: Request, response: Response) {
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         let fileId = request.params.id;
-        let type: ResourceType = request.params.type;
+        let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
         security.getBodyData(request, response, function(data: any){
             switch(type) {
             case ResourceType.MAP:

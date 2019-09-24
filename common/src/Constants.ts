@@ -15,9 +15,10 @@ export enum HttpResponseHeader {
     LOCATION = "Location"
 }
 
-export const enum ResourceType {
+export enum ResourceType {
     CHAR = "charset",
     FACE = "faceset",
+    FAVICON = "favicon",
     SKIN = "skin",
     TILE = "tile",
     MAP = "map",
@@ -26,8 +27,9 @@ export const enum ResourceType {
     DIALOG = "dialog",
     GENERIC_MESSAGE = "generic-message",
     TILESET = "tileset",
-    PROPERTIES = "properties",
-    PICTURE = "picture"
+    PICTURE = "picture",
+    POINTER = "pointer",
+    PROPERTIES = "properties"
 }
 
 export const enum ScreenSize {

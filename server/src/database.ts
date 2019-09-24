@@ -148,10 +148,49 @@ export namespace database {
                 }
             );
             break;
-        case "dialog":
-            //TODO next
-            //Query custom ricorsiva sui dati, avevo la bozza su txt.txt?
-            response.json({});
+        case ResourceType.DIALOG:
+            models.sequelize.query(
+                //Create a temporary table using a recursive search"
+                "WITH RECURSIVE dialog_graph AS (" +
+                //Initial selection condition"
+                "    SELECT id, string, generic_string" +
+                "    FROM l4w_dialog_node dn" +
+                "    WHERE id = :file" +
+                "    UNION ALL" +
+                //Recursive search
+                "    SELECT dn.id, dn.string, dn.generic_string" +
+                "    FROM dialog_graph dg, l4w_dialog_node_edges dne1, l4w_dialog_node_edges dne2, l4w_dialog_node dn" +
+                "    WHERE dg.id = dne1.node" +
+                "    AND dne1.edge = dne2.edge" +
+                "    AND dne2.node = dn.id " +
+                ")" +
+                "SELECT *" +
+                "FROM dialog_graph;"
+            , {
+                replacements: {
+                    "file": file
+                },
+                type: sequelize.QueryTypes.SELECT,
+                model: models.l4w_dialog_node
+                
+            })
+            // @ts-ignore
+            .then(nodes => {
+                for(let result of nodes) {
+                    console.log(result);
+                }
+
+                /*
+                if (!utils.isEmpty(result)) {
+                    response.send(result.dataValues.value);
+                }
+                
+                console.log(error);
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                */
+
+                response.send(nodes);
+            });
             break;
         default:
             console.error("database.read - Unexpected case: " + type);
