@@ -16,20 +16,25 @@ export enum HttpResponseHeader {
 }
 
 export enum ResourceType {
+    // Assets (graphic/audio resources)
     CHAR = "charset",
     FACE = "faceset",
     FAVICON = "favicon",
     SKIN = "skin",
     TILE = "tile",
-    MAP = "map",
-    SAVE = "save",
-    STRING = "string",
-    DIALOG = "dialog",
-    GENERIC_MESSAGE = "generic-message",
     TILESET = "tileset",
     PICTURE = "picture",
     POINTER = "pointer",
-    PROPERTIES = "properties"
+
+    // Static data (game data that cannot change during gameplay)
+    MAP = "map",
+    STRING = "string",
+    DIALOG = "dialog",
+    GENERIC_MESSAGE = "generic-message",
+    PROPERTIES = "properties",
+
+    // Dynamic data (user data that can change during gameplay)
+    SAVE = "save"
 }
 
 export const enum ScreenSize {

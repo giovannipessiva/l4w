@@ -87,23 +87,33 @@ export function parseParameters(parameters: string) {
     return paramMap;
 }
 
-export function listFiles(filePath: string, response: Response) {
-    fs.readdir(filePath, (err: Error, files: string[]) => {
-        for(let i = 0; i < files.length; i++) {
-            let file = files[i];
-            let is404 = file.startsWith("404")
-            let isHidden = file.startsWith(".")
-            let isDirectory = fs.lstatSync(filePath + "/" + file).isDirectory();
-            if (is404 || isHidden || isDirectory) {
-                files.splice(i, 1);
-                i--;
-            }    
-        }
-        if(!isEmpty(err)) {
-            console.error(err);
-        }
-        response.json(files);
-    })
+/**
+ * List the files in a directory (excluding dirs, hidden, 404)
+ * @param filePath path to read
+ * @param response array of files (async)
+ */
+export function listFiles(filePath: string, response?: Response): Promise<string[]> {
+    return new Promise<string[]>(resolve => {
+        fs.readdir(filePath, (err: Error, files: string[]) => {
+            for(let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let is404 = file.startsWith("404")
+                let isHidden = file.startsWith(".")
+                let isDirectory = fs.lstatSync(filePath + "/" + file).isDirectory();
+                if (is404 || isHidden || isDirectory) {
+                    files.splice(i, 1);
+                    i--;
+                }    
+            }
+            if(!isEmpty(err)) {
+                console.error(err);
+            }
+            if(response !== undefined) {
+                response.json(files);
+            }
+            resolve(files);
+        })
+    });
 }
 
 /**

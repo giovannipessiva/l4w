@@ -1,5 +1,10 @@
 //@ts-ignore TS1192
+import fs from "fs"
 import sequelize from "sequelize"
+import * as LowdbModule from "lowdb";
+import * as FileSyncModule from "lowdb/adapters/FileSync"
+const lowdb: LowdbModule.lowdb = LowdbModule["default"];
+const fileSync: LowdbModule.AdapterSync<any> = FileSyncModule["default"];
 
 import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { models } from "./models/index"
@@ -8,7 +13,14 @@ import { constants } from "./constants"
 import { defaults } from "./defaults"
 import { IDialogNodeData, IDialogEdgeData, IDialogNode } from "../../common/src/model/Dialog";
 
+/**
+ * This module manage persistency for:
+ * - Game data: on lowdb files, written only during development, and read at runtime
+ * - User data: on PG database, read and written only during runtime
+ */
 export namespace database {
+
+    let gameData: any;
 
     //TODO this is nonsense, please cleanse it
     function getDefaults(type: string, file: string | undefined) {
@@ -43,9 +55,34 @@ export namespace database {
         response.status(HttpStatus.BAD_REQUEST).send("");
     };
 
-    export function init() {
-        return new Promise(function(resolve, reject) {
-            // Test authentication
+    /**
+     * Method called on module intialization, it will:
+     * - load the game file database
+     * - initialize the PostGres database
+     */
+    export async function init(): Promise<void> {
+        return new Promise(async function(resolve, reject) {
+            // Load game data from json files
+            gameData = {
+                dialogs: lowdb(new fileSync("data/dialogs.json")),
+                maps: lowdb(new fileSync("data/maps.json")),
+                generic_message: lowdb(new fileSync("data/dynmsgs.json"))
+            };
+        
+            // Load the language files
+            let files = await utils.listFiles("data/lang/");
+            for(let file of files) {
+                try {
+                    // example: gameData.messages_it: {database from messages_it.json}
+                    gameData[file.replace(".json","")] = lowdb(new fileSync("data/lang/" + file));
+                } catch(e) {
+                    console.error("Error while reading language file: " + file);
+                    console.trace(e);
+                }
+            }
+
+            // Test PostGres authentication
+            //TODO in the future, this shold not be mandatory for local developement 
             models.sequelize.authenticate().then(function() {
                 resolve();
             }, function(err: any) {

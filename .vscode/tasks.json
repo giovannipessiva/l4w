@@ -8,6 +8,12 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "grunt",
+            "task": "l4w-build-server",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }
