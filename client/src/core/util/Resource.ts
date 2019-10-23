@@ -66,15 +66,15 @@ export namespace Resource {
         return props;
     };
 
-    export function sendGETRequest(uri: string, callback: IResponseCallback) {
-        sendRequest(Constant.RequestType.GET, undefined, uri, callback);
+    export function sendGETRequest(uri: string, callback: IResponseCallback, lang?: string) {
+        sendRequest(Constant.RequestType.GET, undefined, uri, callback, lang);
     };
 
     export function sendPOSTRequest(uri: string, data: string, callback: IResponseCallback) {
         sendRequest(Constant.RequestType.POST, data, uri, callback);
     };
 
-    function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback) {
+    function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback, lang?: string) {
         let request = new XMLHttpRequest();
         request.onload = function(this: XMLHttpRequest, ev: ProgressEvent): any {
             if(this.status !== HttpStatus.MOVED_PERMANENTLY) {
@@ -87,7 +87,7 @@ export namespace Resource {
                     console.warn("Request returned code: " +  HttpStatus.MOVED_PERMANENTLY + ", attempting a redirect");
                     console.warn("from: " + uri);
                     console.warn("to: " + newUri);
-                    sendRequest(requestType, data, newUri, callback);
+                    sendRequest(requestType, data, newUri, callback, lang);
                 } else {
                     callback(this.responseText);
                 }
@@ -104,6 +104,9 @@ export namespace Resource {
         };
         request.open(requestType, uri, true);
         try {
+            if(lang !== undefined) {
+                request.setRequestHeader("lang", lang);
+            }
             if (!Utils.isEmpty(data) && requestType === Constant.RequestType.POST) {
                 request.send(data);
             } else {
@@ -123,7 +126,7 @@ export namespace Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }) {
+    export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }, lang?: string) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();
@@ -156,7 +159,7 @@ export namespace Resource {
             case ResourceType.GENERIC_MESSAGE:
             case ResourceType.TILESET:
                 // read data from DB
-                sendGETRequest(path, callback);
+                sendGETRequest(path, callback, lang);
                 break;
             default:
                 console.error("Unexpected resource type");

@@ -37,7 +37,7 @@ export namespace session {
         return Session(sessionOptions);
     }
     
-    export function getUser(request: any) {
+    export function getUser(request: any): string | undefined {
         if(utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l"autenticazione sia disabilitata, forza l"utente 0
@@ -48,7 +48,7 @@ export namespace session {
         return request.session.user;
     }
     
-    export function isAuthenticated(request: any) {
+    export function isAuthenticated(request: any): boolean {
         if(security.isAuthenticationDisabled()) {
             return true;
         }

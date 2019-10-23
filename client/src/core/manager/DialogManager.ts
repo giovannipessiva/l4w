@@ -67,14 +67,14 @@ export namespace DialogManager {
             callback();
             return;    
         }
-        Resource.load(stringId + "", ResourceType.STRING, function(resourceText) {
+        Resource.load(stringId + "", ResourceType.STRING, function(resourceText: any) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading string: " + stringId);
                 callback();
             } else {
                 callback(resourceText);
             }
-        });
+        }, language);
     }
 
     export function saveString(id: number, strings: string[], callback: (nmb?: number) => void) {

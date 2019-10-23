@@ -46,7 +46,7 @@ app.get("/", function(request: Request, response: Response) {
         });
     } else {
         if(session.isAuthenticated(request)) {
-           database.logUserSessionAccess(session.getUser(request));
+           database.logUserSessionAccess(session.getUser(request)!);
             utils.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
         } else {
             utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
@@ -64,7 +64,7 @@ app.get("/edit", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
         utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
-       database.logUserSessionAccess(session.getUser(request));
+        database.logUserSessionAccess(session.getUser(request)!);
         utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
     }
 });
@@ -79,7 +79,7 @@ app.get("/edit/:editor", function(request: Request, response: Response) {
     if(!session.isAuthenticated(request)) {
         utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
     } else {
-       database.logUserSessionAccess(session.getUser(request));
+        database.logUserSessionAccess(session.getUser(request)!);
         let editor = request.params.editor;
         utils.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
     }
@@ -112,7 +112,7 @@ app.get("/lib/:script", function(request: Request, response: Response) {
 });
 app.get("/data/:type/", function(request: Request, response: Response) {
     let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-    let user = null;
+    let user = undefined;
     if(session.isAuthenticated(request)) {
         user = session.getUser(request);
     }
@@ -127,7 +127,8 @@ app.get("/data/:type/:file", function(request: Request, response: Response) {
         utils.sendFile(filePath, file, response);
         return;
     }
-    database.read(type, file, session.getUser(request), response);
+    let lang = <string | undefined> request.headers.lang;
+    database.read(type, file, session.getUser(request), response, lang);
 });
 app.get("/assets/:file", function(request: Request, response: Response) {
     let file = request.params.file;
@@ -167,7 +168,7 @@ app.get("/workers/:script", function(request: Request, response: Response) {
 app.post("/edit/maps", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         security.getBodyData(request,response,function(data: any){
-            mapper.updateMaps(data, session.getUser(request), response);
+            mapper.updateMaps(data, session.getUser(request)!, response);
         });
     } else {
         response.status(HttpStatus.FORBIDDEN).send("");
@@ -180,11 +181,11 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
         security.getBodyData(request, response, function(data: any){
             switch(type) {
             case ResourceType.MAP:
-                mapper.updateMap(fileId, data, session.getUser(request), response);
+                mapper.updateMap(fileId, data, session.getUser(request)!, response);
                 break;
             case ResourceType.SAVE:
             case ResourceType.TILESET:
-               database.write(type, fileId, data, session.getUser(request), response);
+               database.write(type, fileId, data, session.getUser(request)!, response);
                 break;
             }
         });
@@ -194,7 +195,7 @@ app.post("/edit/:type/:id", function(request: Request, response: Response) {
 });
 app.get("/news", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
-       database.getNews(session.getUser(request), response);
+       database.getNews(session.getUser(request)!, response);
     } else {
         response.status(HttpStatus.FORBIDDEN).send("");
     }

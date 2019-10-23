@@ -1,6 +1,7 @@
 //@ts-ignore TS1192
 import fs from "fs"
-import sequelize from "sequelize"
+import * as SequelizeModule from "sequelize"
+const sequelize = SequelizeModule["default"];
 import * as LowdbModule from "lowdb";
 import * as FileSyncModule from "lowdb/adapters/FileSync"
 const lowdb: LowdbModule.lowdb = LowdbModule["default"];
@@ -11,7 +12,8 @@ import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { defaults } from "./defaults"
-import { IDialogNodeData, IDialogEdgeData, IDialogNode } from "../../common/src/model/Dialog";
+import { IDialogNodeData, IDialogEdgeData, IDialogNode, IDialogEdge } from "../../common/src/model/Dialog";
+import { IMap } from "../../common/src/model/Map";
 
 /**
  * This module manage persistency for:
@@ -20,7 +22,38 @@ import { IDialogNodeData, IDialogEdgeData, IDialogNode } from "../../common/src/
  */
 export namespace database {
 
-    let gameData: any;
+    type dialogNodeSchemaType = {
+        id: number;
+        value: IDialogNode;
+    }
+
+    type dialogEdgeSchemaType = {
+        id: number;
+        value: IDialogEdge;
+    }
+
+    type mapSchemaType = {
+        id: number;
+        value: IMap;
+    }
+
+    type genericMessageSchemaType = {
+        id: number;
+        value: IMap;
+    }
+
+    type stringsSchemaType = {
+        id: number;
+        value: string;
+    }
+
+    let gameData: {
+        dialogNodes: LowdbModule.LowdbSync<dialogNodeSchemaType>;
+        dialogEdges: LowdbModule.LowdbSync<dialogEdgeSchemaType>;
+        maps: LowdbModule.LowdbSync<mapSchemaType>;
+        genericMessages: LowdbModule.LowdbSync<genericMessageSchemaType>;
+        langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
+    };
 
     //TODO this is nonsense, please cleanse it
     function getDefaults(type: string, file: string | undefined) {
@@ -64,17 +97,20 @@ export namespace database {
         return new Promise(async function(resolve, reject) {
             // Load game data from json files
             gameData = {
-                dialogs: lowdb(new fileSync("data/dialogs.json")),
+                dialogEdges: lowdb(new fileSync("data/dlgedgs.json")),
+                dialogNodes: lowdb(new fileSync("data/dlgnds.json")),
                 maps: lowdb(new fileSync("data/maps.json")),
-                generic_message: lowdb(new fileSync("data/dynmsgs.json"))
+                genericMessages: lowdb(new fileSync("data/dynmsgs.json")),
+                langs: new Map<string, LowdbModule.LowdbSync<stringsSchemaType>>()
             };
-        
+
             // Load the language files
             let files = await utils.listFiles("data/lang/");
             for(let file of files) {
                 try {
-                    // example: gameData.messages_it: {database from messages_it.json}
-                    gameData[file.replace(".json","")] = lowdb(new fileSync("data/lang/" + file));
+                    // example: gameData.langs.it: {database from messages_it.json}
+                    let lang = file.replace("messages_","").replace(".json","");
+                    gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
                 } catch(e) {
                     console.error("Error while reading language file: " + file);
                     console.trace(e);
@@ -92,7 +128,7 @@ export namespace database {
         });
     }
 
-    export function read(type: ResourceType, file: string | undefined, user: string, response: any) {
+    export function read(type: ResourceType, file: string | undefined, user: string | undefined, response: any, lang?: string) {
         file = getDefaults(type, file);
         switch (type) {
         case ResourceType.MAP:
@@ -164,26 +200,16 @@ export namespace database {
             }
             break;
         case ResourceType.STRING:
-            models.l4w_string.findOne({
-                where : {
-                    id : file
-                },
-                attributes : [ "lang", "value" ]
-            }).then(
-                function(result: any) {
-                    if (!utils.isEmpty(result)) {
-                        response.send(result.dataValues.value);
-                    } else {
-                        response.status(HttpStatus.NOT_FOUND)
-                            .send(defaults.getDefaultString());
-                    }
-                },
-                function(error: any) {
-                    console.log(error);
-                    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .send(defaults.getDefaultSave());
-                }
-            );
+            if(lang === undefined || !gameData.langs.has(lang)) {
+                lang = "en";
+            }
+            let langMap = gameData.langs.get(lang)!;
+            if(langMap.has(file)) {
+                response.send(langMap.get(file).value());
+            } else {
+                response.status(HttpStatus.NOT_FOUND)
+                    .send(defaults.getDefaultString());
+            }
             break;
         case ResourceType.DIALOG:
             models.sequelize.query(
@@ -274,27 +300,17 @@ export namespace database {
             break;
         case ResourceType.STRING:
             let strings = JSON.parse(data);
-            let counter = strings.length;
-            let callbackSuccess = function() {
-                counter--;
-                if(counter <= 0) {
-                    response.status(HttpStatus.OK).send("");
+            for(let lang in strings) {
+                if(gameData.langs.has(lang)) {
+                    gameData.langs.get(lang)!; //.push({
+                    //    id: file,
+                    //    value: strings[lang]
+                    //}).set(lang, gameData.langs[lang][file]);
+                } else {
+                    console.warn("Language not found: " + lang);
                 }
             }
-            let id = undefined;
-            if(!utils.isEmpty(file)) {
-                id = file;
-            }
-            for(let lang in strings) {
-                models.l4w_string.upsert({
-                    id : id,
-                    lang: lang,
-                    save : strings[lang]
-                }).then(callbackSuccess, function(error: any) {
-                    counter = 999;
-                    manageQueryError(response, error);
-                });
-            }
+            response.status(HttpStatus.OK).send("");
             break;
         case "dialog":
             // Extract a list of nodes and edges from the dialog tree, and save them to DB
