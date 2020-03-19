@@ -173,7 +173,7 @@ export namespace DialogManager {
         } else {
             dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
         }
-        dlgFrame.style.visibility = null;
+        dlgFrame.style.visibility = "visible";
         if(faceset !== undefined) {
             dlgFace.style.display = "block";
             dlgFace.style.backgroundImage = "url('/assets/faceset/" + faceset + "')";
