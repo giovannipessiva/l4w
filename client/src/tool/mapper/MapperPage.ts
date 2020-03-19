@@ -47,7 +47,7 @@ export namespace MapperPage {
 
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
-                animation: 0,
+                animation: false,
                 data: {
                     url: base_path + "data/map",
                     dataType: "json"

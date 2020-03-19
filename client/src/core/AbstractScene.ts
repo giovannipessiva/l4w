@@ -13,7 +13,7 @@ import { ResourceType } from "../../../common/src/Constants";
 
 var _requestAnimationFrame =
     window.requestAnimationFrame ||
-    function(callback): number {
+    function(callback: TimerHandler): number {
         window.setTimeout(callback, 40);
         return Math.floor(Math.random() * 100);
     };
