@@ -12,7 +12,7 @@ dropdb --host %local_host% --port %local_port% --username %local_user% %local_db
 
 createdb --owner %local_user% --host %local_host% --port %local_port% --username %local_user% %local_db% 
 
-PGPASSWORD=%remote_password%
+set PGPASSWORD=%remote_password%
 pg_dump --no-owner --no-privileges --clean --column-inserts --disable-dollar-quoting --host %remote_host% --username %remote_user% %remote_db% | psql --host %local_host% --port %local_port% --username %local_user% %local_db%
 
 pause

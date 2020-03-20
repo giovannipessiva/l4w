@@ -151,10 +151,10 @@ app.get("/style/:file", function(request: Request, response: Response) {
     let filePath = path.resolve(dirname + "/views/style");
     utils.sendFile(filePath, file, response);
 });
-app.get("/style/:type/:file", function(request: Request, response: Response) {
-    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
+app.get("/style/:path/:file", function(request: Request, response: Response) {
+    let pathS = request.params.path;
     let file = request.params.file;
-    let filePath = path.resolve(dirname + "/views/style/"+type);
+    let filePath = path.resolve(dirname + "/views/style/" + pathS);
     utils.sendFile(filePath, file, response);
 });
 app.get("/workers/:script", function(request: Request, response: Response) {
