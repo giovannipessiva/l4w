@@ -19,7 +19,7 @@ export namespace Mapper {
 
     export let mapper: MapperScene;
 
-    export function start(canvas: HTMLCanvasElement, mapId: number, callback: (mapperScene: MapperScene)=>void) {
+    export function start(canvas: HTMLCanvasElement, mapId: string, callback: (mapperScene: MapperScene)=>void) {
         if(!Utils.isEmpty(mapper)) {
             initMapperData(mapper, canvas, mapId, callback);
         } else {
@@ -37,7 +37,7 @@ export namespace Mapper {
         }
     }
     
-    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, mapId: number, callback: (mapperScene: MapperScene)=>void) {
+    function initMapperData(scene: MapperScene, canvas: HTMLCanvasElement, mapId: string, callback: (mapperScene: MapperScene)=>void) {
         MapManager.loadMap(mapId, canvas, function(map?: IMap) {
             if(map === undefined) {
                 console.error("Cannot init mapper, cannot load map: " + mapId);

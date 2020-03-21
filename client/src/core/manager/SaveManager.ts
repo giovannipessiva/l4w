@@ -1,5 +1,5 @@
 import { ISave, IConfig } from "../../../../common/src/model/Save"
-import { LanguageEnum, ICell } from "../../../../common/src/model/Commons"
+import { ICell } from "../../../../common/src/model/Commons"
 import { IMap } from "../../../../common/src/model/Map"
 import { IEvent } from "../../../../common/src/model/Event"
 import { IEventSave } from "../../../../common/src/model/Save"
@@ -8,6 +8,8 @@ import { MapManager } from "./MapManager"
 import { Utils } from "../util/Utils"
 import { DynamicScene } from "../../game/DynamicScene"
 import { IBooleanCallback } from "../util/Commons";
+import { getRandomString } from "../../../../common/src/Utils"
+import { gameConfig } from "../../../../common/src/GameConfig"
 
 /**
  * Module to handle save
@@ -16,9 +18,9 @@ export namespace SaveManager {
 
     export function getNewSave(): ISave {
         return {
-            id: 0,
+            id: getRandomString(),
             timestamp: Utils.now(),
-            currentMap: 0,
+            currentMap: gameConfig.maps.start.map,
             hero: EventManager.getNewHero(),
             maps: [],
             config: getNewConfig()
@@ -27,8 +29,8 @@ export namespace SaveManager {
 
     export function getNewConfig(): IConfig {
         return {
-            lang: LanguageEnum.EN,
-            skin: "ld3-webskin1.png",
+            lang: gameConfig.ui.lang,
+            skin: gameConfig.ui.skin,
             flagAntialiasing: true,
             flagDouble: false,
             flagNatural: false
@@ -62,7 +64,7 @@ export namespace SaveManager {
         return es;        
     }
     
-    export function loadMapSave(scene: DynamicScene, mapId: number, target: ICell, callback: IBooleanCallback) {
+    export function loadMapSave(scene: DynamicScene, mapId: string, target: ICell, callback: IBooleanCallback) {
         MapManager.loadMap(mapId, scene.context.canvas, function(loaded) {
             let map = <IMap> loaded;
             applySave(scene.save, map);       

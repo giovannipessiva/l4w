@@ -5,7 +5,7 @@ import { ITileset } from "./Tileset"
 //Map model
 export interface IMap {
     // Only persistent data
-    id: number; //Id of the map
+    id: string; //Id of the map
     name: string; //Name of the map
     width: number; //Number of tile columns
     height: number; //Number of tile rows

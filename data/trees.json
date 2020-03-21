@@ -1,0 +1,70 @@
+{
+  "trees": {
+    "maps": {
+      "id": "0",
+      "text": "Fattoria",
+      "icon": true,
+      "li_attr": {
+        "id": "0"
+      },
+      "a_attr": {
+        "href": "#",
+        "id": "0_anchor"
+      },
+      "data": {
+        "tile": "023-FarmVillage01.png",
+        "h": "18",
+        "w": "25"
+      },
+      "children": [
+        {
+          "id": "3",
+          "text": "Test",
+          "icon": true,
+          "li_attr": {
+            "id": "3"
+          },
+          "a_attr": {
+            "href": "#",
+            "id": "3_anchor"
+          },
+          "data": {},
+          "children": [
+            {
+              "id": "4",
+              "text": "Test2",
+              "icon": true,
+              "li_attr": {
+                "id": "4"
+              },
+              "a_attr": {
+                "href": "#",
+                "id": "4_anchor"
+              },
+              "data": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "1",
+          "text": "Bosco",
+          "icon": true,
+          "li_attr": {
+            "id": "1"
+          },
+          "a_attr": {
+            "href": "#",
+            "id": "1_anchor"
+          },
+          "data": {
+            "tile": "002-Woods01.png",
+            "h": "20",
+            "w": "30"
+          },
+          "children": []
+        }
+      ]
+    }
+  }
+}

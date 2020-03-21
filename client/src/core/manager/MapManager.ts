@@ -1,6 +1,7 @@
 import { Constant } from "../util/Constant"
 import { RenderConfiguration } from "../util/Commons"
 import { Utils } from "../util/Utils"
+import { getRandomString } from "../../../../common/src/Utils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
 import { IMap, IVertex } from "../../../../common/src/model/Map"
@@ -24,7 +25,7 @@ export namespace MapManager {
         D_STAR_LITE
     }
 
-    export function loadMap(mapId: number, canvas: HTMLCanvasElement, callback: (map?: IMap) => void) {
+    export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: (map?: IMap) => void) {
         Resource.load(mapId + "", ResourceType.MAP, function(resourceText: any) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading map: " + mapId);
@@ -788,7 +789,7 @@ export namespace MapManager {
 
     export function getNewMap(name: string): IMap {
         return {
-            id: 0,
+            id: getRandomString(),
             name: name,
             height: 20,
             width: 25,

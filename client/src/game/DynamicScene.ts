@@ -1,4 +1,5 @@
 import { ICell, LanguageEnum, IRectangle } from "../../../common/src/model/Commons";
+import { gameConfig } from "../../../common/src/GameConfig";
 import { IEvent } from "../../../common/src/model/Event";
 import { ISave } from "../../../common/src/model/Save";
 import { AbstractScene } from "../core/AbstractScene";
@@ -176,12 +177,12 @@ export class DynamicScene extends AbstractScene {
     }
     
     public loadSave(save: ISave | undefined, callback: IBooleanCallback) {
-        let mapId: number;
+        let mapId: string;
         let hero: IEvent;
         if (save === undefined) {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
-                mapId = 0; // Load first map
+                mapId = gameConfig.maps.start.map; // Load first map
                 hero = EventManager.getNewHero();
             } else {
                 // Leave current map

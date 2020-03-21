@@ -28,6 +28,7 @@ export enum ResourceType {
 
     // Static data (game data that cannot change during gameplay)
     MAP = "map",
+    TREE = "tree",
     STRING = "string",
     DIALOG = "dialog",
     GENERIC_MESSAGE = "generic-message",
@@ -41,4 +42,8 @@ export const enum ScreenSize {
     ADAPTIVE = "apt",
     NATURAL = "nat",
     NATURAL_X2 = "nat2"
+}
+
+export const enum Tree {
+    MAPS = "maps"
 }

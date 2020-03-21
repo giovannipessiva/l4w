@@ -5,6 +5,7 @@ import { AbstractGrid } from "../AbstractGrid"
 import { Utils } from "../util/Utils"
 import { IEvent, IEventState } from "../../../../common/src/model/Event"
 import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum } from "../../../../common/src/model/Commons"
+import { gameConfig } from "../../../../common/src/GameConfig";
 import { IMap } from "../../../../common/src/model/Map"
 import { CharacterManager } from "../manager/CharacterManager"
 import { MapManager } from "../manager/MapManager"
@@ -413,12 +414,12 @@ export namespace EventManager {
      
     export function getNewHero(): IEvent {
         let hero: IEvent = getNewEvent();
-        hero.name = "Hero";
-        hero.i = 0;
-        hero.j = 1;
+        hero.name = gameConfig.hero.name;
+        hero.i = gameConfig.maps.start.i;
+        hero.j = gameConfig.maps.start.j;
         hero.states = [];
         hero.states[0] = {
-           charaset: "fart.png",
+           charaset: gameConfig.hero.name,
            condition: "always",
            trigger: ActionTriggerEnum.CLICK,
            action: ""

@@ -1,24 +1,18 @@
-import { ResourceType } from "../../common/src/Constants";
 import { IMap } from "../../common/src/model/Map";
 import { ITileset } from "../../common/src/model/Tileset";
 import { ISave, IConfig } from "../../common/src/model/Save";
 import { IEvent, IEventState } from "../../common/src/model/Event";
 import { LanguageEnum } from "../../common/src/model/Commons"
+import { getRandomString } from "../../common/src/Utils"
+import { gameConfig } from "../../common/src/GameConfig";
 
+//TODO move to common, replace "getNew*" of resources Managers
 export namespace defaults {
-
-    export function getDefault(type: ResourceType): IMap | undefined {
-        switch(type) {
-            case ResourceType.MAP:
-                return getDefaultMap();
-        }
-        return;
-    }
 
     export function getDefaultMap() : IMap {
         return {
-            id: 3,
-            name: "Nuova mappa",
+            id: getRandomString(),
+            name: "Default map",
             height: 20,
             width: 25,
             layers: [
@@ -60,10 +54,10 @@ export namespace defaults {
 
     export function getDefaultSave(): ISave {
         return {
-            id: 0,
+            id: getRandomString(),
             timestamp: 0,
             hero: getDefaultEvent(),
-            currentMap:0,
+            currentMap: gameConfig.maps.start.map,
             maps: [],
             config: getDefaultConfig()
         };
@@ -103,5 +97,9 @@ export namespace defaults {
 
     export function getDefaultString(): string {
         return "";
+    }
+
+    export function getDefaultTree() : any {
+        return {};
     }
 };

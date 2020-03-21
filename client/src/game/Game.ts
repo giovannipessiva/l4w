@@ -13,6 +13,7 @@ import { Workers } from "../core/util/Workers";
 import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
 import { ResourceType, ScreenSize } from "../../../common/src/Constants";
+import { getRandomString } from "../../../common/src/Utils";
 
 /**
  * Module for initializing and launching a game
@@ -95,7 +96,7 @@ export namespace Game {
 
     export function save() {
         //TODO should manage more than one save, maybe with a custom name
-        let saveId: string = "0";
+        let saveId: string = getRandomString();
         let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
         if (currentState !== undefined) {
             saveId = currentState.id + "";

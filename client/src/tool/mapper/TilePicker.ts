@@ -6,7 +6,7 @@ import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
-import { ResourceType } from "../../../../common/src/Constants";
+import { ResourceType, Tree } from "../../../../common/src/Constants";
 
 export namespace TilePicker {
 
@@ -103,7 +103,7 @@ export namespace TilePicker {
             "no_children": false,
             "no_data": false
         });
-        Resource.sendPOSTRequest("/edit/maps", JSON.stringify(updatedData), function(response?: string) {
+        Resource.sendPOSTRequest("/edit/" + ResourceType.TREE + "/" + Tree.MAPS, JSON.stringify(updatedData), function(response?: string) {
             callback(response !== undefined, response);
         });
     }

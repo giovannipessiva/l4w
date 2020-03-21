@@ -11,7 +11,7 @@ import { TilePickerScene } from "./TilePickerScene"
 import { EventManager } from "../../core/manager/EventManager"
 import { Mapper } from "./Mapper"
 import { MapperScene } from "./MapperScene"
-import { ResourceType } from "../../../../common/src/Constants";
+import { ResourceType, Tree } from "../../../../common/src/Constants";
 
 export { Constant } from "../../core/util/Constant"
 export { Mapper } from "./Mapper";
@@ -43,13 +43,15 @@ export namespace MapperPage {
     export function start() {
         Compatibility.check();
 
-        loadDialogEditor(0); //TODO test
+        if(false) {
+            loadDialogEditor(0); //TODO test dialog editor
+        }
 
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
                 animation: false,
                 data: {
-                    url: base_path + "data/map",
+                    url: base_path + "data/" + ResourceType.TREE + "/" + Tree.MAPS,
                     dataType: "json"
                 },
                 check_callback: true,
@@ -65,7 +67,6 @@ export namespace MapperPage {
             ]
         }
         $("#mapPanel").jstree(jsTreeOptions);
-
         let canvas = <HTMLCanvasElement>document.getElementById("canvas1");
 
         $("#mapPanel").on("create_node.jstree ready.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
@@ -85,6 +86,8 @@ export namespace MapperPage {
                             $("#mapPanel").jstree(true).select_node(nodeList[0]);
                         }
                     }
+                    // Expand all
+                    $("#mapPanel").jstree("open_all");
                     break;
                 case "create_node":
                     // Remove the prefix from the id
@@ -113,7 +116,7 @@ export namespace MapperPage {
                             $("#mapDetailPanel").show();
                             let node: JSTreeNode = getSelectedNode();
         
-                            Mapper.start(canvas, parseInt(node.id), function(mapperScene: MapperScene) {
+                            Mapper.start(canvas, node.id, function(mapperScene: MapperScene) {
                                 if(mapperScene.map === undefined) {
                                     console.error("Map is undefined, for id: " + node.id);
                                     return;
@@ -218,8 +221,8 @@ export namespace MapperPage {
         });
     }
 
-    export function getActiveMap(): number {
-        return parseInt(getSelectedNode().id);
+    export function getActiveMap(): string {
+        return getSelectedNode().id;
     }
 
     function getSelectedNode(): JSTreeNode {
@@ -771,6 +774,8 @@ Once a menu item is activated the `action` function will be invoked with an obje
                             dialogTree.jstree(true).select_node(nodeList[0]);
                         }
                     }
+                    // Expand all
+                    $("#mapPanel").jstree("open_all");
                     break;
                 case "create_node":
                     // Remove the prefix from the id

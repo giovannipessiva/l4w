@@ -125,7 +125,7 @@ export abstract class AbstractScript {
         this.saveMem(AbstractScript.STATE_VAR, stateVar + "");    
     }
     
-    protected goToMap(mapId: number, target: ICell) {
+    protected goToMap(mapId: string, target: ICell) {
         let scene = this.scene;
         SaveManager.loadMapSave(scene, mapId, target, function() {
             scene.moveFocusToTarget(target);

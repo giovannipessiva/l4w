@@ -7,66 +7,72 @@ import * as FileSyncModule from "lowdb/adapters/FileSync"
 const lowdb: LowdbModule.lowdb = LowdbModule["default"];
 const fileSync: LowdbModule.AdapterSync<any> = FileSyncModule["default"];
 
+import { LanguageEnum } from "../../common/src/model/Commons"
 import { HttpStatus, ResourceType } from "../../common/src/Constants"
 import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { defaults } from "./defaults"
-import { IDialogNodeData, IDialogEdgeData, IDialogNode, IDialogEdge } from "../../common/src/model/Dialog";
+import { IDialogNodeData, IDialogEdgeData, IDialogNode, IDialogEdge, IGenericMessage } from "../../common/src/model/Dialog";
 import { IMap } from "../../common/src/model/Map";
+import { ITileset } from "../../common/src/model/Tileset";
 
 /**
  * This module manage persistency for:
  * - Game data: on lowdb files, written only during development, and read at runtime
  * - User data: on PG database, read and written only during runtime
+ * TODO make local developement possibile without a PG database
  */
 export namespace database {
 
-    type dialogNodeSchemaType = {
-        id: number;
-        value: IDialogNode;
-    }
-
-    type dialogEdgeSchemaType = {
-        id: number;
-        value: IDialogEdge;
-    }
+    type dialogSchemaType = {
+        nodes: [{
+            id: number;
+            value: IDialogNode;
+        }],
+        edges: [{
+            id: number;
+            value: IDialogEdge;
+        }],
+        node_edges: [{
+            node: number,
+            edge: number;
+        }];
+    };
 
     type mapSchemaType = {
         id: number;
         value: IMap;
-    }
+    };
+
+    type tilesetSchemaType = {
+        id: number;
+        value: ITileset;
+    };
 
     type genericMessageSchemaType = {
         id: number;
-        value: IMap;
-    }
+        value: IGenericMessage;
+    };
 
     type stringsSchemaType = {
         id: number;
         value: string;
-    }
+    };
+
+    type treeSchemaType = {
+        id: number;
+        value: any;
+    };
 
     let gameData: {
-        dialogNodes: LowdbModule.LowdbSync<dialogNodeSchemaType>;
-        dialogEdges: LowdbModule.LowdbSync<dialogEdgeSchemaType>;
+        dialogs: LowdbModule.LowdbSync<dialogSchemaType>;
         maps: LowdbModule.LowdbSync<mapSchemaType>;
+        trees: LowdbModule.LowdbSync<treeSchemaType>;
+        tilesets: LowdbModule.LowdbSync<tilesetSchemaType>;
         genericMessages: LowdbModule.LowdbSync<genericMessageSchemaType>;
         langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
     };
-
-    //TODO this is nonsense, please cleanse it
-    function getDefaults(type: string, file: string | undefined) {
-        if (!utils.isEmpty(file)) {
-            return file!;
-        }
-        if (ResourceType.MAP === type) {
-            // TODO ora c'è un record di default, dovrei fare l'upsert sul solo
-            // record interessato
-            return "%MAPS%";
-        }
-        return "TODO";
-    }
     
     function logAccess(user: string) {
         // User already known, log this access
@@ -91,15 +97,16 @@ export namespace database {
     /**
      * Method called on module intialization, it will:
      * - load the game file database
-     * - initialize the PostGres database
+     * - initialize the PG database connection
      */
     export async function init(): Promise<void> {
         return new Promise(async function(resolve, reject) {
             // Load game data from json files
             gameData = {
-                dialogEdges: lowdb(new fileSync("data/dlgedgs.json")),
-                dialogNodes: lowdb(new fileSync("data/dlgnds.json")),
+                dialogs: lowdb(new fileSync("data/dialogs.json")),
                 maps: lowdb(new fileSync("data/maps.json")),
+                trees: lowdb(new fileSync("data/trees.json")),
+                tilesets: lowdb(new fileSync("data/tilesets.json")),
                 genericMessages: lowdb(new fileSync("data/dynmsgs.json")),
                 langs: new Map<string, LowdbModule.LowdbSync<stringsSchemaType>>()
             };
@@ -118,61 +125,77 @@ export namespace database {
             }
 
             // Test PostGres authentication
-            //TODO in the future, this shold not be mandatory for local developement 
             models.sequelize.authenticate().then(function() {
                 resolve();
             }, function(err: any) {
+                //TODO in the future, this shold not be mandatory for local developement 
                 console.error("Authentication on PostgreSQL failed: " + err);
                 reject();
             });
         });
     }
 
-    export function read(type: ResourceType, file: string | undefined, user: string | undefined, response: any, lang?: string) {
-        file = getDefaults(type, file);
+    export function read(type: ResourceType, file: string, user: string | undefined, response: any, lang?: string) {
         switch (type) {
         case ResourceType.MAP:
-            models.l4w_map.findOne({
-                where : {
-                    id : file
-                },
-                attributes : [ "data" ]
-            }).then(
-                    function(result: any) {
-                        if (!utils.isEmpty(result)) {
-                            response.json(result.data);
-                        } else {
-                            console.log("Map "+ file + " not found, returning default");
-                            response.send(
-                                    defaults.getDefaultMap());
-                        }
-                    },
-                    function(error: any) {
-                        console.log(error);
-                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
-                                defaults.getDefaultMap());
-                    });
+            let map: IMap = gameData.maps.get("maps")
+                ["get"](file)
+                .value();
+            if (map === undefined) {
+                console.log("Map \"" + file + "\" not found, returning default");
+                map = defaults.getDefaultMap();
+                map.id = file;
+            }
+            response.json(map);
+            break;
+        case ResourceType.TREE:
+            let tree = gameData.trees.get("trees")
+                ["get"](file)
+                .value();
+            if (tree === undefined) {
+                console.log("Tree \"" + file + "\" not found, returning default");
+                tree = defaults.getDefaultTree();
+                tree.id = file
+            }
+            response.json(tree);
             break;
         case ResourceType.TILESET:
-            models.l4w_tileset.findOne({
-                where : {
-                    image : file
-                },
-                attributes : [ "data" ]
-            }).then(
-                    function(result: any) {
-                        if (!utils.isEmpty(result)) {
-                            response.json(result.data);
-                        } else {
-                            console.log("Tileset "+ file + " not found, returning default");
-                            response.send(defaults.getDefaultMap());
-                        }
-                    },
-                    function(error: any) {
-                        console.log(error);
-                        response.status(HttpStatus.INTERNAL_SERVER_ERROR).send(
-                                defaults.getDefaultTileset());
-                    });
+            let tile: ITileset = gameData.tilesets.get("tilesets")
+                ["find"]({image: file})
+                .value();
+            if (tile === undefined) {
+                console.log("Tileset \""+ file + "\" not found, returning default");
+                tile = defaults.getDefaultTileset();
+                tile.image = file;
+            }
+            response.json(tile);
+            break;
+        case ResourceType.STRING:
+            if(lang === undefined || !gameData.langs.has(lang)) {
+                lang = LanguageEnum.EN;
+            }
+            let langMap = gameData.langs.get(lang)!;
+            if(langMap.has(file).value()) {
+                response.send(langMap.get(file).value());
+            } else {
+                // Fallback on default language
+                langMap = gameData.langs.get(LanguageEnum.EN)!;
+                if(langMap.has(file).value()) {
+                    response.send(langMap.get(file).value());
+                } else {
+                    response.status(HttpStatus.NOT_FOUND)
+                        .send(defaults.getDefaultString());
+                }
+            }
+            break;
+        case ResourceType.DIALOG:
+            let dialogData = traverseDialogDatabase(Number.parseInt(file), [], []);
+            if(dialogData !== undefined) {
+                response.send(dialogData);
+            } else {
+                response.status(HttpStatus.NOT_FOUND)
+                    .send("");
+            }
             break;
         case ResourceType.SAVE:
             if (!utils.isEmpty(user)) {
@@ -199,113 +222,51 @@ export namespace database {
                 response.status(HttpStatus.OK).send(defaults.getDefaultSave());
             }
             break;
-        case ResourceType.STRING:
-            if(lang === undefined || !gameData.langs.has(lang)) {
-                lang = "en";
-            }
-            let langMap = gameData.langs.get(lang)!;
-            if(langMap.has(file)) {
-                response.send(langMap.get(file).value());
-            } else {
-                response.status(HttpStatus.NOT_FOUND)
-                    .send(defaults.getDefaultString());
-            }
-            break;
-        case ResourceType.DIALOG:
-            models.sequelize.query(
-                //Create a temporary table using a recursive search"
-                "WITH RECURSIVE dialog_graph AS (" +
-                //Initial selection condition"
-                "    SELECT id, string, generic_string" +
-                "    FROM l4w_dialog_node dn" +
-                "    WHERE id = :file" +
-                "    UNION ALL" +
-                //Recursive search
-                "    SELECT dn.id, dn.string, dn.generic_string" +
-                "    FROM dialog_graph dg, l4w_dialog_node_edges dne1, l4w_dialog_node_edges dne2, l4w_dialog_node dn" +
-                "    WHERE dg.id = dne1.node" +
-                "    AND dne1.edge = dne2.edge" +
-                "    AND dne2.node = dn.id " +
-                ")" +
-                "SELECT *" +
-                "FROM dialog_graph;"
-            , {
-                replacements: {
-                    "file": file
-                },
-                type: sequelize.QueryTypes.SELECT,
-                model: models.l4w_dialog_node
-                
-            })
-            // @ts-ignore
-            .then(nodes => {
-                for(let result of nodes) {
-                    console.log(result);
-                }
-
-                /*
-                if (!utils.isEmpty(result)) {
-                    response.send(result.dataValues.value);
-                }
-                
-                console.log(error);
-                response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                */
-
-                response.send(nodes);
-            });
-            break;
         default:
             console.error("database.read - Unexpected case: " + type);
             response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
         };
     }
 
-    export function write(type: string, file: string | undefined, data: string, user: string, response: any) {
-        file = getDefaults(type, file);
-
+    export function write(type: string, file: string, data: string, user: string, response: any) {
         switch (type) {
         case ResourceType.MAP:
-            models.l4w_map.upsert({
-                id : file,
-                data : JSON.parse(data)
-            }).then(function(result: any) {
-                response.status(HttpStatus.OK).send("");
-            }, function(error: any) {
-                manageQueryError(response, error);
-            });
+            let newMap: IMap = JSON.parse(data);
+            gameData.maps.get("maps")
+                ["set"](file, newMap)
+                ["write"]();
+            response.status(HttpStatus.OK).send("");
+            break;
+        case ResourceType.TREE:
+            let newTree: IMap = JSON.parse(data)[0];
+            gameData.trees.get("trees")
+                ["set"](file, newTree)
+                ["write"]();
+            response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.TILESET:
-            models.l4w_tileset.upsert({
-                image : file,
-                data : JSON.parse(data)
-            }).then(function(result: any) {
-                response.status(HttpStatus.OK).send("");
-            }, function(error: any) {
-                manageQueryError(response, error);
-            });
-            break;
-        case ResourceType.SAVE:
-            models.usr_save.upsert({
-                user: user,
-                id : file,
-                date: new Date(),
-                name: null,
-                save : JSON.parse(data)
-            }).then(function(result: any) {
-                response.status(HttpStatus.OK).send("");
-            }, function(error: any) {
-                manageQueryError(response, error);
-            });
+            let oldTileset = gameData.tilesets.get("tilesets")
+                ["find"]({image: file})
+            let newTileset: IMap = JSON.parse(data);
+            if (oldTileset.value() !== undefined) {
+                oldTileset.assign(newTileset).write();
+            } else {
+                gameData.maps.get("tilesets")
+                    ["push"]({
+                        id: file,
+                        value: newTileset
+                    })
+            }
+            response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.STRING:
-            let strings = JSON.parse(data);
+            let strings = <string[]> JSON.parse(data);
             for(let lang in strings) {
                 if(gameData.langs.has(lang)) {
-                    gameData.langs.get(lang)!; //.push({
-                    //    id: file,
-                    //    value: strings[lang]
-                    //}).set(lang, gameData.langs[lang][file]);
+                    gameData.langs.get(lang)!["push"]({
+                        id: Number.parseInt(file),
+                        value: strings[lang]
+                    }).write();
                 } else {
                     console.warn("Language not found: " + lang);
                 }
@@ -330,6 +291,7 @@ export namespace database {
                     }
                 }
                 for(let node of nodesList) {
+                    //TODO salva in lowdb
                     models.l4w_dialog_node.upsert({
                         id : node.id,
                         string : node.message,
@@ -372,21 +334,22 @@ export namespace database {
                     });
                 }
             }
+        case ResourceType.SAVE:
+            models.usr_save.upsert({
+                user: user,
+                id : file,
+                date: new Date(),
+                name: null,
+                save : JSON.parse(data)
+            }).then(function(result: any) {
+                response.status(HttpStatus.OK).send("");
+            }, function(error: any) {
+                manageQueryError(response, error);
+            });
+            break;
         default:
             console.error("Unexpected case: " + type);
             response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
-        }
-    }
-
-    function traverseDialogTree(nodesList: IDialogNodeData[], edgesList: IDialogEdgeData[], dialogNode?: IDialogNode) {
-        if(dialogNode !== undefined) {
-            if(dialogNode.edges !== undefined) {
-                for(let edge of dialogNode.edges) {
-                    traverseDialogTree(nodesList, edgesList, edge.node);
-                    edgesList.push(utils.pruneObject(edge));
-                }
-            }
-            nodesList.push(utils.pruneObject(dialogNode));
         }
     }
 
@@ -487,6 +450,44 @@ export namespace database {
                     response.json({});
                 }
             })
+        }
+    }
+
+    function traverseDialogTree(nodesList: IDialogNodeData[], edgesList: IDialogEdgeData[], dialogNode?: IDialogNode) {
+        if(dialogNode !== undefined) {
+            if(dialogNode.edges !== undefined) {
+                for(let edge of dialogNode.edges) {
+                    traverseDialogTree(nodesList, edgesList, edge.node);
+                    edgesList.push(utils.pruneObject(edge));
+                }
+            }
+            nodesList.push(utils.pruneObject(dialogNode));
+        }
+    }
+
+    function traverseDialogDatabase(nodeId: number, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: number) {
+        let node: IDialogNode = gameData.dialogs.get("nodes").find({id: nodeId}).value();
+        if(node !== undefined) {
+            nodes.push(node);
+            if(node.edgeIds !== undefined) {
+                for(let edgeId of node.edgeIds) {
+                    let edge: IDialogEdge = gameData.dialogs.get("edges").find({id: edgeId}).value();
+                    if(edge !== undefined) {
+                        edges.push(edge);
+                        if(edge.nodeId !== undefined) {
+                            traverseDialogDatabase(edge.nodeId, nodes, edges, edgeId);
+                        }                    
+                    } else {
+                        console.error("node " + node.id + "reference not-existing edge: " + edgeId);
+                    }
+                }
+            }
+        } else {
+            if(parentEdgeId === undefined) {
+                console.error("not-existing node: " + nodeId);
+            } else {
+                console.error("edge " + parentEdgeId + "reference not-existing node: " + nodeId);
+            }
         }
     }
 }

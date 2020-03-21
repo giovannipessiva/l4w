@@ -39,15 +39,9 @@ export function sendFile(path: string, filename: string, response: Response) {
                 if (response.statusCode === HttpStatus.NOT_FOUND && filename !== placeholder) {
                     sendFile(path, placeholder, response);
                 } else {
-                    // Do not log:
-                    // - Requests aborted
-                    // - 404 on minified script
-                    //TODO is this still necessary?
-                    if(err.message !== "Request aborted"
-                        && filename.match(/l4w\-.*\.min\.js/) === null) {
-                        console.log("utils.sendFile - " + err);
-                        console.error("error msg:" + err.message);
-                        console.error("error name:" + err.name);
+                    // Do not log requests aborted
+                    if(err.message !== "Request aborted") {
+                        console.warn("utils.sendFile - " + err);
                     }
                     if(err.status !== undefined) {
                         response.status(err.status).send("");

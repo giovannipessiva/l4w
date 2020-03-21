@@ -12,7 +12,6 @@ import { session } from "./session"
 import * as utils from "./utils"
 import { security } from "./security"
 import { database } from "./database"
-import { mapper } from "./mapper"
 
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
@@ -110,14 +109,6 @@ app.get("/lib/:script", function(request: Request, response: Response) {
     let filePath = path.resolve(dirname + "/../client/lib");
     utils.sendFile(filePath, file, response);
 });
-app.get("/data/:type/", function(request: Request, response: Response) {
-    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-    let user = undefined;
-    if(session.isAuthenticated(request)) {
-        user = session.getUser(request);
-    }
-    database.read(type, undefined, user, response);
-});
 app.get("/data/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
     let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
@@ -165,29 +156,12 @@ app.get("/workers/:script", function(request: Request, response: Response) {
 });
 
 // Server logic
-app.post("/edit/maps", function(request: Request, response: Response) {
-    if(session.isAuthenticated(request)) {
-        security.getBodyData(request,response,function(data: any){
-            mapper.updateMaps(data, session.getUser(request)!, response);
-        });
-    } else {
-        response.status(HttpStatus.FORBIDDEN).send("");
-    }
-});
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         let fileId = request.params.id;
         let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
         security.getBodyData(request, response, function(data: any){
-            switch(type) {
-            case ResourceType.MAP:
-                mapper.updateMap(fileId, data, session.getUser(request)!, response);
-                break;
-            case ResourceType.SAVE:
-            case ResourceType.TILESET:
-               database.write(type, fileId, data, session.getUser(request)!, response);
-                break;
-            }
+            database.write(type, fileId, data, session.getUser(request)!, response);
         });
     } else {
         response.status(HttpStatus.FORBIDDEN).send("");
