@@ -3,16 +3,24 @@
     "tasks": [
         {
             "type": "grunt",
+            "args": ["--gruntfile", "Gruntfile.cjs"],
             "task": "l4w-build-pipeline",
-            "group": "build"
-        },
-        {
-            "type": "grunt",
-            "task": "l4w-build-server",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "grunt",
+            "args": ["--gruntfile", "Gruntfile.cjs"],
+            "task": "l4w-build-server",
+            "group": "build"
+        },
+        {
+            "type": "grunt",
+            "args": ["--gruntfile", "Gruntfile.cjs"],
+            "task": "l4w-build-client",
+            "group": "build"
         }
     ]
 }
