@@ -427,7 +427,9 @@ export namespace MapManager {
                 case PathfinderEnum.D_STAR_LITE:
                     // Advanced pathfinder
                     {
+                        // tslint:disable-next-line
                         var S: IVertex[]; // List of all vertices
+                        // tslint:disable-next-line
                         var U: IVertex[]; // Priority queue of vertices, ordered by key value
                         var _g: number[]; // Estimate of the start distance of the vertices
                         var _rhs: number[];  // One step lookahead estimate of g

@@ -13,7 +13,7 @@ export const gameConfig = {
         charaset: "fart.png"    // starting charaset of the hero
     },
     ui: {
-        lang: LanguageEnum.EN,  // default language
+        lang: LanguageEnum.EN,  // default language in which all strings will be available 
         skin: "ld3-webskin1.png"    // default game UI skin
     }
 }

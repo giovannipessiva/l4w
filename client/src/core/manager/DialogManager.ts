@@ -8,6 +8,8 @@ import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
 import { Input } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { Utils } from "../util/Utils";
+import { IConfig } from "../../../../common/src/model/Save";
+import { getRandomString } from "../../../../common/src/Utils";
 
 /**
  * Helper class for managing dialogs and alfanumeric input/output
@@ -103,6 +105,9 @@ export namespace DialogManager {
                 callback();
             } else {
                 let dialog: IDialogNode = <IDialogNode> JSON.parse(resourceText);
+                if(dialog.face === "H") {
+                    dialog.face = "fart.png"; //TODO get from current hero faceset
+                }
                 callback(dialog);
             }
         });
@@ -124,27 +129,25 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, language: LanguageEnum, skin: string, callback: IEmptyCallback, faceset?: string) {
-        loadDialog(dialogId, language, function(dialog?: IDialogNode) {
+    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
+        loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
             } else {
-                showDialog(scene, hero, name, dialog, skin, callback, faceset);
+                showDialog(scene, hero, name, dialog, cfg.skin, callback);
             }
         });
     }
     
-    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: number, language: LanguageEnum, skin: string, callback: IEmptyCallback, faceset?: string) {
-        loadString(messageId, language, function(str) {
-            let dialog: IDialogNode = {
-                id: 0,
-                message: str
-            };    
-            showDialog(scene, hero, name, dialog, skin, callback, faceset);
+    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: number, cfg: IConfig, callback: IEmptyCallback) {
+        loadString(messageId, cfg.lang, function(str) {
+            let dialog = getNewDialogNode();
+            dialog.message = str;
+            showDialog(scene, hero, name, dialog, cfg.skin, callback);
         });
     }
 
-    function showDialog(scene: DynamicScene, hero: IEvent, name: string, dialog: IDialogNode, skin: string, callback: IEmptyCallback, faceset?: string): void {     
+    function showDialog(scene: DynamicScene, hero: IEvent, name: string, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
         let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
@@ -174,6 +177,8 @@ export namespace DialogManager {
             dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
         }
         dlgFrame.style.visibility = "visible";
+
+        let faceset: string | undefined = dialog.face;
         if(faceset !== undefined) {
             dlgFace.style.display = "block";
             dlgFace.style.backgroundImage = "url('/assets/faceset/" + faceset + "')";
@@ -229,7 +234,7 @@ export namespace DialogManager {
                 launchAction(edge, scene, hero, parameter);
             } else if(edge.node !== undefined) {
                 // Follow the edge to next node
-                showDialog(scene, hero, name, edge.node, skin, callback, faceset);
+                showDialog(scene, hero, name, edge.node, skin, callback);
             } else {
                 // Nothing to do here, close the dialog
                 defineClosingCondition(0);
@@ -363,4 +368,16 @@ export namespace DialogManager {
         }
         return false;
     };
+
+    export function getNewDialogNode(): IDialogNode {
+        return {
+            id: getRandomString()
+        };
+    }
+
+    export function getNewDialogEdge(): IDialogEdge {
+        return {
+            id: getRandomString()
+        };
+    }
 };

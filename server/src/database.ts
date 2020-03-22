@@ -27,16 +27,16 @@ export namespace database {
 
     type dialogSchemaType = {
         nodes: [{
-            id: number;
+            id: string;
             value: IDialogNode;
         }],
         edges: [{
-            id: number;
+            id: string;
             value: IDialogEdge;
         }],
         node_edges: [{
-            node: number,
-            edge: number;
+            node: string,
+            edge: string;
         }];
     };
 
@@ -189,7 +189,7 @@ export namespace database {
             }
             break;
         case ResourceType.DIALOG:
-            let dialogData = traverseDialogDatabase(Number.parseInt(file), [], []);
+            let dialogData = traverseDialogDatabase(file, [], []);
             if(dialogData !== undefined) {
                 response.send(dialogData);
             } else {
@@ -465,7 +465,7 @@ export namespace database {
         }
     }
 
-    function traverseDialogDatabase(nodeId: number, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: number) {
+    function traverseDialogDatabase(nodeId: string, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: string) {
         let node: IDialogNode = gameData.dialogs.get("nodes").find({id: nodeId}).value();
         if(node !== undefined) {
             nodes.push(node);

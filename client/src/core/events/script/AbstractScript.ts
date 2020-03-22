@@ -32,17 +32,13 @@ export abstract class AbstractScript {
 
     protected showSimpleDialog(messageId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        //TODO use faceset
-        let faceset: string | undefined = undefined;
-        DialogManager.showSimpleDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
+        DialogManager.showSimpleDialog(this.scene, this.hero, this.event.name, messageId, cfg, callback);
         return true;
     }
 
     protected showComplexDialog(messageId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        //TODO use faceset
-        let faceset: string | undefined = undefined;
-        DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, messageId, cfg.lang, cfg.skin, callback, faceset);
+        DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, messageId, cfg, callback);
         return true;
     }
     

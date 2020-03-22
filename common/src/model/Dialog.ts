@@ -5,23 +5,24 @@ export const enum DialogInputTypeEnum {
 
 // Dialog node core model (only persistent data)
 export interface IDialogNodeData {
-    id: number; // ID of the dialog node
+    id: string; // ID of the dialog node
     message?: string; // String displayed for this dialog
+    face?: string; // Faceset to display for this dialog
     genericMessage?: number; // ID of the generic string displayed for this dialog
-    edgeIds?: number[]; // Array of ID of edges which start from this node
+    edgeIds?: string[]; // Array of ID of edges which start from this node
     closingTimeout?: number; // Timeout before closing the dialog (milliseconds)
 }
 
 // Dialog edge core model (only persistent data)
 export interface IDialogEdgeData {
-    id: number; // ID of the dialog edge
+    id: string; // ID of the dialog edge
     message?: string; // String displayed for this edge
     inputType?: DialogInputTypeEnum; // Type of input required for this edge
     condition?: string; // Name of function that returns true if this edge can be active (see Conditions.ts)
     conditionParams?: string; // Value that will be passed as parameter to the condition function
     script?: string; // Script Class which contains the method used by this edge
     action?: string; // Method of the script that will be invoked for this edge
-    nodeId?: number; // ID of the node pointed by this edge
+    nodeId?: string; // ID of the node pointed by this edge
 }
 
 // Dialog node extended model (include transient data)

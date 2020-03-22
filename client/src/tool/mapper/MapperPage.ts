@@ -1,10 +1,12 @@
+import Vue from "vue"
+
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
 import { IPropertiesCallback } from "../../core/util/Commons"
 import { Constant } from "../../core/util/Constant"
 import { Utils } from "../../core/util/Utils"
 import { IEvent, IEventState } from "../../../../common/src/model/Event"
-import { isNumeric } from "../../../../common/src/Utils"
+import { isNumeric, getRandomString } from "../../../../common/src/Utils"
 import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../../common/src/model/Commons"
 import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
@@ -12,6 +14,9 @@ import { EventManager } from "../../core/manager/EventManager"
 import { Mapper } from "./Mapper"
 import { MapperScene } from "./MapperScene"
 import { ResourceType, Tree } from "../../../../common/src/Constants";
+import { IDialogNode, IDialogEdge } from "../../../../common/src/model/Dialog"
+import { DialogManager } from "../../core/manager/DialogManager"
+import { gameConfig } from "../../../../common/src/GameConfig"
 
 export { Constant } from "../../core/util/Constant"
 export { Mapper } from "./Mapper";
@@ -43,9 +48,7 @@ export namespace MapperPage {
     export function start() {
         Compatibility.check();
 
-        if(false) {
-            loadDialogEditor(0); //TODO test dialog editor
-        }
+        loadDialogEditor(0); //TODO test
 
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
@@ -93,7 +96,8 @@ export namespace MapperPage {
                     // Remove the prefix from the id
                     let numericId = data.node.id.split(JSTREE_ID_SEPARATOR).pop();
                     if(isNaN(parseInt(numericId))) {
-                        console.error("Cannot generate a numeric id for node: " + data.node.id);
+                        console.info("Cannot generate a sequential numeric id for node: " + data.node.id);
+                        numericId = getRandomString();
                     }
                     $("#mapPanel").jstree(true).set_id(data.node, numericId);
                 case "rename_node":
@@ -701,123 +705,38 @@ export namespace MapperPage {
         td.appendChild(button);
     }
 
+    function loadDialog(dialogId: number) {
+        DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function() {
+            //TODO 
+        });
+    }
+
+    export function createNode(): IDialogNode {
+        return DialogManager.getNewDialogNode();
+    }
+
+    export function createEdge(): IDialogEdge {
+        return DialogManager.getNewDialogEdge();
+    }
+
+    // tslint:disable-next-line
+    const Component = Vue.extend({
+        // type inference enabled 
+    })
+
     function loadDialogEditor(dialogId: number) {
-        let dialogTree = $("#dialogTree");
+        // Disable every node, to avoid map changes before save
+        //changeEditState(true);
+        loadDialog(dialogId);
 
-        let contextOptions: JSTreeStaticDefaultsContextMenu = {
-            select_node: true,
-            show_at_node: true,
-            items: {
-                "Test": {
-                    label: "test",
-                    action: undefined
-                }
-
-                /*
-                Add child dialog
-                Add parallel branch
-                Delete
-                */
-
-                /*
-Once a menu item is activated the `action` function will be invoked with an object containing the following keys: item - the contextmenu item definition as seen below, reference - the DOM node that was used (the tree node), element - the contextmenu DOM element, position - an object with x/y properties indicating the position of the menu.
-- `separator_before` - a boolean indicating if there should be a separator before this item
-- `separator_after` - a boolean indicating if there should be a separator after this item
-- `_disabled` - a boolean indicating if this action should be disabled
-- `label` - a string - the name of the action (could be a function returning a string)
-- `title` - a string - an optional tooltip for the item
-- `action` - a function to be executed if this item is chosen, the function will receive
-- `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
-- `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
-- `shortcut_label` - shortcut label (like for example `F2` for rename)
-- `submenu` - an object with the same structure as $.jstree.defaults.contextmenu.items which can be used to create a submenu - each key will be rendered as a separate option in a submenu that will appear once the current item is hovered
-*/
-            }
-        };
-
-        let jsTreeOptions: JSTreeStaticDefaults = {
-            core: {
-                animation: 0,
-                data: {
-                    url: base_path + "data/dialog/" + dialogId,
-                    dataType: "json"
-                },
-                check_callback: true,
-                error: function() {
-                    console.warn("jsTree error on dialogTree");
-                },
-                multiple: false
-            },
-            plugins: [
-                "contextmenu", // Makes it possible to right click nodes and shows a list of configurable actions in a menu
-                "dnd", // Makes it possible to drag and drop tree nodes and rearrange the tree
-                "search" // Adds the possibility to search for items in the tree and even to show only matching nodes  
-            ],
-            contextmenu: contextOptions
-        };
-        dialogTree.jstree(jsTreeOptions);
-
-        dialogTree.on("create_node.jstree ready.jstree rename_node.jstree delete_node.jstree changed.jstree", function(e, data) {
-            switch (e.type) {
-                case "ready":
-                    // If no node is selected, select the first
-                    let currentNode = getSelectedNode();
-                    if(currentNode === undefined) {
-                        let nodeList = dialogTree.jstree(true).get_json("#", {
-                            "flat": true,
-                            "no_state": true,
-                            "no_id": false,
-                            "no_children": false,
-                            "no_data": true
-                        });
-                        if(nodeList.length > 0) {
-                            dialogTree.jstree(true).select_node(nodeList[0]);
-                        }
-                    }
-                    // Expand all
-                    $("#mapPanel").jstree("open_all");
-                    break;
-                case "create_node":
-                    // Remove the prefix from the id
-                    let numericId = data.node.id.split(JSTREE_ID_SEPARATOR).pop();
-                    if(isNaN(parseInt(numericId))) {
-                        console.error("Cannot generate a numeric id for node: " + data.node.id);
-                    }
-                    dialogTree.jstree(true).set_id(data.node, numericId);
-                case "rename_node":
-                case "delete_node":
-                    // Disable every node, to avoid map changes before save
-                    changeEditState(true);
-                    break;
-                case "changed":
-                    switch (data.action) {
-                        case "ready":
-                            // Prevent double call at start
-                            break;
-                        case "delete_node":
-                            // Select another node
-                            let previousNode = dialogTree.jstree(true).get_prev_dom(data.node);
-                            dialogTree.jstree(true).select_node(previousNode);
-                            break;
-                        case "model":
-                        case "select_node":
-                            $("#mapDetailPanel").show();
-                            //let node: JSTreeNode = getSelectedNode();
-                            //document.getElementById("");
-        
-                            //TODO next - show details
-                            break;
-                        case "deselect_all":
-                            // Nothing to do here.
-                            break;
-                        default:
-                            console.error("Unexpected event \"changed\" action: " + data.action);
-                            break;
-                    }
-                    break;
-                default:
-                    console.error("Unexpected event type: " + e.type);
+        var app = new Vue({
+            el: "#app",
+            data: {
+              message: "Hello Vue!"
             }
         });
+
+        console.log(Component + "" + app); //TODO test Vue
+
     }
 }

@@ -191,13 +191,20 @@ select {
     font-weight: bold;
 }
 
+.editorPanelColumn {
+	background-color:white;
+	float:right;
+	position:relative;
+	min-width:270px
+}
+
 #dialogEditorArea{
 	float: none;
 
 	border: 10px solid red;
 }
 
-#dialogTree {
+#dialogSummary {
 	float: left;
 	
 	border: 10px solid black;
