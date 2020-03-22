@@ -4,24 +4,26 @@ git config --global user.name "Travis CI"
 git branch deploy
 git checkout deploy
 
-rm .gitignore
-echo "/.tscache" >> .gitignore
-echo "/.vscode" >> .gitignore
-echo "/data/database" >> .gitignore
-echo "/src" >> .gitignore
-echo ".env" >> .gitignore
-echo ".travis.yml" >> .gitignore
-echo "CONTRIBUTING.md" >> .gitignore
-echo "Gruntfile.cjs" >> .gitignore
-echo "LICENSE" >> .gitignore
-echo "node_modules" >> .gitignore
-echo "post_build.sh" >> .gitignore
-echo "Procfile_inspect" >> .gitignore
-echo "*.md" >> .gitignore
-echo "*.bat" >> .gitignore
-echo "tsconfig.json" >> .gitignore
-echo "tslint.json" >> .gitignore
-echo "webpack.config.cjs" >> .gitignore
+sed -i '/\/dist/d' .gitignore
+cat .gitignore
+
+rm -rf .tscache
+rm -rf .vscode
+rm -rf data/database
+rm -rf src
+rm .env
+rm .travis.yml
+rm CONTRIBUTING.md
+rm Gruntfile.cjs
+rm LICENSE
+rm node_modules
+rm post_build.sh
+rm Procfile_inspect
+rm *.md
+rm *.bat
+rm tsconfig.json
+rm tslint.json
+rm webpack.config.cjs
 
 git add .
 git commit -m "Travis build"
