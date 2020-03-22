@@ -5,18 +5,11 @@ git branch deploy
 git checkout deploy
 
 rm -rf .vscode
-rm -rf client/src
-rm -rf common/src
 rm -rf database
-rm -rf server/src
-rm client/.gitignore
-rm client/tsconfig-client.json
-rm common/tsconfig-base.json
-rm server/.gitignore
-rm server/tsconfig-server.json
+rm -rf src
 rm .env
 rm .travis.yml
-rm Gruntfile.js
+rm Gruntfile.mjs
 rm LICENSE
 rm Procfile_inspect
 rm tsconfig.json

@@ -3,8 +3,9 @@
   "version": "0.6.10",
   "description": "A TypeScript engine + web editor for tile-based games (it's not ready yet)",
   "main": "l4w-server",
+  "type": "module",
   "scripts": {
-    "start": "node --experimental-modules server/dist/l4w/server/src/l4w-server.mjs"
+    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
   "dependencies": {
     "compression": "1.7.4",
@@ -42,7 +43,7 @@
     "webpack": "4.42.0"
   },
   "engines": {
-    "node": "10.8"
+    "node": "12.16"
   },
   "repository": {
     "type": "git",

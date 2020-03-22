@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>L4W Mapper</title>
+<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+<link rel='icon' href='../style/favicon/edit.ico' />
+<link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet"> 
+
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="theme-color" content="#ffffff">
+
+<script src="../lib/require.min.js"></script>
+<script type='text/javascript'>
+var base_path = "../";
+
+let vueUrl;
+let jQueryUrl;
+let jsTreeUrl;
+if(isDevEnv()) {
+	// Enable offline local developement by using local files instead of CDNs
+	requirejs([base_path + "lib/jquery3.min", base_path + "lib/vue.js"],function($){
+		requirejs([base_path + "lib/jstree.min.js"],function(jstree){
+			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
+				finishedLoading();
+			});
+		});
+	});
+
+} else {
+	//TODO check Sub Resource Integrity
+	// Warning: where versions are not specified, there could be discrepancies between these CDN the local scripts
+	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js", "https://cdn.jsdelivr.net/npm/vue"],function($){
+		requirejs(["https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.9/jstree.min.js"],function(jstree){
+			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
+				finishedLoading();
+			});
+		});
+	});
+}
+
+function finishedLoading(){
+    L4W_mapper.MapperPage.start();
+};
+
+function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+		window.location = "logout";
+    });
+}
+
+function isDevEnv() {
+	return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === "";
+}
+</script>
+
+<link rel="stylesheet" type="text/css" href="../style/jstree/style.min.css">
+<link rel="stylesheet" type="text/css" href="../style/l4w.css">
+
+</head>
+<body>
+<div style="position:fixed;top:10px;left:10px;">
+	<div id="canvasArea" style="display:block">
+		<canvas id="canvas1" width="672" height="512" style="border:1px solid black">
+		Your browser does not support HTML5 Canvas!</canvas>
+			
+		<script type='text/javascript'>
+		let canvas = document.getElementById('canvas1');
+		let ctx = canvas.getContext('2d');
+		ctx.fillStyle='#000000';
+		ctx.font='38px Oldenburg';
+		ctx.fillText("loading scripts...",10,40);
+		</script>
+	</div>
+	<div id="footer" class="footer">
+		Game: <a href="/">/</a><br/>
+		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
+	</div>
+</div>
+<div id="dialogEditPanel" class="editorPanelColumn" style="display:none">
+	TO DO use Vue
+	<div id="dialogEditorArea">
+		<!-- Dialog selection details -->
+		<div id="dialogSelectionDetails">
+
+			<!-- Dialog edge editor -->
+			<div id="dialogEdgeDetails">
+				Link ID: <div id="edgeId"></div><br/>
+				Message: <input id="edgeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
+
+				Condition: <select id="edgeCondition"></select><br/>
+				Condition parameters: <input id="edgeConditionParameters" tye="text"> </input><br/>
+
+				Script: <select id="edgeScript"></select><br/>
+				Action: <select id="edgeAction"></select><br/>
+			</div>
+				
+			<!-- Dialog node editor -->
+			<div id="dialogNodeDetails">
+				Dialog ID: <div id="nodeId"></div><br/>
+				Message: <input id="nodeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
+				Generic message: <select id="nodeGenericMessage"></select><br/>
+				Autoclose in: <input id="nodeClosingTimeout" type="number">0</input> msec<br/>
+			</div>
+		</div>
+	</div>
+	<div id="genericMessageArea" style="display:none">
+		<!-- Message & GenericMessage editor -->
+		<div id="dialogMessage">
+			<!-- TODO -->
+			Message & GenericMessage editor
+
+			<!--
+			// A message that can be resolved to different strings, based on some conditions
+			IGenericMessage
+				id: number; // ID of the generic string
+				description: string; // Description of the generic string
+				condition?: string; // Name of function that returns true if this state can be active (see Conditions.ts)
+				values: IGenericMessageValue[]; // Array of possible values for this generic message
+				
+			// Single value that could be used for a generic message
+			IGenericMessageValue
+				message: string; // String of the message
+				conditionParams: string; // Parameters to be used for evaluating the condition
+			-->
+		</div>
+	</div>
+</div>
+<!-- Dialog summary, with selectable rows -->
+<div id="dialogSummaryPanel" class="editorPanelColumn" style="display:none">
+	<div id="dialogSummary">
+		TO DO use Vue
+	</div>
+</div>
+<div id="toolsPanel" class="editorPanelColumn">
+	<div style="border:1px solid black">
+		<div id="news"></div>
+		<div style="display:none" class="g-signin2"></div>
+		<button onclick="signOut();">Sign out</button>
+	</div>
+	<div style="border:1px solid black">
+		<table>
+			<tr>
+			<td><button id="saveButton" type="button" onclick="L4W_mapper.MapperPage.save();" disabled>Save</button></td>
+			<td><button id="reloadButton" type="button" onclick="L4W_mapper.MapperPage.reload();" disabled>Reload</button></td>
+			</tr>
+		</table>
+	</div>
+	<div style="border:1px solid black">
+		<table>
+			<tr><td id="mapPanel"></td>
+		</table>
+	</div>
+	<div id="mapDetailPanel" style="display:none;border:1px solid black">
+		<table style="width:100%">
+			<tr>
+				<td>Tile</td>
+				<td>
+					<select id="tiles" onchange="L4W_mapper.MapperPage.changeTile();"></select>
+				</td>
+			</tr>
+			<tr>
+				<td>Size</td>
+				<td>
+					<input id="mapSizeW" type="number" name="width" min="1" max="999" step="1" style="width:3em">
+					 x 
+					<input id="mapSizeH" type="number" name="width" min="1" max="999" step="1" style="width:3em">
+					<button type="submit" onclick="L4W_mapper.MapperPage.changeSize();">Resize</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div style="border:1px solid black">
+		-<input id="zoom" type="range" min="0" max="3" step="1" value="3">+
+		<table style="width:100%">
+			<tr>
+				<td><button id="mode0" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.APPLY);">Apply</button></td>
+				<td><button id="mode1" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.ERASE);">Erase</button></td>
+				<td></td>
+				<td><button id="mode2" type="button" onclick="L4W_mapper.Mapper.setMode(L4W_mapper.Constant.EditMode.EVENTS);">Events</button></td>
+			</tr>
+		</table>
+		<table id="layersPanel" style="width:100%">
+			<tr>
+				<td><button id="layer0" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.LOW);">Low</button></td>
+				<td><button id="layer1" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.MID);">Mid</button></td>
+				<td><button id="layer2" type="button" onclick="L4W_mapper.Mapper.setActiveLayer(L4W_mapper.Constant.MapLayer.TOP);">Top</button></td>
+			</tr>
+		</table>
+	</div>
+	<div id="tilePanel" style="border:1px solid black;position: relative;">
+		<canvas id="canvasTile" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0">
+		Your browser does not support HTML5 Canvas!</canvas>
+		
+		<canvas id="canvasSelector" width="256" height="800" style="position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
+		Your browser does not support HTML5 Canvas!</canvas>
+	</div>
+	<div id="eventPanel" style="border:1px solid black;position:relative" hidden=true>
+		<table style="width:100%">
+			<tr>
+				<td>Name</td>
+				<td><input id="name" type="text" placeholder="Event name" onchange="L4W_mapper.MapperPage.eventModified();"/></td>
+			</tr>
+			<tr>
+				<td>Position</td>
+				<td onchange="L4W_mapper.MapperPage.changeEventPosition();">
+					<input id="eventi" type="number" min="0" max="999" step="1" style="width:3em">
+					<input id="eventj" type="number" min="0" max="999" step="1" style="width:3em" >
+				</td>
+			</tr>
+			<tr>
+				<td>Script</td>
+				<td><select id="script" style="background-color:#d0ffd0" onchange="L4W_mapper.MapperPage.changeEventScript();"></select></td>
+			</tr>
+		</table>
+		<div id="scriptTooltip" style="font-style:italic"></div>
+		<br/>
+		<table style="width:100%">
+			<tr>
+				<td>State</td>
+				<td><input id="state" style="background-color:#ffffd0" type="number" min="1" max="99" value="1" onchange="L4W_mapper.MapperPage.loadEventState();"/></td>
+				<td>of</td>
+				<td id="tot">1</td>
+			</tr>
+		</table>
+		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffffd0;width:90%">
+			<tbody onchange="L4W_mapper.MapperPage.eventModified();">
+				<tr><td>Condition</td>	<td><select id="condition"></select></td></tr>
+				<tr><td>Charaset</td>	<td><select id="charasets"></select></td></tr>
+				<tr><td>Trigger</td>	<td><select id="trigger"></select></td></tr>
+				<tr><td>Action</td>		<td><select id="action" style="background-color:#d0ffd0"></select></td></tr>
+				<tr><td>Visible</td>	<td><input id="visible" type="checkbox" checked></input></td></tr>
+				<tr><td>Opacity</td>	<td><input id="opacity" type="number" min="0" max="100" step="1" value="100" style="width:3em"></input></td></tr>
+				<tr><td>Direction</td>	<td><select id="direction"></select></td></tr>
+				<tr><td>Speed</td>		<td><select id="speed"></select></td></tr>
+				<tr><td>Frequency</td>	<td><select id="frequency"></select></td></tr>
+				<tr><td>Rotation</td>	<td><select id="rotation"></select></td></tr>
+				<tr><td>On top</td>		<td><select id="ontop"></select></td></tr>
+				<tr><td>Blocking</td>	<td><input id="block" type="checkbox" checked></td></tr>
+			</tbody>
+			<tfoot><tr>
+				<td></td>
+				<td><button style="color:red" onclick="L4W_mapper.MapperPage.deleteEventState()" title="This will delete the currently selected state">Delete state &#x2620;</button></td>
+			</tr></tfoot>
+		</table>
+		<table style="width:100%">
+
+		</table>
+		Memory<br/>
+		<input id="key" type="text" style="width:5em" placeholder="Key" title='Standard keys:
+msg1: message displayed by "speak" Action (the number represent the state number)
+state: variable used by Conditions "isStateVar0", "isStateVar1", ...
+' />
+		<input id="val" type="text" style="width:8em" placeholder="Value" />
+		<button onclick="L4W_mapper.MapperPage.addMemory();">+</button>
+		<table id="memory" style="border:1px solid black;position:relative;margin-left:10px"></table>
+		<br/>
+		<button id="saveEvent" onclick="L4W_mapper.MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
+		<button id="deleteEvent" style="color:red" onclick="L4W_mapper.MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
+	</div>
+</div>
+</body>
+</html>

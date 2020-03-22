@@ -1,5 +1,5 @@
 {
-	"extends": "./common/tsconfig-base.json",
+	"extends": "./src/tsconfig-base.json",
     "compilerOptions": {
         "noEmit": true,
         "types": [
@@ -9,13 +9,13 @@
         "paths": {
             "*": [
                 "./node_modules/@types/*",
-                "./server/src/types"
+                "./src/server/types"
             ]
         }
     },
     "include": [
-        "client/src/**/*.ts",
-        "server/src/**/*.ts",
-        "common/src/**/*.ts"
+        "src/client/**/*.ts",
+        "src/server/**/*.ts",
+        "src/common/**/*.ts"
     ]
 }

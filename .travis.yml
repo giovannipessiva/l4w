@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '10.8'
+- '12.16'
 
 sudo:
   required
@@ -16,13 +16,10 @@ before-script:
 - npm install
 
 script:
-- grunt l4w-build-pipeline
+- grunt --gruntfile Gruntfile.cjs l4w-build-pipeline
 
 after_success:
 - bash post_build.sh
-
-after_failure:
-- cat client/l4w.js
 
 env:
   global:
