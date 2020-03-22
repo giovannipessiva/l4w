@@ -64,12 +64,8 @@ export namespace DialogManager {
         }
     }
 
-    export function loadString(stringId: number, language: LanguageEnum, callback: (str?: string) => void): void {
-        if(isNaN(stringId)) {
-            callback();
-            return;    
-        }
-        Resource.load(stringId + "", ResourceType.STRING, function(resourceText: any) {
+    export function loadString(stringId: string, language: LanguageEnum, callback: (str?: string) => void): void {
+        Resource.load(stringId, ResourceType.STRING, function(resourceText: any) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading string: " + stringId);
                 callback();
@@ -94,23 +90,100 @@ export namespace DialogManager {
         });
     }
 
-    export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
-        if(isNaN(dialogId)) {
-            callback();
-            return;    
-        }
-        Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
+    export function loadDialog(dialogId: string, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
+        Resource.load(dialogId, ResourceType.DIALOG, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading dialog: " + dialogId);
                 callback();
             } else {
-                let dialog: IDialogNode = <IDialogNode> JSON.parse(resourceText);
-                if(dialog.face === "H") {
-                    dialog.face = "fart.png"; //TODO get from current hero faceset
-                }
+                let data: {
+                    nodes: IDialogNode[],
+                    edges:  IDialogEdge[]
+                } = JSON.parse(resourceText);
+                let dialog: IDialogNode = reconstructDialogTree(dialogId, data.nodes, data.edges);
                 callback(dialog);
             }
         });
+    }
+
+    export function saveDialog(dialog: IDialogNode) {
+        let nodes: Map<string, IDialogNode> = new Map<string, IDialogNode>();
+        let edges: Map<string, IDialogEdge> = new Map<string, IDialogEdge>();
+        deconstructDialogTree(dialog, nodes, edges);
+        let request = {
+            nodes: Array.from(nodes.values()),
+            edges: Array.from(edges.values()),
+        };
+        Resource.save(dialog.id, JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
+            if (success) {
+                console.log("Game saved successfully");
+            }
+        });
+    }
+
+    function reconstructDialogTree(startingDialogNodeId: string, nodes: IDialogNode[], edges: IDialogEdge[]): IDialogNode {
+        let nMap = new Map<string,IDialogNode>();
+        let eMap = new Map<string,IDialogNode>();
+        for(let n of nodes) {
+            nMap.set(n.id, n);
+        }
+        for(let e of edges) {
+            eMap.set(e.id, e);
+        }
+        if(!nMap.has(startingDialogNodeId)) {
+            console.error("Cannot reconstruct dialog tree from node: " + startingDialogNodeId);
+            return getNewDialogNode();
+        } else {
+            let root = nMap.get(startingDialogNodeId)!;
+            populateDialogTreeFromNode(root, nMap, eMap);
+            return root;
+        }
+    }
+
+    function populateDialogTreeFromNode(node: IDialogNode, nMap: Map<string,IDialogNode>, eMap: Map<string,IDialogEdge>) {
+        if(!Utils.isEmpty(node.edgeIds)) {
+            for(let eId of node.edgeIds!) {
+                if(!nMap.has(eId)) {
+                    console.error("Cannot reconstruct dialog tree from node: " + node.id + ", edge not found: " + eId);
+                } else {
+                    let e = eMap.get(eId)!;
+                    if(node.edges === undefined) {
+                        node.edges = [];
+                    }
+                    node.edges.push(e);
+                    if(e.nodeId !== undefined) {
+                        if(!nMap.has(eId)) {
+                            console.error("Cannot reconstruct dialog tree from node: " + node.id + ", edge not found: " + eId);
+                        } else {
+                            let n = nMap.get(e.nodeId)!;
+                            // Recursive call on this node
+                            populateDialogTreeFromNode(n, nMap, eMap);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function deconstructDialogTree(node: IDialogNode, nodes: Map<string, IDialogNode>, edges: Map<string, IDialogNode>): void {
+        // Save node in the output array
+        nodes.set(node.id, node);
+        let eArray = node.edges;
+        if(!Utils.isEmpty(eArray)) {
+            // Clean transient data 
+            delete node.edges; 
+            for(let e of eArray!) {
+                // Save edge in the output array
+                edges.set(e.id, e);
+                let n = e.node;
+                if(n !== undefined) {
+                    // Clean transient data 
+                    delete e.node;
+                    // Recursive call on this node
+                    deconstructDialogTree(e, nodes, edges);
+                }
+            }
+        }
     }
 
     export function loadGenericMessages(genericMessageId: number, language: LanguageEnum, callback: IBooleanCallback): void {
@@ -129,7 +202,7 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
+    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: string, cfg: IConfig, callback: IEmptyCallback) {
         loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
@@ -139,7 +212,7 @@ export namespace DialogManager {
         });
     }
     
-    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: number, cfg: IConfig, callback: IEmptyCallback) {
+    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
         loadString(messageId, cfg.lang, function(str) {
             let dialog = getNewDialogNode();
             dialog.message = str;

@@ -48,7 +48,7 @@ export namespace MapperPage {
     export function start() {
         Compatibility.check();
 
-        loadDialogEditor(0); //TODO test
+        loadDialogEditor("0"); //TODO test
 
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
@@ -705,7 +705,7 @@ export namespace MapperPage {
         td.appendChild(button);
     }
 
-    function loadDialog(dialogId: number) {
+    function loadDialog(dialogId: string) {
         DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function() {
             //TODO 
         });
@@ -724,7 +724,7 @@ export namespace MapperPage {
         // type inference enabled 
     })
 
-    function loadDialogEditor(dialogId: number) {
+    function loadDialogEditor(dialogId: string) {
         // Disable every node, to avoid map changes before save
         //changeEditState(true);
         loadDialog(dialogId);

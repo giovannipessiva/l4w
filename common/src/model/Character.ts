@@ -1,5 +1,9 @@
 import { RotationEnum, ScaleEnum, DirectionEnum } from "./Commons"
 
+/**
+ * ICharacter is used to describe an event visible as animated charaset
+ */
+
 // Character core model (only persistent data)
 export interface ICharacterData {
     charaset?: string; // Name of the charaset (alternative to GID)

@@ -2,9 +2,12 @@ import { IEventData } from "./Event"
 import { ICell } from "./Commons"
 import { ITileset } from "./Tileset"
 
-//Map model
+/**
+ * IMap is used to define a game map
+ */
+
 export interface IMap {
-    // Only persistent data
+    // Persistent data
     id: string; //Id of the map
     name: string; //Name of the map
     width: number; //Number of tile columns
@@ -15,7 +18,7 @@ export interface IMap {
     nextobjectid: number; //Auto-increments for each placed
     tileset: ITileset; //Tileset object for this map
 
-    // Transient data)
+    // Transient data
     blocks?: number[]; //Array of codes representing the block attributes from layers
     dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
 };

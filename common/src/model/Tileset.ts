@@ -1,3 +1,7 @@
+/**
+ * ITileset is used to define the metadata associated to a graphical asset which can be used as map tile
+ */
+
 //Tileset model
 export interface ITileset {
     // Persistent data

@@ -1,6 +1,10 @@
 import { IEventData } from "./Event"
 import { LanguageEnum } from "./Commons"
 
+/**
+ * ISava is used to store the game state in order to restore it without loosing the progress and the choices made
+ */
+
 export interface ISave {
     id: string; // Id of the user save
     timestamp: number; // Save time

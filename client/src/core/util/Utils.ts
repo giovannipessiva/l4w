@@ -7,7 +7,7 @@ import { Constant } from "./Constant"
 export namespace Utils {
 
     export function isEmpty(obj: any): boolean {
-        if (obj === null || obj === undefined || typeof obj === "undefined") {
+        if (obj === undefined || obj === null || typeof obj === "undefined") {
             return true;
         } else if (typeof obj === "string") {
             return obj === "";

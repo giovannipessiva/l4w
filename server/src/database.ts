@@ -13,7 +13,7 @@ import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { defaults } from "./defaults"
-import { IDialogNodeData, IDialogEdgeData, IDialogNode, IDialogEdge, IGenericMessage } from "../../common/src/model/Dialog";
+import { IDialogNode, IDialogEdge, IGenericMessage } from "../../common/src/model/Dialog";
 import { IMap } from "../../common/src/model/Map";
 import { ITileset } from "../../common/src/model/Tileset";
 
@@ -189,9 +189,14 @@ export namespace database {
             }
             break;
         case ResourceType.DIALOG:
-            let dialogData = traverseDialogDatabase(file, [], []);
-            if(dialogData !== undefined) {
-                response.send(dialogData);
+            let nodes: IDialogNode[] = [];
+            let edges: IDialogEdge[] = [];
+            traverseDialogDatabase(file, nodes, edges);
+            if(nodes.length > 0) {
+                response.send({
+                    nodes: nodes,
+                    edges: edges
+                });
             } else {
                 response.status(HttpStatus.NOT_FOUND)
                     .send("");
@@ -276,8 +281,8 @@ export namespace database {
         case "dialog":
             // Extract a list of nodes and edges from the dialog tree, and save them to DB
             let dialogNode: IDialogNode = JSON.parse(data);
-            let nodesList: IDialogNodeData[] = [];
-            let edgesList: IDialogEdgeData[] = [];
+            let nodesList: IDialogNode[] = [];
+            let edgesList: IDialogEdge[] = [];
 
             traverseDialogTree(nodesList, edgesList, dialogNode);
 
@@ -453,7 +458,7 @@ export namespace database {
         }
     }
 
-    function traverseDialogTree(nodesList: IDialogNodeData[], edgesList: IDialogEdgeData[], dialogNode?: IDialogNode) {
+    function traverseDialogTree(nodesList: IDialogNode[], edgesList: IDialogEdge[], dialogNode?: IDialogNode) {
         if(dialogNode !== undefined) {
             if(dialogNode.edges !== undefined) {
                 for(let edge of dialogNode.edges) {
@@ -465,7 +470,7 @@ export namespace database {
         }
     }
 
-    function traverseDialogDatabase(nodeId: string, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: string) {
+    function traverseDialogDatabase(nodeId: string, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: string): void {
         let node: IDialogNode = gameData.dialogs.get("nodes").find({id: nodeId}).value();
         if(node !== undefined) {
             nodes.push(node);

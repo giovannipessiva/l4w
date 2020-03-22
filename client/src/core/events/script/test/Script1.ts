@@ -6,12 +6,12 @@ export class Script1 extends AbstractScript {
     public static tooltip: string = "Script for tests";    
 
     public testAction(): boolean {
-        this.showSimpleDialog(2, emptyFz);
+        this.showSimpleDialog("2", emptyFz);
         return true;
     }
     
     public giantTest(): boolean {
-        this.showSimpleDialog(4, emptyFz);
+        this.showSimpleDialog("4", emptyFz);
         let script = this;
         this.wait(1000).then(function(){
             script.stepFromTarget(script.hero);
@@ -21,7 +21,7 @@ export class Script1 extends AbstractScript {
     }
     
     public giantTest2(): boolean {
-        this.showSimpleDialog(5, emptyFz);
+        this.showSimpleDialog("5", emptyFz);
         let script = this;
         this.wait(1000).then(function(){
             script.stepFromTarget(script.hero);
@@ -31,7 +31,7 @@ export class Script1 extends AbstractScript {
     }
             
     public giantTest3(): boolean {
-        this.showSimpleDialog(6, emptyFz);
+        this.showSimpleDialog("6", emptyFz);
         this.moveToTarget({ i: 0, j: 0 });
         this.setStateVar(0);
         return true;

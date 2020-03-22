@@ -16,37 +16,30 @@
 <script type='text/javascript'>
 var base_path = "../";
 
-/*
-Enable offline local developement by using local files instead of CDNs
-(warning: where versions are not specified, there could be discrepancies)
-*/
 let vueUrl;
 let jQueryUrl;
 let jsTreeUrl;
 if(isDevEnv()) {
-	vueUrl = base_path + "lib/vue.js";
-	jQueryUrl = base_path + "lib/jquery-3.4.1.js";
-	jsTreeUrl = base_path + "lib/jstree.min.js";
-} else {
-	//TODO check Sub Resource Integrity
-	vueUrl = "https://cdn.jsdelivr.net/npm/vue";
-	jQueryUrl = "https://code.jquery.com/jquery-3.4.1.min.js";
-	jsTreeUrl = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.9/jstree.min.js";
-}
-
-requirejs([jQueryUrl, vueUrl],function($){
-    requirejs([jsTreeUrl],function(jstree){
-		requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
-			finishedLoading();
-		},function(err){
-			// If min version is unavailable, use the full version
-			console.log("Minified version unavailable, using full script");
-			requirejs([base_path + "js/l4w-mapper"],function(l4w){
+	// Enable offline local developement by using local files instead of CDNs
+	requirejs([base_path + "lib/jquery3.min", base_path + "lib/vue.js"],function($){
+		requirejs([base_path + "lib/jstree.min.js"],function(jstree){
+			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
 				finishedLoading();
 			});
 		});
-    });
-});
+	});
+
+} else {
+	//TODO check Sub Resource Integrity
+	// Warning: where versions are not specified, there could be discrepancies between these CDN the local scripts
+	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js", "https://cdn.jsdelivr.net/npm/vue"],function($){
+		requirejs(["https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.9/jstree.min.js"],function(jstree){
+			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
+				finishedLoading();
+			});
+		});
+	});
+}
 
 function finishedLoading(){
     L4W_mapper.MapperPage.start();

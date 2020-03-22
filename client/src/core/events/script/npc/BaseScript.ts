@@ -26,11 +26,7 @@ export class BaseScript extends AbstractScript {
         if(Utils.isEmpty(message)) {
             message = this.loadMem(DEFAULT_MESSAGE);
         }
-        let messageId: number = parseInt(message!);
-        if(Utils.isEmpty(messageId) || isNaN(messageId)) {
-            return;    
-        }
-        this.showSimpleDialog(messageId, emptyFz);        
+        this.showSimpleDialog(message!, emptyFz);        
     };
 
     /**
@@ -45,10 +41,6 @@ export class BaseScript extends AbstractScript {
         if(Utils.isEmpty(dialog)) {
             dialog = this.loadMem(DEFAULT_DIALOG);
         }
-        let dialogId: number = parseInt(dialog!);
-        if(Utils.isEmpty(dialogId) || isNaN(dialogId)) {
-            return;    
-        }
-        this.showComplexDialog(dialogId, emptyFz); 
+        this.showComplexDialog(dialog!, emptyFz); 
     }
 };
