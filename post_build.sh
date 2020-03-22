@@ -4,7 +4,7 @@ git config --global user.name "Travis CI"
 git branch deploy
 git checkout deploy
 
-sed -i '/\/dist/d' .gitignore
+sed -i '/dist/d' .gitignore
 cat .gitignore
 
 rm -rf .tscache
