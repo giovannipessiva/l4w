@@ -2,12 +2,42 @@
 	"nodes": {
 		"0": {
 			"id": "0",
-			"edgeIds": ["0"]
+			"message": "Helllou",
+			"edgeIds": ["0","1"]
+		},
+		"1": {
+			"id": "1",
+			"message": "Wanna dance?",
+			"edgeIds": ["2","3","4"]
+		},
+		"2": {
+			"id": "2",
+			"message": "You cannot flee"
 		}
 	},
 	"edges": {
 		"0": {
-			"id": "0"
+			"id": "0",
+			"message": "Oh hey",
+			"nodeId": "1"
+		},
+		"1": {
+			"id": "1",
+			"message": "Get away from me",
+			"nodeId": "2"
+		},
+		"2": {
+			"id": "2",
+			"message": "On second thought...",
+			"nodeId": "2"
+		},
+		"3": {
+			"id": "3",
+			"message": "Die, you rebel scum"
+		},
+		"4": {
+			"id": "4",
+			"message": "Mamushka!"
 		}
 	}
 }

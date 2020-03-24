@@ -13,15 +13,13 @@
 <meta name="theme-color" content="#ffffff">
 
 <script src="../lib/require.min.js"></script>
+
 <script type='text/javascript'>
 var base_path = "../";
 
-let vueUrl;
-let jQueryUrl;
-let jsTreeUrl;
 if(isDevEnv()) {
 	// Enable offline local developement by using local files instead of CDNs
-	requirejs([base_path + "lib/jquery3.min", base_path + "lib/vue.js"],function($){
+	requirejs([base_path + "lib/jquery3.min"],function($){
 		requirejs([base_path + "lib/jstree.min.js"],function(jstree){
 			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
 				finishedLoading();
@@ -32,7 +30,7 @@ if(isDevEnv()) {
 } else {
 	//TODO check Sub Resource Integrity
 	// Warning: where versions are not specified, there could be discrepancies between these CDN the local scripts
-	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js", "https://cdn.jsdelivr.net/npm/vue"],function($){
+	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
 		requirejs(["https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.9/jstree.min.js"],function(jstree){
 			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
 				finishedLoading();
@@ -41,7 +39,7 @@ if(isDevEnv()) {
 	});
 }
 
-function finishedLoading(){
+function finishedLoading(){	
     L4W_mapper.MapperPage.start();
 };
 
@@ -107,7 +105,7 @@ function isDevEnv() {
 			</div>
 		</div>
 	</div>
-	<div id="genericMessageArea" style="display:none">
+	<div id="genericMessageArea" style="display:block">
 		<!-- Message & GenericMessage editor -->
 		<div id="dialogMessage">
 			<!-- TODO -->
@@ -130,9 +128,16 @@ function isDevEnv() {
 	</div>
 </div>
 <!-- Dialog summary, with selectable rows -->
-<div id="dialogSummaryPanel" class="editorPanelColumn" style="display:none">
+<div id="dialogSummaryPanel" class="editorPanelColumn " style="display:none">
 	<div id="dialogSummary">
-		TO DO use Vue
+		<div id="dialogSummaryVue">
+			<div class="dialogSummaryRow" onclick="console.log('nemmaleh')">{{ root.message }} <span class="dialogSummaryId">[{{ root.id }}]</span></div>
+			<ul>
+				<li v-for="edge in root.edges">
+					<div class="dialogSummaryRow" onclick="console.log('nemmalehdge')">{{ edge.message }} <span class="dialogSummaryId">[{{ edge.id }}]</div>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>
 <div id="toolsPanel" class="editorPanelColumn">

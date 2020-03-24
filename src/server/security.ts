@@ -96,12 +96,21 @@ export namespace security {
         // Allow framing only from trusted sources
         res.setHeader("X-Frame-Options", "ALLOW-FROM http://rpt.altervista.org");
         // Very basic CSP
-        res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https://*.gstatic.com https://*.googleapis.com https://*.google.com https://*.google-analytics.com");
+        res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: " 
+            // Google Authentication
+            + "https://*.gstatic.com https://*.googleapis.com https://*.google.com "
+            // CDN scripts
+            + "https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net");
         // Random referrer policy
         res.setHeader("Referrer-Policy", "origin-when-cross-origin");
+        // HttpOnly: mitigates XSS attacks.
+        // SameSite=Strict: defense against some classes of CSRF attacks
+        res.setHeader("Set-Cookie", "HttpOnly;SameSite=Strict");
+
         // Reduce information exposure
         res.removeHeader("Server");
         res.removeHeader("X-Powered-By");
+
         next();
     }
 }

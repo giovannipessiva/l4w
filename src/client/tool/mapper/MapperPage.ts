@@ -1,4 +1,5 @@
 import Vue from "vue"
+import { CombinedVueInstance } from "vue/types/vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -32,6 +33,9 @@ export namespace MapperPage {
     let flagEventModified: boolean = false;
     let currentState: IEventState;
     let currentEvent: IEvent | undefined;
+    let dialogSummary: CombinedVueInstance<Vue, {
+        root: IDialogNode;
+    }, object, object, Record<never, any>>;
 
     const scaleOptions: string[] = [
         "Very low",
@@ -705,12 +709,6 @@ export namespace MapperPage {
         td.appendChild(button);
     }
 
-    function loadDialog(dialogId: string) {
-        DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function() {
-            //TODO 
-        });
-    }
-
     export function createNode(): IDialogNode {
         return DialogManager.getNewDialogNode();
     }
@@ -719,24 +717,25 @@ export namespace MapperPage {
         return DialogManager.getNewDialogEdge();
     }
 
-    // tslint:disable-next-line
-    const Component = Vue.extend({
-        // type inference enabled 
-    })
-
     function loadDialogEditor(dialogId: string) {
         // Disable every node, to avoid map changes before save
         //changeEditState(true);
-        loadDialog(dialogId);
 
-        var app = new Vue({
-            el: "#app",
+        // Instantiate Vue for the dialog summary
+        dialogSummary = new Vue({
+            el: "#dialogSummaryVue",
             data: {
-              message: "Hello Vue!"
+                root: DialogManager.getNewDialogNode()
             }
         });
-
-        console.log(Component + "" + app); //TODO test Vue
-
+        DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
+            if(node !== undefined) {
+                dialogSummary.$data.root = node;
+                let elemDisplaySummary = document.getElementById("dialogSummaryPanel");
+                if(elemDisplaySummary !== null) {
+                    elemDisplaySummary.style.display = "block";
+                }
+            }
+        });
     }
 }

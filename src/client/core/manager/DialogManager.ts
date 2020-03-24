@@ -98,7 +98,7 @@ export namespace DialogManager {
             } else {
                 let data: {
                     nodes: IDialogNode[],
-                    edges:  IDialogEdge[]
+                    edges: IDialogEdge[]
                 } = JSON.parse(resourceText);
                 let dialog: IDialogNode = reconstructDialogTree(dialogId, data.nodes, data.edges);
                 callback(dialog);
@@ -143,7 +143,7 @@ export namespace DialogManager {
     function populateDialogTreeFromNode(node: IDialogNode, nMap: Map<string,IDialogNode>, eMap: Map<string,IDialogEdge>) {
         if(!Utils.isEmpty(node.edgeIds)) {
             for(let eId of node.edgeIds!) {
-                if(!nMap.has(eId)) {
+                if(!eMap.has(eId)) {
                     console.error("Cannot reconstruct dialog tree from node: " + node.id + ", edge not found: " + eId);
                 } else {
                     let e = eMap.get(eId)!;
@@ -152,8 +152,8 @@ export namespace DialogManager {
                     }
                     node.edges.push(e);
                     if(e.nodeId !== undefined) {
-                        if(!nMap.has(eId)) {
-                            console.error("Cannot reconstruct dialog tree from node: " + node.id + ", edge not found: " + eId);
+                        if(!nMap.has(e.nodeId)) {
+                            console.error("Cannot reconstruct dialog tree from edge: " + e.id + ", node not found: " + e.nodeId);
                         } else {
                             let n = nMap.get(e.nodeId)!;
                             // Recursive call on this node

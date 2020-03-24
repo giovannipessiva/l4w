@@ -15,7 +15,13 @@ module.exports = {
 	},
 	devtool: "source-map",
 	resolve: {
-        extensions: [ ".ts", ".js" ]
+		extensions: [
+			".ts",
+			".js"
+		],
+		alias: {
+			"vue$": "vue/dist/vue.esm.js"
+		}
 	},
 	module: {
 		rules: [

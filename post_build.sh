@@ -5,7 +5,6 @@ git branch deploy
 git checkout deploy
 
 sed -i '/dist/d' .gitignore
-cat .gitignore
 
 rm -rf .tscache
 rm -rf .vscode

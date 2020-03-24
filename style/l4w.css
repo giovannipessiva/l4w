@@ -33,6 +33,14 @@ select {
 	background-color: rgba(255,255,255,0.6);
 }
 
+/************ Utility classes ************/
+.selectAll {
+	-webkit-user-select: all;  /* Chrome all / Safari all */
+	-moz-user-select: all;     /* Firefox all */
+	-ms-user-select: all;      /* IE 10+ */
+	user-select: all;          /* Likely future */  
+}
+
 /************ Game styles ************/
 @keyframes looseFocus {
 	0% {
@@ -200,15 +208,28 @@ select {
 
 #dialogEditorArea{
 	float: none;
-
 	border: 10px solid red;
 }
 
 #dialogSummary {
-	float: left;
-	
-	border: 10px solid black;
-	margin: 0.5em;
+	text-align: left;
+	padding: 0.5em;
+	border: 1px solid black;
+}
+.dialogSummaryRow {
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+	user-select: none;          /* Likely future */  
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+.dialogSummaryRow:hover {
+	border: 1px dotted blue;
+}
+.dialogSummaryId {
+	font-size: smaller;
+	color: rgb(80, 80, 80);
 }
 
 #dialogSelectionDetails{

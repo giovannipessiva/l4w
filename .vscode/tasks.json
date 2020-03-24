@@ -5,10 +5,7 @@
             "type": "grunt",
             "args": ["--gruntfile", "Gruntfile.cjs"],
             "task": "l4w-build-pipeline",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            "group": "build"
         },
         {
             "type": "grunt",
@@ -20,7 +17,10 @@
             "type": "grunt",
             "args": ["--gruntfile", "Gruntfile.cjs"],
             "task": "l4w-build-client",
-            "group": "build"
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
