@@ -141,6 +141,7 @@ export namespace DialogManager {
     }
 
     function populateDialogTreeFromNode(node: IDialogNode, nMap: Map<string,IDialogNode>, eMap: Map<string,IDialogEdge>) {
+        node.referenced = true;
         if(!Utils.isEmpty(node.edgeIds)) {
             for(let eId of node.edgeIds!) {
                 if(!eMap.has(eId)) {
@@ -156,6 +157,10 @@ export namespace DialogManager {
                             console.error("Cannot reconstruct dialog tree from edge: " + e.id + ", node not found: " + e.nodeId);
                         } else {
                             let n = nMap.get(e.nodeId)!;
+                            e.node = n;
+                            if(n.referenced) {
+                                e.nodeReferenced = true;
+                            }
                             // Recursive call on this node
                             populateDialogTreeFromNode(n, nMap, eMap);
                         }

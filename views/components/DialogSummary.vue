@@ -1,0 +1,87 @@
+<template>
+    <div>
+        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectNode(' + node.id + ')'">
+            <a v-bind:name="node.id" />
+            {{ node.message }} <span class="dialogSummaryId">N{{ node.id }}</span>
+        </div>
+        <ul>
+            <li v-for="edge in node.edges" v-bind:key="edge.id">
+                <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectEdge(' + edge.id + ')'">
+                    <div class="edge">{{ edge.message }}</div> <span class="dialogSummaryId">E{{ edge.id }}</span>
+                </div>
+                <div v-if="edge.node !== undefined" class="dialogSummarySubnode">
+                    <div v-if="!edge.nodeReferenced">
+                        <!-- Recursive template render -->
+                        <dialog-summary :node="edge.node" />
+                    </div>
+                    <div v-else>
+                        <!-- To avoid repetition, only include message -->
+                        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectNode(' + edge.node.id + ')'">
+                            {{ edge.node.message }} <span class="dialogSummaryId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></span>
+                        </div>
+                        <div class="jumpElement" />
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="endElement" />
+    </div>
+</template>
+
+<script>
+export default {
+    name: "dialog-summary",
+    props: {
+        node: {
+            type: Object,
+            required: true
+        }
+    }
+}
+</script>
+
+<style scoped>
+ul {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+}
+.dialogSummaryRow {
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+	user-select: none;          /* Likely future */  
+	border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-block; /* Avoid newLine after list custom symbol */
+}
+.dialogSummaryRow:hover {
+	border: 1px dotted blue;
+}
+.edge {
+    font-style: italic;
+    display: inline-block;
+}
+.edge:before {
+    content: ">"; /* Insert content as new list symbol */
+    margin-right: 6px;
+    font-style: italic;
+}
+.dialogSummaryId {
+	font-size: smaller;
+	color: rgb(80, 80, 80);
+}
+.dialogSummarySubnode {
+    margin-left: 2em;
+}
+.endElement {
+    width: 100%;
+    height: 0.5em;
+    border-top:1px solid black;
+}
+.jumpElement {
+    width: 100%;
+    height: 0.5em;
+    border-top:1px dashed black;
+}
+</style>

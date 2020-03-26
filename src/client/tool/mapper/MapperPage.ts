@@ -1,5 +1,7 @@
 import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
+// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
+import DialogSummaryComponent from "../../../../views/components/DialogSummary.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -724,6 +726,9 @@ export namespace MapperPage {
         // Instantiate Vue for the dialog summary
         dialogSummary = new Vue({
             el: "#dialogSummaryVue",
+            components: {
+                "dialog-summary": DialogSummaryComponent
+            },
             data: {
                 root: DialogManager.getNewDialogNode()
             }
@@ -737,5 +742,13 @@ export namespace MapperPage {
                 }
             }
         });
+    }
+
+    export function selectNode(nodeId: string): void {
+        console.log("Selected node: " + nodeId);
+    }
+
+    export function selectEdge(edgeId: string): void {
+        console.log("Selected edge: " + edgeId);
     }
 }

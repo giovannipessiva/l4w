@@ -47,8 +47,8 @@ module.exports = function(grunt) {
         },
         
         webpack: {
-            prod: webpackConfig,
-            dev: webpackConfig
+            dev: webpackConfig("development"),
+            prod: webpackConfig("production")
         },
 
         clean: {
@@ -129,7 +129,7 @@ module.exports = function(grunt) {
         grunt.option("force", true);
         grunt.task.run(["clean:client","clean:server","tslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack","clean:post"]);
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack:prod","clean:post"]);
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);
@@ -137,7 +137,7 @@ module.exports = function(grunt) {
     grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
 
     // Fast L4W build tasks (no linter, only client or server)
-    grunt.registerTask("l4w-build-client", ["clean:client","webpack"]);
+    grunt.registerTask("l4w-build-client", ["clean:client","webpack:dev"]);
     grunt.registerTask("l4w-build-server", ["clean:server","ts:server","copy","clean:post"]);
 
     // Default task

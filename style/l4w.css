@@ -203,7 +203,7 @@ select {
 	background-color:white;
 	float:right;
 	position:relative;
-	min-width:270px
+	min-width: 18em;
 }
 
 #dialogEditorArea{
@@ -215,21 +215,7 @@ select {
 	text-align: left;
 	padding: 0.5em;
 	border: 1px solid black;
-}
-.dialogSummaryRow {
-	-webkit-user-select: none;  /* Chrome all / Safari all */
-	-moz-user-select: none;     /* Firefox all */
-	-ms-user-select: none;      /* IE 10+ */
-	user-select: none;          /* Likely future */  
-	border: 1px solid transparent;
-	cursor: pointer;
-}
-.dialogSummaryRow:hover {
-	border: 1px dotted blue;
-}
-.dialogSummaryId {
-	font-size: smaller;
-	color: rgb(80, 80, 80);
+	min-width: 30em;
 }
 
 #dialogSelectionDetails{

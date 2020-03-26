@@ -131,12 +131,7 @@ function isDevEnv() {
 <div id="dialogSummaryPanel" class="editorPanelColumn " style="display:none">
 	<div id="dialogSummary">
 		<div id="dialogSummaryVue">
-			<div class="dialogSummaryRow" onclick="console.log('nemmaleh')">{{ root.message }} <span class="dialogSummaryId">[{{ root.id }}]</span></div>
-			<ul>
-				<li v-for="edge in root.edges">
-					<div class="dialogSummaryRow" onclick="console.log('nemmalehdge')">{{ edge.message }} <span class="dialogSummaryId">[{{ edge.id }}]</div>
-				</li>
-			</ul>
+			<dialog-summary :node="root"/>
 		</div>
 	</div>
 </div>

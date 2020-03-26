@@ -18,7 +18,8 @@ export interface IDialogNode {
     closingTimeout?: number; // Timeout before closing the dialog (milliseconds)
 
     // Transient data
-    edges?: IDialogEdge[];  // Array of edges which start from this node
+    edges?: IDialogEdge[]; // Array of edges which start from this node
+    referenced?: boolean; // True when this node already appeared in the dialog tree (used to avoid duplications & loops in rendering)
 }
 
 export interface IDialogEdge {
@@ -34,6 +35,7 @@ export interface IDialogEdge {
 
     // Transient data
     node?: IDialogNode; // Node pointed by this edge
+    nodeReferenced?: boolean; // True when the pointed node already appeared in the dialog tree (used to avoid duplications & loops in rendering)
 }
 
 // Single value that could be used for a generic message
