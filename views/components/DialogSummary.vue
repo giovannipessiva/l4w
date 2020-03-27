@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectNode(' + node.id + ')'">
+        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + node.id + ')'">
             <a v-bind:name="node.id" />
-            {{ node.message }} <span class="dialogSummaryId">N{{ node.id }}</span>
+            {{ node.message }} <div class="elementId">N{{ node.id }}</div>
         </div>
         <ul>
             <li v-for="edge in node.edges" v-bind:key="edge.id">
-                <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectEdge(' + edge.id + ')'">
-                    <div class="edge">{{ edge.message }}</div> <span class="dialogSummaryId">E{{ edge.id }}</span>
+                <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + node.id + ')'">
+                    <div class="edge">{{ edge.message }}</div> <div class="elementId">E{{ edge.id }}</div>
                 </div>
                 <div v-if="edge.node !== undefined" class="dialogSummarySubnode">
                     <div v-if="!edge.nodeReferenced">
@@ -17,7 +17,7 @@
                     <div v-else>
                         <!-- To avoid repetition, only include message -->
                         <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectNode(' + edge.node.id + ')'">
-                            {{ edge.node.message }} <span class="dialogSummaryId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></span>
+                            {{ edge.node.message }} <div class="elementId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></div>
                         </div>
                         <div class="jumpElement" />
                     </div>
@@ -41,8 +41,8 @@ export default {
 </script>
 
 <style scoped>
-ul {
-    list-style: none; /* Remove list bullets */
+ul{
+    list-style: none;
     padding: 0;
     margin: 0;
 }
@@ -67,7 +67,8 @@ ul {
     margin-right: 6px;
     font-style: italic;
 }
-.dialogSummaryId {
+.elementId {
+    display: inline-block;
 	font-size: smaller;
 	color: rgb(80, 80, 80);
 }

@@ -2,27 +2,22 @@
 html {
 	height: 100%;
 }
-
 body {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	margin: 0px;
 	height: 100%;
 	text-align: center;
 }
-
 input {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
-
 button {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	border-radius: 4px;
 }
-
 select {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
-
 .footer {
 	visibility: hidden;
 	position: relative;
@@ -40,7 +35,9 @@ select {
 	-ms-user-select: all;      /* IE 10+ */
 	user-select: all;          /* Likely future */  
 }
-
+.bordered{
+	border: 1px solid black;
+}
 /************ Game styles ************/
 @keyframes looseFocus {
 	0% {
@@ -52,7 +49,6 @@ select {
 		filter: blur(0px) grayscale(0%);		
 	}
 }
-  
 .bg-image {
 	position: absolute;
 	background-image: url("/assets/picture/background2.jpg");
@@ -75,7 +71,6 @@ select {
 	-o-filter: blur(5px) grayscale(20%);
 	filter: blur(5px) grayscale(20%);
 }
-
 .l4wCanvas {
 	position: relative;
 	margin-left: auto;
@@ -83,23 +78,19 @@ select {
 	border: 1px solid black;
 	cursor: url("/assets/pointer/sword-off.png"), pointer;
 }
-
 .l4wCanvas:active {
     cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
 }
-
 .visibleFadeIn {
 	visibility: visible;
 	opacity: 1;
 	transition: opacity 0.2s linear;
 }
-  
 .hiddenFadeOut {
 	visibility: hidden;
 	opacity: 0;
 	transition: visibility 0s 0.2s, opacity 0.2s linear;
 }
-
 /* Generic dialog widget */
 .l4wPanel {
 	z-index: 1; /* Need to be above the canvas */
@@ -116,19 +107,16 @@ select {
 	border-width: 16px;
 	border-style: solid;
 }
-
 /* Menu panel */
 .l4wMenuFrame {
 	right: 1em;
 	top: 1em;
-
 	/* Uselectable, to avoid annoyances on mobile */
 	-webkit-user-select: none;       
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
-
 /* Dialog panel */
 .l4wDialogFrame {
 	width: 50%;
@@ -137,7 +125,6 @@ select {
 	bottom: 1em;
 	resize: both;
 }
-
 .l4wDialogHeader {
 	user-select: none;
 	cursor: all-scroll;
@@ -147,7 +134,6 @@ select {
 	color: lightgoldenrodyellow;
 	/* background-color: hsl(240, 100%, 50%, 80%); */
 }
-
 .l4wDialogFace {
 	float: left;
 	width: 96px;
@@ -156,27 +142,22 @@ select {
 	border: 1px solid black;
 	margin-right:1em;
 }
-
 .l4wDialogName {
 	font-weight: bold;
 }
-
 .dialogEdgeArea {
 	margin: 0.5em;
 }
-
 .l4wDialogEdge {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	font-style: italic;
 	cursor: pointer;
 }
-
 .l4wDialogEdge:before {
     content: ">";
     margin-right: 6px;
 }
-
 .l4wDialogEdge:hover {
 	/*
 	border: 1px solid black;
@@ -184,60 +165,31 @@ select {
 	*/
 	text-shadow: 0px 0px 0.5em yellow;
 }
-
-/************ Editors styles ************/
-.editor {
+/************ Editor hub page ***********/
+.editor{
 	border: 1px solid black;
 	padding: 1em;
 	margin: 0.4em;
 	float: left;
 	user-select: none;
 }
-
-.editor:hover {
+.editor:hover{
     border: 2px solid black;
     font-weight: bold;
 }
-
-.editorPanelColumn {
+/************ Editors styles ************/
+.editorPanelColumn{
 	background-color:white;
 	float:right;
 	position:relative;
 	min-width: 18em;
 }
-
-#dialogEditorArea{
-	float: none;
-	border: 10px solid red;
-}
-
-#dialogSummary {
+.dialogSummary{
 	text-align: left;
 	padding: 0.5em;
-	border: 1px solid black;
 	min-width: 30em;
 }
-
-#dialogSelectionDetails{
-	float: left;
-	text-align: left;
-	
-	border: 10px solid black;
-}
-
-#dialogEdgeDetails{
-	border: 10px solid blue;
-	margin: 0.5em;
-}
-
-#dialogNodeDetails{
-	border: 10px solid blue;
-	margin: 0.5em;
-}
-
-#dialogMessage{
-	float: left;
-
-	border: 10px solid black;
-	margin: 0.5em;
+.dialogEditor{
+	padding: 0.5em;
+	min-width: 25em;
 }

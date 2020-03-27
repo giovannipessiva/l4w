@@ -78,61 +78,15 @@ function isDevEnv() {
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
 	</div>
 </div>
-<div id="dialogEditPanel" class="editorPanelColumn" style="display:none">
-	TO DO use Vue
-	<div id="dialogEditorArea">
-		<!-- Dialog selection details -->
-		<div id="dialogSelectionDetails">
-
-			<!-- Dialog edge editor -->
-			<div id="dialogEdgeDetails">
-				Link ID: <div id="edgeId"></div><br/>
-				Message: <input id="edgeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
-
-				Condition: <select id="edgeCondition"></select><br/>
-				Condition parameters: <input id="edgeConditionParameters" tye="text"> </input><br/>
-
-				Script: <select id="edgeScript"></select><br/>
-				Action: <select id="edgeAction"></select><br/>
-			</div>
-				
-			<!-- Dialog node editor -->
-			<div id="dialogNodeDetails">
-				Dialog ID: <div id="nodeId"></div><br/>
-				Message: <input id="nodeMessage" tye="text"> </input><br/> <!-- TODO manage i18n -->
-				Generic message: <select id="nodeGenericMessage"></select><br/>
-				Autoclose in: <input id="nodeClosingTimeout" type="number">0</input> msec<br/>
-			</div>
-		</div>
-	</div>
-	<div id="genericMessageArea" style="display:block">
-		<!-- Message & GenericMessage editor -->
-		<div id="dialogMessage">
-			<!-- TODO -->
-			Message & GenericMessage editor
-
-			<!--
-			// A message that can be resolved to different strings, based on some conditions
-			IGenericMessage
-				id: number; // ID of the generic string
-				description: string; // Description of the generic string
-				condition?: string; // Name of function that returns true if this state can be active (see Conditions.ts)
-				values: IGenericMessageValue[]; // Array of possible values for this generic message
-				
-			// Single value that could be used for a generic message
-			IGenericMessageValue
-				message: string; // String of the message
-				conditionParams: string; // Parameters to be used for evaluating the condition
-			-->
-		</div>
+<div id="dialogEditPanel" class="editorPanelColumn dialogEditor bordered" style="display:none">
+	<div id="dialogEditorVue">
+		<dialog-editor :node="root"/>
 	</div>
 </div>
 <!-- Dialog summary, with selectable rows -->
-<div id="dialogSummaryPanel" class="editorPanelColumn " style="display:none">
-	<div id="dialogSummary">
-		<div id="dialogSummaryVue">
-			<dialog-summary :node="root"/>
-		</div>
+<div id="dialogSummaryPanel" class="editorPanelColumn dialogSummary bordered" style="display:none">
+	<div id="dialogSummaryVue">
+		<dialog-summary :node="root"/>
 	</div>
 </div>
 <div id="toolsPanel" class="editorPanelColumn">

@@ -2,6 +2,8 @@ import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
 // @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import DialogSummaryComponent from "../../../../views/components/DialogSummary.vue"
+// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
+import DialogEditorComponent from "../../../../views/components/DialogEditor.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -38,6 +40,9 @@ export namespace MapperPage {
     let dialogSummary: CombinedVueInstance<Vue, {
         root: IDialogNode;
     }, object, object, Record<never, any>>;
+    let dialogEditor: CombinedVueInstance<Vue, {
+        root: IDialogNode;
+    }, object, object, Record<never, any>>;
 
     const scaleOptions: string[] = [
         "Very low",
@@ -53,8 +58,9 @@ export namespace MapperPage {
 
     export function start() {
         Compatibility.check();
-
-        loadDialogEditor("0"); //TODO test
+        initDialogEditor();
+        
+        loadDialogSummary("0"); //TODO test
 
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
@@ -719,20 +725,34 @@ export namespace MapperPage {
         return DialogManager.getNewDialogEdge();
     }
 
-    function loadDialogEditor(dialogId: string) {
-        // Disable every node, to avoid map changes before save
-        //changeEditState(true);
-
+    function initDialogEditor() {
         // Instantiate Vue for the dialog summary
-        dialogSummary = new Vue({
-            el: "#dialogSummaryVue",
-            components: {
-                "dialog-summary": DialogSummaryComponent
-            },
-            data: {
-                root: DialogManager.getNewDialogNode()
-            }
-        });
+        if(dialogSummary === undefined) {
+            dialogSummary = new Vue({
+                el: "#dialogSummaryVue",
+                components: {
+                    "dialog-summary": DialogSummaryComponent,
+                },
+                data: {
+                    root: DialogManager.getNewDialogNode()
+                }
+            });
+        }
+        // Instantiate Vue for the dialog editor
+        if(dialogEditor === undefined) {
+            dialogEditor = new Vue({
+                el: "#dialogEditorVue",
+                components: {
+                    "dialog-editor": DialogEditorComponent,
+                },
+                data: {
+                    root: DialogManager.getNewDialogNode()
+                }
+            });
+        }
+    }
+
+    export function loadDialogSummary(dialogId: string) {
         DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
             if(node !== undefined) {
                 dialogSummary.$data.root = node;
@@ -744,11 +764,12 @@ export namespace MapperPage {
         });
     }
 
-    export function selectNode(nodeId: string): void {
-        console.log("Selected node: " + nodeId);
-    }
-
-    export function selectEdge(edgeId: string): void {
-        console.log("Selected edge: " + edgeId);
+    export function loadDialogEditor(nodeId: string) {
+        let root = dialogSummary.$data.root;
+        dialogEditor.$data.root = DialogManager.search(root, nodeId);
+        let elemDisplayEditor = document.getElementById("dialogEditPanel");
+        if(elemDisplayEditor !== null) {
+            elemDisplayEditor.style.display = "block";
+        }
     }
 }

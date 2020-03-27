@@ -458,4 +458,40 @@ export namespace DialogManager {
             id: getRandomString()
         };
     }
+
+    export function search(root: IDialogNode, targetId: string) {
+        let nodes: Map<string, IDialogNode> = new Map<string, IDialogNode>();
+        let edges: Map<string, IDialogNode> = new Map<string, IDialogNode>();
+        let target = treeSearch(root, targetId + "", nodes, edges);
+        if(target !== undefined) {
+            return target;
+        } else {
+            console.warn("Could not find node: " + targetId);
+            return undefined;
+        }
+    }
+
+    function treeSearch(node: IDialogNode, targetId: string, nodes: Map<string, IDialogNode>, edges: Map<string, IDialogNode>): IDialogNode | undefined {
+        if(node.id === targetId) {
+            return node;
+        }
+        // Save node in the output array
+        nodes.set(node.id, node);
+        let eArray = node.edges;
+        if(!Utils.isEmpty(eArray)) {
+            for(let e of eArray!) {
+                // Save edge in the output array
+                edges.set(e.id, e);
+                let n = e.node;
+                if(n !== undefined) {
+                    // Recursive call on this node
+                    let result = treeSearch(n, targetId, nodes, edges);
+                    if(result !== undefined) {
+                        return result
+                    }
+                }
+            }
+        }
+        return;
+    }
 };
