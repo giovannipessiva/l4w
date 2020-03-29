@@ -6,7 +6,7 @@ import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
 import { IMap, IVertex } from "../../../common/model/Map"
 import { BlockDirection, DirectionEnum, ICell } from "../../../common/model/Commons"
-import { IEvent, IEventData } from "../../../common/model/Event"
+import { IEvent } from "../../../common/model/Event"
 import { AbstractGrid } from "../AbstractGrid"
 import { AbstractScene } from "../AbstractScene"
 import { DynamicScene } from "../../game/DynamicScene"
@@ -345,7 +345,7 @@ export namespace MapManager {
         for (let j = 0; j < map.height * map.width; j++) {
             map.dynamicBlocks[j] = 0;
         }
-        let events = new Array<IEventData>();
+        let events = new Array<IEvent>();
         if(hero !== undefined) {
             events.push(hero);
         }

@@ -39,7 +39,7 @@ export namespace TilesetterPage {
 
     export function loadNews() {
         $.getJSON(base_path + "news", function(data) {
-            //let news = $("#news");
+            //let news = document.getElementById("news");
             //TODO manage json response
         });
     }

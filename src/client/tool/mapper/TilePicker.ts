@@ -38,7 +38,7 @@ export namespace TilePicker {
             // Resize the canvas
             let image = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
-            $("#tilePanel").height(image.naturalHeight);
+            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "";
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilePicker.height = image.naturalHeight;

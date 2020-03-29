@@ -1,4 +1,4 @@
-import { IEventData } from "./Event"
+import { IEvent } from "./Event"
 import { ICell } from "./Commons"
 import { ITileset } from "./Tileset"
 
@@ -14,7 +14,7 @@ export interface IMap {
     height: number; //Number of tile rows
     layers: IMapLayer[]; //Array of Layers
     maxEventId?: number; // Max id of events in this map
-    events: IEventData[]; //Events
+    events: IEvent[]; //Events
     nextobjectid: number; //Auto-increments for each placed
     tileset: ITileset; //Tileset object for this map
 

@@ -188,8 +188,10 @@ select {
 	text-align: left;
 	padding: 0.5em;
 	min-width: 30em;
+	display: none;
 }
 .dialogEditor{
 	padding: 0.5em;
 	min-width: 25em;
+	display: none;
 }

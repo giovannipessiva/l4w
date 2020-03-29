@@ -60,8 +60,6 @@ export namespace MapperPage {
         Compatibility.check();
         initDialogEditor();
         
-        loadDialogSummary("0"); //TODO test
-
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
                 animation: false,
@@ -383,6 +381,7 @@ export namespace MapperPage {
     function loadActions() {
         let scriptClass = (<HTMLSelectElement>document.getElementById("script")).value;
         let actions: string[] = Resource.listScriptActions(scriptClass);
+        actions.push("");
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
         let actionOptions: HTMLOptionsCollection = selectActions.options;
         let i = 0;
@@ -752,14 +751,16 @@ export namespace MapperPage {
         }
     }
 
+    export function createNewDialog() {
+        //TODO server call to create a new dialog
+        loadDialogSummary("0");
+    }
+
     export function loadDialogSummary(dialogId: string) {
         DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
             if(node !== undefined) {
                 dialogSummary.$data.root = node;
-                let elemDisplaySummary = document.getElementById("dialogSummaryPanel");
-                if(elemDisplaySummary !== null) {
-                    elemDisplaySummary.style.display = "block";
-                }
+                document.getElementById("dialogSummaryPanel")!.style.display = "block";
             }
         });
     }
@@ -777,11 +778,6 @@ export namespace MapperPage {
         return Resource.listEventStateConditions();
     }
 
-    export function listScriptClasses() {
-        return Resource.listScriptClasses();
-    }
+    // loadDialogSummary("0"); //TODO test
 
-    export function listScriptActions(scriptClassName: string) {
-        return Resource.listScriptActions(scriptClassName);
-    }
 }

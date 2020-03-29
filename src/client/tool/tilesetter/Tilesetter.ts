@@ -35,16 +35,16 @@ export namespace Tilesetter {
 
     export function loadTile(tile: string, callback: (result: boolean, w: number, h: number)=> void) {
         // Clear the canvas
-        let canvasTile = <HTMLCanvasElement>$("#canvasTile")[0];
-        let contextTile = <CanvasRenderingContext2D>canvasTile.getContext("2d");
-        let canvasTilesetter = <HTMLCanvasElement>$("#canvasSelector")[0];
+        let canvasTile = <HTMLCanvasElement> document.getElementById("canvasTile");
+        let contextTile = <CanvasRenderingContext2D> canvasTile.getContext("2d");
+        let canvasTilesetter = <HTMLCanvasElement> document.getElementById("canvasSelector");
         contextTile.clearRect(0, 0, canvasTile.width, canvasTile.height);
         // Load the tileset
         Resource.load(tile, ResourceType.TILE, function(tileImage) {
             // Resize the canvas
             let image: HTMLImageElement = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
-            $("#tilePanel").height(image.naturalHeight);
+            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "";
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilesetter.height = image.naturalHeight;
@@ -144,7 +144,7 @@ export namespace Tilesetter {
     }
 
     export function loadTilesetData(callback: IBooleanCallback) {
-        let tileImage = $("#tiles").val();
+        let tileImage = (<HTMLSelectElement> document.getElementById("tiles")).value;
         $.ajax({
             url: "/data/tileset/" + tileImage,
             type: Constant.RequestType.GET,

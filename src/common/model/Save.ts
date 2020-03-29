@@ -1,4 +1,4 @@
-import { IEventData } from "./Event"
+import { IEvent } from "./Event"
 import { LanguageEnum } from "./Commons"
 
 /**
@@ -8,7 +8,7 @@ import { LanguageEnum } from "./Commons"
 export interface ISave {
     id: string; // Id of the user save
     timestamp: number; // Save time
-    hero: IEventData; // Hero state
+    hero: IEvent; // Hero state
     currentMap: string; // Id of the current map
     maps: IMapSave[]; // List of customized maps, indexed by map.id
     config: IConfig; // User configuration
