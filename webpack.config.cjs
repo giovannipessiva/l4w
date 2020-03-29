@@ -22,7 +22,8 @@ module.exports = function(mode) {
 		resolve: {
 			extensions: [
 				".ts",
-				".js"
+				".js",
+				".vue"
 			],
 			alias: {
 				"vue$": "vue/dist/vue.esm.js"
@@ -35,6 +36,7 @@ module.exports = function(mode) {
 					exclude: [/node_modules/],
 					loader: "ts-loader",
 					options: {
+						appendTsSuffixTo: [/\.vue$/],
 						configFile: "src/tsconfig-client.json"
 					}
 				},
@@ -45,8 +47,8 @@ module.exports = function(mode) {
 				{
 					test: /\.css$/,
 					use: [
-					"vue-style-loader",
-					"css-loader"
+						"vue-style-loader",
+						"css-loader"
 					]
 				},
 			]

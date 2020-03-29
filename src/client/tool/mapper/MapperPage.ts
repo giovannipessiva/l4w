@@ -1,9 +1,9 @@
 import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
 // @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
-import DialogSummaryComponent from "../../../../views/components/DialogSummary.vue"
+import DialogSummaryComponent from "../../components/DialogSummary.vue"
 // @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
-import DialogEditorComponent from "../../../../views/components/DialogEditor.vue"
+import DialogEditorComponent from "../../components/DialogEditor.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"

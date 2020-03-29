@@ -28,8 +28,10 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue"
+
+export default Vue.extend({
     name: "dialog-summary",
     props: {
         node: {
@@ -37,7 +39,7 @@ export default {
             required: true
         }
     }
-}
+})
 </script>
 
 <style scoped>

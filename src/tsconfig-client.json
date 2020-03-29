@@ -7,6 +7,10 @@
     },
     "include": [
         "./client/**/*.ts",
+        "./client/components/**/*.vue",
         "./common/**/*.ts"
+    ],
+    "files": [
+        "./client/vue-shims.d.ts"
     ]
 }

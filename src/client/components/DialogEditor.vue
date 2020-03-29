@@ -55,9 +55,11 @@
 	</div>
 </template>
 
-<script>
-import { Resource } from '../../src/client/core/util/Resource';
-export default {
+<script lang="ts">
+import Vue from "vue"
+import { Resource } from "../core/util/Resource";
+
+export default Vue.extend({
     name: "dialog-editor",
     props: {
         node: {
@@ -70,16 +72,11 @@ export default {
         let observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if(entry.intersectionRatio > 0) {
-                    /*
-                        Load the values in:
-                        - edgeCondition
-                        - edgeScript
-                    */
                     // Add the options to each <select>
-                    this.$refs.edgeCondition.forEach((selectElement) => {
+                    (<Element[]> this.$refs.edgeCondition).forEach((selectElement) => {
                         let conditionOptions = [];
-                        for(let element of L4W_mapper.MapperPage.listEventStateConditions()) {
-                            let opt = document.createElement("option");
+                        for(let element of Resource.listEventStateConditions()) {
+                            let opt = document.createElement<"option">("option");
                             opt.label = element;
                             conditionOptions.push(opt);
                         }
@@ -87,10 +84,11 @@ export default {
                             selectElement.appendChild(opt);
                         }
                     });
-                    this.$refs.edgeScript.forEach((selectElement) => {
+                   (<Element[]> this.$refs.edgeScript).forEach((selectElement) => {
                         let scriptOptions = [];
-                        for(let element of L4W_mapper.MapperPage.listScriptClasses()) {
-                            let opt = document.createElement("option");
+
+                        for(let element of Resource.listScriptClasses()) {
+                            let opt = document.createElement<"option">("option");
                             opt.label = element[0] + " (" + element[1] + ")";
                             scriptOptions.push(opt);
                         }
@@ -105,7 +103,7 @@ export default {
         });
         observer.observe(this.$el);
     }
-}
+})
 </script>
 
 <style scoped>
