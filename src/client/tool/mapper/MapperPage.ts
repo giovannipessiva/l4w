@@ -772,4 +772,16 @@ export namespace MapperPage {
             elemDisplayEditor.style.display = "block";
         }
     }
+
+    export function listEventStateConditions() {
+        return Resource.listEventStateConditions();
+    }
+
+    export function listScriptClasses() {
+        return Resource.listScriptClasses();
+    }
+
+    export function listScriptActions(scriptClassName: string) {
+        return Resource.listScriptActions(scriptClassName);
+    }
 }

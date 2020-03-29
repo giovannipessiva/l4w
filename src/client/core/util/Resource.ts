@@ -22,8 +22,9 @@ export namespace Resource {
     const DEFAULT_NAME = "404.png";
 
     var resourceCache: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
-
     let propertiesCache: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+    let scriptClassesCache: Map<string, string>;
+    let scriptActionsCache: Map<string, string[]> = new Map<string, string[]>();
 
     export function loadProperties(onLoadCallback: IPropertiesCallback, file: string = "l4w") {
         if (propertiesCache.has(file)) {
@@ -253,6 +254,9 @@ export namespace Resource {
     }
     
     export function listScriptClasses(): Map<string, string> {
+        if(scriptClassesCache !== undefined) {
+            return scriptClassesCache;
+        }
         // Retrieve all Script classes that extends AbstractScript
         let allVars: string[] = Object.keys(Script);
         let scriptClasses = allVars.filter(function (key) {
@@ -268,6 +272,7 @@ export namespace Resource {
         for(let c of scriptClasses) {
             map.set(c, (<typeof AbstractScript> Script[c]).tooltip);
         }
+        scriptClassesCache = map;
         return map;
     }
     
@@ -276,6 +281,9 @@ export namespace Resource {
      * https://stackoverflow.com/questions/39544789/get-class-methods-in-typescript/48051971#48051971
      */
     export function listScriptActions(scriptClassName: string): string[] {
+        if(scriptActionsCache.has(scriptClassName)) {
+            return scriptActionsCache.get(scriptClassName)!;
+        }
         // Retrieve all actions of a Script class
         let classInstance = new Script[scriptClassName](undefined, undefined,undefined);
         let allVars: string[] = Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance));
@@ -290,6 +298,7 @@ export namespace Resource {
                 return false;
             }
         });
+        scriptActionsCache.set(scriptClassName, actions);
         return actions;    
     }
     

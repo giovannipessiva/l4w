@@ -16,7 +16,7 @@
                     </div>
                     <div v-else>
                         <!-- To avoid repetition, only include message -->
-                        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.selectNode(' + edge.node.id + ')'">
+                        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + edge.node.id + ')'">
                             {{ edge.node.message }} <div class="elementId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></div>
                         </div>
                         <div class="jumpElement" />

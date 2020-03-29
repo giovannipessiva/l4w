@@ -6,10 +6,9 @@
                 <div class="elementId">N{{ node.id }}</div>
                 <textarea class="message" type="text" placeholder="<message>" v-model="node.message"/><br>
                 <!-- TODO Generic message: <select id="genericMessage"></select><br/> -->
-                Autoclose in <input class="nodeClosingTimeout" type="number" min="0" max="10000" step="1"/> msec<br>
+                Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
-                <button style="color:red;float:right" title="Delete this node">Delete</button>
                 <button style="float:left">Add new edge</button>
                 <br>
             </div>
@@ -19,17 +18,17 @@
                 <div class="elementId">E{{ edge.id }}</div>
                 <textarea class="message" type="text" placeholder="<message>" v-model="edge.message"/><br>
 
-                Condition <select class="edgeCondition"></select><br>
-                Cond. param: <input class="edgeConditionParameters" type="text"/><br>
+                Condition <select ref="edgeCondition" v-model="edge.condition"></select><br>
+                Cond. param: <input class="edgeConditionParameters" type="text" v-model="edge.conditionParams"/><br>
 
-                Script <select class="edgeScript"></select><br>
-                Action <select class="edgeAction"></select>
+                Script <select ref="edgeScript" v-model="edge.script"></select><br>
+                Action <select ref="edgeAction" v-model="edge.action"></select>
                 
                 <div style="float:none"/>
                 <button style="color:red;float:right" title="Delete this edge">Delete</button>
                 <br>
                 <br>
-                Connect to <select class="nodes"></select> or <button>create a new node</button>               
+                Connect to <select ref="nodes"></select> or <button>create a new node</button>               
             </div>
         </div>
 
@@ -57,6 +56,7 @@
 </template>
 
 <script>
+import { Resource } from '../../src/client/core/util/Resource';
 export default {
     name: "dialog-editor",
     props: {
@@ -64,6 +64,46 @@ export default {
             type: Object,
             required: true
         }
+    },
+    mounted: function() {
+        // Load each <select> options when it becomes visible
+        let observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.intersectionRatio > 0) {
+                    /*
+                        Load the values in:
+                        - edgeCondition
+                        - edgeScript
+                    */
+                    // Add the options to each <select>
+                    this.$refs.edgeCondition.forEach((selectElement) => {
+                        let conditionOptions = [];
+                        for(let element of L4W_mapper.MapperPage.listEventStateConditions()) {
+                            let opt = document.createElement("option");
+                            opt.label = element;
+                            conditionOptions.push(opt);
+                        }
+                        for(let opt of conditionOptions) {
+                            selectElement.appendChild(opt);
+                        }
+                    });
+                    this.$refs.edgeScript.forEach((selectElement) => {
+                        let scriptOptions = [];
+                        for(let element of L4W_mapper.MapperPage.listScriptClasses()) {
+                            let opt = document.createElement("option");
+                            opt.label = element[0] + " (" + element[1] + ")";
+                            scriptOptions.push(opt);
+                        }
+                        for(let opt of scriptOptions) {
+                            selectElement.appendChild(opt);
+                        }
+                    });
+                }
+            });
+        }, {
+            root: document.documentElement
+        });
+        observer.observe(this.$el);
     }
 }
 </script>
