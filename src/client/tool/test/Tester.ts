@@ -26,10 +26,18 @@ export namespace Tester {
             j:targetJ
         };
         // Set pathfinding algorithm
-        let pathfinder: MapManager.PathfinderEnum = MapManager.PathfinderEnum.BASIC;
-        let alg: string = $("#alg").val();
-        if(alg === "D* Lite") {
-            pathfinder = MapManager.PathfinderEnum.D_STAR_LITE;
+        let pathfinder: MapManager.PathfinderEnum;
+        let alg: string = (<HTMLSelectElement> document.getElementById("alg")).value;
+        switch(alg) {
+            case "Basic":
+                pathfinder = MapManager.PathfinderEnum.BASIC;
+                break;
+            case "D* Lite":
+                pathfinder = MapManager.PathfinderEnum.D_STAR_LITE;
+                break;
+            default:
+                console.error("Unexpected pathfinding algo: " + alg);
+                pathfinder = MapManager.PathfinderEnum.BASIC;
         }
         // Find path
         let result: IPathfinderTestResult[] = [];

@@ -15,24 +15,32 @@
 <script src="../lib/require.min.js"></script>
 <script type='text/javascript'>
 var base_path = "../";
+let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
 
-requirejs([base_path + "lib/jquery3.min.js"],function($){
-    requirejs([base_path + "js/l4w-tilesetter.min"],function(l4w){
-        finishedLoading();
-    },function(err){
-        // If min version is unavailable, use the full version
-        requirejs([base_path + "js/l4w-tilesetter"],function(l4w){
-            finishedLoading();
-        });
-    });
-});
+if(isDevEnv()) {
+	// Enable offline local development by using local files instead of CDNs
+	requirejs([base_path + "lib/jquery3.min"],function($){
+		requirejs([base_path + "js/l4w-tilesetter.min"],function(l4w){
+			finishedLoading();
+		});
+	});
+} else {
+	//TODO check Sub Resource Integrity
+	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
+		requirejs([base_path + "js/l4w-tilesetter.min"],function(l4w){
+			finishedLoading();
+		});
+	});
+}
 
 function finishedLoading(){
 	if(L4W_tilesetter !== undefined) {
 		L4W_tilesetter.TilesetterPage.start();
 	} else {
+		console.warn("Stilla waiting");
 		setTimeout(finishedLoading, 500);
 	}
+	document.getElementById("footer").style.visibility = "visible";
 };
 
 function signOut() {
@@ -41,16 +49,6 @@ function signOut() {
 		window.location = "logout";
     });
 }
-
-// I dont really need this in my life
-/*
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-18315891-3', 'auto');
-ga('send', 'pageview');
-*/
 </script>
 
 <link rel="stylesheet" type="text/css" href="../style/l4w.css">
@@ -65,6 +63,12 @@ ga('send', 'pageview');
         <canvas id="canvasSelector" width="256" height="800" style="border:1px solid black;position:absolute;left:0;top:0;z-index:0.1;opacity:1;">
         Your browser does not support HTML5 Canvas!</canvas>
     </div>
+	<div id="footer" class="footer">
+		Game: <a href="/">/</a><br/>
+		Editors: <a href="/edit">/edit</a><br/>
+		Test: <a href="/test">/test</a><br/>
+		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
+	</div>
 </div>
 
 <div id="toolsPanel" style="background-color:white;float:right;position:relative;width:256px">

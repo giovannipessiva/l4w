@@ -2209,7 +2209,7 @@
           null,
           1,
           1,
-          1,
+          2,
           null,
           null,
           1,
@@ -2224,7 +2224,7 @@
           null,
           null,
           null,
-          null,
+          1,
           null,
           null,
           null,
@@ -2233,14 +2233,14 @@
           null,
           null,
           null,
+          3,
           null,
           null,
           null,
           null,
           null,
-          null,
-          null,
-          null,
+          1,
+          1,
           null,
           null,
           null,
@@ -2730,7 +2730,7 @@
         15,
         0,
         15,
-        15,
+        0,
         0,
         15,
         15,
@@ -3085,7 +3085,7 @@
               "frequency": 2,
               "action": "giantTest2",
               "speed": 2,
-              "condition": "always"
+              "condition": "isStateVar1"
             },
             {
               "direction": 2,
@@ -3094,7 +3094,7 @@
               "frequency": 2,
               "action": "giantTest3",
               "speed": 2,
-              "condition": "always"
+              "condition": "isStateVar2"
             }
           ],
           "frequency": "0.006",
@@ -3114,7 +3114,7 @@
           "j": 17,
           "states": [
             {
-              "direction": 3,
+              "direction": 0,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085494758,
               "mSpeed": 0.1536,

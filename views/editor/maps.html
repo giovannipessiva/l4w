@@ -9,16 +9,17 @@
 
 <meta name="google-signin-scope" content="profile email">
 <meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
-<script src="https://apis.google.com/js/platform.js" async defer></script>
 <meta name="theme-color" content="#ffffff">
 
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script src="../lib/require.min.js"></script>
 
 <script type='text/javascript'>
 var base_path = "../";
+let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
 
 if(isDevEnv()) {
-	// Enable offline local developement by using local files instead of CDNs
+	// Enable offline local development by using local files instead of CDNs
 	requirejs([base_path + "lib/jquery3.min"],function($){
 		requirejs([base_path + "lib/jstree.min.js"],function(jstree){
 			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
@@ -26,10 +27,8 @@ if(isDevEnv()) {
 			});
 		});
 	});
-
 } else {
 	//TODO check Sub Resource Integrity
-	// Warning: where versions are not specified, there could be discrepancies between these CDN the local scripts
 	requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
 		requirejs(["https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.9/jstree.min.js"],function(jstree){
 			requirejs([base_path + "js/l4w-mapper.min"],function(l4w){
@@ -40,7 +39,8 @@ if(isDevEnv()) {
 }
 
 function finishedLoading(){	
-    L4W_mapper.MapperPage.start();
+	L4W_mapper.MapperPage.start();
+	document.getElementById("footer").style.visibility = "visible";
 };
 
 function signOut() {
@@ -48,10 +48,6 @@ function signOut() {
     auth2.signOut().then(function () {
 		window.location = "logout";
     });
-}
-
-function isDevEnv() {
-	return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === "";
 }
 </script>
 
@@ -75,6 +71,8 @@ function isDevEnv() {
 	</div>
 	<div id="footer" class="footer">
 		Game: <a href="/">/</a><br/>
+		Editors: <a href="/edit">/edit</a><br/>
+		Test: <a href="/test">/test</a><br/>
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
 	</div>
 </div>

@@ -11,33 +11,17 @@
 
 <script src="lib/require.min.js" async></script>
 <script type='text/javascript'>
-// I dont really need this in my life
-/*
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-18315891-3', 'auto');
-ga('send', 'pageview');
-*/
-
 var base_path = "./";
 
 window.onload = function(){
-	requirejs(["lib/jquery3.min.js"],function($){
-	    requirejs(["lib/jquery-ui.min.js","js/l4w-tester.min"],function(l4w){
-	        finishedLoading();
-	    },function(err){
-	        // If full version version (better for test) is unavailable, use the minified
-	        requirejs(["js/l4w-tester"],function(l4w){
-	            finishedLoading();
-	        });
-	    });
+	requirejs(["js/l4w-tester.min"],function(l4w){
+		finishedLoading();
 	});
 }
 	
 function finishedLoading(){
 	drawMap();
+	document.getElementById("footer").style.visibility = "visible";
 };
 
 var stopMovement;
@@ -263,6 +247,10 @@ Loading...
 <br style="clear:both;"/>
 </div>
 <br style="clear:both;"/>
+</div>
+<div id="footer" class="footer">
+	Game: <a href="/">/</a><br/>
+	Editors: <a href="/edit">/edit</a><br/>
 </div>
 </body>
 </html>

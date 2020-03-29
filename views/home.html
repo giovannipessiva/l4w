@@ -14,59 +14,53 @@
 <meta name="theme-color" content="#ffffff">
 
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-
-<script>
-var base_path = "./";
-
-	function onSignIn(googleUser) {
-      	document.getElementById("login").style.display="none";
-        
-        var f = document.createElement("form");
-		f.setAttribute("method","post");
-		f.setAttribute("action",".");
-        var i;
-        
-        i = document.createElement("input");
-		i.setAttribute("type","text");
-		i.setAttribute("name","token");
-		i.setAttribute("value",googleUser.getAuthResponse().id_token);
-		f.appendChild(i);
-
-		f.style.display="none";
-		document.body.appendChild(f);
-		f.submit();
-	};
-
-// I dont really need this in my life
-/*
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-18315891-3', 'auto');
-ga('send', 'pageview');
-*/
-</script>
-
 <script src="lib/require.min.js" async></script>
+
 <script type='text/javascript'>
-window.onload = function(){
-	requirejs(["lib/jquery3.min.js"],function($){
-	    requirejs(["lib/jquery-ui.min.js","js/l4w-game.min"],function(l4w){
-	        finishedLoading();
-	    },function(err){
-	        // If min version is unavailable, use the full version
-	        requirejs(["js/l4w-game"],function(l4w){
-	            finishedLoading();
-	        });
-	    });
-	});
-	
+var base_path = "./";
+let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
+
+window.onload = () => {
+	if(isDevEnv()) {
+		// Enable offline local development by using local files instead of CDNs
+		requirejs(["lib/jquery3.min"],function($){
+			requirejs(["lib/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
+				finishedLoading();
+			});
+		});
+	} else {
+		//TODO check Sub Resource Integrity
+		requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
+			requirejs(["https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
+				finishedLoading();
+			});
+		});
+	}
+
 	function finishedLoading(){
 		let canvas = document.getElementById("canvas1");
 	    L4W_game.Game.start(canvas);
 	};
 }
+
+function onSignIn(googleUser) {
+	document.getElementById("login").style.display="none";
+	
+	let f = document.createElement("form");
+	f.setAttribute("method","post");
+	f.setAttribute("action",".");
+	let i;
+	
+	i = document.createElement("input");
+	i.setAttribute("type","text");
+	i.setAttribute("name","token");
+	i.setAttribute("value",googleUser.getAuthResponse().id_token);
+	f.appendChild(i);
+
+	f.style.display="none";
+	document.body.appendChild(f);
+	f.submit();
+};
 </script>
 
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
@@ -117,7 +111,7 @@ window.onload = function(){
 		</div>
 	</div>
 	<div id="footer" class="footer">
-		Editors: <a href="edit">/edit</a><br/>
+		Editors: <a href="/edit">/edit</a><br/>
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
 	</div>
 	

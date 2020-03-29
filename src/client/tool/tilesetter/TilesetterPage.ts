@@ -16,17 +16,20 @@ export namespace TilesetterPage {
         // Resize the panel to match the tileset
         let resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
             let width = +props.get("cellWidth")! * +props.get("tileColumns")! + 2;
-            $("#toolsPanel").width(width);
+            document.getElementById("toolsPanel")!.style.width = width + "";
         };
         Resource.loadProperties(resizerCallback);
 
         $.getJSON(base_path + "assetlist/tile", function(data) {
-            let sel = $("#tiles");
+            let sel = <HTMLSelectElement> document.getElementById("tiles");
             for (let i = 0; i < data.length; i++) {
-                sel.append("<option value='" + data[i] + "'>" + data[i] + "</option>");
+                let opt = document.createElement("option");
+                opt.value = data[i];
+                opt.label = data[i];
+                sel.appendChild(opt);
             }
-            Tilesetter.start(<HTMLCanvasElement>$("#canvasSelector")[0], getEditMode(), function() {
-                let tile = $("#tiles").val();
+            Tilesetter.start(<HTMLCanvasElement> document.getElementById("canvasSelector"), getEditMode(), function() {
+                let tile = (<HTMLSelectElement> document.getElementById("tiles")).value;
                 Tilesetter.loadTile(tile, function(result, w: number, h: number) { });
             });
         });
@@ -42,7 +45,7 @@ export namespace TilesetterPage {
     }
     
     export function changeTile() {
-        let tile = $("#tiles").val();
+        let tile = (<HTMLSelectElement> document.getElementById("tiles")).value;
         Tilesetter.loadTile(tile, function(success: boolean, w: number, h: number) {
             if(success) {
                 Tilesetter.updateSize(w, h);
@@ -54,7 +57,7 @@ export namespace TilesetterPage {
     }
     
     export function getEditMode(): Constant.TileEditMode {
-        let editModeStr : string = $("#editModes").val();
+        let editModeStr : string = (<HTMLSelectElement> document.getElementById("editModes")).value;
         return Constant.TileEditMode[editModeStr];
     }
     
@@ -89,8 +92,8 @@ export namespace TilesetterPage {
         } else {
             document.title = PAGE_TITLE;
         }
-        (<HTMLButtonElement>$("#saveButton")[0]).disabled = !edited;
-        (<HTMLButtonElement>$("#reloadButton")[0]).disabled = !edited;
+        (<HTMLButtonElement> document.getElementById("saveButton")).disabled = !edited;
+        (<HTMLButtonElement> document.getElementById("reloadButton")).disabled = !edited;
 
         if (mapChanged) {
 
