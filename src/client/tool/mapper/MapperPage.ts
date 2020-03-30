@@ -199,7 +199,7 @@ export namespace MapperPage {
     }
 
     export function changeTile() {
-        let tile = $("#tiles").val();
+        let tile = (<HTMLSelectElement> document.getElementById("tiles")).value;
         TilePicker.loadTile(tile, function(tilePicker: TilePickerScene) {
             Mapper.changeTile(tile, tilePicker);
         });

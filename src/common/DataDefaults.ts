@@ -24,6 +24,14 @@ export namespace DataDefaults {
         };
     }
 
+    export function getEmptyMap(name?: string) : IMap {
+        let map = getMap(name);
+        for(let layer of map.layers) {
+            layer.data = undefined;
+        }
+        return map;
+    }    
+
     export function getMap(name?: string) : IMap {
         return {
             id: Utils.getRandomString(),
@@ -114,7 +122,7 @@ export namespace DataDefaults {
         hero.j = gameConfig.maps.start.j;
         hero.states = [];
         hero.states[0] = {
-           charaset: gameConfig.hero.name,
+           charaset: gameConfig.hero.charaset,
            condition: "always",
            trigger: ActionTriggerEnum.CLICK,
            action: ""

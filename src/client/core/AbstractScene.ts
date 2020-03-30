@@ -296,7 +296,7 @@ export abstract class AbstractScene {
             }
             scene.map.tileset = tileset;
             Resource.load(tileset.image, ResourceType.TILE, function(image) {
-                tileset.imageData = <HTMLImageElement> image;
+                scene.map.tileset.imageData = <HTMLImageElement> image;
                 callback(scene);
             });
         });
@@ -411,7 +411,7 @@ export abstract class AbstractScene {
         this.renderFocus();
     }
     
-    private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {  
+    private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number): void {  
         let tileCell = ClientUtils.gidToCell(tileGID, Math.floor(tileset.imageWidth! / this.grid.cellW)); //TODO precalculate
         context.drawImage(
             tileset.imageData!,

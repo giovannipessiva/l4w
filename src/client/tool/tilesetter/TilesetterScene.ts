@@ -4,8 +4,6 @@ import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
 import { ClientUtils } from "../../core/util/Utils"
 import { SelectionAreaEnum, BlockDirection } from "../../../common/model/Commons"
-import { TilesetManager } from "../../core/manager/TilesetManager";
-import { ITileset } from "../../../common/model/Tileset";
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
 
@@ -20,8 +18,8 @@ export class TilesetterScene extends AbstractTileScene {
         this.changeTileEditMode(tileEditMode);
 
         // Init the map for rendering blocks
-        this.map = DataDefaults.getMap("blocks");
-        this.map.tileset = <ITileset> TilesetManager.getNewTileset();
+        this.map = DataDefaults.getEmptyMap("blocks");
+        this.map.tileset = DataDefaults.getTileset();
         this.map.width = this.getSceneWidth();
         this.map.height = this.getSceneHeight();
         this.map.tileset.imageWidth = this.getSceneWidth();

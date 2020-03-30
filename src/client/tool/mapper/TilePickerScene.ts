@@ -13,7 +13,7 @@ export class TilePickerScene extends AbstractTileScene {
 
     constructor(grid: StaticGrid, callback: { (scene: TilePickerScene): void }) {
         super(grid);
-        this.map = DataDefaults.getMap("tilePicker");
+        this.map = DataDefaults.getEmptyMap("tilePicker");
         callback(this);
     }
 

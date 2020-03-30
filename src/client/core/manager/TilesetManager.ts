@@ -39,13 +39,4 @@ export namespace TilesetManager {
             tileset.imageHeight = tileset.imageData.height;
         }
     }
-    
-    export function getNewTileset(): ITileset {
-        return {
-            "firstgid": 1,
-            "image": "002-Woods01.png",
-            "blocks": [],
-            "onTop": []
-        };
-    }
 }
