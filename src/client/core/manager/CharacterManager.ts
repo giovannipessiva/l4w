@@ -1,8 +1,10 @@
 import { Constant } from "../util/Constant"
-import { Utils } from "../util/Utils"
+import { ClientUtils } from "../util/Utils"
 import { ICharacter } from "../../../common/model/Character"
 import { ScaleEnum } from "../../../common/model/Commons"
 import { AbstractGrid } from "../AbstractGrid"
+import { DataDefaults } from "../../../common/DataDefaults"
+import { Utils } from "../../../common/Utils"
 
 /**
  * Module to handle a Character
@@ -68,7 +70,7 @@ export namespace CharacterManager {
             return false;    
         }
         // Check if it is the right time to render this Character, based on its zindex
-        if(onTop !== (Utils.normalizeZIndex(c.onTop) !== Constant.ZIndex.LV0)) {
+        if(onTop !== (ClientUtils.normalizeZIndex(c.onTop) !== Constant.ZIndex.LV0)) {
             return false
         }
         if (!Utils.isEmpty(c.visible) && !c.visible) {
@@ -82,17 +84,10 @@ export namespace CharacterManager {
         }
         return true;
     }
-    
-    export function getNewCharacter(): ICharacter {
-        let c: ICharacter = {
-           charaset: ""
-        };
-        return c;
-    };
-     
+
     export function initTransientData(grid: AbstractGrid, c?: ICharacter): ICharacter {
         if(c === undefined) {
-            c = getNewCharacter();
+            c = DataDefaults.getCharacter();
         }
         setSpeed(c, c.speed);
         setFrequency(c, c.frequency);

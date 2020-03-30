@@ -12,7 +12,7 @@ import { HttpStatus, ResourceType } from "../common/Constants"
 import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
-import { defaults } from "./defaults"
+import { DataDefaults } from "../common/DataDefaults"
 import { IDialogNode, IDialogEdge, IGenericMessage } from "../common/model/Dialog";
 import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
@@ -143,7 +143,7 @@ export namespace database {
                 .value();
             if (map === undefined) {
                 console.log("Map \"" + file + "\" not found, returning default");
-                map = defaults.getDefaultMap();
+                map = DataDefaults.getMap();
                 map.id = file;
             }
             response.json(map);
@@ -154,7 +154,7 @@ export namespace database {
                 .value();
             if (tree === undefined) {
                 console.log("Tree \"" + file + "\" not found, returning default");
-                tree = defaults.getDefaultTree();
+                tree = DataDefaults.getTree();
                 tree.id = file
             }
             response.json(tree);
@@ -165,7 +165,7 @@ export namespace database {
                 .value();
             if (tile === undefined) {
                 console.log("Tileset \""+ file + "\" not found, returning default");
-                tile = defaults.getDefaultTileset();
+                tile = DataDefaults.getTileset();
                 tile.image = file;
             }
             response.json(tile);
@@ -184,7 +184,7 @@ export namespace database {
                     response.send(langMap.get(file).value());
                 } else {
                     response.status(HttpStatus.NOT_FOUND)
-                        .send(defaults.getDefaultString());
+                        .send(DataDefaults.getString());
                 }
             }
             break;
@@ -215,21 +215,21 @@ export namespace database {
                         if (!utils.isEmpty(result)) {
                             response.send(result.dataValues.save);
                         } else {
-                            response.send(defaults.getDefaultSave());
+                            response.send(DataDefaults.getSave());
                         }
                     },
                     function(error: any) {
                         console.log(error);
                         response.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .send(defaults.getDefaultSave());
+                                .send(DataDefaults.getSave());
                     });
             } else {
-                response.status(HttpStatus.OK).send(defaults.getDefaultSave());
+                response.status(HttpStatus.OK).send(DataDefaults.getSave());
             }
             break;
         default:
             console.error("database.read - Unexpected case: " + type);
-            response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
+            response.status(HttpStatus.NOT_FOUND).send(DataDefaults.getString());
         };
     }
 
@@ -354,7 +354,7 @@ export namespace database {
             break;
         default:
             console.error("Unexpected case: " + type);
-            response.status(HttpStatus.NOT_FOUND).send(defaults.getDefaultString());
+            response.status(HttpStatus.NOT_FOUND).send(DataDefaults.getString());
         }
     }
 

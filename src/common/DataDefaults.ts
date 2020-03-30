@@ -2,17 +2,32 @@ import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
 import { ISave, IConfig } from "../common/model/Save";
 import { IEvent, IEventState } from "../common/model/Event";
-import { LanguageEnum } from "../common/model/Commons"
-import { getRandomString } from "../common/Utils"
+import { ActionTriggerEnum } from "../common/model/Commons"
 import { gameConfig } from "../common/GameConfig";
+import { ICharacter } from "./model/Character";
+import { IDialogNode, IDialogEdge } from "./model/Dialog";
+import { Utils } from "./Utils";
 
-//TODO move to common, replace "getNew*" of resources Managers
-export namespace defaults {
+export namespace DataDefaults {
 
-    export function getDefaultMap() : IMap {
+    export const DEFAULT_ID = -1;
+
+    export function getDialogNode(): IDialogNode {
         return {
-            id: getRandomString(),
-            name: "Default map",
+            id: Utils.getRandomString()
+        };
+    }
+
+    export function getDialogEdge(): IDialogEdge {
+        return {
+            id: Utils.getRandomString()
+        };
+    }
+
+    export function getMap(name?: string) : IMap {
+        return {
+            id: Utils.getRandomString(),
+            name: name !== undefined? name : "Map",
             height: 20,
             width: 25,
             layers: [
@@ -38,12 +53,12 @@ export namespace defaults {
                     y: 0
                 }],
             nextobjectid: 2,
-            tileset: getDefaultTileset(),
+            tileset: getTileset(),
             events: []
         };
     }
     
-    export function getDefaultTileset() : ITileset {
+    export function getTileset() : ITileset {
         return  {
             firstgid: 1,
             image: "002-Woods01.png",
@@ -52,54 +67,79 @@ export namespace defaults {
         };
     }
 
-    export function getDefaultSave(): ISave {
+    export function getSave(): ISave {
         return {
-            id: getRandomString(),
-            timestamp: 0,
-            hero: getDefaultEvent(),
+            id: Utils.getRandomString(),
+            timestamp: Utils.now(),
             currentMap: gameConfig.maps.start.map,
+            hero: getHero(),
             maps: [],
-            config: getDefaultConfig()
+            config: getConfig()
         };
     }
 
-    export function getDefaultEventState(): IEventState {
+    export function getConfig(): IConfig {
         return {
-            condition: "always",
-            charaset: "fart.png"
+            lang: gameConfig.ui.lang,
+            skin: gameConfig.ui.skin,
+            flagAntialiasing: true,
+            flagDouble: false,
+            flagNatural: false
         };
     }
 
-    export function getDefaultEvent(): IEvent {
-        return {
-            i: 6,
-            j: 12,
-            id: 0,
-            name: "Fart",
-            states: [
-                getDefaultEventState()
-            ],
+    export function getEvent(): IEvent {
+        let event: IEvent = {
+            id: -1, // The value -1 will be replaced with a incremental id upon saving
+            name: "NPC",
+            i: 0,
+            j: 0,
+            states: [{
+               charaset: "",
+               condition: "always",
+               trigger: ActionTriggerEnum.CLICK,
+               action: ""
+            }],
             memory: {},
-            script: "",
+            script: "BaseScript",
             currentState: 0
         };
-    }
-
-    export function getDefaultConfig(): IConfig {
-        return {
-            lang: LanguageEnum.EN,
-            skin: "ld3-webskin1.png",
-            flagAntialiasing: true,
-            flagNatural: false,
-            flagDouble: false
+        return event;
+    };
+     
+    export function getHero(): IEvent {
+        let hero: IEvent = getEvent();
+        hero.name = gameConfig.hero.name;
+        hero.i = gameConfig.maps.start.i;
+        hero.j = gameConfig.maps.start.j;
+        hero.states = [];
+        hero.states[0] = {
+           charaset: gameConfig.hero.name,
+           condition: "always",
+           trigger: ActionTriggerEnum.CLICK,
+           action: ""
         };
+        return hero;
     }
+    
+    export function getEventState(): IEventState {
+        return {
+            condition: "always",
+            trigger: ActionTriggerEnum.CLICK
+        };
+    };
 
-    export function getDefaultString(): string {
+    export function getString(): string {
         return "";
     }
 
-    export function getDefaultTree() : any {
+    export function getTree() : any {
         return {};
     }
+
+    export function getCharacter(): ICharacter {
+        return {
+           charaset: ""
+        };
+    };
 };

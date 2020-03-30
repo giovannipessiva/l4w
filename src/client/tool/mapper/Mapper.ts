@@ -1,7 +1,6 @@
 import { DirectionEnum } from "../../../common/model/Commons"
 import { IMap } from "../../../common/model/Map"
 import { IEvent } from "../../../common/model/Event"
-import { Utils } from "../../core/util/Utils"
 import { StaticGrid } from "../StaticGrid"
 import { MapManager } from "../../core/manager/MapManager"
 import { EventManager } from "../../core/manager/EventManager"
@@ -14,6 +13,8 @@ import { MapperPage } from "./MapperPage"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { ResourceType } from "../../../common/Constants";
+import { DataDefaults } from "../../../common/DataDefaults"
+import { Utils } from "../../../common/Utils"
 
 export namespace Mapper {
 
@@ -236,20 +237,17 @@ export namespace Mapper {
     };
     
     export function addEvent(event: IEvent) {
-        if(!Utils.isEmpty(event.id)) {
-            // Event already updated
-            MapperPage.changeEditState(true);
-            return;    
+        if(Utils.isEmpty(event.id) || event.id === DataDefaults.DEFAULT_ID) {
+            // Create new event
+            let newId = 0;
+            if(mapper.map.maxEventId !== undefined) {
+                newId = mapper.map.maxEventId + 1;
+            }
+            event.id = newId;
+            mapper.map.maxEventId = newId;
+            mapper.map.events.push(event);
+            EventManager.initTransientData(mapper.map, mapper.grid, event);
         }
-        // Create new event
-        let newId = 0;
-        if(!Utils.isEmpty(mapper.map.maxEventId)) {
-            newId = mapper.map.maxEventId! + 1;
-        }
-        event.id = newId;
-        mapper.map.maxEventId = newId;
-        mapper.map.events.push(event);
-        EventManager.initTransientData(mapper.map, mapper.grid, event);
         MapperPage.changeEditState(true);
     };
     

@@ -3,7 +3,7 @@ import { StaticGrid } from "./StaticGrid"
 import { Constant } from "../core/util/Constant"
 import { IMap } from "../../common/model/Map"
 import { IRectangle } from "../../common/model/Commons"
-import { Utils } from "../core/util/Utils";
+import { ClientUtils } from "../core/util/Utils";
 
 /**
  * Abstract scene class for managing static rendering
@@ -40,7 +40,7 @@ export abstract class AbstractStaticScene extends AbstractScene {
         this.newDrawArea = this.getRedrawArea(redrawAll);
         // Need to redraw previously changed area (in order to remove cursor/selection area),
         // and obviously the new changed area
-        this.redrawArea = Utils.mergeRectangles(this.oldDrawArea, this.newDrawArea);
+        this.redrawArea = ClientUtils.mergeRectangles(this.oldDrawArea, this.newDrawArea);
         this.grid.clear(this.context, this.redrawArea);
         return true;
     }

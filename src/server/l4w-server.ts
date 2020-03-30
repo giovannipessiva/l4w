@@ -7,7 +7,7 @@ import compression from "compression";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
 import { HttpStatus, ResourceType } from "../common/Constants"
-import { convertStringToEnum } from "../common/Utils"
+import { Utils } from "../common/Utils"
 import { session } from "./session"
 import * as utils from "./utils"
 import { security } from "./security"
@@ -111,7 +111,7 @@ app.get("/lib/:script", function(request: Request, response: Response) {
 });
 app.get("/data/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
-    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
+    let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     if (type === ResourceType.CONFIGURATION) {
         let filePath = path.resolve(dirname + "data" + path.sep + ResourceType.CONFIGURATION);
         utils.sendFile(filePath, file, response);
@@ -128,12 +128,12 @@ app.get("/assets/:file", function(request: Request, response: Response) {
 });
 app.get("/assets/:type/:file", function(request: Request, response: Response) {
     let file = request.params.file;
-    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
+    let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let filePath = path.resolve(dirname + "assets" + path.sep + type);
     utils.sendFile(filePath, file, response);
 });
 app.get("/assetlist/:type/", function(request: Request, response: Response) {
-    let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
+    let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
     let filePath = path.resolve(dirname + "assets" + path.sep + type);
     utils.listFiles(filePath, response);
 });
@@ -159,7 +159,7 @@ app.get("/workers/:script", function(request: Request, response: Response) {
 app.post("/edit/:type/:id", function(request: Request, response: Response) {
     if(session.isAuthenticated(request)) {
         let fileId = request.params.id;
-        let type: ResourceType = convertStringToEnum<ResourceType>(ResourceType, request.params.type);
+        let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
         security.getBodyData(request, response, function(data: any){
             database.write(type, fileId, data, session.getUser(request)!, response);
         });

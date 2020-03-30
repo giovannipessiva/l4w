@@ -1,8 +1,8 @@
 import { AbstractTileScene } from "../AbstractTileScene"
 import { MapperScene } from "./MapperScene"
 import { StaticGrid } from "../StaticGrid"
-import { Utils } from "../../core/util/Utils"
-import { MapManager } from "../../core/manager/MapManager";
+import { DataDefaults } from "../../../common/DataDefaults";
+import { Utils } from "../../../common/Utils";
 
 /**
  * Scene implementation for managing Tile Picker logics
@@ -13,7 +13,7 @@ export class TilePickerScene extends AbstractTileScene {
 
     constructor(grid: StaticGrid, callback: { (scene: TilePickerScene): void }) {
         super(grid);
-        this.map = MapManager.getNewMap("tilePicker");
+        this.map = DataDefaults.getMap("tilePicker");
         callback(this);
     }
 

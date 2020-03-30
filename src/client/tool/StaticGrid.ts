@@ -1,7 +1,7 @@
 import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
-import { Utils } from "../core/util/Utils"
 import { IRange } from "../core/util/Commons"
 import { ICell, IRectangle } from "../../common/model/Commons";
+import { Utils } from "../../common/Utils";
 
 /**
  * Module for managing canvas autosizing

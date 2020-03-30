@@ -2,16 +2,16 @@ import { ICoordinatesCallback, ICellCallback } from "../util/Commons"
 import { Constant } from "../util/Constant"
 import { Resource } from "../util/Resource"
 import { AbstractGrid } from "../AbstractGrid"
-import { Utils } from "../util/Utils"
-import { IEvent, IEventState } from "../../../common/model/Event"
+import { ClientUtils } from "../util/Utils"
+import { IEvent } from "../../../common/model/Event"
 import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum } from "../../../common/model/Commons"
-import { gameConfig } from "../../../common/GameConfig";
 import { IMap } from "../../../common/model/Map"
 import { CharacterManager } from "../manager/CharacterManager"
 import { MapManager } from "../manager/MapManager"
 import { Condition } from "../events/Conditions"
 import { DynamicScene } from "../../game/DynamicScene"
 import { ResourceType } from "../../../common/Constants";
+import { Utils } from "../../../common/Utils"
 
 /**
  * Module to handle events
@@ -120,10 +120,10 @@ export namespace EventManager {
 
             let direction;
             // Check if target can be reached
-            let targetGui = Utils.cellToGid(target, map.width);
-            let cellStaticBlock = Utils.getMapStaticBlock(map,targetGui);
-            let cellDynamicBlock = Utils.getMapDynamicBlock(map,targetGui);
-            if((Utils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !Utils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL))
+            let targetGui = ClientUtils.cellToGid(target, map.width);
+            let cellStaticBlock = ClientUtils.getMapStaticBlock(map,targetGui);
+            let cellDynamicBlock = ClientUtils.getMapDynamicBlock(map,targetGui);
+            if((ClientUtils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !ClientUtils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL))
                 || (targetGui < 0 || targetGui >= map.width * map.height)) {
                 // Target is blocked and does not contain and event, or it is invalid, so no movement needed
                 direction = DirectionEnum.NONE;
@@ -137,11 +137,11 @@ export namespace EventManager {
                     } catch(e) {
                         console.error(e);    
                     }
-                    let stepTarget = Utils.getDirectionTarget(e, direction);
+                    let stepTarget = ClientUtils.getDirectionTarget(e, direction);
                     // Check if target contains an event
-                    let stepTargetGID = Utils.cellToGid(stepTarget, map.width);
-                    let stepTargetBlock = Utils.getMapDynamicBlock(map,stepTargetGID);
-                    if(Utils.isDirectionEnumBlocked(stepTargetBlock, Utils.getOpposedDirections(direction))) {
+                    let stepTargetGID = ClientUtils.cellToGid(stepTarget, map.width);
+                    let stepTargetBlock = ClientUtils.getMapDynamicBlock(map,stepTargetGID);
+                    if(ClientUtils.isDirectionEnumBlocked(stepTargetBlock, ClientUtils.getOpposedDirections(direction))) {
                         // I cant go further, stop now
                         direction = DirectionEnum.NONE;
                         if(stepTargetGID === targetGui) {
@@ -392,50 +392,7 @@ export namespace EventManager {
         }
         return e.i >= minColumn && e.i <= maxColumn && e.j >= minRow && e.j <= maxRow;
     }
-    
-    export function getNewEvent(): IEvent {
-        let event: IEvent = {
-            id: 0,
-            name: "NPC",
-            i: 0,
-            j: 0,
-            states: [{
-               charaset: "",
-               condition: "always",
-               trigger: ActionTriggerEnum.CLICK,
-               action: ""
-            }],
-            memory: {},
-            script: "BaseScript",
-            currentState: 0
-        };
-        return event;
-    };
-     
-    export function getNewHero(): IEvent {
-        let hero: IEvent = getNewEvent();
-        hero.name = gameConfig.hero.name;
-        hero.i = gameConfig.maps.start.i;
-        hero.j = gameConfig.maps.start.j;
-        hero.states = [];
-        hero.states[0] = {
-           charaset: gameConfig.hero.name,
-           condition: "always",
-           trigger: ActionTriggerEnum.CLICK,
-           action: ""
-        };
-        return hero;
-    }
-    
-    export function getNewEventState(): IEventState {
-        let eventState: IEventState = {
-            condition: "always",
-            trigger: ActionTriggerEnum.CLICK,
-            action: "speak"
-        };
-        return eventState;
-    };
-    
+
     export function saveMem(event: IEvent, key: string, value: string): void {
         if(Utils.isEmpty(event.memory)) {
             event.memory = {};

@@ -13,7 +13,6 @@ export interface IMap {
     width: number; //Number of tile columns
     height: number; //Number of tile rows
     layers: IMapLayer[]; //Array of Layers
-    maxEventId?: number; // Max id of events in this map
     events: IEvent[]; //Events
     nextobjectid: number; //Auto-increments for each placed
     tileset: ITileset; //Tileset object for this map
@@ -21,6 +20,7 @@ export interface IMap {
     // Transient data
     blocks?: number[]; //Array of codes representing the block attributes from layers
     dynamicBlocks?: number[]; //Array of codes representing the block attributes from events
+    maxEventId?: number; // Max id of events in this map
 };
 
 export interface IVertex {

@@ -2,12 +2,12 @@ import { AbstractTileScene } from "../AbstractTileScene"
 import { TilesetterPage } from "./TilesetterPage"
 import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
-import { Utils } from "../../core/util/Utils"
+import { ClientUtils } from "../../core/util/Utils"
 import { SelectionAreaEnum, BlockDirection } from "../../../common/model/Commons"
-import { IMap } from "../../../common/model/Map"
-import { MapManager } from "../../core/manager/MapManager"
 import { TilesetManager } from "../../core/manager/TilesetManager";
 import { ITileset } from "../../../common/model/Tileset";
+import { DataDefaults } from "../../../common/DataDefaults"
+import { Utils } from "../../../common/Utils"
 
 /**
  * Scene implementation for managing Tilesetter logics
@@ -20,7 +20,7 @@ export class TilesetterScene extends AbstractTileScene {
         this.changeTileEditMode(tileEditMode);
 
         // Init the map for rendering blocks
-        this.map = <IMap> MapManager.getNewMap("blocks");
+        this.map = DataDefaults.getMap("blocks");
         this.map.tileset = <ITileset> TilesetManager.getNewTileset();
         this.map.width = this.getSceneWidth();
         this.map.height = this.getSceneHeight();
@@ -71,42 +71,42 @@ export class TilesetterScene extends AbstractTileScene {
         }
 
         // Do action on the clicked area
-        let gid = Utils.cellToGid({
+        let gid = ClientUtils.cellToGid({
             i: i,
             j: j
         }, this.map.width);
-        let block = Utils.getMapBlocks(this.map,gid);
+        let block = ClientUtils.getMapBlocks(this.map,gid);
         switch (clickArea) {
             case SelectionAreaEnum.TOP:
-                if (Utils.isBlockDirectionBlocked(block, BlockDirection.UP)) {
+                if (ClientUtils.isBlockDirectionBlocked(block, BlockDirection.UP)) {
                     block ^= BlockDirection.UP;
                 } else {
                     block |= BlockDirection.UP;
                 }
                 break;
             case SelectionAreaEnum.BOTTOM:
-                if (Utils.isBlockDirectionBlocked(block, BlockDirection.DOWN)) {
+                if (ClientUtils.isBlockDirectionBlocked(block, BlockDirection.DOWN)) {
                     block ^= BlockDirection.DOWN;
                 } else {
                     block |= BlockDirection.DOWN;
                 }
                 break;
             case SelectionAreaEnum.LEFT:
-                if (Utils.isBlockDirectionBlocked(block, BlockDirection.LEFT)) {
+                if (ClientUtils.isBlockDirectionBlocked(block, BlockDirection.LEFT)) {
                     block ^= BlockDirection.LEFT;
                 } else {
                     block |= BlockDirection.LEFT;
                 }
                 break;
             case SelectionAreaEnum.RIGHT:
-                if (Utils.isBlockDirectionBlocked(block, BlockDirection.RIGHT)) {
+                if (ClientUtils.isBlockDirectionBlocked(block, BlockDirection.RIGHT)) {
                     block ^= BlockDirection.RIGHT;
                 } else {
                     block |= BlockDirection.RIGHT;
                 }
                 break;
             case SelectionAreaEnum.CENTER:
-                if (Utils.isBlockDirectionBlocked(block, BlockDirection.ALL)) {
+                if (ClientUtils.isBlockDirectionBlocked(block, BlockDirection.ALL)) {
                     block ^= BlockDirection.ALL;
                 } else {
                     block |= BlockDirection.ALL;
@@ -125,7 +125,7 @@ export class TilesetterScene extends AbstractTileScene {
         super.select(i, j);
 
         // Do action on the clicked area
-        let gid = Utils.cellToGid({
+        let gid = ClientUtils.cellToGid({
             i: i,
             j: j
         }, this.map.width);
@@ -144,7 +144,7 @@ export class TilesetterScene extends AbstractTileScene {
         super.select(i, j);
 
         // Do action on the clicked area
-        let gid = Utils.cellToGid({
+        let gid = ClientUtils.cellToGid({
             i: i,
             j: j
         }, this.map.width);

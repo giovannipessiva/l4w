@@ -1,7 +1,6 @@
 import { Constant } from "../util/Constant"
 import { RenderConfiguration } from "../util/Commons"
-import { Utils } from "../util/Utils"
-import { getRandomString } from "../../../common/Utils"
+import { ClientUtils } from "../util/Utils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
 import { IMap, IVertex } from "../../../common/model/Map"
@@ -14,6 +13,7 @@ import { EventManager } from "../manager/EventManager"
 import { TilesetManager } from "../manager/TilesetManager"
 import {  } from "../manager/CharacterManager"
 import { ResourceType } from "../../../common/Constants";
+import { Utils } from "../../../common/Utils"
 
 /**
  * Helper class for handling game maps
@@ -33,6 +33,15 @@ export namespace MapManager {
             } else {
                 try {
                     let map: IMap = JSON.parse(resourceText);
+                    // Populate transient data
+                    if(!Utils.isEmpty(map.events)) {
+                        map.maxEventId = 0;
+                        for(let evt of map.events) {
+                            if(evt.id > map.maxEventId) {
+                                map.maxEventId = evt.id;
+                            }
+                        }
+                    }
                     callback(map);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -83,7 +92,7 @@ export namespace MapManager {
                         context.fillStyle = Constant.Color.GREEN;
                     }
                     
-                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
+                    if (ClientUtils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.UP)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.2) * grid.cellH);
@@ -91,7 +100,7 @@ export namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
+                    if (ClientUtils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.DOWN)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, (j + 1) * grid.cellH);
                         context.lineTo((i + 0.5) * grid.cellW, (j + 0.8) * grid.cellH);
@@ -99,7 +108,7 @@ export namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
+                    if (ClientUtils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.LEFT)) {
                         context.beginPath();
                         context.moveTo(i * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.2) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -107,7 +116,7 @@ export namespace MapManager {
                         context.fill();
                         context.stroke();
                     }
-                    if (Utils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
+                    if (ClientUtils.isBlockDirectionBlocked(blockValue | dynamicBlockValue, BlockDirection.RIGHT)) {
                         context.beginPath();
                         context.moveTo((i + 1) * grid.cellW, j * grid.cellH);
                         context.lineTo((i + 0.8) * grid.cellW, (j + 0.5) * grid.cellH);
@@ -119,8 +128,8 @@ export namespace MapManager {
                 context.restore();
             }
             if (!onTop && renderingConfiguration.showOnTops && !Utils.isEmpty(map) && !Utils.isEmpty(map.tileset.onTop)) {
-                let gid = Utils.cellToGid({i: i, j:j},map.width);
-                if(Utils.normalizeZIndex(map.tileset.onTop[gid]) > Constant.ZIndex.LV0) {
+                let gid = ClientUtils.cellToGid({i: i, j:j},map.width);
+                if(ClientUtils.normalizeZIndex(map.tileset.onTop[gid]) > Constant.ZIndex.LV0) {
                     context.save();
                     context.globalAlpha = 0.6;
                     context.beginPath();
@@ -321,7 +330,7 @@ export namespace MapManager {
                             continue;
                         }
                         // Ignore cells onTop
-                        if(map.tileset.onTop !== undefined && Utils.normalizeZIndex(map.tileset.onTop[tileCell!]) > Constant.ZIndex.LV0) {
+                        if(map.tileset.onTop !== undefined && ClientUtils.normalizeZIndex(map.tileset.onTop[tileCell!]) > Constant.ZIndex.LV0) {
                             continue;  
                         }
                         let blockValue = map.tileset.blocks[tileCell!];
@@ -355,7 +364,7 @@ export namespace MapManager {
         for (let e of events) {
             let state = EventManager.getState(<IEvent> e);
             if(state === undefined || Utils.isEmpty(state.block) || state.block) {
-                let gid = Utils.cellToGid(e, map.width);
+                let gid = ClientUtils.cellToGid(e, map.width);
                 map.dynamicBlocks[gid] = BlockDirection.ALL;
             }
         }
@@ -363,14 +372,14 @@ export namespace MapManager {
     
     /** check if the movement is allowed, but consider the final target as without dynamic block */
     function isMovementTowardsTargetBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, finalTarget: ICell): boolean {
-        let target: ICell = Utils.getDirectionTarget({ i:i, j:j }, direction);
+        let target: ICell = ClientUtils.getDirectionTarget({ i:i, j:j }, direction);
         let ignoreDynamicBlocks = false;
-        if(Utils.getDirection(target, finalTarget) === DirectionEnum.NONE) {
+        if(ClientUtils.getDirection(target, finalTarget) === DirectionEnum.NONE) {
             // Always consider the final target as walkable, if it is an event
             // Otherwise it would be difficult to compute a path to it
             ignoreDynamicBlocks = true;    
         }
-        return Utils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
+        return ClientUtils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
     }
 
     /** use an algorithm to decide the better step for Event to reach Target. Target is always considered as unblocked */
@@ -559,7 +568,7 @@ export namespace MapManager {
                                 s_start = s_min!;
 
                                 // Move to s_start
-                                return Utils.getDirection(s_start.cell, event);
+                                return ClientUtils.getDirection(s_start.cell, event);
 
                                 // Assuming constant edge costs, this part is not needed
                                 /*
@@ -600,7 +609,7 @@ export namespace MapManager {
                             if (val > MAX) {
                                 val = MAX;
                             }
-                            let uid = Utils.cellToGid(u.cell, width);
+                            let uid = ClientUtils.cellToGid(u.cell, width);
                             _g[uid] = val;
                         };
 
@@ -609,19 +618,19 @@ export namespace MapManager {
                             if (val > MAX) {
                                 val = MAX;
                             }
-                            let uid = Utils.cellToGid(u.cell, width);
+                            let uid = ClientUtils.cellToGid(u.cell, width);
                             _rhs[uid] = val;
                         };
 
                         /** Returns an estimate of the start distance of the vertex u */
                         function g(u: IVertex): number {
-                            let uid = Utils.cellToGid(u.cell, width);
+                            let uid = ClientUtils.cellToGid(u.cell, width);
                             return _g[uid];
                         };
 
                         /** Returns a one step lookahead value based on g(s) */
                         function rhs(u: IVertex): number {
-                            let uid = Utils.cellToGid(u.cell, width);
+                            let uid = ClientUtils.cellToGid(u.cell, width);
                             return _rhs[uid];
                         };
 
@@ -630,7 +639,7 @@ export namespace MapManager {
                          * Successors are vertex that can be reached from s
                          */
                         function succ(s: IVertex): IVertex[] {
-                            let gid = Utils.cellToGid(s.cell, map.width);
+                            let gid = ClientUtils.cellToGid(s.cell, map.width);
                             let succ: IVertex[] = [];
                             if (s.cell.i !== 0) {
                                 succ.push(S[gid - 1]);
@@ -652,7 +661,7 @@ export namespace MapManager {
                          * Predecessors are vertex from which s can be reached
                          */
                         function pred(s: IVertex): IVertex[] {
-                            let gid = Utils.cellToGid(s.cell, map.width);
+                            let gid = ClientUtils.cellToGid(s.cell, map.width);
                             let pred: IVertex[] = [];
                             if (s.cell.i !== 0) {
                                 pred.push(S[gid - 1]);
@@ -674,11 +683,11 @@ export namespace MapManager {
                          * s2 belongs to succ(s1)
                          */
                         function c(s1: IVertex, s2: IVertex): number {
-                            let movementDirection: number = Utils.getDirection(s2.cell, s1.cell);
+                            let movementDirection: number = ClientUtils.getDirection(s2.cell, s1.cell);
                             // if s2 is the final target, ignore dynamic blocks
-                            let ignoreDynamicBlocks = (Utils.getDirection(s2.cell, s_goal.cell) === DirectionEnum.NONE);
+                            let ignoreDynamicBlocks = (ClientUtils.getDirection(s2.cell, s_goal.cell) === DirectionEnum.NONE);
                             // Check if movement to s2 is blocked
-                            let isBlocked = Utils.isMovementBlocked(map,s1.cell.i, s1.cell.j, movementDirection, ignoreDynamicBlocks);
+                            let isBlocked = ClientUtils.isMovementBlocked(map,s1.cell.i, s1.cell.j, movementDirection, ignoreDynamicBlocks);
                             if(isBlocked) {
                                 // If movement to s2 is blocked, cost is infinite
                                 return MAX;
@@ -776,7 +785,7 @@ export namespace MapManager {
                 if(event.path === undefined) {
                     event.path = [];
                 }
-                if (event.path.length === 3 && event.path[0] === event.path[2] && Utils.isDirectionsOpposed(event.path[0], event.path[1])) {
+                if (event.path.length === 3 && event.path[0] === event.path[2] && ClientUtils.isDirectionsOpposed(event.path[0], event.path[1])) {
                     // If a block is detected, stop
                     direction = DirectionEnum.NONE;
                 }    
@@ -787,18 +796,5 @@ export namespace MapManager {
             }
             return direction;
         }
-    }
-
-    export function getNewMap(name: string): IMap {
-        return {
-            id: getRandomString(),
-            name: name,
-            height: 20,
-            width: 25,
-            layers: [],
-            events: [],
-            nextobjectid: 2,
-            tileset: TilesetManager.getNewTileset()
-        };
     }
 }

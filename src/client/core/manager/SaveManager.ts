@@ -1,45 +1,23 @@
-import { ISave, IConfig } from "../../../common/model/Save"
+import { ISave } from "../../../common/model/Save"
 import { ICell } from "../../../common/model/Commons"
 import { IMap } from "../../../common/model/Map"
 import { IEvent } from "../../../common/model/Event"
 import { IEventSave } from "../../../common/model/Save"
 import { EventManager } from "./EventManager"
 import { MapManager } from "./MapManager"
-import { Utils } from "../util/Utils"
 import { DynamicScene } from "../../game/DynamicScene"
 import { IBooleanCallback } from "../util/Commons";
-import { getRandomString } from "../../../common/Utils"
-import { gameConfig } from "../../../common/GameConfig"
+import { DataDefaults } from "../../../common/DataDefaults"
+import { Utils } from "../../../common/Utils"
 
 /**
  * Module to handle save
  */
 export namespace SaveManager {
 
-    export function getNewSave(): ISave {
-        return {
-            id: getRandomString(),
-            timestamp: Utils.now(),
-            currentMap: gameConfig.maps.start.map,
-            hero: EventManager.getNewHero(),
-            maps: [],
-            config: getNewConfig()
-        };
-    }
-
-    export function getNewConfig(): IConfig {
-        return {
-            lang: gameConfig.ui.lang,
-            skin: gameConfig.ui.skin,
-            flagAntialiasing: true,
-            flagDouble: false,
-            flagNatural: false
-        };
-    }
-    
     export function getSave(map: IMap, hero: IEvent): ISave {
         if (Utils.isEmpty(map) || Utils.isEmpty(hero)) {
-            return getNewSave();
+            return DataDefaults.getSave();
         }
         let events: IEventSave[] = new Array<IEventSave>();
         if(!Utils.isEmpty(map.events)) {
@@ -47,7 +25,7 @@ export namespace SaveManager {
                 events.push(getEventSave(<IEvent> e));   
             }
         }
-        let save: ISave = SaveManager.getNewSave();
+        let save: ISave = DataDefaults.getSave();
         save.currentMap = map.id;
         save.hero = hero;
         save.maps[map.id] = {

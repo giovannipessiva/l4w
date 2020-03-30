@@ -4,7 +4,7 @@ import { AbstractScript } from "../events/script/AbstractScript";
 import * as Script from "../events/script/ScriptsRoot";
 import { IPropertiesCallback, IResponseCallback, IListCallback } from "./Commons";
 import { Constant } from "./Constant";
-import { Utils } from "./Utils";
+import { Utils } from "../../../common/Utils";
 
 declare var base_path: string;
 

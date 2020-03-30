@@ -8,12 +8,12 @@ import { Compatibility } from "../core/util/Compatibility";
 import { Errors } from "../core/util/Errors";
 import { Input } from "../core/util/Input";
 import { Resource } from "../core/util/Resource";
-import { Utils } from "../core/util/Utils";
+import { ClientUtils } from "../core/util/Utils";
 import { Workers } from "../core/util/Workers";
 import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
 import { ResourceType, ScreenSize } from "../../common/Constants";
-import { getRandomString } from "../../common/Utils";
+import { Utils } from "../../common/Utils";
 
 /**
  * Module for initializing and launching a game
@@ -96,7 +96,7 @@ export namespace Game {
 
     export function save() {
         //TODO should manage more than one save, maybe with a custom name
-        let saveId: string = getRandomString();
+        let saveId: string = Utils.getRandomString();
         let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
         if (currentState !== undefined) {
             saveId = currentState.id + "";
@@ -147,13 +147,13 @@ export namespace Game {
             currentTargetPoint = scene.hero.newTarget;
         }
         if(currentTargetPoint !== undefined) {
-            let distance = Utils.getPointDistance(scene.hero.position!, currentTargetPoint);
+            let distance = ClientUtils.getPointDistance(scene.hero.position!, currentTargetPoint);
             if(distance <= Math.floor(scene.grid.cellH / 2)) {
                 // If currentTarget is half-cell away, start new movement from target (not from hero's current position)
                 startingCell = scene.grid.mapCanvasToCell(currentTargetPoint);
             }
         }
-        let target = Utils.getDirectionTarget(startingCell, direction);
+        let target = ClientUtils.getDirectionTarget(startingCell, direction);
         scene.startMovement(target.i, target.j);    
     }
 

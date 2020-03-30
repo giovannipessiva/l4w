@@ -7,9 +7,10 @@ import { Condition } from "../events/Conditions";
 import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
 import { Input } from "../util/Input";
 import { Resource } from "../util/Resource";
-import { Utils } from "../util/Utils";
+import { ClientUtils } from "../util/Utils";
 import { IConfig } from "../../../common/model/Save";
-import { getRandomString } from "../../../common/Utils";
+import { DataDefaults } from "../../../common/DataDefaults";
+import { Utils } from "../../../common/Utils";
 
 /**
  * Helper class for managing dialogs and alfanumeric input/output
@@ -132,7 +133,7 @@ export namespace DialogManager {
         }
         if(!nMap.has(startingDialogNodeId)) {
             console.error("Cannot reconstruct dialog tree from node: " + startingDialogNodeId);
-            return getNewDialogNode();
+            return DataDefaults.getDialogNode();
         } else {
             let root = nMap.get(startingDialogNodeId)!;
             populateDialogTreeFromNode(root, nMap, eMap);
@@ -219,7 +220,7 @@ export namespace DialogManager {
     
     export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
         loadString(messageId, cfg.lang, function(str) {
-            let dialog = getNewDialogNode();
+            let dialog = DataDefaults.getDialogNode();
             dialog.message = str;
             showDialog(scene, hero, name, dialog, cfg.skin, callback);
         });
@@ -406,7 +407,7 @@ export namespace DialogManager {
                 selectedVal = 0; 
             } else {
                 // Select a random value
-                selectedVal = Utils.getRandomInteger(0, activeValues.length - 1);
+                selectedVal = ClientUtils.getRandomInteger(0, activeValues.length - 1);
             }
             return activeValues[selectedVal].message;
         }
@@ -446,18 +447,6 @@ export namespace DialogManager {
         }
         return false;
     };
-
-    export function getNewDialogNode(): IDialogNode {
-        return {
-            id: getRandomString()
-        };
-    }
-
-    export function getNewDialogEdge(): IDialogEdge {
-        return {
-            id: getRandomString()
-        };
-    }
 
     export function search(root: IDialogNode, targetId: string) {
         let nodes: Map<string, IDialogNode> = new Map<string, IDialogNode>();

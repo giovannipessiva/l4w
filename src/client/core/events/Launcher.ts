@@ -1,9 +1,10 @@
 import { IEvent } from "../../../common/model/Event"
 import { ActionTriggerEnum } from "../../../common/model/Commons"
-import { Utils } from "../util/Utils"
+import { ClientUtils } from "../util/Utils"
 import { EventManager } from "../manager/EventManager"
 import { DynamicScene } from "../../game/DynamicScene"
 import * as Script from "../events/script/ScriptsRoot"
+import { Utils } from "../../../common/Utils"
 
 export namespace Launcher {
 
@@ -25,14 +26,14 @@ export namespace Launcher {
         }
         // On click action, the hero should face the event
         if (event.states[state].trigger === ActionTriggerEnum.CLICK) {
-            let heroDirection = Utils.getDirection(event, hero);
+            let heroDirection = ClientUtils.getDirection(event, hero);
             let state = EventManager.getState(hero);
             if(state !== undefined) {
                 state.direction = heroDirection;
             } else {
                 console.error("Hero state undefined");
             }
-            let eventDirection = Utils.getOpposedDirections(heroDirection);
+            let eventDirection = ClientUtils.getOpposedDirections(heroDirection);
             state = EventManager.getState(event);
             if(state !== undefined) {
                 state.direction = eventDirection;

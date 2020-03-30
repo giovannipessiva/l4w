@@ -6,10 +6,11 @@ import { IPoint, ICell, DirectionEnum, IRectangle } from "../../common/model/Com
 import { ITileset } from "../../common/model/Tileset"
 import { Constant } from "./util/Constant"
 import { RenderConfiguration } from "./util/Commons"
-import { Utils } from "./util/Utils"
+import { ClientUtils } from "./util/Utils"
 import { Resource } from "./util/Resource"
 import { AbstractGrid } from "./AbstractGrid"
 import { ResourceType } from "../../common/Constants";
+import { Utils } from "../../common/Utils"
 
 var _requestAnimationFrame =
     window.requestAnimationFrame ||
@@ -320,7 +321,7 @@ export abstract class AbstractScene {
             for (let j = minRow; j <= maxRow; j++) {
                 for (let i = minColumn; i <= maxColumn; i++) {
                     
-                    let cellIndex = Utils.cellToGid({i:i,j:j},map.width);
+                    let cellIndex = ClientUtils.cellToGid({i:i,j:j},map.width);
                     
                     for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) { 
 
@@ -335,7 +336,7 @@ export abstract class AbstractScene {
                         // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                         let zindex = Constant.ZIndex.LV0;
                         if(map.tileset.onTop !== undefined) {
-                            zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID!]);
+                            zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[tileGID!]);
                         }
                         if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
                             this.applyLayerCustomizations(layerIndex);
@@ -360,7 +361,7 @@ export abstract class AbstractScene {
                     // j_real (where j_real <= j) is used to finds cells(i,j_real) that
                     // require to be rendered at the same time of cells(i,j) because of their zindex
                     for (let j_real = minRow; j_real <= j; j_real++) {
-                        let cellIndex = Utils.cellToGid({i:i,j:j_real},map.width);
+                        let cellIndex = ClientUtils.cellToGid({i:i,j:j_real},map.width);
                         
                         for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) {
                             
@@ -376,7 +377,7 @@ export abstract class AbstractScene {
                             // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                             let zindex = Constant.ZIndex.LV0;
                             if(map.tileset.onTop !== undefined) {
-                                zindex = Utils.normalizeZIndex(map.tileset.onTop[tileGID!]);
+                                zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[tileGID!]);
                             }
                             if(zindex > 0 && j_real + zindex === j) {
                                 this.applyLayerCustomizations(layerIndex);
@@ -411,7 +412,7 @@ export abstract class AbstractScene {
     }
     
     private renderCell(context: CanvasRenderingContext2D, tileset: ITileset, tileGID: number, i: number, j: number) {  
-        let tileCell = Utils.gidToCell(tileGID, Math.floor(tileset.imageWidth! / this.grid.cellW)); //TODO precalculate
+        let tileCell = ClientUtils.gidToCell(tileGID, Math.floor(tileset.imageWidth! / this.grid.cellW)); //TODO precalculate
         context.drawImage(
             tileset.imageData!,
             Math.floor(tileCell.i * this.grid.cellW), Math.floor(tileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,

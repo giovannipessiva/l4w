@@ -9,9 +9,9 @@ import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
 import { IPropertiesCallback } from "../../core/util/Commons"
 import { Constant } from "../../core/util/Constant"
-import { Utils } from "../../core/util/Utils"
+import { ClientUtils } from "../../core/util/Utils"
 import { IEvent, IEventState } from "../../../common/model/Event"
-import { isNumeric, getRandomString } from "../../../common/Utils"
+import { Utils } from "../../../common/Utils"
 import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../common/model/Commons"
 import { TilePicker } from "./TilePicker"
 import { TilePickerScene } from "./TilePickerScene"
@@ -22,6 +22,7 @@ import { ResourceType, Tree } from "../../../common/Constants";
 import { IDialogNode, IDialogEdge } from "../../../common/model/Dialog"
 import { DialogManager } from "../../core/manager/DialogManager"
 import { gameConfig } from "../../../common/GameConfig"
+import { DataDefaults } from "../../../common/DataDefaults"
 
 export { Constant } from "../../core/util/Constant"
 export { Mapper } from "./Mapper";
@@ -107,7 +108,7 @@ export namespace MapperPage {
                     let numericId = data.node.id.split(JSTREE_ID_SEPARATOR).pop();
                     if(isNaN(parseInt(numericId))) {
                         console.info("Cannot generate a sequential numeric id for node: " + data.node.id);
-                        numericId = getRandomString();
+                        numericId = Utils.getRandomString();
                     }
                     $("#mapPanel").jstree(true).set_id(data.node, numericId);
                 case "rename_node":
@@ -336,7 +337,7 @@ export namespace MapperPage {
             currentEvent.states = [];
         }
         if (currentEventStateNum > currentEvent.states.length) {
-            currentEvent.states[currentEventStateNum - 1] = EventManager.getNewEventState();
+            currentEvent.states[currentEventStateNum - 1] = DataDefaults.getEventState();
         }
         let state: IEventState = currentEvent.states[currentEventStateNum - 1];
         currentState = state;
@@ -349,7 +350,7 @@ export namespace MapperPage {
             options[ActionTriggerEnum.OVER] = new Option("Over");
             options[ActionTriggerEnum.AUTO] = new Option("(auto)");
         }
-        if(state.trigger !== undefined && isNumeric(state.trigger)) {
+        if(state.trigger !== undefined && Utils.isNumeric(state.trigger)) {
             select.selectedIndex = state.trigger;
         } else {
             // Default value
@@ -366,7 +367,7 @@ export namespace MapperPage {
     function loadConditions(state: IEventState) {
         let conditions: string[] = Resource.listEventStateConditions();
         let selectConditions = (<HTMLSelectElement>document.getElementById("condition"));
-        Utils.resetSelect(selectConditions);
+        ClientUtils.resetSelect(selectConditions);
         let conditionOptions: HTMLOptionsCollection = selectConditions.options;
         let i = 0;
         for (let a of conditions) {
@@ -385,7 +386,7 @@ export namespace MapperPage {
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
         let actionOptions: HTMLOptionsCollection = selectActions.options;
         let i = 0;
-        Utils.resetSelect(selectActions);
+        ClientUtils.resetSelect(selectActions);
         selectActions.selectedIndex = -1;
         for (let a of actions) {
             actionOptions[i] = new Option(a);
@@ -399,7 +400,7 @@ export namespace MapperPage {
     function loadCharacterProperties() {
         let selectCharasets: HTMLSelectElement = (<HTMLSelectElement>document.getElementById("charasets"));
         Resource.listResources(ResourceType.CHAR, function(list?: string[]) {
-            Utils.resetSelect(selectCharasets);
+            ClientUtils.resetSelect(selectCharasets);
             let options: HTMLOptionsCollection = selectCharasets.options;
             options[0] = new Option("");
             if(list !== undefined) {
@@ -556,7 +557,7 @@ export namespace MapperPage {
             }
             event.currentState = 0;
         } else {
-            event = EventManager.getNewEvent();
+            event = DataDefaults.getEvent();
         }
         currentEvent = event;
         (<HTMLInputElement>document.getElementById("eventi")).style.removeProperty("color");
@@ -567,7 +568,7 @@ export namespace MapperPage {
         (<HTMLInputElement>document.getElementById("eventi")).valueAsNumber = event.i;
         (<HTMLInputElement>document.getElementById("eventj")).valueAsNumber = event.j;
         let selectScript = (<HTMLSelectElement>document.getElementById("script"));
-        Utils.resetSelect(selectScript);
+        ClientUtils.resetSelect(selectScript);
         let classes: Map<string, string> = Resource.listScriptClasses();
         let options: HTMLOptionsCollection = selectScript.options;
         let i = 0;
@@ -600,6 +601,7 @@ export namespace MapperPage {
             readEventStateDetails();
             Mapper.addEvent(currentEvent);
             MapperPage.eventModified(false);
+            //TODO request new frame
         }
     }
 
@@ -625,7 +627,8 @@ export namespace MapperPage {
 
     export function eventModified(modified: boolean = true) {
         flagEventModified = modified;
-        (<HTMLButtonElement>document.getElementById("saveEvent")).disabled = !modified;
+        (<HTMLButtonElement> document.getElementById("saveEvent")).disabled = !modified;
+        Mapper.mapper.requestedNewFrame = true;
     }
 
     export function addMemory() {
@@ -633,8 +636,8 @@ export namespace MapperPage {
             console.error("Current event undefined, cannot add to its memory");
             return;
         }
-        let key = (<HTMLInputElement>document.getElementById("key")).value
-        let value = (<HTMLInputElement>document.getElementById("val")).value
+        let key = (<HTMLInputElement> document.getElementById("key")).value
+        let value = (<HTMLInputElement> document.getElementById("val")).value
         if (!Utils.isEmpty(key) && !Utils.isEmpty(value)) {
             eventModified();
             EventManager.saveMem(currentEvent, key, value);
@@ -717,11 +720,11 @@ export namespace MapperPage {
     }
 
     export function createNode(): IDialogNode {
-        return DialogManager.getNewDialogNode();
+        return DataDefaults.getDialogNode();
     }
 
     export function createEdge(): IDialogEdge {
-        return DialogManager.getNewDialogEdge();
+        return DataDefaults.getDialogEdge();
     }
 
     function initDialogEditor() {
@@ -733,7 +736,7 @@ export namespace MapperPage {
                     "dialog-summary": DialogSummaryComponent,
                 },
                 data: {
-                    root: DialogManager.getNewDialogNode()
+                    root: DataDefaults.getDialogNode()
                 }
             });
         }
@@ -745,7 +748,7 @@ export namespace MapperPage {
                     "dialog-editor": DialogEditorComponent,
                 },
                 data: {
-                    root: DialogManager.getNewDialogNode()
+                    root: DataDefaults.getDialogNode()
                 }
             });
         }

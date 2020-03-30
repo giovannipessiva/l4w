@@ -158,9 +158,9 @@ function signOut() {
 			</tr>
 			<tr>
 				<td>Position</td>
-				<td onchange="L4W_mapper.MapperPage.changeEventPosition();">
-					<input id="eventi" type="number" min="0" max="999" step="1" style="width:3em">
-					<input id="eventj" type="number" min="0" max="999" step="1" style="width:3em" >
+				<td onchange="L4W_mapper.MapperPage.changeEventPosition()">
+					<input id="eventi" type="number" min="0" max="999" step="1" style="width:3em" />
+					<input id="eventj" type="number" min="0" max="999" step="1" style="width:3em" />
 				</td>
 			</tr>
 			<tr>
@@ -179,7 +179,7 @@ function signOut() {
 			</tr>
 		</table>
 		<table id="eventState" style="border:1px solid black;position:relative;margin-left:10px;background-color:#ffffd0;width:90%">
-			<tbody onchange="L4W_mapper.MapperPage.eventModified();">
+			<tbody onchange="L4W_mapper.MapperPage.eventModified()">
 				<tr><td>Condition</td>		<td><select id="condition"></select></td></tr>
 				<tr><td>Trigger</td>		<td><select id="trigger"></select></td></tr>
 				<tr><td>Action</td>			<td><select id="action" style="background-color:#d0ffd0"></select></td></tr>

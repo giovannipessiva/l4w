@@ -1,9 +1,8 @@
 import { ICell, DirectionEnum } from "../../../common/model/Commons"
-import { IMap } from "../../../common/model/Map"
 import { IEvent } from "../../../common/model/Event"
-import { Utils } from "../../core/util/Utils"
+import { ClientUtils } from "../../core/util/Utils"
 import { MapManager } from "../../core/manager/MapManager"
-import { EventManager } from "../../core/manager/EventManager"
+import { DataDefaults } from "../../../common/DataDefaults"
 
 export namespace Tester {
     
@@ -13,12 +12,12 @@ export namespace Tester {
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
-        let map = <IMap> MapManager.getNewMap("Test");
+        let map = DataDefaults.getMap("Test");
         map.width = width;
         map.height = height;
         map.blocks = blocks;
         // Initialize Event and target
-        let event: IEvent = EventManager.getNewEvent();
+        let event: IEvent = DataDefaults.getEvent();
         event.i = eventI;
         event.j = eventJ;
         let target: ICell = {
@@ -46,7 +45,7 @@ export namespace Tester {
         do {
             direction = MapManager.pathFinder(map, event, target, pathfinder);
             if(direction !== DirectionEnum.NONE) {
-                event = <IEvent> Utils.moveToDirection(event, direction);
+                event = <IEvent> ClientUtils.moveToDirection(event, direction);
                 result.push({
                     cell:{
                         i:event.i,

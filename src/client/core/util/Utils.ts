@@ -1,92 +1,12 @@
 import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle } from "../../../common/model/Commons"
 import { IMap } from "../../../common/model/Map"
 import { Constant } from "./Constant"
+import { Utils } from "../../../common/Utils";
+
 /**
- * Module for generic utility methods
+ * Utility methods for client-side logics
  */
-export namespace Utils {
-
-    export function isEmpty(obj: any): boolean {
-        if (obj === undefined || obj === null || typeof obj === "undefined") {
-            return true;
-        } else if (typeof obj === "string") {
-            return obj === "";
-        } else if (typeof obj === "object" && "size" in obj) {
-            return obj.size === 0;
-        } else if (obj.constructor === Array || obj.constructor === String) {
-            return obj.length === 0;
-        } else if(obj.constructor === Object && Object.keys(obj).length === 0) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Unit test for the Utils.isEmpty method
-     */
-    export function unitTestIsEmpty(): void {
-        // ES6 map
-        let test: any = new Map<string,string>();
-        console.assert(Utils.isEmpty(test), "empty ES6 map");
-        (<Map<string,string>> test).set("a","a");
-        console.assert(!Utils.isEmpty(test), "not empty ES6 map");
-        (<Map<string,string>> test).delete("a");
-        console.assert(Utils.isEmpty(test), "empty ES6 map (deleted key)");
-        
-        // array
-        test = []
-        console.assert(Utils.isEmpty(test), "empty array");
-        test[0] = 1;
-        console.assert(!Utils.isEmpty(test), "not empty array");
-        
-        // Array
-        test = new Array<string>();
-        console.assert(Utils.isEmpty(test), "empty Array");
-        test = (<Array<string>> test).push("1");
-        console.assert(!Utils.isEmpty(test), "not empty Array");
-        
-        // string
-        test = "";
-        console.assert(Utils.isEmpty(test), "empty string");
-        test = "a"
-        console.assert(!Utils.isEmpty(test), "not empty string");
-       
-        // Object
-        test = new Object();
-        console.assert(Utils.isEmpty(test), "empty Object");
-        test["a"] = 1;
-        console.assert(!Utils.isEmpty(test), "not empty Object");
-        delete test["a"];
-        console.assert(Utils.isEmpty(test), "empty Object (deleted property)");
-        
-        // {}
-        test = {};
-        console.assert(Utils.isEmpty(test), "empty {}");
-        test["a"] = 1;
-        console.assert(!Utils.isEmpty(test), "not empty {}");
-        delete test["a"];
-        console.assert(Utils.isEmpty(test), "empty {} (deleted property)");
-        
-        // basic types
-        console.assert(!Utils.isEmpty(true), "not empty boolean (true)");
-        console.assert(!Utils.isEmpty(false), "not empty boolean (false)");
-        console.assert(!Utils.isEmpty(0), "not empty number");
-        console.assert(!Utils.isEmpty(0.0), "not empty float");
-    }
-
-    export function now(): number {
-        return (new Date()).getTime();
-    }
-
-    export function mergeMaps<T>(primary: Map<string, T>, secondary: Map<string, T>): Map<string, T> {
-        var newMap: Map<string, T> = new Map<string, T>();
-        function addToNewMap(value: T, index: string, map: Map<string, T>) {
-            newMap.set(index, value);
-        }
-        secondary.forEach(addToNewMap);
-        primary.forEach(addToNewMap);
-        return newMap;
-    }
+export namespace ClientUtils {
 
     /**
      * Return the bigger rectangle which contains both input rectangles
@@ -193,16 +113,16 @@ export namespace Utils {
         // Check direction in current cell
         // (always ignore dynamic blocks in current cell)
         gid = cellToGid({ i: i, j: j }, map.width);
-        let blockInCurrent = Utils.getMapStaticBlock(map,gid);
+        let blockInCurrent = ClientUtils.getMapStaticBlock(map,gid);
         
         // Check inverse direction in target cell
         let target: ICell = getDirectionTarget({ i: i, j: j }, direction); 
         let targetGID = cellToGid(target, map.width);
         let blockInTarget: number;
         if(ignoreDynamicBlocks) {
-            blockInTarget = Utils.getMapStaticBlock(map,targetGID);
+            blockInTarget = ClientUtils.getMapStaticBlock(map,targetGID);
         } else {
-            blockInTarget = Utils.getMapBlocks(map,targetGID);
+            blockInTarget = ClientUtils.getMapBlocks(map,targetGID);
         }
         // Check both movements from start to target, and from target to start
         return isDirectionEnumBlocked(blockInCurrent, direction) || isDirectionEnumBlocked(blockInTarget, getOpposedDirections(direction));

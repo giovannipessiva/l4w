@@ -1,5 +1,5 @@
 import { Compatibility } from "./Compatibility"
-import { Utils } from "./Utils"
+import { Utils } from "../../../common/Utils";
 
 /**
  * Module for managing background jobs and services

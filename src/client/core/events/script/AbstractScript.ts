@@ -6,7 +6,8 @@ import { DialogManager } from "../../manager/DialogManager";
 import { EventManager } from "../../manager/EventManager";
 import { SaveManager } from "../../manager/SaveManager";
 import { IEmptyCallback } from "../../util/Commons";
-import { Utils } from "../../util/Utils";
+import { ClientUtils } from "../../util/Utils";
+import { DataDefaults } from "../../../../common/DataDefaults";
 
 export abstract class AbstractScript {
     
@@ -27,7 +28,7 @@ export abstract class AbstractScript {
         if(this.scene.save !== undefined && this.scene.save.config !== undefined) {
             return this.scene.save.config;
         }
-        return SaveManager.getNewConfig();
+        return DataDefaults.getConfig();
     }
 
     protected showSimpleDialog(messageId: string, callback: IEmptyCallback): boolean {
@@ -48,18 +49,18 @@ export abstract class AbstractScript {
     }
     
     protected stepToTarget(target: ICell): boolean {
-        let direction: DirectionEnum = Utils.getDirection(target, this.event);
+        let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
         return this.stepToDirection(direction);  
     }
     
     protected stepToDirection(direction: DirectionEnum): boolean {
-        let target: ICell = Utils.moveToDirection(this.event, direction);
+        let target: ICell = ClientUtils.moveToDirection(this.event, direction);
         return this.moveToTarget(target);
     }
     
     protected stepFromTarget(target: ICell): boolean {
-        let direction: DirectionEnum = Utils.getDirection(target, this.event);
-        direction = Utils.getOpposedDirections(direction);
+        let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
+        direction = ClientUtils.getOpposedDirections(direction);
         return this.stepToDirection(direction);  
     }
     

@@ -1,4 +1,3 @@
-import { Utils } from "../../core/util/Utils"
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
 import { emptyFz, IBooleanCallback, IEmptyCallback } from "../../core/util/Commons"
@@ -9,6 +8,7 @@ import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { ITileset } from "../../../common/model/Tileset"
 import { ResourceType } from "../../../common/Constants";
+import { Utils } from "../../../common/Utils"
 
 export namespace Tilesetter {
 

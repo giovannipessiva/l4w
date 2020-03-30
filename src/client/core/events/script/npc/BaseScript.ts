@@ -1,8 +1,8 @@
 import { AbstractScript } from "../AbstractScript";
-import { Utils } from "../../../util/Utils";
 import { emptyFz } from "../../../util/Commons";
 import { IEvent } from "../../../../../common/model/Event"
 import { DynamicScene } from "../../../../game/DynamicScene"
+import { Utils } from "../../../../../common/Utils";
 
 export const DEFAULT_MESSAGE = "msg";
 export const DEFAULT_DIALOG = "dlg";

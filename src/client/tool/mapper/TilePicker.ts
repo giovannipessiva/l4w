@@ -1,4 +1,3 @@
-import { Utils } from "../../core/util/Utils"
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
 import { emptyFz } from "../../core/util/Commons"
@@ -7,6 +6,7 @@ import { TilePickerScene } from "./TilePickerScene"
 import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { ResourceType, Tree } from "../../../common/Constants";
+import { Utils } from "../../../common/Utils"
 
 export namespace TilePicker {
 

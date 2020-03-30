@@ -8,8 +8,9 @@ import { MapManager } from "../core/manager/MapManager";
 import { SaveManager } from "../core/manager/SaveManager";
 import { emptyFz, IBooleanCallback } from "../core/util/Commons";
 import { Constant } from "../core/util/Constant";
-import { Utils } from "../core/util/Utils";
 import { DynamicGrid } from "./DynamicGrid";
+import { Utils } from "../../common/Utils";
+import { DataDefaults } from "../../common/DataDefaults";
 
 export interface ILauncher {
     (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean
@@ -183,7 +184,7 @@ export class DynamicScene extends AbstractScene {
             // Nothing to load
             if (Utils.isEmpty(this.map)) {
                 mapId = gameConfig.maps.start.map; // Load first map
-                hero = EventManager.getNewHero();
+                hero = DataDefaults.getHero();
             } else {
                 // Leave current map
                 callback(false);
@@ -221,7 +222,7 @@ export class DynamicScene extends AbstractScene {
 
     setLanguage(lang: LanguageEnum) {
         if(this.save === undefined) {
-            this.save = SaveManager.getNewSave();
+            this.save = DataDefaults.getSave();
         }
         this.save.config.lang = lang;
     }

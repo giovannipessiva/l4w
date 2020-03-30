@@ -1,8 +1,8 @@
 import { ITileset } from "../../../common/model/Tileset"
-import { Utils } from "../util/Utils"
 import { Resource } from "../util/Resource"
 import { Errors } from "../util/Errors"
 import { ResourceType } from "../../../common/Constants";
+import { Utils } from "../../../common/Utils";
 
 /**
  * Helper class for handling tilesets and autotile

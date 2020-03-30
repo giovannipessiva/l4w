@@ -4,12 +4,13 @@ import { Constant } from "../../core/util/Constant"
 import { IRectangle, ICell } from "../../../common/model/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { IMap } from "../../../common/model/Map"
-import { Utils } from "../../core/util/Utils"
 import { EventManager } from "../../core/manager/EventManager"
 import { MapManager } from "../../core/manager/MapManager"
 import { MapperPage } from "./MapperPage"
 import { TilePickerScene } from "./TilePickerScene"
 import { AbstractScene } from "../../core/AbstractScene"
+import { Utils } from "../../../common/Utils"
+import { DataDefaults } from "../../../common/DataDefaults"
 
 /**
  * Scene implementation for managing Mapper logics
@@ -157,7 +158,7 @@ export class MapperScene extends AbstractStaticScene {
             }
         }
         if(event === undefined) {
-            event = EventManager.getNewEvent();
+            event = DataDefaults.getEvent();
             event.i = i;
             event.j = j;  
         }
