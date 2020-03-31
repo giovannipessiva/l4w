@@ -16,6 +16,7 @@ import { DataDefaults } from "../common/DataDefaults"
 import { IDialogNode, IDialogEdge, IGenericMessage } from "../common/model/Dialog";
 import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
+import { Utils } from "../common/Utils";
 
 /**
  * This module manage persistency for:
@@ -25,20 +26,15 @@ import { ITileset } from "../common/model/Tileset";
  */
 export namespace database {
 
-    type dialogSchemaType = {
-        nodes: [{
+    type dialogSchemaType = [
+        {
             id: string;
-            value: IDialogNode;
-        }],
-        edges: [{
-            id: string;
-            value: IDialogEdge;
-        }],
-        node_edges: [{
-            node: string,
-            edge: string;
-        }];
-    };
+            value: {
+                nodes: IDialogNode[],
+                edges: IDialogEdge[]
+            }
+        }
+    ];
 
     type mapSchemaType = {
         id: number;
@@ -189,9 +185,15 @@ export namespace database {
             }
             break;
         case ResourceType.DIALOG:
+            if(!Utils.isNumeric(file)) {
+                console.warn("Cannot read not-numeric dialog id: " + file);
+                response.status(HttpStatus.BAD_REQUEST)
+                    .send("");
+            }
+            let dialogId = parseInt(file);
             let nodes: IDialogNode[] = [];
             let edges: IDialogEdge[] = [];
-            traverseDialogDatabase(file, nodes, edges);
+            traverseDialogDatabase(dialogId, DataDefaults.DIALOG_FIRST_NODE_ID, nodes, edges);
             if(nodes.length > 0) {
                 response.send({
                     nodes: nodes,
@@ -278,7 +280,7 @@ export namespace database {
             }
             response.status(HttpStatus.OK).send("");
             break;
-        case "dialog":
+        case ResourceType.DIALOG:
             // Extract a list of nodes and edges from the dialog tree, and save them to DB
             let dialogNode: IDialogNode = JSON.parse(data);
             let nodesList: IDialogNode[] = [];
@@ -470,17 +472,21 @@ export namespace database {
         }
     }
 
-    function traverseDialogDatabase(nodeId: string, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: string): void {
-        let node: IDialogNode = gameData.dialogs.get("nodes").find({id: nodeId}).value();
+    function traverseDialogDatabase(dialogId: number, nodeId: number, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: number): void {
+        let node: IDialogNode = gameData.dialogs.get(dialogId).get("nodes")
+            ["find"]({id: nodeId})
+            .value();
         if(node !== undefined) {
             nodes.push(node);
             if(node.edgeIds !== undefined) {
                 for(let edgeId of node.edgeIds) {
-                    let edge: IDialogEdge = gameData.dialogs.get("edges").find({id: edgeId}).value();
+                    let edge: IDialogEdge = gameData.dialogs.get(dialogId).get("edges")
+                        ["find"]({id: edgeId})
+                        .value();
                     if(edge !== undefined) {
                         edges.push(edge);
                         if(edge.nodeId !== undefined) {
-                            traverseDialogDatabase(edge.nodeId, nodes, edges, edgeId);
+                            traverseDialogDatabase(dialogId, edge.nodeId, nodes, edges, edgeId);
                         }                    
                     } else {
                         console.error("node " + node.id + "reference not-existing edge: " + edgeId);

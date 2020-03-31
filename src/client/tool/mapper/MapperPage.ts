@@ -768,7 +768,7 @@ export namespace MapperPage {
         });
     }
 
-    export function loadDialogEditor(nodeId: string) {
+    export function loadDialogEditor(nodeId: number) {
         let root = dialogSummary.$data.root;
         dialogEditor.$data.root = DialogManager.search(root, nodeId);
         let elemDisplayEditor = document.getElementById("dialogEditPanel");

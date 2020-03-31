@@ -101,30 +101,30 @@ export namespace DialogManager {
                     nodes: IDialogNode[],
                     edges: IDialogEdge[]
                 } = JSON.parse(resourceText);
-                let dialog: IDialogNode = reconstructDialogTree(dialogId, data.nodes, data.edges);
+                let dialog: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_NODE_ID, data.nodes, data.edges);
                 callback(dialog);
             }
         });
     }
 
     export function saveDialog(dialog: IDialogNode) {
-        let nodes: Map<string, IDialogNode> = new Map<string, IDialogNode>();
-        let edges: Map<string, IDialogEdge> = new Map<string, IDialogEdge>();
+        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+        let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
         deconstructDialogTree(dialog, nodes, edges);
         let request = {
             nodes: Array.from(nodes.values()),
             edges: Array.from(edges.values()),
         };
-        Resource.save(dialog.id, JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
+        Resource.save(dialog.id + "", JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Game saved successfully");
             }
         });
     }
 
-    function reconstructDialogTree(startingDialogNodeId: string, nodes: IDialogNode[], edges: IDialogEdge[]): IDialogNode {
-        let nMap = new Map<string,IDialogNode>();
-        let eMap = new Map<string,IDialogNode>();
+    function reconstructDialogTree(startingDialogNodeId: number, nodes: IDialogNode[], edges: IDialogEdge[]): IDialogNode {
+        let nMap = new Map<number,IDialogNode>();
+        let eMap = new Map<number,IDialogNode>();
         for(let n of nodes) {
             nMap.set(n.id, n);
         }
@@ -141,7 +141,7 @@ export namespace DialogManager {
         }
     }
 
-    function populateDialogTreeFromNode(node: IDialogNode, nMap: Map<string,IDialogNode>, eMap: Map<string,IDialogEdge>) {
+    function populateDialogTreeFromNode(node: IDialogNode, nMap: Map<number,IDialogNode>, eMap: Map<number,IDialogEdge>) {
         node.referenced = true;
         if(!Utils.isEmpty(node.edgeIds)) {
             for(let eId of node.edgeIds!) {
@@ -171,7 +171,7 @@ export namespace DialogManager {
         }
     }
 
-    function deconstructDialogTree(node: IDialogNode, nodes: Map<string, IDialogNode>, edges: Map<string, IDialogNode>): void {
+    function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): void {
         // Save node in the output array
         nodes.set(node.id, node);
         let eArray = node.edges;
@@ -448,10 +448,10 @@ export namespace DialogManager {
         return false;
     };
 
-    export function search(root: IDialogNode, targetId: string) {
-        let nodes: Map<string, IDialogNode> = new Map<string, IDialogNode>();
-        let edges: Map<string, IDialogNode> = new Map<string, IDialogNode>();
-        let target = treeSearch(root, targetId + "", nodes, edges);
+    export function search(root: IDialogNode, targetId: number) {
+        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+        let edges: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+        let target = treeSearch(root, targetId, nodes, edges);
         if(target !== undefined) {
             return target;
         } else {
@@ -460,7 +460,7 @@ export namespace DialogManager {
         }
     }
 
-    function treeSearch(node: IDialogNode, targetId: string, nodes: Map<string, IDialogNode>, edges: Map<string, IDialogNode>): IDialogNode | undefined {
+    function treeSearch(node: IDialogNode, targetId: number, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): IDialogNode | undefined {
         if(node.id === targetId) {
             return node;
         }

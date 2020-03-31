@@ -11,16 +11,17 @@ import { Utils } from "./Utils";
 export namespace DataDefaults {
 
     export const DEFAULT_ID = -1;
+    export const DIALOG_FIRST_NODE_ID = 0;
 
     export function getDialogNode(): IDialogNode {
         return {
-            id: Utils.getRandomString()
+            id: DEFAULT_ID
         };
     }
 
     export function getDialogEdge(): IDialogEdge {
         return {
-            id: Utils.getRandomString()
+            id: DEFAULT_ID
         };
     }
 
