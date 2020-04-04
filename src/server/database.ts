@@ -286,61 +286,24 @@ export namespace database {
             let nodesList: IDialogNode[] = [];
             let edgesList: IDialogEdge[] = [];
 
+            let dialogId = file;
+            if(dialogId === DataDefaults.DEFAULT_ID_STR) {
+                // Assign an incremental id to this dialog
+                let maxId = DataDefaults.DEFAULT_ID;
+                for(let id of gameData.dialogs.keys().value()) {
+                    if(Utils.isNumeric(id) && parseInt(id) > maxId) {
+                        maxId = parseInt(id);
+                    }
+                }
+                dialogId = (maxId + 1) + "";
+            }
+
             traverseDialogTree(nodesList, edgesList, dialogNode);
 
-            // Save the two lists
-            if(nodesList.length > 0) {
-                let counter = nodesList.length;
-                let callbackSuccess = function() {
-                    counter--;
-                    if(counter <= 0) {
-                        response.status(HttpStatus.OK).send("");
-                    }
-                }
-                for(let node of nodesList) {
-                    //TODO salva in lowdb
-                    models.l4w_dialog_node.upsert({
-                        id : node.id,
-                        string : node.message,
-                        genericString: node.genericMessage
-                    }).then(callbackSuccess, function(error: any) {
-                        counter = 999;
-                        manageQueryError(response, error);
-                    });
-                    if(node.edgeIds !== undefined) {
-                        for(let edge of node.edgeIds) {
-                            models.l4w_dialog_node_edges.upsert({
-                                node : node.id,
-                                edge: edge
-                            }).then(undefined, function(error: any) {
-                                manageQueryError(response, error);
-                            });
-                        }
-                    }
-                }
-            }
-            if(edgesList.length > 0) {
-                let counter = edgesList.length;
-                let callbackSuccess = function() {
-                    counter--;
-                    if(counter <= 0) {
-                        response.status(HttpStatus.OK).send("");
-                    }
-                }
-                for(let edge of edgesList) {
-                    models.l4w_dialog_edge.upsert({
-                        id : edge.id,
-                        string : edge.message,
-                        condition: edge.condition,
-                        condition_params: edge.conditionParams,
-                        script: edge.script,
-                        action: edge.action
-                    }).then(callbackSuccess, function(error: any) {
-                        counter = 999;
-                        manageQueryError(response, error);
-                    });
-                }
-            }
+            gameData.dialogs.get(dialogId)["set"]("dialogs", nodesList)["write"]();
+            gameData.dialogs.get(dialogId)["set"]("edges", edgesList)["write"]();
+            response.status(HttpStatus.OK).send(dialogId);
+            break;
         case ResourceType.SAVE:
             models.usr_save.upsert({
                 user: user,

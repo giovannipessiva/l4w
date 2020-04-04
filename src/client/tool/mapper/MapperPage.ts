@@ -601,7 +601,6 @@ export namespace MapperPage {
             readEventStateDetails();
             Mapper.addEvent(currentEvent);
             MapperPage.eventModified(false);
-            //TODO request new frame
         }
     }
 
@@ -755,11 +754,10 @@ export namespace MapperPage {
     }
 
     export function createNewDialog() {
-        //TODO server call to create a new dialog
-        loadDialogSummary("0");
+        loadDialogSummary(DataDefaults.DEFAULT_ID);
     }
 
-    export function loadDialogSummary(dialogId: string) {
+    export function loadDialogSummary(dialogId: number) {
         DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
             if(node !== undefined) {
                 dialogSummary.$data.root = node;
@@ -780,7 +778,4 @@ export namespace MapperPage {
     export function listEventStateConditions() {
         return Resource.listEventStateConditions();
     }
-
-    // loadDialogSummary("0"); //TODO test
-
 }

@@ -11,11 +11,12 @@ import { Utils } from "./Utils";
 export namespace DataDefaults {
 
     export const DEFAULT_ID = -1;
+    export const DEFAULT_ID_STR = DEFAULT_ID + "";
     export const DIALOG_FIRST_NODE_ID = 0;
 
-    export function getDialogNode(): IDialogNode {
+    export function getDialogNode(nodeId?: number): IDialogNode {
         return {
-            id: DEFAULT_ID
+            id: nodeId !== undefined? nodeId : DEFAULT_ID
         };
     }
 

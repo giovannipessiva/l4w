@@ -1,4 +1,4 @@
-import { ResourceType, HttpStatus, HttpResponseHeader } from "../../../common/Constants";
+import { ResourceType } from "../../../common/Constants";
 import { Condition } from "../events/Conditions";
 import { AbstractScript } from "../events/script/AbstractScript";
 import * as Script from "../events/script/ScriptsRoot";
@@ -78,21 +78,7 @@ export namespace Resource {
     function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback, lang?: string) {
         let request = new XMLHttpRequest();
         request.onload = function(this: XMLHttpRequest, ev: ProgressEvent): any {
-            if(this.status !== HttpStatus.MOVED_PERMANENTLY) {
-                callback(this.responseText);
-            } else {
-                //TODO this needs to be tested
-                // Handle a 301 error with a redirect
-                let newUri = this.getResponseHeader(HttpResponseHeader.LOCATION);
-                if(newUri !== null) {
-                    console.warn("Request returned code: " +  HttpStatus.MOVED_PERMANENTLY + ", attempting a redirect");
-                    console.warn("from: " + uri);
-                    console.warn("to: " + newUri);
-                    sendRequest(requestType, data, newUri, callback, lang);
-                } else {
-                    callback(this.responseText);
-                }
-            }
+            callback(this.responseText);
         };
         request.onerror = function(this: XMLHttpRequest, ev: ProgressEvent): any {
             console.error("Error while getting " + uri);

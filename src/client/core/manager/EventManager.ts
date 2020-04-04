@@ -268,10 +268,9 @@ export namespace EventManager {
             //TODO Manage Event with tile grafic
         }
 
-        //TODO manage 404 errors
-//        if (Utils.isEmpty(image)) {
-//            image = Resource.loadDefaultImage(ResourceType.CHAR);
-//        }
+        if (image === undefined) {
+            console.error("Cannot render event: " + e.id + ", cannot find image");
+        }
 
         if(e.position === undefined) {
             console.error("Event position undefined: " + e);

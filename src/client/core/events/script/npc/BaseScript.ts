@@ -30,17 +30,12 @@ export class BaseScript extends AbstractScript {
     };
 
     /**
-     * Show a complex dialog, reading the dialog id from event's mem.
-     * Dialog id is saved with a standard key:
-     * > "dlg" + current state (eg: dlg1, dlg2, dlg3)
-     * If the key does not exists, it tries using the default key:
-     * > "dlg"
+     * Show a complex dialog, if the event state contains one
      */
     public dialog(): void {
-        let dialog: string | undefined = this.loadMem(DEFAULT_DIALOG + (this.event.currentState + 1));
-        if(Utils.isEmpty(dialog)) {
-            dialog = this.loadMem(DEFAULT_DIALOG);
+        let currentEventState = this.event.states[this.event.currentState];
+        if(currentEventState.dialog !== undefined) {
+            this.showComplexDialog(currentEventState.dialog, emptyFz);
         }
-        this.showComplexDialog(dialog!, emptyFz); 
     }
 };

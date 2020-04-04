@@ -28,7 +28,7 @@ export interface IEventState extends ICharacter {
     condition: string; // Name of function that returns true if this state can be active (see Conditions.ts)
     trigger?: number; // Type of interaction which will start the action
     action?: string; // Method of the script that will be invoked by the trigger
-    dialog?: string; // Id of the dialog for this state
+    dialog?: number; // Id of the dialog for this state
 }
 
 export interface IHumanoidData {

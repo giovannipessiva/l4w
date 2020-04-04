@@ -91,8 +91,13 @@ export namespace DialogManager {
         });
     }
 
-    export function loadDialog(dialogId: string, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
-        Resource.load(dialogId, ResourceType.DIALOG, function(resourceText) {
+    export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
+        if(dialogId === DataDefaults.DEFAULT_ID) {
+            // Since it has not a valid id, this is a new dialog: therefore, return a new root node for it
+            let newNode = DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_NODE_ID);
+            callback(newNode);
+        }
+        Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading dialog: " + dialogId);
                 callback();
@@ -107,7 +112,7 @@ export namespace DialogManager {
         });
     }
 
-    export function saveDialog(dialog: IDialogNode) {
+    export function saveDialog(dialog: IDialogNode, callback: IBooleanCallback) {
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
         deconstructDialogTree(dialog, nodes, edges);
@@ -117,7 +122,14 @@ export namespace DialogManager {
         };
         Resource.save(dialog.id + "", JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
             if (success) {
-                console.log("Game saved successfully");
+                console.log("Dialog saved successfully");
+                if(Utils.isNumeric(response)) {
+                    dialog.id = parseInt(response!);
+                }
+                // Caller should manage the case of updated dialog id
+                callback(true);
+            } else {
+                callback(false);
             }
         });
     }
@@ -208,7 +220,7 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: string, cfg: IConfig, callback: IEmptyCallback) {
+    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
         loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
@@ -416,6 +428,13 @@ export namespace DialogManager {
 
     function resolveStringVariables(message: string): string {
         //TODO check if message contains special chars for variables, and resolve them
+        /*
+        Variables:
+        - Player name
+        - Game time or timer
+        - Generic ariable value
+        - Hero's golds
+         */
         return message;
     }
 

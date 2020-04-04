@@ -37,9 +37,9 @@ export abstract class AbstractScript {
         return true;
     }
 
-    protected showComplexDialog(messageId: string, callback: IEmptyCallback): boolean {
+    protected showComplexDialog(dialogId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, messageId, cfg, callback);
+        DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, dialogId, cfg, callback);
         return true;
     }
     
