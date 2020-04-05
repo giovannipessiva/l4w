@@ -56,22 +56,22 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import Vue, { PropType } from "vue"
 import { Resource } from "../core/util/Resource";
-import { IDialogNode } from "../../common/model/Dialog";
 import { DataDefaults } from "../../common/DataDefaults";
 import { DialogManager } from "../core/manager/DialogManager";
+import { IDialogNode } from "../../common/model/Dialog";
 
 export default Vue.extend({
     name: "dialog-editor",
     props: {
         node: {
-            type: Object,
+            type: Object as PropType<IDialogNode>,
             required: true
         },
         dialog: {
-            type: Object,
-            required: true      
+            type: Object as PropType<IDialogNode>,
+            required: true
         }
     },
     mounted: function() {
@@ -118,12 +118,14 @@ export default Vue.extend({
     },
     methods: {
         addEdge(event: Event) {
-            let data: IDialogNode = this.node;
-            if(data.edges === undefined) {
-                Vue.set(data, "edges", []);
+            if(this.node.edges === undefined) {
+                Vue.set(this.node, "edges", []);
+                if(this.node.edges === undefined) {
+                    console.error("still undef...");
+                }
             }
-            let edgeId = DialogManager.getNextEgdeId(this.dialog);
-            data.edges!.push(DataDefaults.getDialogEdge(edgeId));
+            let edgeId = DialogManager.getNextEdgeId(this.dialog);
+            this.node.edges!.push(DataDefaults.getDialogEdge(edgeId));
         }
     }
 })

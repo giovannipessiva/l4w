@@ -745,7 +745,7 @@ export namespace MapperPage {
             dialogEditor = new Vue({
                 el: "#dialogEditorVue",
                 components: {
-                    "dialog-editor": DialogEditorComponent,
+                    "dialog-editor": Vue.extend(DialogEditorComponent),
                 },
                 data: {
                     root: DataDefaults.getDialogNode(),

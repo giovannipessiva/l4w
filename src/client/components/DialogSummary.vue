@@ -29,13 +29,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
+import Vue, { PropType } from "vue"
+import { IDialogNode } from "../../common/model/Dialog";
 
 export default Vue.extend({
     name: "dialog-summary",
     props: {
         node: {
-            type: Object,
+            type: Object as PropType<IDialogNode>,
             required: true
         }
     }

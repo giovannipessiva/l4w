@@ -116,7 +116,7 @@ export namespace DialogManager {
     export function saveDialog(dialog: IDialogNode, callback: IBooleanCallback) {
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
-        deconstructDialogTree(dialog, nodes, edges);
+        deconstructDialogTree(dialog, nodes, edges, true);
         let request = {
             nodes: Array.from(nodes.values()),
             edges: Array.from(edges.values()),
@@ -184,7 +184,7 @@ export namespace DialogManager {
         }
     }
 
-    function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): void {
+    function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>, flagClearTransientData?: boolean): void {
         if(nodes.has(node.id)) {
             return;
         }
@@ -192,8 +192,10 @@ export namespace DialogManager {
         nodes.set(node.id, node);
         let eArray = node.edges;
         if(!Utils.isEmpty(eArray)) {
-            // Clean transient data 
-            delete node.edges; 
+            if(flagClearTransientData) {
+                // Clean transient data 
+                delete node.edges;
+            }
             for(let e of eArray!) {
                 if(edges.has(e.id)) {
                     continue;
@@ -202,8 +204,10 @@ export namespace DialogManager {
                 edges.set(e.id, e);
                 let n = e.node;
                 if(n !== undefined) {
-                    // Clean transient data 
-                    delete e.node;
+                    if(flagClearTransientData) {
+                        // Clean transient data 
+                        delete e.node;
+                    }
                     // Recursive call on this node
                     deconstructDialogTree(e, nodes, edges);
                 }
@@ -523,7 +527,7 @@ export namespace DialogManager {
         return maxId + 1;
     }
 
-    export function getNextEgdeId(dialog: IDialogNode): number {
+    export function getNextEdgeId(dialog: IDialogNode): number {
         let maxId = DataDefaults.DEFAULT_ID;
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
