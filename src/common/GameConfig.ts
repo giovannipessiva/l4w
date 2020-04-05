@@ -14,6 +14,7 @@ export const gameConfig = {
     },
     ui: {
         lang: LanguageEnum.EN,  // default language in which all strings will be available 
-        skin: "ld3-webskin1.png"    // default game UI skin
+        skin: "ld3-webskin1.png",    // default game UI skin
+        enableCLI: true // enable or disable command line interface
     }
 }

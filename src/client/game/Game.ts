@@ -14,6 +14,7 @@ import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
 import { ResourceType, ScreenSize } from "../../common/Constants";
 import { Utils } from "../../common/Utils";
+import { CLI } from "../core/util/CLI";
 
 /**
  * Module for initializing and launching a game
@@ -25,6 +26,7 @@ export namespace Game {
     export function start(canvas: HTMLCanvasElement) {
         Compatibility.check();
         Workers.registerServiceWorker();
+        CLI.start();
 
         new DynamicGrid(canvas, function(grid) {
             scene = new DynamicScene(<DynamicGrid> grid, Launcher.launchAction);
