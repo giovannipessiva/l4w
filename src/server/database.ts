@@ -193,7 +193,7 @@ export namespace database {
             let dialogId = parseInt(file);
             let nodes: IDialogNode[] = [];
             let edges: IDialogEdge[] = [];
-            traverseDialogDatabase(dialogId, DataDefaults.DIALOG_FIRST_NODE_ID, nodes, edges);
+            traverseDialogDatabase(dialogId, DataDefaults.DIALOG_FIRST_ELEM_ID, nodes, edges);
             if(nodes.length > 0) {
                 response.send({
                     nodes: nodes,

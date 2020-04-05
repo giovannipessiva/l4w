@@ -78,7 +78,7 @@ function signOut() {
 </div>
 <div id="dialogEditPanel" class="editorPanelColumn dialogEditor bordered">
 	<div id="dialogEditorVue">
-		<dialog-editor :node="root" :dialog="dialog"/>
+		<dialog-editor :node="root" :dialog="dialog" :node-ids="nodeIds" :edge-ids="edgeIds"/>
 	</div>
 </div>
 <!-- Dialog summary, with selectable rows -->

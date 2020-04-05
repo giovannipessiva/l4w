@@ -44,6 +44,8 @@ export namespace MapperPage {
     let dialogEditor: CombinedVueInstance<Vue, {
         root: IDialogNode;
         dialog: IDialogNode;
+        nodeIds: number[];
+        edgeIds: number[];
     }, object, object, Record<never, any>>;
 
     const scaleOptions: string[] = [
@@ -749,7 +751,9 @@ export namespace MapperPage {
                 },
                 data: {
                     root: DataDefaults.getDialogNode(),
-                    dialog: DataDefaults.getDialogNode()
+                    dialog: DataDefaults.getDialogNode(),
+                    nodeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
+                    edgeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID)
                 }
             });
         }
@@ -773,6 +777,13 @@ export namespace MapperPage {
         let root: IDialogNode = dialogSummary.$data.root;
         dialogEditor.$data.root = DialogManager.search(root, nodeId);
         dialogEditor.$data.dialog = root;
+        if(dialogEditor.$data.dialog === undefined || dialogEditor.$data.dialog.id !== root.id) {
+            let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+            let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
+            DialogManager.deconstructDialogTree(root, nodes, edges);
+            dialogEditor.$data.nodeIds = nodes.keys()
+            dialogEditor.$data.edgeIds = edges.keys()
+        }
         let elemDisplayEditor = document.getElementById("dialogEditPanel");
         if(elemDisplayEditor !== null) {
             elemDisplayEditor.style.display = "block";

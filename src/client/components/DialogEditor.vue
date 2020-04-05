@@ -9,7 +9,12 @@
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
-                <button style="float:left" v-on:click="addEdge()">Add new edge</button>
+                Connect to <select ref="edges">
+                    <option selected value="">&nbsp;</option>
+                    <option v-for="option in edgeIds" v-bind:key="option" v-bind:value="option">
+                        {{ option }}
+                    </option>
+                </select> or <button v-on:click="addEdge()">Create new edge</button>
                 <br>
             </div>
             
@@ -25,10 +30,17 @@
                 Action <select ref="edgeAction" v-model="edge.action"></select>
                 
                 <div style="float:none"/>
-                <button style="color:red;float:right" title="Delete this edge">Delete</button>
+                <button style="color:red;float:right" title="Remove this edge (if disconnected, will be deleted when saving)" v-on:click="deleteEdge(edge)">Remove</button>
                 <br>
                 <br>
-                Connect to <select ref="nodes"></select> or <button>create a new node</button>               
+                Connect to <select ref="nodes" v-model="edge.nodeId">
+                    <option selected value="">&nbsp;</option>
+                    <option v-for="option in nodeIds" v-bind:key="option" v-bind:value="option">
+                        {{ option }}
+                    </option>
+                </select>
+                <span v-if="edge.nodeId === undefined"> or <button v-on:click="addNode(edge)">Create new node</button></span>
+                <span v-else> or <button style="color:red" title="Remove this node (if disconnected, will be deleted when saving)" v-on:click="deleteNode(edge)">Remove node</button></span>            
             </div>
         </div>
 
@@ -60,7 +72,7 @@ import Vue, { PropType } from "vue"
 import { Resource } from "../core/util/Resource";
 import { DataDefaults } from "../../common/DataDefaults";
 import { DialogManager } from "../core/manager/DialogManager";
-import { IDialogNode } from "../../common/model/Dialog";
+import { IDialogNode, IDialogEdge } from "../../common/model/Dialog";
 
 export default Vue.extend({
     name: "dialog-editor",
@@ -71,6 +83,14 @@ export default Vue.extend({
         },
         dialog: {
             type: Object as PropType<IDialogNode>,
+            required: true
+        },
+        nodeIds: {
+            type: Array,
+            required: true
+        },
+        edgeIds: {
+            type: Array,
             required: true
         }
     },
@@ -117,15 +137,31 @@ export default Vue.extend({
         observer.observe(this.$el);
     },
     methods: {
-        addEdge(event: Event) {
+        addEdge() {
+            if(this.node.edgeIds === undefined) {
+                Vue.set(this.node, "edgeIds", []);
+            }
             if(this.node.edges === undefined) {
                 Vue.set(this.node, "edges", []);
-                if(this.node.edges === undefined) {
-                    console.error("still undef...");
-                }
             }
             let edgeId = DialogManager.getNextEdgeId(this.dialog);
+            this.node.edgeIds!.push(edgeId);
             this.node.edges!.push(DataDefaults.getDialogEdge(edgeId));
+            this.edgeIds.push(edgeId);
+        },
+        deleteEdge(edge: IDialogEdge) {
+            this.node.edgeIds!.splice(this.node.edgeIds!.indexOf(edge.id), 1);
+            this.node.edges!.splice(this.node.edges!.indexOf(edge), 1);
+        },
+        addNode(edge: IDialogEdge) {
+            let nodeId = DialogManager.getNextNodeId(this.dialog);
+            Vue.set(edge, "nodeId", nodeId);
+            Vue.set(edge, "node", DataDefaults.getDialogNode(nodeId));
+            this.nodeIds.push(nodeId);
+        },
+        deleteNode(edge: IDialogEdge) {
+            Vue.set(edge, "nodeId", undefined);
+            Vue.set(edge, "node", undefined);
         }
     }
 })

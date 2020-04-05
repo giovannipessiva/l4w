@@ -94,7 +94,7 @@ export namespace DialogManager {
     export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
         if(dialogId === DataDefaults.DEFAULT_ID) {
             // Since it has not a valid id, this is a new dialog: therefore, return a new root node for it
-            let newNode = DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_NODE_ID);
+            let newNode = DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_ELEM_ID);
             callback(newNode);
             return;
         }
@@ -107,7 +107,7 @@ export namespace DialogManager {
                     nodes: IDialogNode[],
                     edges: IDialogEdge[]
                 } = JSON.parse(resourceText);
-                let dialog: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_NODE_ID, data.nodes, data.edges);
+                let dialog: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_ELEM_ID, data.nodes, data.edges);
                 callback(dialog);
             }
         });
@@ -184,11 +184,11 @@ export namespace DialogManager {
         }
     }
 
-    function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>, flagClearTransientData?: boolean): void {
+    export function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>, flagClearTransientData?: boolean): void {
         if(nodes.has(node.id)) {
             return;
         }
-        // Save node in the output array
+        // Save node in the output map
         nodes.set(node.id, node);
         let eArray = node.edges;
         if(!Utils.isEmpty(eArray)) {
@@ -200,7 +200,7 @@ export namespace DialogManager {
                 if(edges.has(e.id)) {
                     continue;
                 }
-                // Save edge in the output array
+                // Save edge in the output map
                 edges.set(e.id, e);
                 let n = e.node;
                 if(n !== undefined) {
@@ -209,7 +209,7 @@ export namespace DialogManager {
                         delete e.node;
                     }
                     // Recursive call on this node
-                    deconstructDialogTree(e, nodes, edges);
+                    deconstructDialogTree(n, nodes, edges);
                 }
             }
         }
@@ -512,31 +512,5 @@ export namespace DialogManager {
             }
         }
         return;
-    }
-
-    export function getNextNodeId(dialog: IDialogNode): number {
-        let maxId = DataDefaults.DEFAULT_ID;
-        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
-        let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
-        deconstructDialogTree(dialog, nodes, edges);
-        for(let id of nodes.keys()) {
-            if(id > maxId) {
-                maxId = id;
-            }
-        }
-        return maxId + 1;
-    }
-
-    export function getNextEdgeId(dialog: IDialogNode): number {
-        let maxId = DataDefaults.DEFAULT_ID;
-        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
-        let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
-        deconstructDialogTree(dialog, nodes, edges);
-        for(let id of edges.keys()) {
-            if(id > maxId) {
-                maxId = id;
-            }
-        }
-        return maxId + 1;
     }
 };

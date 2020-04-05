@@ -10,6 +10,9 @@ rm -rf .tscache
 rm -rf .vscode
 rm -rf data/database
 rm -rf src
+rm assets/lib/jquery3.min.js
+rm assets/lib/jquery-ui.min.js
+rm assets/lib/jstree.min.js
 rm .env
 rm .travis.yml
 rm CONTRIBUTING.md
