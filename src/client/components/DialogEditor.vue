@@ -60,6 +60,7 @@ import Vue from "vue"
 import { Resource } from "../core/util/Resource";
 import { IDialogNode } from "../../common/model/Dialog";
 import { DataDefaults } from "../../common/DataDefaults";
+import { DialogManager } from "../core/manager/DialogManager";
 
 export default Vue.extend({
     name: "dialog-editor",
@@ -67,6 +68,10 @@ export default Vue.extend({
         node: {
             type: Object,
             required: true
+        },
+        dialog: {
+            type: Object,
+            required: true      
         }
     },
     mounted: function() {
@@ -117,7 +122,8 @@ export default Vue.extend({
             if(data.edges === undefined) {
                 Vue.set(data, "edges", []);
             }
-            data.edges!.push(DataDefaults.getDialogEdge());
+            let edgeId = DialogManager.getNextEgdeId(this.dialog);
+            data.edges!.push(DataDefaults.getDialogEdge(edgeId));
         }
     }
 })
