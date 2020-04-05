@@ -9,7 +9,7 @@
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
-                <button style="float:left">Add new edge</button>
+                <button style="float:left" v-on:click="addEdge()">Add new edge</button>
                 <br>
             </div>
             
@@ -58,6 +58,8 @@
 <script lang="ts">
 import Vue from "vue"
 import { Resource } from "../core/util/Resource";
+import { IDialogNode } from "../../common/model/Dialog";
+import { DataDefaults } from "../../common/DataDefaults";
 
 export default Vue.extend({
     name: "dialog-editor",
@@ -73,35 +75,50 @@ export default Vue.extend({
             entries.forEach(entry => {
                 if(entry.intersectionRatio > 0) {
                     // Add the options to each <select>
-                    (<Element[]> this.$refs.edgeCondition).forEach((selectElement) => {
-                        let conditionOptions = [];
-                        for(let element of Resource.listEventStateConditions()) {
-                            let opt = document.createElement<"option">("option");
-                            opt.label = element;
-                            conditionOptions.push(opt);
-                        }
-                        for(let opt of conditionOptions) {
-                            selectElement.appendChild(opt);
-                        }
-                    });
-                   (<Element[]> this.$refs.edgeScript).forEach((selectElement) => {
-                        let scriptOptions = [];
+                    let edgeConditions = <Element[]> this.$refs.edgeCondition;
+                    if(edgeConditions !== undefined) {
+                        edgeConditions.forEach((selectElement) => {
+                            let conditionOptions = [];
+                            for(let element of Resource.listEventStateConditions()) {
+                                let opt = document.createElement<"option">("option");
+                                opt.label = element;
+                                conditionOptions.push(opt);
+                            }
+                            for(let opt of conditionOptions) {
+                                selectElement.appendChild(opt);
+                            }
+                        });
+                    }
+                    let edgeScripts = <Element[]> this.$refs.edgeScript;
+                    if(edgeScripts !== undefined) {
+                            edgeScripts.forEach((selectElement) => {
+                            let scriptOptions = [];
 
-                        for(let element of Resource.listScriptClasses()) {
-                            let opt = document.createElement<"option">("option");
-                            opt.label = element[0] + " (" + element[1] + ")";
-                            scriptOptions.push(opt);
-                        }
-                        for(let opt of scriptOptions) {
-                            selectElement.appendChild(opt);
-                        }
-                    });
+                            for(let element of Resource.listScriptClasses()) {
+                                let opt = document.createElement<"option">("option");
+                                opt.label = element[0] + " (" + element[1] + ")";
+                                scriptOptions.push(opt);
+                            }
+                            for(let opt of scriptOptions) {
+                                selectElement.appendChild(opt);
+                            }
+                        });
+                    }
                 }
             });
         }, {
             root: document.documentElement
         });
         observer.observe(this.$el);
+    },
+    methods: {
+        addEdge(event: Event) {
+            let data: IDialogNode = this.node;
+            if(data.edges === undefined) {
+                Vue.set(data, "edges", []);
+            }
+            data.edges!.push(DataDefaults.getDialogEdge());
+        }
     }
 })
 </script>

@@ -96,6 +96,7 @@ export namespace DialogManager {
             // Since it has not a valid id, this is a new dialog: therefore, return a new root node for it
             let newNode = DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_NODE_ID);
             callback(newNode);
+            return;
         }
         Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
@@ -184,6 +185,9 @@ export namespace DialogManager {
     }
 
     function deconstructDialogTree(node: IDialogNode, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): void {
+        if(nodes.has(node.id)) {
+            return;
+        }
         // Save node in the output array
         nodes.set(node.id, node);
         let eArray = node.edges;
@@ -191,6 +195,9 @@ export namespace DialogManager {
             // Clean transient data 
             delete node.edges; 
             for(let e of eArray!) {
+                if(edges.has(e.id)) {
+                    continue;
+                }
                 // Save edge in the output array
                 edges.set(e.id, e);
                 let n = e.node;
@@ -501,5 +508,31 @@ export namespace DialogManager {
             }
         }
         return;
+    }
+
+    export function getNextNodeId(dialog: IDialogNode): number {
+        let maxId = DataDefaults.DEFAULT_ID;
+        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+        let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
+        deconstructDialogTree(dialog, nodes, edges);
+        for(let id of nodes.keys()) {
+            if(id > maxId) {
+                maxId = id;
+            }
+        }
+        return maxId + 1;
+    }
+
+    export function getNextEgdeId(dialog: IDialogNode): number {
+        let maxId = DataDefaults.DEFAULT_ID;
+        let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
+        let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
+        deconstructDialogTree(dialog, nodes, edges);
+        for(let id of edges.keys()) {
+            if(id > maxId) {
+                maxId = id;
+            }
+        }
+        return maxId + 1;
     }
 };

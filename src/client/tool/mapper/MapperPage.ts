@@ -43,6 +43,7 @@ export namespace MapperPage {
     }, object, object, Record<never, any>>;
     let dialogEditor: CombinedVueInstance<Vue, {
         root: IDialogNode;
+        dialog: IDialogNode;
     }, object, object, Record<never, any>>;
 
     const scaleOptions: string[] = [
@@ -747,7 +748,8 @@ export namespace MapperPage {
                     "dialog-editor": DialogEditorComponent,
                 },
                 data: {
-                    root: DataDefaults.getDialogNode()
+                    root: DataDefaults.getDialogNode(),
+                    dialog: DataDefaults.getDialogNode()
                 }
             });
         }
@@ -757,8 +759,9 @@ export namespace MapperPage {
         loadDialogSummary(DataDefaults.DEFAULT_ID);
     }
 
-    export function loadDialogSummary(dialogId: number) {
-        DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
+    export function loadDialogSummary(dialogId: string | number) {
+        let dialogIdNum = typeof dialogId === "string"? parseInt(dialogId) : dialogId;
+        DialogManager.loadDialog(dialogIdNum, gameConfig.ui.lang, function(node) {
             if(node !== undefined) {
                 dialogSummary.$data.root = node;
                 document.getElementById("dialogSummaryPanel")!.style.display = "block";
@@ -767,8 +770,9 @@ export namespace MapperPage {
     }
 
     export function loadDialogEditor(nodeId: number) {
-        let root = dialogSummary.$data.root;
+        let root: IDialogNode = dialogSummary.$data.root;
         dialogEditor.$data.root = DialogManager.search(root, nodeId);
+        dialogEditor.$data.dialog = root;
         let elemDisplayEditor = document.getElementById("dialogEditPanel");
         if(elemDisplayEditor !== null) {
             elemDisplayEditor.style.display = "block";

@@ -20,9 +20,9 @@ export namespace DataDefaults {
         };
     }
 
-    export function getDialogEdge(): IDialogEdge {
+    export function getDialogEdge(edgeId?: number): IDialogEdge {
         return {
-            id: DEFAULT_ID
+            id: edgeId !== undefined? edgeId : DEFAULT_ID
         };
     }
 
