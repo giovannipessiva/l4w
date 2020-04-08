@@ -776,14 +776,14 @@ export namespace MapperPage {
     export function loadDialogEditor(nodeId: number) {
         let root: IDialogNode = dialogSummary.$data.root;
         dialogEditor.$data.root = DialogManager.search(root, nodeId);
-        dialogEditor.$data.dialog = root;
         if(dialogEditor.$data.dialog === undefined || dialogEditor.$data.dialog.id !== root.id) {
             let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
             let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
             DialogManager.deconstructDialogTree(root, nodes, edges);
-            dialogEditor.$data.nodeIds = nodes.keys()
-            dialogEditor.$data.edgeIds = edges.keys()
+            dialogEditor.$data.nodeIds = Array.from(nodes.keys());
+            dialogEditor.$data.edgeIds = Array.from(edges.keys());
         }
+        dialogEditor.$data.dialog = root;
         let elemDisplayEditor = document.getElementById("dialogEditPanel");
         if(elemDisplayEditor !== null) {
             elemDisplayEditor.style.display = "block";

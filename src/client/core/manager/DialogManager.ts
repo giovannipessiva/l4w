@@ -478,10 +478,10 @@ export namespace DialogManager {
         return false;
     };
 
-    export function search(root: IDialogNode, targetId: number) {
+    export function search(root: IDialogNode, targetId: number, isTargetEdge?: boolean) {
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogNode> = new Map<number, IDialogNode>();
-        let target = treeSearch(root, targetId, nodes, edges);
+        let target = treeSearch(root, targetId, (isTargetEdge !== undefined? isTargetEdge : false), nodes, edges);
         if(target !== undefined) {
             return target;
         } else {
@@ -490,8 +490,8 @@ export namespace DialogManager {
         }
     }
 
-    function treeSearch(node: IDialogNode, targetId: number, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): IDialogNode | undefined {
-        if(node.id === targetId) {
+    function treeSearch(node: IDialogNode, targetId: number, isTargetEdge: boolean, nodes: Map<number, IDialogNode>, edges: Map<number, IDialogNode>): IDialogNode | IDialogEdge | undefined {
+        if(!isTargetEdge && node.id === targetId) {
             return node;
         }
         // Save node in the output array
@@ -499,12 +499,15 @@ export namespace DialogManager {
         let eArray = node.edges;
         if(!Utils.isEmpty(eArray)) {
             for(let e of eArray!) {
+                if(isTargetEdge && e.id === targetId) {
+                    return e;
+                }
                 // Save edge in the output array
                 edges.set(e.id, e);
                 let n = e.node;
                 if(n !== undefined) {
                     // Recursive call on this node
-                    let result = treeSearch(n, targetId, nodes, edges);
+                    let result = treeSearch(n, targetId, isTargetEdge, nodes, edges);
                     if(result !== undefined) {
                         return result
                     }

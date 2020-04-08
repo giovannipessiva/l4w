@@ -9,8 +9,8 @@
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
-                Connect to <select ref="edges">
-                    <option selected value="">&nbsp;</option>
+                Connect to <select ref="edges" v-on:change="onEdgeChange($event)">
+                    <option selected disabled value="">&nbsp;</option>
                     <option v-for="option in edgeIds" v-bind:key="option" v-bind:value="option">
                         {{ option }}
                     </option>
@@ -24,17 +24,17 @@
                 <textarea class="message" type="text" placeholder="<message>" v-model="edge.message"/><br>
 
                 Condition <select ref="edgeCondition" v-model="edge.condition"></select><br>
-                Cond. param: <input class="edgeConditionParameters" type="text" v-model="edge.conditionParams"/><br>
+                <div v-if="edge.condition">Cond. param: <input class="edgeConditionParameters" type="text" v-model="edge.conditionParams"/><br></div>
 
                 Script <select ref="edgeScript" v-model="edge.script"></select><br>
-                Action <select ref="edgeAction" v-model="edge.action"></select>
+                <div v-if="edge.script !== undefined">Action <select ref="edgeAction" v-model="edge.action"></select></div>
                 
                 <div style="float:none"/>
                 <button style="color:red;float:right" title="Remove this edge (if disconnected, will be deleted when saving)" v-on:click="deleteEdge(edge)">Remove</button>
                 <br>
                 <br>
-                Connect to <select ref="nodes" v-model="edge.nodeId">
-                    <option selected value="">&nbsp;</option>
+                Connect to <select ref="nodes" v-model="edge.nodeId" v-on:change="onNodeChange($event, edge)">
+                    <option selected disabled value="">&nbsp;</option>
                     <option v-for="option in nodeIds" v-bind:key="option" v-bind:value="option">
                         {{ option }}
                     </option>
@@ -71,8 +71,8 @@
 import Vue, { PropType } from "vue"
 import { Resource } from "../core/util/Resource";
 import { DataDefaults } from "../../common/DataDefaults";
-import { DialogManager } from "../core/manager/DialogManager";
 import { IDialogNode, IDialogEdge } from "../../common/model/Dialog";
+import { DialogManager } from "../core/manager/DialogManager";
 
 export default Vue.extend({
     name: "dialog-editor",
@@ -86,11 +86,11 @@ export default Vue.extend({
             required: true
         },
         nodeIds: {
-            type: Array,
+            type: Array as () => Array<number>,
             required: true
         },
         edgeIds: {
-            type: Array,
+            type: Array as () => Array<number>,
             required: true
         }
     },
@@ -136,6 +136,22 @@ export default Vue.extend({
         });
         observer.observe(this.$el);
     },
+    updated: function() {
+        let edges = <HTMLSelectElement[]> this.$refs.edges;
+        if(edges !== undefined && edges[0].options !== undefined) {
+            // Reset at the first option (the empty one)
+            edges[0].options[0].selected = true;
+        }
+        let nodes = <HTMLSelectElement[]> this.$refs.nodes;
+        if(nodes !== undefined) {
+            // Reset at the first option (the empty one)
+            for(let edge of edges) {
+                if(edge.options !== undefined) {
+                    edge.options[0].selected = true;
+                }
+            }
+        }
+    },
     methods: {
         addEdge() {
             if(this.node.edgeIds === undefined) {
@@ -144,7 +160,7 @@ export default Vue.extend({
             if(this.node.edges === undefined) {
                 Vue.set(this.node, "edges", []);
             }
-            let edgeId = DialogManager.getNextEdgeId(this.dialog);
+            let edgeId = getNextId(this.edgeIds);
             this.node.edgeIds!.push(edgeId);
             this.node.edges!.push(DataDefaults.getDialogEdge(edgeId));
             this.edgeIds.push(edgeId);
@@ -154,7 +170,7 @@ export default Vue.extend({
             this.node.edges!.splice(this.node.edges!.indexOf(edge), 1);
         },
         addNode(edge: IDialogEdge) {
-            let nodeId = DialogManager.getNextNodeId(this.dialog);
+            let nodeId = getNextId(this.nodeIds);
             Vue.set(edge, "nodeId", nodeId);
             Vue.set(edge, "node", DataDefaults.getDialogNode(nodeId));
             this.nodeIds.push(nodeId);
@@ -162,9 +178,45 @@ export default Vue.extend({
         deleteNode(edge: IDialogEdge) {
             Vue.set(edge, "nodeId", undefined);
             Vue.set(edge, "node", undefined);
+        },
+        onEdgeChange(event: Event) {
+            let edgeId = parseInt((<HTMLSelectElement> event.target).selectedOptions.item(0)!.value);
+            if(this.node.edgeIds === undefined) {
+                Vue.set(this.node, "edgeIds", []);
+            } else if(this.node.edgeIds.includes(edgeId)) {
+                // Edge already connected, cannot duplicate it
+                return;
+            }
+            if(this.node.edges === undefined) {
+                Vue.set(this.node, "edges", []);
+            }
+            let edge = DialogManager.search(this.dialog, edgeId, true);
+            if(edge !== undefined) {
+                this.node.edgeIds!.push(edgeId);
+                this.node.edges!.push(<IDialogEdge> edge);
+            }
+        },
+        onNodeChange(event: Event, edge: IDialogEdge) {
+            let nodeId = parseInt((<HTMLSelectElement> event.target).selectedOptions.item(0)!.value);
+            let node = DialogManager.search(this.dialog, nodeId, false);
+            if(node !== undefined) {
+                Vue.set(edge, "nodeId", nodeId);
+                Vue.set(edge, "node", <IDialogNode> node);
+            }
         }
     }
 })
+
+function getNextId(ids: number[]): number {
+    let maxId = DataDefaults.DEFAULT_ID;
+    for(let id of ids) {
+        if(id > maxId) {
+            maxId = id;
+        }
+    }
+    return maxId + 1;
+
+}
 </script>
 
 <style scoped>
