@@ -184,7 +184,7 @@ export namespace Resource {
         sendPOSTRequest(path, data, function(response?: string) {
             if (response !== undefined) {
                 if(assetType === ResourceType.STRING || assetType === ResourceType.DIALOG || assetType === ResourceType.GENERIC_MESSAGE) {
-                    callback(response);
+                    callback(response, true);
                 } else {
                     callback(undefined, true);
                 }

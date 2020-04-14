@@ -1,5 +1,5 @@
 /**
- * IDialogNode/IDialogEdge are used to construct a dialog tree, with choices, actions and every related option
+ * IDialogNode/IDialogEdge are the basic components of a dialog tree, with choices, actions and every related option
  * IGenericMessage is used to express a dynamic dialog message which can change randomly or based on variables 
  */
 

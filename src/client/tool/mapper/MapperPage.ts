@@ -38,6 +38,7 @@ export namespace MapperPage {
     let flagEventModified: boolean = false;
     let currentState: IEventState;
     let currentEvent: IEvent | undefined;
+    let currentDialogId: number | undefined;
     let dialogSummary: CombinedVueInstance<Vue, {
         root: IDialogNode;
     }, object, object, Record<never, any>>;
@@ -595,13 +596,24 @@ export namespace MapperPage {
         return true;
     }
 
-    export function readEventDetails(): void {
+    export function saveEvent(): void {
         if (currentEvent !== undefined) {
             currentEvent.name = (<HTMLInputElement>document.getElementById("name")).value;
             currentEvent.i = (<HTMLInputElement>document.getElementById("eventi")).valueAsNumber;
             currentEvent.j = (<HTMLInputElement>document.getElementById("eventj")).valueAsNumber;
             currentEvent.script = (<HTMLInputElement>document.getElementById("script")).value;
             readEventStateDetails();
+            if(currentState.dialog !== undefined) {
+                let currentEventState = currentState;
+                DialogManager.saveDialog(currentState.dialog, dialogSummary.$data.root, function(dialogId?: number) {
+                    if(dialogId !== undefined) {
+                        // Update the dialog id
+                        currentEventState.dialog = dialogId;
+                    } else {
+                        console.error("Could not save dialog, returned dialog id is undefined: " + currentState.dialog);
+                    }
+                });
+            }
             Mapper.addEvent(currentEvent);
             MapperPage.eventModified(false);
         }
@@ -759,18 +771,28 @@ export namespace MapperPage {
         }
     }
 
-    export function createNewDialog() {
-        loadDialogSummary(DataDefaults.DEFAULT_ID);
-    }
-
-    export function loadDialogSummary(dialogId: string | number) {
-        let dialogIdNum = typeof dialogId === "string"? parseInt(dialogId) : dialogId;
-        DialogManager.loadDialog(dialogIdNum, gameConfig.ui.lang, function(node) {
-            if(node !== undefined) {
-                dialogSummary.$data.root = node;
-                document.getElementById("dialogSummaryPanel")!.style.display = "block";
+    export function toggleDialogEditor() {
+        let dialogPanelStyle = document.getElementById("dialogPanel")!.style;
+        let checkBox = <HTMLInputElement> document.getElementById("toggleDialogEditor");
+        if (checkBox.checked == true){
+            dialogPanelStyle.display = "block";
+            let dialogId = currentState.dialog;
+            if(dialogId === undefined) {
+                dialogId = DataDefaults.DEFAULT_ID;
+            } else if(dialogId === currentDialogId) {
+                // Don't reload current dialog
+                return;
             }
-        });
+            DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
+                if(node !== undefined) {
+                    dialogSummary.$data.root = node;
+                    currentState.dialog = dialogId;
+                    currentDialogId = dialogId;
+                }
+            });
+        } else {
+            dialogPanelStyle.display = "none";
+        }
     }
 
     export function loadDialogEditor(nodeId: number) {

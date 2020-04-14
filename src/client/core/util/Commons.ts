@@ -35,6 +35,10 @@ export interface IResponseCallback {
     (response?: string): void;
 };
 
+export interface INumberCallback {
+    (n?: number): void;
+};
+
 export interface IListCallback {
     (values?: string[]): void;
 };

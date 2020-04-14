@@ -4,7 +4,7 @@ import { IEvent } from "../../../common/model/Event";
 import { ResourceType } from "../../../common/Constants";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
-import { IBooleanCallback, IEmptyCallback } from "../util/Commons";
+import { IBooleanCallback, IEmptyCallback, INumberCallback } from "../util/Commons";
 import { Input } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { ClientUtils } from "../util/Utils";
@@ -91,11 +91,10 @@ export namespace DialogManager {
         });
     }
 
-    export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dlg?: IDialogNode) => void): void {
+    export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dialogNode?: IDialogNode) => void): void {
         if(dialogId === DataDefaults.DEFAULT_ID) {
             // Since it has not a valid id, this is a new dialog: therefore, return a new root node for it
-            let newNode = DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_ELEM_ID);
-            callback(newNode);
+            callback(DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_ELEM_ID));
             return;
         }
         Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
@@ -107,30 +106,30 @@ export namespace DialogManager {
                     nodes: IDialogNode[],
                     edges: IDialogEdge[]
                 } = JSON.parse(resourceText);
-                let dialog: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_ELEM_ID, data.nodes, data.edges);
-                callback(dialog);
+                let dialogRootNode: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_ELEM_ID, data.nodes, data.edges);
+                callback(dialogRootNode);
             }
         });
     }
 
-    export function saveDialog(dialog: IDialogNode, callback: IBooleanCallback) {
+    export function saveDialog(dialogId: number, root: IDialogNode, callback: INumberCallback) {
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
-        deconstructDialogTree(dialog, nodes, edges, true);
+        deconstructDialogTree(root, nodes, edges, true);
         let request = {
             nodes: Array.from(nodes.values()),
             edges: Array.from(edges.values()),
         };
-        Resource.save(dialog.id + "", JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
+        Resource.save(dialogId + "", JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Dialog saved successfully");
                 if(Utils.isNumeric(response)) {
-                    dialog.id = parseInt(response!);
+                    dialogId = parseInt(response!);
                 }
                 // Caller should manage the case of updated dialog id
-                callback(true);
+                callback(dialogId);
             } else {
-                callback(false);
+                callback();
             }
         });
     }

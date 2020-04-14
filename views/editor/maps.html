@@ -76,15 +76,17 @@ function signOut() {
 		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
 	</div>
 </div>
-<div id="dialogEditPanel" class="editorPanelColumn dialogEditor bordered">
-	<div id="dialogEditorVue">
-		<dialog-editor :node="root" :dialog="dialog" :node-ids="nodeIds" :edge-ids="edgeIds"/>
+<div id="dialogPanel" class="editorPanelColumn" style="display:none">
+	<div id="dialogEditPanel" class="editorPanelColumn dialogEditor bordered">
+		<div id="dialogEditorVue">
+			<dialog-editor :node="root" :dialog="dialog" :node-ids="nodeIds" :edge-ids="edgeIds"/>
+		</div>
 	</div>
-</div>
-<!-- Dialog summary, with selectable rows -->
-<div id="dialogSummaryPanel" class="editorPanelColumn dialogSummary bordered">
-	<div id="dialogSummaryVue">
-		<dialog-summary :node="root"/>
+	<!-- Dialog summary, with selectable rows -->
+	<div id="dialogSummaryPanel" class="editorPanelColumn dialogSummary bordered">
+		<div id="dialogSummaryVue">
+			<dialog-summary :node="root"/>
+		</div>
 	</div>
 </div>
 <div id="toolsPanel" class="editorPanelColumn">
@@ -183,7 +185,7 @@ function signOut() {
 				<tr><td>Condition</td>		<td><select id="condition"></select></td></tr>
 				<tr><td>Trigger</td>		<td><select id="trigger"></select></td></tr>
 				<tr><td>Action</td>			<td><select id="action" style="background-color:#d0ffd0"></select></td></tr>
-				<tr><td>Dialog</td>			<td><input type="checkbox" onclick="L4W_mapper.MapperPage.createNewDialog()"/></td></tr>
+				<tr><td>Dialog</td>			<td><input id="toggleDialogEditor" type="checkbox" onclick="L4W_mapper.MapperPage.toggleDialogEditor()"/></td></tr>
 				<tr><td>&nbsp;</td>			<td></td></tr>
 				<tr><td>Charaset</td>		<td><select id="charasets"></select></td></tr>
 				<tr><td>Visible</td>		<td><input id="visible" type="checkbox" checked></input></td></tr>
@@ -212,7 +214,7 @@ state: variable used by Conditions "isStateVar0", "isStateVar1", ...
 		<button onclick="L4W_mapper.MapperPage.addMemory();">+</button>
 		<table id="memory" style="border:1px solid black;position:relative;margin-left:10px"></table>
 		<br/>
-		<button id="saveEvent" onclick="L4W_mapper.MapperPage.readEventDetails()" title="This will confirm the event details">Save event</button>
+		<button id="saveEvent" onclick="L4W_mapper.MapperPage.saveEvent()" title="This will confirm the event details">Save event</button>
 		<button id="deleteEvent" style="color:red" onclick="L4W_mapper.MapperPage.deleteEvent()" title="This will delete the currently selected event">Delete event &#x2620;</button>
 	</div>
 </div>
