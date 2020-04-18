@@ -1,4 +1,6 @@
 {
-  "4": "Lasciami in pace",
-  "5": "Non vedi che sono occupato?"
+  "GLOBAL":{
+	  "4": "Lasciami in pace",
+	  "5": "Non vedi che sono occupato?"
+  }
 }

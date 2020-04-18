@@ -753,7 +753,7 @@ export namespace MapperPage {
         // Instantiate Vue for the dialog summary
         if(dialogSummary === undefined) {
             let selectedNodeWrapper = {
-                id: DataDefaults.DIALOG_FIRST_ELEM_ID
+                id: DataDefaults.FIRST_ELEM_ID
             };
             dialogSummary = new Vue({
                 el: "#dialogSummaryVue",
@@ -777,8 +777,8 @@ export namespace MapperPage {
                     root: DataDefaults.getDialogNode(),
                     dialog: DataDefaults.getDialogNode(),
                     disconnectedNodes: [ DataDefaults.getDialogNode() ],
-                    nodeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
-                    edgeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
+                    nodeIds: new Array(DataDefaults.FIRST_ELEM_ID),
+                    edgeIds: new Array(DataDefaults.FIRST_ELEM_ID),
                     edgeConditions: [],
                     edgeScripts: new Map<string,string>(),
                     edgeActions: []
@@ -790,7 +790,7 @@ export namespace MapperPage {
     export function toggleDialogEditor() {
         let dialogPanelStyle = document.getElementById("dialogPanel")!.style;
         let checkBox = <HTMLInputElement> document.getElementById("toggleDialogEditor");
-        if (checkBox.checked == true){
+        if (checkBox.checked){
             dialogPanelStyle.display = "block";
             let dialogId = currentState.dialog;
             if(dialogId === undefined) {

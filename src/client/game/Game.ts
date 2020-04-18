@@ -54,6 +54,7 @@ export namespace Game {
                     }
 
                     // Load languages combobox
+                    //TODO dynamic loading of supported languages
                     languageCombo.options.add(new Option("English 🇬🇧", LanguageEnum.EN));
                     languageCombo.options.add(new Option("Italiano 🇮🇹", LanguageEnum.IT));
                     languageCombo.value = scene.save.config.lang;
@@ -219,12 +220,10 @@ export namespace Game {
                 scene.updatePointer(i, j);
             },
             function() {
-                console.log("pause");
                 scene.togglePause(true);
             },
             function() {
                 scene.togglePause(false);
-                console.log("unpause");
             },
             function() {
                 scene.togglePause(true);

@@ -13,10 +13,12 @@ import { models } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { DataDefaults } from "../common/DataDefaults"
+import { gameConfig } from "../common/GameConfig"
 import { IDialogNode, IDialogEdge, IGenericMessage } from "../common/model/Dialog";
 import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
 import { Utils } from "../common/Utils";
+import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 
 /**
  * This module manage persistency for:
@@ -134,9 +136,7 @@ export namespace database {
     export function read(type: ResourceType, file: string, user: string | undefined, response: any, lang?: string) {
         switch (type) {
         case ResourceType.MAP:
-            let map: IMap = gameData.maps.get("maps")
-                ["get"](file)
-                .value();
+            let map: IMap = gameData.maps.get(["maps", file]).value();
             if (map === undefined) {
                 console.log("Map \"" + file + "\" not found, returning default");
                 map = DataDefaults.getMap();
@@ -145,9 +145,7 @@ export namespace database {
             response.json(map);
             break;
         case ResourceType.TREE:
-            let tree = gameData.trees.get("trees")
-                ["get"](file)
-                .value();
+            let tree = gameData.trees.get(["trees", file]).value();
             if (tree === undefined) {
                 console.log("Tree \"" + file + "\" not found, returning default");
                 tree = DataDefaults.getTree();
@@ -167,21 +165,13 @@ export namespace database {
             response.json(tile);
             break;
         case ResourceType.STRING:
-            if(lang === undefined || !gameData.langs.has(lang)) {
-                lang = LanguageEnum.EN;
-            }
-            let langMap = gameData.langs.get(lang)!;
-            if(langMap.has(file).value()) {
-                response.send(langMap.get(file).value());
+            let langVal = lang !== undefined? LanguageEnum[lang] : lang;
+            let value = getString(langVal, GLOBAL_GROUP_ID, parseInt(file));
+            if(value !== undefined) {
+                response.send(value);
             } else {
-                // Fallback on default language
-                langMap = gameData.langs.get(LanguageEnum.EN)!;
-                if(langMap.has(file).value()) {
-                    response.send(langMap.get(file).value());
-                } else {
-                    response.status(HttpStatus.NOT_FOUND)
-                        .send(DataDefaults.getString());
-                }
+                response.status(HttpStatus.NOT_FOUND)
+                    .send(DataDefaults.getString());
             }
             break;
         case ResourceType.DIALOG:
@@ -193,7 +183,7 @@ export namespace database {
             let dialogId = parseInt(file);
             let nodes: IDialogNode[] = [];
             let edges: IDialogEdge[] = [];
-            traverseDialogDatabase(dialogId, DataDefaults.DIALOG_FIRST_ELEM_ID, nodes, edges);
+            traverseDialogDatabase(dialogId, DataDefaults.FIRST_ELEM_ID, nodes, edges);
             if(nodes.length > 0) {
                 response.send({
                     nodes: nodes,
@@ -239,16 +229,12 @@ export namespace database {
         switch (type) {
         case ResourceType.MAP:
             let newMap: IMap = JSON.parse(data);
-            gameData.maps.get("maps")
-                ["set"](file, newMap)
-                ["write"]();
+            gameData.maps.set(["maps", file], newMap).write();
             response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.TREE:
             let newTree: IMap = JSON.parse(data)[0];
-            gameData.trees.get("trees")
-                ["set"](file, newTree)
-                ["write"]();
+            gameData.trees.set(["trees", file], newTree).write();
             response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.TILESET:
@@ -267,18 +253,9 @@ export namespace database {
             response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.STRING:
-            let strings = <string[]> JSON.parse(data);
-            for(let lang in strings) {
-                if(gameData.langs.has(lang)) {
-                    gameData.langs.get(lang)!["push"]({
-                        id: Number.parseInt(file),
-                        value: strings[lang]
-                    }).write();
-                } else {
-                    console.warn("Language not found: " + lang);
-                }
-            }
-            response.status(HttpStatus.OK).send("");
+            let id = Utils.isNumeric(file)?  parseInt(file) : undefined;
+            id = setString(GLOBAL_GROUP_ID, id, data);
+            response.status(HttpStatus.OK).send(id);
             break;
         case ResourceType.DIALOG:
             // Extract a list of nodes and edges from the dialog tree, and save them to DB
@@ -300,8 +277,8 @@ export namespace database {
 
             traverseDialogTree(nodesList, edgesList, dialogNode);
 
-            gameData.dialogs.get(dialogId)["set"]("dialogs", nodesList)["write"]();
-            gameData.dialogs.get(dialogId)["set"]("edges", edgesList)["write"]();
+            gameData.dialogs.set([dialogId, "dialogs"], nodesList).write();
+            gameData.dialogs.set([dialogId, "edges"], edgesList).write();
             response.status(HttpStatus.OK).send(dialogId);
             break;
         case ResourceType.SAVE:
@@ -436,14 +413,14 @@ export namespace database {
     }
 
     function traverseDialogDatabase(dialogId: number, nodeId: number, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: number): void {
-        let node: IDialogNode = gameData.dialogs.get(dialogId).get("nodes")
+        let node: IDialogNode = gameData.dialogs.get([dialogId, "nodes"])
             ["find"]({id: nodeId})
             .value();
         if(node !== undefined) {
             nodes.push(node);
             if(node.edgeIds !== undefined) {
                 for(let edgeId of node.edgeIds) {
-                    let edge: IDialogEdge = gameData.dialogs.get(dialogId).get("edges")
+                    let edge: IDialogEdge = gameData.dialogs.get([dialogId, "edges"])
                         ["find"]({id: edgeId})
                         .value();
                     if(edge !== undefined) {
@@ -463,5 +440,54 @@ export namespace database {
                 console.error("edge " + parentEdgeId + "reference not-existing node: " + nodeId);
             }
         }
+    }
+
+    function getString(lang: LanguageEnum | undefined, groupId: string, id: number): string | undefined {
+        if(lang === undefined || !gameData.langs.has(lang)) {
+            lang = gameConfig.ui.lang;
+        }
+        let langMap = gameData.langs.get(lang);
+        if(langMap === undefined) {
+            console.error("Cannot load language: " + lang);
+        } else {
+            if(langMap.has([groupId, id]).value()) {
+                return langMap.get([groupId, id]).value();
+            }
+            if(lang !== gameConfig.ui.lang) {
+                // Fallback on default language
+                langMap = gameData.langs.get(gameConfig.ui.lang)!;
+                if(langMap === undefined) {
+                    console.error("Cannot load default language: " + lang);
+                } else if(langMap.has([groupId, id]).value()) {
+                    return langMap.get([groupId, id]).value();
+                } 
+            }
+        }
+        return;
+    }
+
+    function setString(groupId: string, id: number | undefined, value: string): number | undefined {
+        let langMap = gameData!.langs.get(gameConfig.ui.lang);
+        if(langMap === undefined) {
+            console.error("Cannot load default language: " + langMap);
+        } else {
+            if(id === undefined) {
+                if(!langMap.has(groupId).value()) {
+                    id = DataDefaults.FIRST_ELEM_ID;
+                } else {
+                    // Assign an incremental id
+                    let maxId = DataDefaults.DEFAULT_ID;
+                    for(let id of langMap.get(groupId).keys().value()) {
+                        if(Utils.isNumeric(id) && parseInt(id) > maxId) {
+                            maxId = parseInt(id);
+                        }
+                    }
+                    id = (maxId + 1);
+                }
+            }
+            langMap.set([groupId, id], value).write();
+            return id;
+        }
+        return;
     }
 }

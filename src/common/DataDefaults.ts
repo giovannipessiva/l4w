@@ -12,7 +12,8 @@ export namespace DataDefaults {
 
     export const DEFAULT_ID = -1;
     export const DEFAULT_ID_STR = DEFAULT_ID + "";
-    export const DIALOG_FIRST_ELEM_ID = 0;
+    export const FIRST_ELEM_ID = 0;
+    export const DEFAULT_STR = "";
 
     export function getDialogNode(nodeId?: number): IDialogNode {
         return {

@@ -94,7 +94,7 @@ export namespace DialogManager {
     export function loadDialog(dialogId: number, language: LanguageEnum, callback: (dialogNode?: IDialogNode) => void): void {
         if(dialogId === DataDefaults.DEFAULT_ID) {
             // Since it has not a valid id, this is a new dialog: therefore, return a new root node for it
-            callback(DataDefaults.getDialogNode(DataDefaults.DIALOG_FIRST_ELEM_ID));
+            callback(DataDefaults.getDialogNode(DataDefaults.FIRST_ELEM_ID));
             return;
         }
         Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
@@ -106,7 +106,7 @@ export namespace DialogManager {
                     nodes: IDialogNode[],
                     edges: IDialogEdge[]
                 } = JSON.parse(resourceText);
-                let dialogRootNode: IDialogNode = reconstructDialogTree(DataDefaults.DIALOG_FIRST_ELEM_ID, data.nodes, data.edges);
+                let dialogRootNode: IDialogNode = reconstructDialogTree(DataDefaults.FIRST_ELEM_ID, data.nodes, data.edges);
                 callback(dialogRootNode);
             }
         });

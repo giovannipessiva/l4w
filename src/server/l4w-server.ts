@@ -4,6 +4,9 @@ import path from "path"
 import express from "express";
 //@ts-ignore TS1192
 import compression from "compression";
+//@ts-ignore TS1192
+import fs from "fs";
+
 import { NextFunction, Request, Response } from "express-serve-static-core";
 
 import { HttpStatus, ResourceType } from "../common/Constants"
@@ -173,6 +176,19 @@ app.get("/news", function(request: Request, response: Response) {
     } else {
         response.status(HttpStatus.FORBIDDEN).send("");
     }
+});
+app.get("/v", function(request: Request, response: Response) {
+    // Need to do this, since resolveJsonModule does not work as expected
+    fs.readFile("package.json", "utf8", function(err: Error, contents: string) {
+        if(err !== null) {
+            console.error(err);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+        } else {
+            let packageJson = JSON.parse(contents);
+            response.send(packageJson.name + " " + packageJson.version);
+        }
+    });
+    
 });
 
 // Initialize DB connection
