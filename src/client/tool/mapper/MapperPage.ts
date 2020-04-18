@@ -49,6 +49,9 @@ export namespace MapperPage {
         root: IDialogNode;
         dialog: IDialogNode;
         disconnectedNodes: IDialogNode[];
+        edgeConditions: string[];
+        edgeScripts: Map<string,string>;
+        edgeActions: string[];
         //TODO remove this duplicated data using Vuex
         nodeIds: number[];
         edgeIds: number[];
@@ -775,7 +778,10 @@ export namespace MapperPage {
                     dialog: DataDefaults.getDialogNode(),
                     disconnectedNodes: [ DataDefaults.getDialogNode() ],
                     nodeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
-                    edgeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID)
+                    edgeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
+                    edgeConditions: [],
+                    edgeScripts: new Map<string,string>(),
+                    edgeActions: []
                 }
             });
         }

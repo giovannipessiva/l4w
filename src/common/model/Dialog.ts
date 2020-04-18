@@ -36,6 +36,7 @@ export interface IDialogEdge {
     // Transient data
     node?: IDialogNode; // Node pointed by this edge
     nodeReferenced?: boolean; // True when the pointed node already appeared in the dialog tree (used to avoid duplications & loops in rendering)
+    actions?: string[]; // Array of actions associated to this edge script
 }
 
 // Single value that could be used for a generic message

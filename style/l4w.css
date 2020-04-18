@@ -35,8 +35,11 @@ select {
 	-ms-user-select: all;      /* IE 10+ */
 	user-select: all;          /* Likely future */  
 }
-.bordered{
+.bordered {
 	border: 1px solid black;
+}
+.transparent {
+	background-color: transparent !important;
 }
 /************ Game styles ************/
 @keyframes looseFocus {

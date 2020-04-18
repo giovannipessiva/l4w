@@ -27,11 +27,25 @@
                 <div class="elementId">E{{ edge.id }}</div>
                 <textarea class="message" type="text" placeholder="<message>" v-model="edge.message"/><br>
 
-                Condition <select ref="edgeCondition" v-model="edge.condition"></select><br>
+                Condition <select ref="edgeCondition" v-model="edge.condition">
+                    <option v-for="option in edgeConditions" v-bind:key="option" v-bind:value="option">
+                        {{ option }}
+                    </option>
+                </select><br>
                 <div v-if="edge.condition">Cond. param: <input class="edgeConditionParameters" type="text" v-model="edge.conditionParams"/><br></div>
 
-                Script <select ref="edgeScript" v-model="edge.script"></select><br>
-                <div v-if="edge.script !== undefined">Action <select ref="edgeAction" v-model="edge.action"></select></div>
+                Script <select ref="edgeScript" v-model="edge.script" v-on:change="onScriptChange($event, edge)">
+                    <option v-for="option in edgeScripts" v-bind:key="option[0]" v-bind:value="option[0]">
+                        {{  option[0] + " (" + option[1] + ")" }}
+                    </option>
+                </select><br>
+                <div v-if="edge.script !== undefined">
+                    Action <select ref="edgeAction" v-model="edge.action">
+                        <option v-for="option in edge.actions" v-bind:key="option" v-bind:value="option">
+                            {{  option }}
+                        </option>
+                    </select>
+                </div>
                 
                 <div style="float:none"/>
                 <button style="color:red;float:right" title="Remove this edge (if disconnected, will be deleted when saving)" v-on:click="deleteEdge(edge)">Remove</button>
@@ -101,50 +115,42 @@ export default Vue.extend({
         edgeIds: {
             type: Array as () => Array<number>,
             required: true
+        },
+        edgeConditions: {
+            type: Array as () => Array<string>,
+            default: function() {
+                return [];
+            }
+        },
+        edgeScripts: {
+            type: Map,
+            default: function() {
+                return new Map<string,string>();
+            }
+        },
+        edgeActions: {
+            type: Array as () => Array<string>,
+            default: function() {
+                return [];
+            }
         }
     },
     mounted: function() {
-        // Load each <select> options when it becomes visible
-        let observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if(entry.intersectionRatio > 0) {
-                    // Add the options to each <select>
-                    let edgeConditions = <Element[]> this.$refs.edgeCondition;
-                    if(edgeConditions !== undefined) {
-                        edgeConditions.forEach((selectElement) => {
-                            let conditionOptions = [];
-                            for(let element of Resource.listEventStateConditions()) {
-                                let opt = document.createElement<"option">("option");
-                                opt.label = element;
-                                conditionOptions.push(opt);
-                            }
-                            for(let opt of conditionOptions) {
-                                selectElement.appendChild(opt);
-                            }
-                        });
-                    }
-                    let edgeScripts = <Element[]> this.$refs.edgeScript;
-                    if(edgeScripts !== undefined) {
-                            edgeScripts.forEach((selectElement) => {
-                            let scriptOptions = [];
-
-                            for(let element of Resource.listScriptClasses()) {
-                                let opt = document.createElement<"option">("option");
-                                opt.label = element[0] + " (" + element[1] + ")";
-                                scriptOptions.push(opt);
-                            }
-                            for(let opt of scriptOptions) {
-                                selectElement.appendChild(opt);
-                            }
-                        });
-                    }
-                }
-            });
-        }, {
-            root: document.documentElement
-        });
-        observer.observe(this.$el);
+        // Populate static comboboxes
+        for(let condition of Resource.listEventStateConditions()) {
+            this.edgeConditions.push(condition);
+        }
+        for(let script of Resource.listScriptClasses()) {
+            this.edgeScripts.set(script[0], script[1]);
+        }
+        if(this.node.edges !== undefined) {
+            for(let edge of this.node.edges) {
+                // Reload edge actions
+                loadEdgeScriptActions(edge);
+            }
+        }
     },
+
     updated: function() {
         let edges = <HTMLSelectElement[]> this.$refs.edges;
         if(edges !== undefined && edges[0].options !== undefined) {
@@ -153,8 +159,8 @@ export default Vue.extend({
         }
         let nodes = <HTMLSelectElement[]> this.$refs.nodes;
         if(nodes !== undefined && edges !== undefined) {
-            // Reset at the first option (the empty one)
             for(let edge of edges) {
+                // Reset at the first option (the empty one)
                 if(edge.options !== undefined) {
                     edge.options[0].selected = true;
                 }
@@ -229,6 +235,9 @@ export default Vue.extend({
                 Vue.set(edge, "nodeId", nodeId);
                 Vue.set(edge, "node", <IDialogNode> node);
             }
+        },
+        onScriptChange(event: Event, edge: IDialogEdge) {
+            loadEdgeScriptActions(edge);
         }
     }
 })
@@ -241,7 +250,15 @@ function getNextId(ids: number[]): number {
         }
     }
     return maxId + 1;
+}
 
+function loadEdgeScriptActions(edge: IDialogEdge): void {
+    if(edge.script !== undefined) {
+        Vue.set(edge, "actions", []);
+        for(let action of Resource.listScriptActions(edge.script)) {
+            edge.actions!.push(action);
+        }
+    }
 }
 </script>
 
