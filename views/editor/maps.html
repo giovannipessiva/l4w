@@ -73,19 +73,20 @@ function signOut() {
 		Game: <a href="/">/</a><br/>
 		Editors: <a href="/edit">/edit</a><br/>
 		Test: <a href="/test">/test</a><br/>
-		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a>
+		Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a><br/>
+		Source code: <a href="https://github.com/giovannipessiva/l4w">https://github.com/giovannipessiva/l4w</a>
 	</div>
 </div>
 <div id="dialogPanel" class="editorPanelColumn" style="display:none">
 	<div id="dialogEditPanel" class="editorPanelColumn dialogEditor bordered">
 		<div id="dialogEditorVue">
-			<dialog-editor :node="root" :dialog="dialog" :node-ids="nodeIds" :edge-ids="edgeIds"/>
+			<dialog-editor :node="root" :dialog="dialog" :node-ids="nodeIds" :edge-ids="edgeIds" :disconnected-nodes="disconnectedNodes"/>
 		</div>
 	</div>
 	<!-- Dialog summary, with selectable rows -->
 	<div id="dialogSummaryPanel" class="editorPanelColumn dialogSummary bordered">
 		<div id="dialogSummaryVue">
-			<dialog-summary :node="root"/>
+			<dialog-summary :node="root" :selected-node-id="selectedNodeId"/>
 		</div>
 	</div>
 </div>

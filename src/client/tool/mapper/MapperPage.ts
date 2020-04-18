@@ -41,10 +41,15 @@ export namespace MapperPage {
     let currentDialogId: number | undefined;
     let dialogSummary: CombinedVueInstance<Vue, {
         root: IDialogNode;
+        selectedNodeId: {
+            id: number;
+        };
     }, object, object, Record<never, any>>;
     let dialogEditor: CombinedVueInstance<Vue, {
         root: IDialogNode;
         dialog: IDialogNode;
+        disconnectedNodes: IDialogNode[];
+        //TODO remove this duplicated data using Vuex
         nodeIds: number[];
         edgeIds: number[];
     }, object, object, Record<never, any>>;
@@ -744,13 +749,17 @@ export namespace MapperPage {
     function initDialogEditor() {
         // Instantiate Vue for the dialog summary
         if(dialogSummary === undefined) {
+            let selectedNodeWrapper = {
+                id: DataDefaults.DIALOG_FIRST_ELEM_ID
+            };
             dialogSummary = new Vue({
                 el: "#dialogSummaryVue",
                 components: {
                     "dialog-summary": DialogSummaryComponent,
                 },
                 data: {
-                    root: DataDefaults.getDialogNode()
+                    root: DataDefaults.getDialogNode(),
+                    selectedNodeId: selectedNodeWrapper
                 }
             });
         }
@@ -764,6 +773,7 @@ export namespace MapperPage {
                 data: {
                     root: DataDefaults.getDialogNode(),
                     dialog: DataDefaults.getDialogNode(),
+                    disconnectedNodes: [ DataDefaults.getDialogNode() ],
                     nodeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID),
                     edgeIds: new Array(DataDefaults.DIALOG_FIRST_ELEM_ID)
                 }
@@ -806,6 +816,7 @@ export namespace MapperPage {
             dialogEditor.$data.edgeIds = Array.from(edges.keys());
         }
         dialogEditor.$data.dialog = root;
+        dialogSummary.$data.selectedNodeId.id = nodeId;
         let elemDisplayEditor = document.getElementById("dialogEditPanel");
         if(elemDisplayEditor !== null) {
             elemDisplayEditor.style.display = "block";

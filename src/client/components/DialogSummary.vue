@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="[ selectedNodeId.id === node.id ? 'selectedNode' : 'unselectedNode' ]">
         <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + node.id + ')'">
             <a v-bind:name="node.id" />
             {{ node.message }} <div class="elementId">N{{ node.id }}</div>
@@ -12,11 +12,11 @@
                 <div v-if="edge.node !== undefined" class="dialogSummarySubnode">
                     <div v-if="!edge.nodeReferenced">
                         <!-- Recursive template render -->
-                        <dialog-summary :node="edge.node" />
+                        <dialog-summary :node="edge.node" :selected-node-id="selectedNodeId" />
                     </div>
                     <div v-else>
                         <!-- To avoid repetition, only include message -->
-                        <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + edge.node.id + ')'">
+                        <div class="dialogSummaryRow unselectedNode" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + edge.node.id + ')'">
                             {{ edge.node.message }} <div class="elementId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></div>
                         </div>
                         <div class="jumpElement" />
@@ -38,13 +38,17 @@ export default Vue.extend({
         node: {
             type: Object as PropType<IDialogNode>,
             required: true
+        },
+        selectedNodeId: {
+            type: Object as PropType<{ id: number }>,
+            required: true
         }
     }
 })
 </script>
 
 <style scoped>
-ul{
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -87,5 +91,11 @@ ul{
     width: 100%;
     height: 0.5em;
     border-top:1px dashed black;
+}
+.selectedNode {
+    background: lightyellow;
+}
+.unselectedNode {
+    background: white;
 }
 </style>

@@ -9,12 +9,16 @@
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
+                <!-- Disabled edges selection, until it is needed bad enough to justify fixing the render stack overflow problem -->
+                <!--
                 Connect to <select ref="edges" v-on:change="onEdgeChange($event)">
                     <option selected disabled value="">&nbsp;</option>
                     <option v-for="option in edgeIds" v-bind:key="option" v-bind:value="option">
                         {{ option }}
                     </option>
-                </select> or <button v-on:click="addEdge()">Create new edge</button>
+                </select> or 
+                -->
+                <button v-on:click="addEdge()">Create new edge</button>
                 <br>
             </div>
             
@@ -73,6 +77,7 @@ import { Resource } from "../core/util/Resource";
 import { DataDefaults } from "../../common/DataDefaults";
 import { IDialogNode, IDialogEdge } from "../../common/model/Dialog";
 import { DialogManager } from "../core/manager/DialogManager";
+import { MapperPage } from "../tool/mapper/MapperPage";
 
 export default Vue.extend({
     name: "dialog-editor",
@@ -83,6 +88,10 @@ export default Vue.extend({
         },
         dialog: {
             type: Object as PropType<IDialogNode>,
+            required: true
+        },
+        disconnectedNodes: {
+            type: Array as () => Array<IDialogNode>,
             required: true
         },
         nodeIds: {
@@ -143,7 +152,7 @@ export default Vue.extend({
             edges[0].options[0].selected = true;
         }
         let nodes = <HTMLSelectElement[]> this.$refs.nodes;
-        if(nodes !== undefined) {
+        if(nodes !== undefined && edges !== undefined) {
             // Reset at the first option (the empty one)
             for(let edge of edges) {
                 if(edge.options !== undefined) {
@@ -174,8 +183,13 @@ export default Vue.extend({
             Vue.set(edge, "nodeId", nodeId);
             Vue.set(edge, "node", DataDefaults.getDialogNode(nodeId));
             this.nodeIds.push(nodeId);
+            // When creating a new node, immediately select it
+            MapperPage.loadDialogEditor(nodeId);
         },
         deleteNode(edge: IDialogEdge) {
+            // Back it up, so that it can be selected
+            // even if it it disconnected from the tree
+            this.disconnectedNodes.push(edge.node!);
             Vue.set(edge, "nodeId", undefined);
             Vue.set(edge, "node", undefined);
         },
@@ -197,9 +211,21 @@ export default Vue.extend({
             }
         },
         onNodeChange(event: Event, edge: IDialogEdge) {
+            let isNodeReferenced = true;
             let nodeId = parseInt((<HTMLSelectElement> event.target).selectedOptions.item(0)!.value);
+            // Search it in the dialog tree
             let node = DialogManager.search(this.dialog, nodeId, false);
+            if(node === undefined) {
+                // Search it in the disconnected nodes
+                for(let disconnectedNode of this.disconnectedNodes) {
+                    if(disconnectedNode.id === nodeId) {
+                        node = disconnectedNode;
+                        isNodeReferenced = false;
+                    }
+                }
+            }
             if(node !== undefined) {
+                Vue.set(edge, "nodeReferenced", isNodeReferenced);
                 Vue.set(edge, "nodeId", nodeId);
                 Vue.set(edge, "node", <IDialogNode> node);
             }
