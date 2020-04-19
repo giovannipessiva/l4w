@@ -3,6 +3,7 @@ import fs from "fs"
 
 import { HttpStatus } from "../common/Constants"
 import { Response } from "express";
+import { IDialogNode, IDialogEdge } from "../common/model/Dialog";
 
 const placeholder = "404.png";
 
@@ -125,4 +126,25 @@ export function pruneObject(obj: any): any {
         }
     }
     return out;
+}
+
+/**
+ * Remove non-persistant field from the object,
+ * to avoid saving them to DB
+ */
+export function cleanDialogNode(node: IDialogNode): void {
+    delete node.message;
+    delete node.edges;
+    delete node.referenced;
+}
+
+/**
+ * Remove non-persistant field from the object,
+ * to avoid saving them to DB
+ */
+export function cleanDialogEdge(edge: IDialogEdge): void {
+    delete edge.message;
+    delete edge.node;
+    delete edge.nodeReferenced;
+    delete edge.actions;
 }

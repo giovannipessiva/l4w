@@ -7644,10 +7644,10 @@
               "condition": "always",
               "trigger": 0,
               "action": "",
+              "dialog": 1,
               "direction": 2,
               "mSpeed": 0.128,
-              "frequencyVal": 0.006,
-              "dialog": 1
+              "frequencyVal": 0.006
             }
           ],
           "memory": {},

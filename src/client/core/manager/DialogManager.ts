@@ -100,7 +100,7 @@ export namespace DialogManager {
         Resource.load(dialogId + "", ResourceType.DIALOG, function(resourceText) {
             if (Utils.isEmpty(resourceText) || typeof resourceText !== "string") {
                 console.error("Error while loading dialog: " + dialogId);
-                callback();
+                callback(DataDefaults.getDialogNode(DataDefaults.FIRST_ELEM_ID));
             } else {
                 let data: {
                     nodes: IDialogNode[],
@@ -112,7 +112,7 @@ export namespace DialogManager {
         });
     }
 
-    export function saveDialog(dialogId: number, root: IDialogNode, callback: INumberCallback) {
+    export function saveDialog(dialogId: number, root: IDialogNode, callback: INumberCallback): void {
         let nodes: Map<number, IDialogNode> = new Map<number, IDialogNode>();
         let edges: Map<number, IDialogEdge> = new Map<number, IDialogEdge>();
         deconstructDialogTree(root, nodes, edges, true);
@@ -122,7 +122,6 @@ export namespace DialogManager {
         };
         Resource.save(dialogId + "", JSON.stringify(request), ResourceType.DIALOG, function(response?: string, success?: boolean) {
             if (success) {
-                console.log("Dialog saved successfully");
                 if(Utils.isNumeric(response)) {
                     dialogId = parseInt(response!);
                 }
@@ -354,7 +353,7 @@ export namespace DialogManager {
                     }
                 } else {
                     // Request input
-                    let input: HTMLInputElement = new HTMLInputElement();
+                    let input = document.createElement("input");
                     switch(activeEdges[0].inputType) {
                         case DialogInputTypeEnum.INTEGER:
                             input.type = "number";
@@ -371,13 +370,14 @@ export namespace DialogManager {
             } else {
                 //Display active edges messages
                 for(let edge of activeEdges) {
-                    let div: HTMLDivElement = new HTMLDivElement();
+                    let div = document.createElement("div");
                     if(edge.message !== undefined) {
                         div.innerText = edge.message; 
                     }
                     div.onclick = function() {
                         selectEdge(edge);
                     }
+                    div.classList.add("l4wDialogEdge");
                     dialogEdgeArea.appendChild(div);
                 }
             }

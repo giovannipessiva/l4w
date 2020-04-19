@@ -60,10 +60,10 @@ export namespace session {
             // No valid session, use post data to authenticate user
             security.getBodyData(request,response,function(data: any){
                 if(!utils.isEmpty(data)) {
-                    var paramMap = utils.parseParameters(data);
-                    https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token="+paramMap.token, function(res: https.ClientRequest) {
+                    let paramMap = utils.parseParameters(data);
+                    https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + paramMap.token, function(res: https.ClientRequest) {
                         res.setEncoding("utf8");
-                        var authResponse: string = "";
+                        let authResponse: string = "";
                         res.on("data", function(buffer: string) {
                             authResponse += buffer;
                         });

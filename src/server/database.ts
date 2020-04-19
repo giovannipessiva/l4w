@@ -282,11 +282,28 @@ export namespace database {
                 dialogId = (maxId + 1);
             }
 
-            saveDialogMessages(dialogId, nodesList, edgesList);
+            // Save dialog strings
+            let groupdId = getDialogGroupId(dialogId);
+            clearStrings(groupdId);
+            for(let node of nodesList) {
+                if(node.message !== undefined) {
+                    setString(groupdId, getNodeMessageStringId(node), node.message);
+                    node.message = undefined;
+                }
+                utils.cleanDialogNode(node);
+            }
+            for(let edge of edgesList) {
+                if(edge.message !== undefined) {
+                    setString(groupdId, getEdgeMessageStringId(edge), edge.message);
+                    edge.message = undefined;
+                }
+                utils.cleanDialogEdge(edge);
+            }
 
+            gameData.dialogs.unset(dialogId).write();
             gameData.dialogs.set([dialogId, "nodes"], nodesList).write();
             gameData.dialogs.set([dialogId, "edges"], edgesList).write();
-            response.status(HttpStatus.OK).send(dialogId);
+            response.status(HttpStatus.OK).send(dialogId + "");
             break;
         case ResourceType.SAVE:
             models.usr_save.upsert({
@@ -424,7 +441,7 @@ export namespace database {
                             traverseDialogDatabase(dialogId, edge.nodeId, nodes, edges, edgeId);
                         }                    
                     } else {
-                        console.error("node " + node.id + "reference not-existing edge: " + edgeId);
+                        console.error("node " + node.id + " reference not-existing edge: " + edgeId);
                     }
                 }
             }
@@ -432,7 +449,7 @@ export namespace database {
             if(parentEdgeId === undefined) {
                 console.error("not-existing node: " + nodeId);
             } else {
-                console.error("edge " + parentEdgeId + "reference not-existing node: " + nodeId);
+                console.error("edge " + parentEdgeId + " reference not-existing node: " + nodeId);
             }
         }
     }
@@ -459,6 +476,15 @@ export namespace database {
             }
         }
         return;
+    }
+
+    function clearStrings(groupId: string) {
+        let langMap = gameData!.langs.get(gameConfig.ui.lang);
+        if(langMap === undefined) {
+            console.error("Cannot load default language: " + langMap);
+        } else {
+            langMap.unset(groupId).write();
+        }
     }
 
     function setString(groupId: string, id: string | undefined, value: string): string | undefined {
@@ -497,21 +523,6 @@ export namespace database {
         }
         for(let edge of edges) {
             edge.message = getString(lang, getDialogGroupId(dialogId), getEdgeMessageStringId(edge));
-        }
-    }
-
-    function saveDialogMessages(dialogId: number, nodes: IDialogNode[], edges: IDialogEdge[]) {
-        for(let node of nodes) {
-            if(node.message !== undefined) {
-                setString(getDialogGroupId(dialogId), getNodeMessageStringId(node), node.message);
-                node.message = undefined;
-            }
-        }
-        for(let edge of edges) {
-            if(edge.message !== undefined) {
-                setString(getDialogGroupId(dialogId), getEdgeMessageStringId(edge), edge.message);
-                edge.message = undefined;
-            }
         }
     }
 

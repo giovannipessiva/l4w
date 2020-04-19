@@ -6,7 +6,7 @@ import { LanguageEnum } from "./Commons"
  */
 
 export interface ISave {
-    id: string; // Id of the user save
+    id: number; // Id of the user save
     timestamp: number; // Save time
     hero: IEvent; // Hero state
     currentMap: string; // Id of the current map

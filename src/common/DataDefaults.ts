@@ -80,7 +80,7 @@ export namespace DataDefaults {
 
     export function getSave(): ISave {
         return {
-            id: Utils.getRandomString(),
+            id: FIRST_ELEM_ID,
             timestamp: Utils.now(),
             currentMap: gameConfig.maps.start.map,
             hero: getHero(),

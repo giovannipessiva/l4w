@@ -4,7 +4,7 @@
             <!-- Dialog node editor -->
             <div class="dialogNodeDetails">
                 <div class="elementId">N{{ node.id }}</div>
-                <textarea class="message" type="text" placeholder="<message>" v-model="node.message"/><br>
+                <textarea ref="dialogNodeMessage" class="message" type="text" placeholder="<message>" v-model="node.message"/><br>
                 <!-- TODO Generic message: <select id="genericMessage"></select><br/> -->
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
@@ -25,7 +25,7 @@
             <!-- Dialog edge editor -->
             <div class="dialogEdgeDetails" v-for="edge in node.edges" v-bind:key="edge.id">
                 <div class="elementId">E{{ edge.id }}</div>
-                <textarea class="message" type="text" placeholder="<message>" v-model="edge.message"/><br>
+                <textarea ref="dialogEdgeMessage" class="message" type="text" placeholder="<message>" v-model="edge.message"/><br>
 
                 Condition <select ref="edgeCondition" v-model="edge.condition">
                     <option v-for="option in edgeConditions" v-bind:key="option" v-bind:value="option">
@@ -89,6 +89,7 @@
 import Vue, { PropType } from "vue"
 import { Resource } from "../core/util/Resource";
 import { DataDefaults } from "../../common/DataDefaults";
+import { Utils } from "../../common/Utils";
 import { IDialogNode, IDialogEdge } from "../../common/model/Dialog";
 import { DialogManager } from "../core/manager/DialogManager";
 import { MapperPage } from "../tool/mapper/MapperPage";
@@ -163,6 +164,19 @@ export default Vue.extend({
                 // Reset at the first option (the empty one)
                 if(edge.options !== undefined) {
                     edge.options[0].selected = true;
+                }
+            }
+        }
+        // Focus node message, or last edge message
+        if(this.node !== undefined) {
+            if(Utils.isEmpty(this.node.edges)) {
+                if(this.$refs.dialogNodeMessage != undefined) {
+                    (<HTMLElement> this.$refs.dialogNodeMessage).focus();
+                }
+            } else {
+                if(this.node.edges![this.node.edges!.length - 1].message === undefined) {
+                    let lastEdge = this.$refs.dialogEdgeMessage[this.node.edges!.length - 1];
+                    lastEdge.focus();
                 }
             }
         }

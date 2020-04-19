@@ -1,4 +1,3 @@
-import { DirectionEnum } from "../../../common/model/Commons"
 import { IMap } from "../../../common/model/Map"
 import { IEvent } from "../../../common/model/Event"
 import { StaticGrid } from "../StaticGrid"
@@ -96,23 +95,6 @@ export namespace Mapper {
 
     function initInput(canvas: HTMLCanvasElement, scene: MapperScene, grid: StaticGrid): void {
         let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
-        inputCallbackMap[Input.Keys.UP] = function(e: KeyboardEvent) {
-            scene.moveFocusToDirection(DirectionEnum.UP);
-            e.preventDefault();
-        };
-        inputCallbackMap[Input.Keys.DOWN] = function(e: KeyboardEvent) {
-            scene.moveFocusToDirection(DirectionEnum.DOWN);
-            e.preventDefault();
-        };
-        inputCallbackMap[Input.Keys.LEFT] = function(e: KeyboardEvent) {
-            scene.moveFocusToDirection(DirectionEnum.LEFT);
-            e.preventDefault();
-        };
-        inputCallbackMap[Input.Keys.RIGHT] = function(e: KeyboardEvent) {
-            scene.moveFocusToDirection(DirectionEnum.RIGHT);
-            e.preventDefault();
-        };
-
         inputCallbackMap[Input.Keys.F2] = function(e: KeyboardEvent) {
             scene.toggleEditorGrid();
             e.preventDefault();

@@ -15,6 +15,7 @@ import { DynamicScene } from "./DynamicScene";
 import { ResourceType, ScreenSize } from "../../common/Constants";
 import { Utils } from "../../common/Utils";
 import { CLI } from "../core/util/CLI";
+import { DataDefaults } from "../../common/DataDefaults";
 
 /**
  * Module for initializing and launching a game
@@ -99,10 +100,10 @@ export namespace Game {
 
     export function save() {
         //TODO should manage more than one save, maybe with a custom name
-        let saveId: string = Utils.getRandomString();
+        let saveId: number = DataDefaults.FIRST_ELEM_ID;
         let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
-        if (currentState !== undefined) {
-            saveId = currentState.id + "";
+        if (currentState !== undefined && Utils.isNumeric(currentState.id)) {
+            saveId = currentState.id;
         }
         // Set config preferences
         currentState.config.lang = <LanguageEnum> (<HTMLSelectElement> document.getElementById("comboLang")).value;
@@ -110,7 +111,7 @@ export namespace Game {
         currentState.config.flagNatural = (<HTMLSelectElement> document.getElementById("comboScreen")).value !== ScreenSize.ADAPTIVE;
         currentState.config.flagDouble = (<HTMLSelectElement> document.getElementById("comboScreen")).value === ScreenSize.NATURAL_X2;
 
-        Resource.save(saveId, JSON.stringify(currentState), ResourceType.SAVE, function(response?: string, success?: boolean) {
+        Resource.save(saveId + "", JSON.stringify(currentState), ResourceType.SAVE, function(response?: string, success?: boolean) {
             if (success) {
                 console.log("Game saved successfully");
             }
