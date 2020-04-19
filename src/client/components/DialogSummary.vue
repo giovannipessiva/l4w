@@ -2,12 +2,12 @@
     <div :class="[ selectedNodeId.id === node.id ? 'selectedNode' : 'unselectedNode' ]">
         <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + node.id + ')'">
             <a v-bind:name="node.id" />
-            {{ node.message }} <div class="elementId">N{{ node.id }}</div>
+            {{ node.message | str_limit() }} <div class="elementId">N{{ node.id }}</div>
         </div>
         <ul>
             <li v-for="edge in node.edges" v-bind:key="edge.id">
                 <div class="dialogSummaryRow" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + node.id + ')'">
-                    <div class="edge">{{ edge.message }}</div> <div class="elementId">E{{ edge.id }}</div>
+                    <div class="edge">{{ edge.message | str_limit() }}</div> <div class="elementId">E{{ edge.id }}</div>
                 </div>
                 <div v-if="edge.node !== undefined" class="dialogSummarySubnode">
                     <div v-if="!edge.nodeReferenced">
@@ -17,7 +17,7 @@
                     <div v-else>
                         <!-- To avoid repetition, only include message -->
                         <div class="dialogSummaryRow unselectedNode" v-bind:onclick="'L4W_mapper.MapperPage.loadDialogEditor(' + edge.node.id + ')'">
-                            {{ edge.node.message }} <div class="elementId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></div>
+                            {{ edge.node.message | str_limit() }} <div class="elementId"><a v-bind:href="'#' + edge.node.id">(N{{ edge.node.id }})</a></div>
                         </div>
                         <div class="jumpElement" />
                     </div>
@@ -45,6 +45,20 @@ export default Vue.extend({
         }
     }
 })
+
+Vue.filter('str_limit', function (value: string, size?: number) {
+    if (value === undefined) {
+        return "";
+    } 
+    value = value.toString();
+    if(size === undefined) {
+        size = 45;
+    }
+    if (value.length <= size) {
+        return value;
+    }
+    return value.substr(0, size) + "...";
+});
 </script>
 
 <style scoped>

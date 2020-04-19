@@ -3024,7 +3024,7 @@
         0
       ],
       "name": "Nuova mappa",
-      "maxEventId": 2,
+      "maxEventId": 3,
       "height": 18,
       "width": 30,
       "tile": "023-FarmVillage01.png",
@@ -3038,7 +3038,7 @@
           "charaset": "155-Animal05.png",
           "states": [
             {
-              "direction": 3,
+              "direction": 1,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085484700,
               "mSpeed": 0.1024,
@@ -3114,7 +3114,7 @@
           "j": 17,
           "states": [
             {
-              "direction": 0,
+              "direction": 3,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085494758,
               "mSpeed": 0.1536,
@@ -3186,6 +3186,31 @@
           },
           "id": 2,
           "currentState": 0
+        },
+        {
+          "id": 3,
+          "name": "NPC",
+          "i": 0,
+          "j": 0,
+          "states": [
+            {
+              "charaset": "",
+              "condition": "always",
+              "trigger": 0,
+              "action": "",
+              "dialog": -1,
+              "direction": 2,
+              "mSpeed": 0.128,
+              "frequencyVal": 0.006
+            }
+          ],
+          "memory": {},
+          "script": "BaseScript",
+          "currentState": 0,
+          "position": {
+            "x": 0,
+            "y": 0
+          }
         }
       ],
       "dynamicBlocks": [
@@ -7621,7 +7646,8 @@
               "action": "",
               "direction": 2,
               "mSpeed": 0.128,
-              "frequencyVal": 0.006
+              "frequencyVal": 0.006,
+              "dialog": 1
             }
           ],
           "memory": {},

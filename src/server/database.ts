@@ -134,6 +134,7 @@ export namespace database {
     }
 
     export function read(type: ResourceType, file: string, user: string | undefined, response: any, lang?: string) {
+        let langVal = lang !== undefined? LanguageEnum[lang] : lang;
         switch (type) {
         case ResourceType.MAP:
             let map: IMap = gameData.maps.get(["maps", file]).value();
@@ -165,8 +166,7 @@ export namespace database {
             response.json(tile);
             break;
         case ResourceType.STRING:
-            let langVal = lang !== undefined? LanguageEnum[lang] : lang;
-            let value = getString(langVal, GLOBAL_GROUP_ID, parseInt(file));
+            let value = getString(langVal, GLOBAL_GROUP_ID, file);
             if(value !== undefined) {
                 response.send(value);
             } else {
@@ -185,6 +185,7 @@ export namespace database {
             let edges: IDialogEdge[] = [];
             traverseDialogDatabase(dialogId, DataDefaults.FIRST_ELEM_ID, nodes, edges);
             if(nodes.length > 0) {
+                populateDialogMessages(dialogId, nodes, edges, langVal);
                 response.send({
                     nodes: nodes,
                     edges: edges
@@ -253,18 +254,24 @@ export namespace database {
             response.status(HttpStatus.OK).send("");
             break;
         case ResourceType.STRING:
-            let id = Utils.isNumeric(file)?  parseInt(file) : undefined;
-            id = setString(GLOBAL_GROUP_ID, id, data);
-            response.status(HttpStatus.OK).send(id);
+            let id = setString(GLOBAL_GROUP_ID, file, data);
+            response.status(HttpStatus.OK).send(id + "");
             break;
         case ResourceType.DIALOG:
             // Extract a list of nodes and edges from the dialog tree, and save them to DB
-            let dialogNode: IDialogNode = JSON.parse(data);
-            let nodesList: IDialogNode[] = [];
-            let edgesList: IDialogEdge[] = [];
+            let dialogData: {
+                nodes: IDialogNode[];
+                edges: IDialogEdge[];
+            } = JSON.parse(data);
+            let nodesList = dialogData.nodes;
+            let edgesList = dialogData.edges;
 
-            let dialogId = file;
-            if(dialogId === DataDefaults.DEFAULT_ID_STR) {
+            if(!Utils.isNumeric(file)) {
+                response.status(HttpStatus.BAD_REQUEST).send("DialogId should be numeric: " + file);
+                return;
+            }
+            let dialogId = parseInt(file);
+            if(dialogId === DataDefaults.DEFAULT_ID) {
                 // Assign an incremental id to this dialog
                 let maxId = DataDefaults.DEFAULT_ID;
                 for(let id of gameData.dialogs.keys().value()) {
@@ -272,12 +279,12 @@ export namespace database {
                         maxId = parseInt(id);
                     }
                 }
-                dialogId = (maxId + 1) + "";
+                dialogId = (maxId + 1);
             }
 
-            traverseDialogTree(nodesList, edgesList, dialogNode);
+            saveDialogMessages(dialogId, nodesList, edgesList);
 
-            gameData.dialogs.set([dialogId, "dialogs"], nodesList).write();
+            gameData.dialogs.set([dialogId, "nodes"], nodesList).write();
             gameData.dialogs.set([dialogId, "edges"], edgesList).write();
             response.status(HttpStatus.OK).send(dialogId);
             break;
@@ -296,7 +303,7 @@ export namespace database {
             break;
         default:
             console.error("Unexpected case: " + type);
-            response.status(HttpStatus.NOT_FOUND).send(DataDefaults.getString());
+            response.status(HttpStatus.NOT_FOUND).send("");
         }
     }
 
@@ -400,18 +407,6 @@ export namespace database {
         }
     }
 
-    function traverseDialogTree(nodesList: IDialogNode[], edgesList: IDialogEdge[], dialogNode?: IDialogNode) {
-        if(dialogNode !== undefined) {
-            if(dialogNode.edges !== undefined) {
-                for(let edge of dialogNode.edges) {
-                    traverseDialogTree(nodesList, edgesList, edge.node);
-                    edgesList.push(utils.pruneObject(edge));
-                }
-            }
-            nodesList.push(utils.pruneObject(dialogNode));
-        }
-    }
-
     function traverseDialogDatabase(dialogId: number, nodeId: number, nodes: IDialogNode[], edges: IDialogEdge[], parentEdgeId?: number): void {
         let node: IDialogNode = gameData.dialogs.get([dialogId, "nodes"])
             ["find"]({id: nodeId})
@@ -442,7 +437,7 @@ export namespace database {
         }
     }
 
-    function getString(lang: LanguageEnum | undefined, groupId: string, id: number): string | undefined {
+    function getString(lang: LanguageEnum | undefined, groupId: string, id: string): string | undefined {
         if(lang === undefined || !gameData.langs.has(lang)) {
             lang = gameConfig.ui.lang;
         }
@@ -466,14 +461,18 @@ export namespace database {
         return;
     }
 
-    function setString(groupId: string, id: number | undefined, value: string): number | undefined {
+    function setString(groupId: string, id: string | undefined, value: string): string | undefined {
+        if(Utils.isEmpty(value) || value.trim().length === 0) {
+            return;
+        }
         let langMap = gameData!.langs.get(gameConfig.ui.lang);
         if(langMap === undefined) {
             console.error("Cannot load default language: " + langMap);
         } else {
             if(id === undefined) {
+                let idNum;
                 if(!langMap.has(groupId).value()) {
-                    id = DataDefaults.FIRST_ELEM_ID;
+                    idNum = DataDefaults.FIRST_ELEM_ID;
                 } else {
                     // Assign an incremental id
                     let maxId = DataDefaults.DEFAULT_ID;
@@ -482,12 +481,49 @@ export namespace database {
                             maxId = parseInt(id);
                         }
                     }
-                    id = (maxId + 1);
+                    idNum = (maxId + 1);
                 }
+                id = idNum + "";
             }
-            langMap.set([groupId, id], value).write();
+            langMap.set([groupId, id], value.trim()).write();
             return id;
         }
         return;
+    }
+
+    function populateDialogMessages(dialogId: number, nodes: IDialogNode[], edges: IDialogEdge[], lang?: LanguageEnum) {
+        for(let node of nodes) {
+            node.message = getString(lang, getDialogGroupId(dialogId), getNodeMessageStringId(node));
+        }
+        for(let edge of edges) {
+            edge.message = getString(lang, getDialogGroupId(dialogId), getEdgeMessageStringId(edge));
+        }
+    }
+
+    function saveDialogMessages(dialogId: number, nodes: IDialogNode[], edges: IDialogEdge[]) {
+        for(let node of nodes) {
+            if(node.message !== undefined) {
+                setString(getDialogGroupId(dialogId), getNodeMessageStringId(node), node.message);
+                node.message = undefined;
+            }
+        }
+        for(let edge of edges) {
+            if(edge.message !== undefined) {
+                setString(getDialogGroupId(dialogId), getEdgeMessageStringId(edge), edge.message);
+                edge.message = undefined;
+            }
+        }
+    }
+
+    function getDialogGroupId(dialogId: number) {
+        return "D" + dialogId;
+    }
+
+    function getNodeMessageStringId(node: IDialogNode) {
+        return "N" + node.id + "M";
+    }
+
+    function getEdgeMessageStringId(edge: IDialogEdge) {
+        return "E" + edge.id + "M";
     }
 }

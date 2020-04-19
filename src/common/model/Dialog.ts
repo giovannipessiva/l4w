@@ -11,13 +11,13 @@ export const enum DialogInputTypeEnum {
 export interface IDialogNode {
     // Persistent data
     id: number; // ID of the dialog node
-    message?: string; // String displayed for this dialog
     face?: string; // Faceset to display for this dialog
     genericMessage?: number; // ID of the generic string displayed for this dialog
     edgeIds?: number[]; // Array of ID of edges which start from this node
     closingTimeout?: number; // Timeout before closing the dialog (milliseconds)
 
     // Transient data
+    message?: string; // String displayed for this dialog
     edges?: IDialogEdge[]; // Array of edges which start from this node
     referenced?: boolean; // True when this node already appeared in the dialog tree (used to avoid duplications & loops in rendering)
 }
@@ -25,7 +25,6 @@ export interface IDialogNode {
 export interface IDialogEdge {
     // Persistent data
     id: number; // ID of the dialog edge
-    message?: string; // String displayed for this edge
     inputType?: DialogInputTypeEnum; // Type of input required for this edge
     condition?: string; // Name of function that returns true if this edge can be active (see Conditions.ts)
     conditionParams?: string; // Value that will be passed as parameter to the condition function
@@ -34,6 +33,7 @@ export interface IDialogEdge {
     nodeId?: number; // ID of the node pointed by this edge
 
     // Transient data
+    message?: string; // String displayed for this edge
     node?: IDialogNode; // Node pointed by this edge
     nodeReferenced?: boolean; // True when the pointed node already appeared in the dialog tree (used to avoid duplications & loops in rendering)
     actions?: string[]; // Array of actions associated to this edge script
