@@ -1,9 +1,12 @@
 import { HttpStatus } from "../common/Constants"
 import * as utils from "./utils"
 import { models } from "./models/index"
+//@ts-ignore TS1192
+import bcrypt from "bcrypt"
+import { Request, Response } from "express"
 
 export namespace security {
-        
+
     export function isDevEnv() {
         return "development" === process.env.NODE_ENV;
     }
@@ -12,7 +15,7 @@ export namespace security {
         return isDevEnv() && "true" === process.env.DISABLE_AUTHENTICATION;
     }
     
-    export function logSecurityEvent(event: any, info: any) {
+    export function logSecurityEvent(event: any, info: string) {
         if(utils.isEmpty(info)) {
             info = "(empty)";
         }
@@ -24,13 +27,13 @@ export namespace security {
         });
     }
     
-    export function getBodyData(request: any, response: any, callback: any) {
+    export function getBodyData(request: Request, response: Response, callback: any) {
         var queryData = "";
         if(request.method === "POST") {
-            request.on("data", function(data: any) {
-                queryData += data;
+            request.on("data", function(chunk: any) {
+                queryData += chunk;
                 if(queryData.length > 1e6) {
-                    logSecurityEvent(HttpStatus.REQUEST_TOO_LONG,queryData);
+                    logSecurityEvent(HttpStatus.REQUEST_TOO_LONG, queryData);
                     queryData = "";
                     response.status(HttpStatus.REQUEST_TOO_LONG).send("");
                     request.connection.destroy();  
@@ -66,6 +69,7 @@ export namespace security {
         
         //The expiry time (exp) of the ID token has not passed.
         if(data.exp < Math.floor((new Date).getTime()/1000)) {
+            console.log("expiry time passed"); //TODO is the expiry time enough?
             return false;
         }
         
@@ -80,9 +84,10 @@ export namespace security {
         }
     }
     
-    export function requestFilter(req: any, res: any, next: any) {
+    export function requestFilter(req: Request, res: Response, next: any) {
         // Always redirect to https
-        if (!req.secure && req.get("x-forwarded-proto") !== "https"
+        if (!req.secure
+                && req.get("x-forwarded-proto") !== "https"
                 && process.env.NODE_ENV !== "development") {
             // The "x-forwarded-proto" check is for Heroku
             return res.redirect("https://" + req.get("host") + req.url);
@@ -112,5 +117,13 @@ export namespace security {
         res.removeHeader("X-Powered-By");
 
         next();
+    }
+
+    /**
+     * NB this cannot be used for password hashing, since it uses a fixed salt
+     * @param plaintext string to hash
+     */
+    export function computeUnsafeHash(plaintext: string): Promise<string> {
+        return bcrypt.hash(plaintext, "$2b$10$when_life_gives_you_lemons,_ask_for_salt_and_tequila");
     }
 }

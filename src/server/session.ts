@@ -6,11 +6,13 @@ import SequelizeSessionInit from "connect-session-sequelize"
 let SequelizeStore = SequelizeSessionInit(Session.Store);
 //@ts-ignore TS1192
 import https from "https"
+import { Request, Response } from "express"
 
 import * as utils from "./utils"
 import { security } from "./security"
 import { models } from "./models/index"
 import { database } from "./database"
+import { IEmptyCallback } from "../client/core/util/Commons";
 
 export namespace session {
         
@@ -37,8 +39,8 @@ export namespace session {
         return Session(sessionOptions);
     }
     
-    export function getUser(request: any): string | undefined {
-        if(utils.isEmpty(request.session.user)) {
+    export function getUser(request: Request): string | undefined {
+        if(request.session === undefined || utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l"autenticazione sia disabilitata, forza l"utente 0
                 return "0";
@@ -48,14 +50,14 @@ export namespace session {
         return request.session.user;
     }
     
-    export function isAuthenticated(request: any): boolean {
+    export function isAuthenticated(request: Request): boolean {
         if(security.isAuthenticationDisabled()) {
             return true;
         }
         return !utils.isEmpty(getUser(request));
     }
 
-    export function doLogin(request: any, response: any, onSuccess: any, onFailure: any) {
+    export function doLogin(request: Request, response: Response, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
             security.getBodyData(request,response,function(data: any){
@@ -95,16 +97,18 @@ export namespace session {
             });
         } else {
             // Valid session found
-            database.logUserSessionAccess(request.session.user);
+            database.logUserSessionAccess(request.session!.user);
             onSuccess();
         }
     }
         
-    export function doLogout(request: any, response: any, callback: any) {
-        request.session.destroy(function(){
-            request.session = null;
-            response.clearCookie(session.cookieName,{ path: "/" });
-            callback();
-        });
+    export function doLogout(request: Request, response: Response, callback: any) {
+        if(request.session !== undefined) {
+            request.session.destroy(function(){
+                request.session = undefined;
+                response.clearCookie(session.cookieName,{ path: "/" });
+                callback();
+            });
+        }
     }
 }

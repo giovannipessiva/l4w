@@ -6,6 +6,7 @@ import * as LowdbModule from "lowdb";
 import * as FileSyncModule from "lowdb/adapters/FileSync"
 const lowdb: LowdbModule.lowdb = LowdbModule["default"];
 const fileSync: LowdbModule.AdapterSync<any> = FileSyncModule["default"];
+import { Request, Response } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
@@ -19,6 +20,7 @@ import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
 import { Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
+import { security } from "./security";
 
 /**
  * This module manage persistency for:
@@ -328,70 +330,89 @@ export namespace database {
         logAccess(user)
     }
 
-    export function logUser(mail: string, request: any, response: any) {
-        models.usr_list.findOne({
-            where: {
-                mail: mail
+    export function logUser(mail: string, request: Request, response: Response) {
+        security.computeUnsafeHash(mail)
+        .catch((reason: any) => {
+            console.error(reason);
+            response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+        })
+        .then((hashedMail) => {
+            if(hashedMail === undefined) {
+                console.log("Hash not available");
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
             }
-        }).then(function(user_record: any) {
-            if(user_record == null) {
-                // First access, create the user
-                models.usr_list.upsert({
-                    mail: mail,
-                }).then(function(updated: any) {
-                    // Get the new user record
-                    models.usr_list.findOne({
-                        where: {
-                            mail: mail
-                        }
-                    }).then(function(user_new_record: any) {
-                        if(user_record == null) {                        
-                            // Add user id to session
-                            request.session.user = user_new_record.user;
-                            request.session.save();
-                            
-                            // Send welcome event to the new user
-                            models.usr_event.upsert({
-                                user: user_new_record.user,
-                                event: constants.event.WELCOME,
-                                date: new Date()
-                            }).then(function(res: any) {
-                            }, function(error: any) {
-                                console.log(error);
-                            });
-                            
-                            // Log first access for the new user user
-                            models.log_access.upsert({
-                                user: user_new_record.user,
-                                first_seen: new Date(),
-                                last_seen: new Date(),
-                                access_counter: 1
-                            }).then(function(res: any) {
-                            }, function(error: any) {
-                                console.log(error);
-                            });
-                        } else {
-                            console.error("Registration failed for: " + mail);
-                        }
+            models.usr_list.findOne({
+                where: {
+                    mail: hashedMail
+                }
+            }).then(function(user_record: any) {
+                if(user_record == null) {
+                    // First access, create the user
+                    models.usr_list.upsert({
+                        mail: hashedMail,
+                    }).then(function(updated: any) {
+                        // Get the new user record
+                        models.usr_list.findOne({
+                            where: {
+                                mail: hashedMail
+                            }
+                        }).then(function(user_new_record: any) {
+                            if(user_record == null) {                        
+                                // Add user id to session
+                                request.session!.user = user_new_record.user;
+                                request.session!.save(function(err) {
+                                    if(!Utils.isEmpty(err)) {
+                                        console.error("Error while saving session: %s", err);
+                                    }
+                                });
+                                
+                                // Send welcome event to the new user
+                                models.usr_event.upsert({
+                                    user: user_new_record.user,
+                                    event: constants.event.WELCOME,
+                                    date: new Date()
+                                }).then(function(res: any) {
+                                }, function(error: any) {
+                                    console.log(error);
+                                });
+                                
+                                // Log first access for the new user user
+                                models.log_access.upsert({
+                                    user: user_new_record.user,
+                                    first_seen: new Date(),
+                                    last_seen: new Date(),
+                                    access_counter: 1
+                                }).then(function(res: any) {
+                                }, function(error: any) {
+                                    console.log(error);
+                                });
+                            } else {
+                                console.error("Registration failed for: " + hashedMail);
+                            }
+                        }, function(error: any) {
+                            console.log(error);
+                            response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                        });
                     }, function(error: any) {
                         console.log(error);
                         response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
                     });
-                }, function(error: any) {
-                    console.log(error);
-                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
-                });
-            } else {
-                // Add user id to session
-                request.session.user = user_record.user;
-                request.session.save();
-                
-                // Log this access
-                logAccess(user_record.user);
-            }
-        }, function(error: any) {
-            console.log(error);
-            response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                } else {
+                    // Add user id to session
+                    request.session!.user = user_record.user;
+                    request.session!.save(function(err) {
+                        if(!Utils.isEmpty(err)) {
+                            console.error("Error while saving session: %s", err);
+                        }
+                    });
+                    
+                    // Log this access
+                    logAccess(user_record.user);
+                }
+            }, function(error: any) {
+                console.log(error);
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+            });
         });
     }
 

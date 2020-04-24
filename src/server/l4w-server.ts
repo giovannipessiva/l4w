@@ -2,12 +2,11 @@
 import path from "path"
 //@ts-ignore TS1192
 import express from "express";
+import { Request, Response, NextFunction } from "express"
 //@ts-ignore TS1192
-import compression from "compression";
+import compression from "compression"
 //@ts-ignore TS1192
 import fs from "fs";
-
-import { NextFunction, Request, Response } from "express-serve-static-core";
 
 import { HttpStatus, ResourceType } from "../common/Constants"
 import { Utils } from "../common/Utils"

@@ -8,6 +8,7 @@
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
   "dependencies": {
+    "bcrypt": "4.0.1",
     "compression": "1.7.4",
     "connect-session-sequelize": "6.1.1",
     "express": "4.17.1",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@babel/core": "7.9.0",
     "@babel/preset-env": "7.9.5",
+    "@types/bcrypt": "3.0.0",
     "@types/compression": "1.7.0",
     "@types/express": "4.17.6",
     "@types/express-session": "1.17.0",
