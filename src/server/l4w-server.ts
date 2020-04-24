@@ -1,12 +1,11 @@
 //@ts-ignore TS1192
 import path from "path"
 //@ts-ignore TS1192
-import express from "express";
-import { Request, Response, NextFunction } from "express"
+import express, { Request, Response, NextFunction } from "express"
 //@ts-ignore TS1192
 import compression from "compression"
 //@ts-ignore TS1192
-import fs from "fs";
+import fs from "fs"
 
 import { HttpStatus, ResourceType } from "../common/Constants"
 import { Utils } from "../common/Utils"
@@ -88,6 +87,10 @@ app.get("/edit/:editor", function(request: Request, response: Response) {
 
 app.all("/test", function(request: Request, response: Response) {
     utils.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
+});
+
+app.all("/privacy", function(request: Request, response: Response) {
+    utils.sendFile(dirname + path.sep + "views" + path.sep, "privacy.html", response);
 });
 
 app.get("/logout", function(request: Request, response: Response) {
