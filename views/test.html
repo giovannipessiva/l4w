@@ -20,190 +20,49 @@ window.onload = function(){
 }
 	
 function finishedLoading(){
-	drawMap();
+	L4W_tester.Tester.drawMap();
 	document.getElementById("footer").style.visibility = "visible";
-};
-
-var stopMovement;
-var blocks;
-const BLOCK = 15;
-
-function drawMap() {
-	let eventX = parseInt(document.getElementById("eventX").value);
-	let eventY = parseInt(document.getElementById("eventY").value);
-	let targetX = parseInt(document.getElementById("targetX").value);
-	let targetY = parseInt(document.getElementById("targetY").value);
-	let tableWidth = parseInt(document.getElementById("width").value);
-	let tableHeight = parseInt(document.getElementById("height").value);
-	
-	if(blocks === undefined || blocks.length !== tableWidth * tableHeight) {
-		blocks = new Array(tableWidth * tableHeight).fill(0);
-	}
-	
-	if(eventX >= tableWidth) {
-		eventX = tableWidth - 1;
-		document.getElementById("eventX").value = eventX;
-	}
-	if(targetX >= tableWidth) {
-		targetX = tableWidth - 1;
-		document.getElementById("targetX").value = targetX;
-	}
-	if(eventY >= tableHeight) {
-		eventY = tableHeight - 1;
-		document.getElementById("eventY").value = eventY;
-	}
-	if(targetY >= tableHeight) {
-		targetY = tableHeight - 1;
-		document.getElementById("targetY").value = targetY;
-	}
-	
-	let map = "";
-	for(let y=0; y<tableHeight; y++) {
-		for(let x=0; x<tableWidth; x++) {
-			let classes = "cell";
-			let gid = x + y * tableWidth;
-			if(targetX==x && targetY==y) {
-				classes += " target";
-			}
-			if(blocks[gid] === BLOCK) {
-				classes += " blocked";
-			}
-			if(eventX==x && eventY==y) {
-				classes += " event";
-			}
-			map += "<div id='g"+ gid + "' class='"+classes+"' onclick='toggleBlock(" + gid + ")'></div>";
-		}
-		map += "<br style='clear:both;'/>";
-	}
-	document.getElementById("map").innerHTML = map;
-};
-
-function pathfinding(){
-	let eventX = parseInt(document.getElementById("eventX").value);
-	let eventY = parseInt(document.getElementById("eventY").value);
-	let targetX = parseInt(document.getElementById("targetX").value);
-	let targetY = parseInt(document.getElementById("targetY").value);
-	let tableWidth = parseInt(document.getElementById("width").value);
-	let tableHeight = parseInt(document.getElementById("height").value);
-	
-	let path = L4W_tester.Tester.testPathfinding(tableWidth,tableHeight,eventX,eventY,targetX,targetY,blocks);
-
-	// Disable all input fields
-	document.getElementById("eventX").disabled=true;
-	document.getElementById("eventY").disabled=true;
-	document.getElementById("targetX").disabled=true;
-	document.getElementById("targetY").disabled=true;
-	document.getElementById("width").disabled=true;
-	document.getElementById("height").disabled=true;
-	document.getElementById("find").disabled=true;
-	document.getElementById("stop").disabled=false;
-	stopMovement = false;
-	
-	// Recursive function to simulate event movement along the path towards Target
-	function moveEvent(path, step) {
-		if(step < path.length && !stopMovement) {
-			// Move event by one step
-			document.getElementById("eventX").value = path[step].cell.i;
-			document.getElementById("eventY").value = path[step].cell.j;
-			
-			function printVertexes(vertexes,format) {
-				let str = "";
-				let tableWidth = parseInt(document.getElementById("width").value);
-				let lastJ = 0;
-				for(let v of vertexes) {
-					if(format && v.cell.j > lastJ) {
-						str += "<br/>";
-						lastJ = v.cell.j;
-					}
-					str += (v.cell.i + v.cell.j*tableWidth) + ":" + JSON.stringify(v.key) + ", ";
-				}
-				return str.substr(0, str.length-2);
-			};
-			
-			// Log D* Lite pathfinding details
-			if(path[step].cache !== undefined) {
-				/*
-				let stepDetails =  "<h2>" + (step+1) + ") " + path[step].cell.i + "," + path[step].cell.j + "</h2>";
-				stepDetails += "<b>S</b>: " + printVertexes(path[step].cache.S, true) + "<br/>";
-				stepDetails += "<b>U</b>: " + printVertexes(path[step].cache.U, false) + "<br/>";
-				stepDetails += "<b>g</b>: " + JSON.stringify(path[step].cache.g) + "<br/>";
-				stepDetails += "<b>rhs</b>: " + JSON.stringify(path[step].cache.rhs);
-				stepDetails += "<br/>";
-				document.getElementById("log").innerHTML += stepDetails;
-				*/
-				console.log(path[step].cache);
-			}
-			
-			drawMap();
-			setTimeout(function() {
-				moveEvent(path, step + 1);
-			},100);
-		} else {
-			// End of the path!
-			// Enable all input fields
-			document.getElementById("eventX").disabled=false;
-			document.getElementById("eventY").disabled=false;
-			document.getElementById("targetX").disabled=false;
-			document.getElementById("targetY").disabled=false;
-			document.getElementById("width").disabled=false;
-			document.getElementById("height").disabled=false;
-			document.getElementById("find").disabled=false;
-			document.getElementById("stop").disabled=true;
-		}
-	}
-	
-	document.getElementById("log").innerHTML = "";
-	moveEvent(path,0);	
-};
-
-function stop(){
-	stopMovement=true;
-};
-
-function toggleBlock(gid) {
-	if(blocks[gid] === BLOCK) {
-		blocks[gid] = undefined;
-	} else {
-		blocks[gid] = BLOCK;
-	}
-	drawMap();
+	L4W_tester.Tester.loadAuth();
 };
 </script>
 
 <style type="text/css">
+h2{
+	text-align: left;
+}
 input{
-width:3em;
+	width:3em;
 }
 div.framed{
-border:1px solid black;
-padding:1em;
+	border:1px solid black;
+	padding:1em;
 }
 div.dynamic{
-border:1px dashed black;
-background-color:AliceBlue;
+	border:1px dashed black;
+	background-color:AliceBlue;
 }
 div.sector{
-padding:1em;
-margin:1em;
-float:left;
+	padding:1em;
+	margin:1em;
+	float:left;
 }
 div.cell{
-height:20px;
-width:20px;
-border:1px solid blue;
-float:left;
-background-color:white;
+	height:20px;
+	width:20px;
+	border:1px solid blue;
+	float:left;
+	background-color:white;
 }
 div.target{
-background-color:red;
-border:1px dotted black;
+	background-color:red;
+	border:1px dotted black;
 }
 div.blocked{
-background-color:black;
+	background-color:black;
 }
 div.event{
-background-color:yellow;
-border:1px dotted black;
+	background-color:yellow;
+	border:1px dotted black;
 }
 </style>
 
@@ -211,47 +70,62 @@ border:1px dotted black;
 
 </head>
 <body>
-<div class="framed">
-<h1>Pathfinding test</h1>
-<div style="float:left;">
-Map size:
-<input id="width" type="number" value="20" min="2" max="50" onchange="drawMap();"/>
-<input id="height" type="number" value="20" min="2" max="50" onchange="drawMap();"/>
-<br/>
-<div class="cell event"></div>&nbsp; Event:
-<input id="eventX" type="number" value="1" min="0" max="49" onchange="drawMap();"/>
-<input id="eventY" type="number" value="2" min="0" max="49" onchange="drawMap();"/>
-<br style="clear:both;"/>
-<div class="cell target"></div>&nbsp; Target:
-<input id="targetX" type="number" value="37" min="0" max="49" onchange="drawMap();"/>
-<input id="targetY" type="number" value="40" min="0" max="49" onchange="drawMap();"/>
-<br/>
-<p>Click on the cells to toggle blocks</p>
-<br/>
-<select id="alg">
-<option>Basic</option>
-<option selected>D* Lite</option>
-</select>
-<input id="find" type="button" value="Find the path!" onclick="pathfinding();"/>
-<input id="stop" type="button" value="Stop" onclick="stop();"/>
-<br/><br/>
-</div>
-<div class="dynamic sector">
-<div id="map" class="sector">
-Loading...
-</div>
+	<h1>L4W tests</h1>
+	<div class="framed">
+		<h2>Authentication with Vue component</h2>
+		<div id="loginVue">
+			<login>
+				<template v-slot:whenLoggedIn>
+					Test per login --> {{ name }}
+				</template>
+				<template v-slot:whenLoggedOut>
+					Test per login --> non loggato ({{ logged }})
+				</template>
+			</login>
+		</div>
+	</div>
+	<br>
+	<div class="framed">
+		<h2>Pathfinding</h2>
+		<div style="float:left;">
+		Map size:
+		<input id="width" type="number" value="20" min="2" max="50" onchange="L4W_tester.Tester.drawMap();"/>
+		<input id="height" type="number" value="20" min="2" max="50" onchange="L4W_tester.Tester.drawMap();"/>
+		<br/>
+		<div class="cell event"></div>&nbsp; Event:
+		<input id="eventX" type="number" value="1" min="0" max="49" onchange="L4W_tester.Tester.drawMap();"/>
+		<input id="eventY" type="number" value="2" min="0" max="49" onchange="L4W_tester.Tester.drawMap();"/>
+		<br style="clear:both;"/>
+		<div class="cell target"></div>&nbsp; Target:
+		<input id="targetX" type="number" value="37" min="0" max="49" onchange="L4W_tester.Tester.drawMap();"/>
+		<input id="targetY" type="number" value="40" min="0" max="49" onchange="L4W_tester.Tester.drawMap();"/>
+		<br/>
+		<p>Click on the cells to toggle blocks</p>
+		<br/>
+		<select id="alg">
+		<option>Basic</option>
+		<option selected>D* Lite</option>
+		</select>
+		<input id="find" type="button" value="Find the path!" onclick="L4W_tester.Tester.pathfinding();"/>
+		<input id="stop" type="button" value="Stop" onclick="L4W_tester.Tester.stop();"/>
+		<br/><br/>
+		</div>
+		<div class="dynamic sector">
+		<div id="map" class="sector">
+		Loading...
+		</div>
 
-<div id="log" class="sector">
-</div>
+		<div id="log" class="sector">
+		</div>
 
-<br style="clear:both;"/>
-</div>
-<br style="clear:both;"/>
-</div>
-<div id="footer" class="footer">
-	Game: <a href="/">/</a><br/>
-	Editors: <a href="/edit">/edit</a><br/>
-	Source code: <a href="https://github.com/giovannipessiva/l4w">https://github.com/giovannipessiva/l4w</a>
-</div>
+		<br style="clear:both;"/>
+		</div>
+		<br style="clear:both;"/>
+	</div>
+	<div id="footer" class="footer">
+		Game: <a href="/">/</a><br/>
+		Editors: <a href="/edit">/edit</a><br/>
+		Source code: <a href="https://github.com/giovannipessiva/l4w">https://github.com/giovannipessiva/l4w</a>
+	</div>
 </body>
 </html>
