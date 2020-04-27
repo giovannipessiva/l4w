@@ -24,7 +24,8 @@ export namespace Tester {
     }
     
     interface IPathfinderTestResult {
-        cell: ICell    };
+        cell: ICell
+    };
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
@@ -118,13 +119,13 @@ export namespace Tester {
             for(let x=0; x<tableWidth; x++) {
                 let classes = "cell";
                 let gid = x + y * tableWidth;
-                if(targetX==x && targetY==y) {
+                if(targetX===x && targetY===y) {
                     classes += " target";
                 }
                 if(blocks[gid] === BLOCK) {
                     classes += " blocked";
                 }
-                if(eventX==x && eventY==y) {
+                if(eventX===x && eventY===y) {
                     classes += " event";
                 }
                 map += "<div id='g"+ gid + "' class='"+classes+"' onclick='L4W_tester.Tester.toggleBlock(" + gid + ")'></div>";

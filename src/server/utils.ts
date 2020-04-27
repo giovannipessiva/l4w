@@ -25,7 +25,7 @@ export function sendFile(path: string, filename: string, response: Response) {
             response.type("text/x-java-properties");
             break;
         case "js":
-            response.type("text/javascript");
+            response.type("application/javascript");
             break;
         case "css":
             response.type("text/css");

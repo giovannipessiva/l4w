@@ -4,6 +4,8 @@ import { models } from "./models/index"
 //@ts-ignore TS1192
 import bcrypt from "bcrypt"
 import { Request, Response } from "express"
+import { ServerOptions } from "https"
+import { readFileSync } from "fs"
 
 export namespace security {
 
@@ -87,8 +89,7 @@ export namespace security {
     export function requestFilter(req: Request, res: Response, next: any) {
         // Always redirect to https
         if (!req.secure
-                && req.get("x-forwarded-proto") !== "https"
-                && process.env.NODE_ENV !== "development") {
+                && req.get("x-forwarded-proto") !== "https") {
             // The "x-forwarded-proto" check is for Heroku
             return res.redirect("https://" + req.get("host") + req.url);
         }
@@ -104,6 +105,8 @@ export namespace security {
         res.setHeader("Content-Security-Policy","default-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: " 
             // Google Authentication
             + "https://*.gstatic.com https://*.googleapis.com https://*.google.com "
+            // Facebook Authentication
+            + "https://connect.facebook.net https://www.facebook.com "
             // CDN scripts
             + "https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net");
         // Random referrer policy
@@ -125,5 +128,19 @@ export namespace security {
      */
     export function computeUnsafeHash(plaintext: string): Promise<string> {
         return bcrypt.hash(plaintext, "$2b$10$when_life_gives_you_lemons,_ask_for_salt_and_tequila");
+    }
+
+    /**
+     * Return a server configuration options for local development use only
+     */
+    export function getLocalServerOptions(): ServerOptions {
+        if(!isDevEnv()) {
+            console.error("Cannot use local server options when ENV !== development");
+            process.exit();
+        }
+        return {
+            key: readFileSync("assets/localdev-key.pem"),
+            cert: readFileSync("assets/localdev-cert.pem")
+        };
     }
 }

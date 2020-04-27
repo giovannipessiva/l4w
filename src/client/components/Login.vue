@@ -1,5 +1,8 @@
 <template>
     <div>
+        <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0&appId=1885551381575204"></script>
+        <script type="application/javascript" async defer src="https://apis.google.com/js/platform.js"></script>
+
         <div v-if="!logged">
             <!-- Google login -->
             <div id="login" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
@@ -17,9 +20,6 @@
         </div>
     </div>
 </template>
-
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0&appId=1885551381575204"></script>
-<script async defer src="https://apis.google.com/js/platform.js"></script>
 
 <script lang="ts">
 import Vue from "vue"
@@ -51,18 +51,15 @@ export default Vue.extend({
     },
     created: function() {
         // Add Google login meta tags
-        let head = document.getElementsByTagName("head")[0];
-        let meta;
-        
-        meta = document.createElement("meta");
+        let meta = document.createElement("meta");
         meta.name = "google-signin-scope";
         meta.content = "profile email";
-        head.appendChild(meta);
+        document.head.appendChild(meta);
 
         meta = document.createElement("meta");
         meta.name = "google-signin-client_id";
         meta.content = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
-        head.appendChild(meta);
+        document.head.appendChild(meta);
 
         // Init Facebook login
         let vueScope = this;

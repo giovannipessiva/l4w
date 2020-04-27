@@ -2,10 +2,11 @@
 import path from "path"
 //@ts-ignore TS1192
 import express, { Request, Response, NextFunction } from "express"
+import { Express } from "express-serve-static-core"
 //@ts-ignore TS1192
 import compression from "compression"
-//@ts-ignore TS1192
-import fs from "fs"
+import { readFile } from "fs"
+import { createServer } from "https"
 
 import { HttpStatus, ResourceType } from "../common/Constants"
 import { Utils } from "../common/Utils"
@@ -19,10 +20,38 @@ import { database } from "./database"
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
 let dirname = process.cwd() + path.sep;
 
-let app = express();
+let app: Express = express();
 app.use(compression());
 app.use(session.init());
 app.set("port",(process.env.PORT || 5000));
+
+// Initialization
+database.init().then(
+    function() {
+        console.log("Database ready");
+    },
+    function() {
+        process.exit();
+    }
+);
+let server;
+if(!security.isDevEnv()) {
+    // Heroku will take care of HTTPS
+    server = app.listen(app.get("port"));
+} else {
+    // Setup HTTPS with self-signed cert for local dev
+    server = createServer(security.getLocalServerOptions(), app).listen(app.get("port"));
+}
+server.on("listening", function() {
+    console.log("L4W is running on port", app.get("port"));
+}).on("error", function(err: any) {
+    if(err.code === "EADDRINUSE") {
+        console.error("Another instance is already running on port " + err.port);
+    } else {
+        console.error(err);
+    }
+    process.exit();
+});
 
 // Middleware
 app.use(function(req: Request, res: Response, next: NextFunction) {
@@ -181,33 +210,13 @@ app.get("/news", function(request: Request, response: Response) {
 });
 app.get("/v", function(request: Request, response: Response) {
     // Need to do this, since resolveJsonModule does not work as expected
-    fs.readFile("package.json", "utf8", function(err: Error, contents: string) {
+    readFile("package.json", "utf8", function(err: NodeJS.ErrnoException | null, data: string | Buffer) {
         if(err !== null) {
             console.error(err);
             response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
         } else {
-            let packageJson = JSON.parse(contents);
+            let packageJson = JSON.parse(<string> data);
             response.send(packageJson.name + " " + packageJson.version);
         }
     });
-    
 });
-
-// Initialize DB connection
-database.init().then(
-    function() {
-        app.listen(app.get("port"), function() {
-            console.log("L4W is running on port", app.get("port"));
-        }).on("error", function(err: any) {
-            if(err.code === "EADDRINUSE") {
-                console.error("Another instance is already running on port " + err.port);
-            } else {
-                console.error(err);
-            }
-            process.exit();
-        });
-    },
-    function() {
-        process.exit();
-    }
-);

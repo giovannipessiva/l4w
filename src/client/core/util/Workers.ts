@@ -1,5 +1,5 @@
 import { Compatibility } from "./Compatibility"
-import { Utils } from "../../../common/Utils";
+import { Utils } from "../../../common/Utils"
 
 /**
  * Module for managing background jobs and services
@@ -25,8 +25,7 @@ export namespace Workers {
         
     export function registerServiceWorker() {
         if(Compatibility.serviceWorker()) {
-            // Register service worker
-            navigator["serviceWorker"].register(Workers.SERVICEWORKER_URL, Workers.SERVICEWORKER_OPTIONS).then(function(registration) {
+            navigator.serviceWorker.register(Workers.SERVICEWORKER_URL, Workers.SERVICEWORKER_OPTIONS).then(function(registration) {
                 // ServiceWorker registration successful
             }, function(err) {
                 console.warn("ServiceWorker registration failed: ", err);

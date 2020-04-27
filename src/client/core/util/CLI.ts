@@ -1,5 +1,6 @@
 import { gameConfig } from "../../../common/GameConfig";
 import { Resource } from "./Resource";
+import { Speaker } from "./Speaker";
 
 /**
  * FAQ
@@ -84,7 +85,8 @@ export namespace CLI {
     }
 
     function su(): void {
-        console.log("%c"
+        Speaker.gandalf();
+        console.log("%c\n"
             + "WWWWWWWWWWWWWWWWWWWWWWWWW@WWxxW@W@@@@@@WWWWWWWWWWWMMMMMWWMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@WW@@Wx#+#nW@@@@@@@W@@@@@@@@@@@@@@@@@@@@\n"
             + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWnMW@@WW@@@WWWWWWWWWWWWMMMMMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@@WMz+#zx@@@@@W@@@@@@@@@@@@@@@@@@@@@@\n"
             + "WWWWWWWWWWWWWWWWWWWWWWWWWWWMxMW@W@@@@@@@WWWWWWWWWWMMMMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@WW@WWWWWW@@@Wn#+#nW@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"

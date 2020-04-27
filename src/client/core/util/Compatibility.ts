@@ -3,15 +3,11 @@
  */
 export namespace Compatibility {
 
+    /**
+     * Check support for mandatory functionalities
+     */
     export function check() {
-        // Mandatory
         canvas();
-
-        // Optionals
-        serviceWorker();
-        webWorker();
-        webSpeech();
-        passiveEventListeners();
     }
 
     function canvas(): boolean {
@@ -24,44 +20,35 @@ export namespace Compatibility {
     }
     
     export function serviceWorker(): boolean {
-        if (!("serviceWorker" in navigator)) {
-            console.error("Service Workers are not supported");
+        if (navigator.serviceWorker === undefined) {
+            console.warn("Service Workers are not supported");
             return false;
         }
+
+        // To make service workers registration work with local self-signed certificates,
+        // it is necessary to use the 127.0.0.1 address, which is considered to be
+        // a potentially trustworthy origin (localhost won't work)
+        if(location.hostname === "localhost" || location.protocol === "https") {
+            console.warn("Service Workers won't work when using local self-signed certificates. This could be fixed by trusting them, or using browser flags.");
+            return false;
+        }
+
         return true;
     }
     
     export function webWorker(): boolean {
-        if(!("Worker" in window)) {
-            console.error("Web Workers are not supported");
+        if(window.Worker === undefined) {
+            console.warn("Web Workers are not supported");
             return false;
         }
         return true;
     }
     
-    function webSpeech(): boolean {
-        if(!("SpeechSynthesisUtterance" in window)) {
-            console.error("Web Speech API are not supported");
+    export function webSpeech(): boolean {
+        if(window.SpeechSynthesisUtterance === undefined) {
+            console.warn("Web Speech API are not supported");
             return false;
         }
         return true;
-    }
-
-    /**
-     * https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-     */
-    export function passiveEventListeners(): boolean {
-        // Test via a getter in the options object to see if the passive property is accessed
-        let supportsPassive = false;
-        try {
-            let opts = Object.defineProperty({}, "passive", {
-                get: function() {
-                    supportsPassive = true;
-                }
-            });
-            window.addEventListener("testPassive", null!, opts);
-            window.removeEventListener("testPassive", null!, opts);
-        } catch (e) {}
-        return supportsPassive;
     }
 }
