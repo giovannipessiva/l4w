@@ -194,8 +194,8 @@ export abstract class AbstractScene {
             //@ts-ignore Retrocompatibility
             this.context["msImageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
         }
-        if ("imageSmoothingEnabled" in this.context) {
-            this.context["imageSmoothingEnabled"] = this.renderingConfiguration.enableAntialiasing;
+        if (this.context.imageSmoothingEnabled !== undefined) {
+            this.context.imageSmoothingEnabled = this.renderingConfiguration.enableAntialiasing;
         }
     }
 

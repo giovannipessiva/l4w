@@ -298,7 +298,7 @@ export namespace Game {
      * Open fullscreen mode (only on user interaction)
      */
     export function openFullscreen() {
-        if(document["fullscreenElement"] === null) {
+        if(document.fullscreenElement === null) {
             let elem = document.documentElement;
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
@@ -319,7 +319,7 @@ export namespace Game {
      * Close fullscreen
      */
     export function closeFullscreen() {
-        if(document["fullscreenElement"] !== null) {
+        if(document.fullscreenElement !== null) {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document["mozCancelFullScreen"]) { /* Firefox */

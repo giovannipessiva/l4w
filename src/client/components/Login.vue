@@ -1,13 +1,13 @@
 <template>
-    <div>
+    <div class="root">
         <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0&appId=1885551381575204"></script>
         <script type="application/javascript" async defer src="https://apis.google.com/js/platform.js"></script>
 
-        <div v-if="!logged">
+        <div v-if="!loginStatus">
             <!-- Google login -->
-            <div id="login" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+            <div id="login" class="g-signin2" data-onsuccess="gLoginCallback" data-theme="dark"></div>
             <!-- Facebook login -->
-            <div class="fb-login-button" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false"
+            <div class="fb-login-button" data-size="medium" data-button-type="login_with" data-layout="default" data-auto-logout-link="false"
                 data-use-continue-as="false" data-width=""></div>
             <br>
             <slot name="whenLoggedOut"></slot>
@@ -23,8 +23,9 @@
 
 <script lang="ts">
 import Vue from "vue"
-let FB: any; // Loaded from Facebook script
-let gapi: any; // Loaded from Google script
+
+declare let FB: any; // Loaded from Facebook script
+declare let gapi: any; // Loaded from Google script
 
 interface FBLoginResponse {
     status: "connected" | "not_authorized" | "unknown",
@@ -49,6 +50,15 @@ export default Vue.extend({
             required: false
         }
     },
+    data: function (): {
+        loginStatus: boolean,
+        loginService?: "facebook" | "google"
+    } {
+        return {
+            loginStatus: this.logged,
+            loginService: undefined
+        }
+    },
     created: function() {
         // Add Google login meta tags
         let meta = document.createElement("meta");
@@ -66,8 +76,9 @@ export default Vue.extend({
         window["fbAsyncInit"] = function() {
             FB.init({
                 appId: "1885551381575204",
-                autoLogAppEvents : true, // Enable cookies to allow the server to access the session
-                xfbml: true, // Parse social plugins on this webpage
+                autoLogAppEvents: false,
+                cookie: true,
+                xfbml: false,
                 version : "v6.0"
             });
 
@@ -78,39 +89,71 @@ export default Vue.extend({
         };
     },
     methods: {
+        logoutCallback: function(vueScope: any) {
+            Vue.set(vueScope, "loginStatus", false);
+            Vue.set(vueScope, "loginService", undefined);
+            location.reload();
+        },
         logout: function logout() {
-            //TODO check which service is used, only logout from that service
-
-            if(this.logged) {
-                let vueScope = this;
-                // Facebook logout
-                FB.logout(function(response: any) {
-                    Vue.set(vueScope, "logged", false);
-                    location.reload();
-                });
-
-                // Google logout
-                let auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    Vue.set(vueScope, "logged", false);
-                    location.reload();
-                });
+            // Check which service is used, only logout from that service
+            if(this.loginStatus) {
+                switch(this.loginService) {
+                case "facebook":
+                    // Facebook logout
+                    let vueScope = this;
+                    FB.logout(function(response: any) {
+                        console.log(response); //TODO test
+                        vueScope.logoutCallback(vueScope);
+                    });
+                    break;
+                case "google":
+                    // Google logout
+                    let auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signOut().then(this.logoutCallback(this));
+                    break;
+                default:
+                    console.warn("Unexpected loginService: " + this.loginService);
+                }
             } else {
                 console.warn("Cannot logout, user is not currently logged in")
             }
         },
         fbLoginStatusChangeCallback: function(response: FBLoginResponse) {
             if(response.status === "connected") {
-                // L'utente ha effettuato l'accesso a Facebook e alla tua pagina Web.
-                console.log(response.authResponse);
-                
-                let vueScope = this;
-                FB.api("/me", function(responseMe: any) {
-                    console.log('Successful login for: ' + responseMe.name);
-                    Vue.set(vueScope, "user", responseMe.name);
-                });
-            } else console.log("Status: " + response.status)
+                Vue.set(this, "loginStatus", true);
+                Vue.set(this, "loginService", "facebook");
+                console.log("Logged with Facebook");
+            }
+        },
+        gLoginCallback: function(googleUser: any) {           
+            let f = document.createElement("form");
+            f.setAttribute("method","post");
+            f.setAttribute("action",".");
+            let i;
+            
+            i = document.createElement("input");
+            i.setAttribute("type","text");
+            i.setAttribute("name","token");
+            i.setAttribute("value",googleUser.getAuthResponse().id_token);
+            f.appendChild(i);
+
+            f.style.display="none";
+            document.body.appendChild(f);
+            f.submit();
+            Vue.set(this, "loginStatus", true);
+            Vue.set(this, "loginService", "google");
+            console.log("Logged with Google");
         }
     }
 });
 </script>
+
+<style scoped>
+.root {
+    width: auto;
+    text-align: left;
+}
+.root div {
+    margin:0.5em;
+}
+</style>

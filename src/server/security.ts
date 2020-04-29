@@ -106,7 +106,7 @@ export namespace security {
             // Google Authentication
             + "https://*.gstatic.com https://*.googleapis.com https://*.google.com "
             // Facebook Authentication
-            + "https://connect.facebook.net https://www.facebook.com "
+            + "https://connect.facebook.net https://www.facebook.com https://web.facebook.com "
             // CDN scripts
             + "https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net");
         // Random referrer policy

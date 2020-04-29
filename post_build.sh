@@ -13,6 +13,8 @@ rm -rf src
 rm assets/lib/jquery3.min.js
 rm assets/lib/jquery-ui.min.js
 rm assets/lib/jstree.min.js
+rm assets/localdev-cert.pem
+rm assets/localdev-key.pem
 rm .env
 rm .travis.yml
 rm CONTRIBUTING.md

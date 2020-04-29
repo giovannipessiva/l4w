@@ -1,5 +1,3 @@
-//@ts-ignore TS1192
-import fs from "fs"
 import * as SequelizeModule from "sequelize"
 const sequelize = SequelizeModule["default"];
 import * as LowdbModule from "lowdb";
