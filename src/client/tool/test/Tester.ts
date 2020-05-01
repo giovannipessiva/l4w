@@ -15,10 +15,6 @@ export namespace Tester {
             el: "#loginVue",
             components: {
                 "login": LoginComponent,
-            },
-            data: {
-                logged: false,
-                user: undefined
             }
         });
     }

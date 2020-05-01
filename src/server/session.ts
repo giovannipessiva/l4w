@@ -13,6 +13,7 @@ import { security } from "./security"
 import { models } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
+import { IAuthRequest } from "../common/ServerAPI";
 
 export namespace session {
         
@@ -42,7 +43,7 @@ export namespace session {
     export function getUser(request: Request): string | undefined {
         if(request.session === undefined || utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
-                // Nel caso l"autenticazione sia disabilitata, forza l"utente 0
+                // Nel caso l"autenticazione sia disabilitata, forza l'utente 0
                 return "0";
             }
             return undefined;
@@ -60,37 +61,49 @@ export namespace session {
     export function doLogin(request: Request, response: Response, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
-            security.getBodyData(request,response,function(data: any){
+            security.getBodyData(request, response, function(data: any){
                 if(!utils.isEmpty(data)) {
-                    let paramMap = utils.parseParameters(data);
-                    https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + paramMap.token, function(res: https.ClientRequest) {
-                        res.setEncoding("utf8");
-                        let authResponse: string = "";
-                        res.on("data", function(buffer: string) {
-                            authResponse += buffer;
-                        });
-                        res.on("end", function() {
-                            try {
-                                let auth = JSON.parse(authResponse);
-                                if(security.validateTokeninfoResponse(auth)) {
-                                    database.logUser(auth.email, request, response);
-                                    onSuccess();
-                                } else {
-                                    // Authentication failed
-                                    onFailure();
-                                }
-                            } catch(e) {
-                                console.error("Unrecoverable session:");
-                                console.error(e);
-                                // Invalidate existing session, since it"s unrecoverable
-                                doLogout(request, response, onFailure);
-                            }
-                        });
-                    }).on("error", function(e: Error) {
-                        // Google API problem
-                        console.error(e);
+                    let authRequest: IAuthRequest;
+                    try {
+                        authRequest = JSON.parse(data);
+                    } catch(e) {
+                        console.error("Cannot parse body: ");
+                        console.error(data);
                         onFailure();
-                    });
+                        return;
+                    }
+                    if(authRequest.service === "google") {
+                        https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + authRequest.token, function(res: https.ClientRequest) {
+                            res.setEncoding("utf8");
+                            let authResponse: string = "";
+                            res.on("data", function(buffer: string) {
+                                authResponse += buffer;
+                            });
+                            res.on("end", function() {
+                                try {
+                                    let auth = JSON.parse(authResponse);
+                                    if(security.validateTokeninfoResponse(auth)) {
+                                        database.logUser(auth.email, request, response);
+                                        onSuccess();
+                                    } else {
+                                        // Authentication failed
+                                        onFailure();
+                                    }
+                                } catch(e) {
+                                    console.error("Unrecoverable session:");
+                                    console.error(e);
+                                    // Invalidate existing session, since it"s unrecoverable
+                                    doLogout(request, response, onFailure);
+                                }
+                            });
+                        }).on("error", function(e: Error) {
+                            // Google API problem
+                            console.error(e);
+                            onFailure();
+                        });
+                    } else if(authRequest.service === "facebook") {
+                        //TODO
+                    }
                 } else {
                     onFailure();
                 }

@@ -9,11 +9,8 @@
 <link rel="manifest" href="data/configuration/manifest.json"> 
 <link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet"> 
 
-<meta name="google-signin-scope" content="profile email">
-<meta name="google-signin-client_id" content="106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com">
 <meta name="theme-color" content="#ffffff">
 
-<script src="https://apis.google.com/js/platform.js" async defer></script>
 <script src="lib/require.min.js" async></script>
 
 <script type='text/javascript'>
@@ -42,25 +39,6 @@ window.onload = () => {
 	    L4W_game.Game.start(canvas);
 	};
 }
-
-function onSignIn(googleUser) {
-	document.getElementById("login").style.display="none";
-	
-	let f = document.createElement("form");
-	f.setAttribute("method","post");
-	f.setAttribute("action",".");
-	let i;
-	
-	i = document.createElement("input");
-	i.setAttribute("type","text");
-	i.setAttribute("name","token");
-	i.setAttribute("value",googleUser.getAuthResponse().id_token);
-	f.appendChild(i);
-
-	f.style.display="none";
-	document.body.appendChild(f);
-	f.submit();
-};
 </script>
 
 <link rel="stylesheet" type="text/css" href="style/l4w.css">
@@ -71,9 +49,16 @@ function onSignIn(googleUser) {
 		<div class="bg-image"></div>
 
 		<div class="l4wPanel l4wMenuFrame">
-			<p>
-				<div id="login" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-			</p>
+			<div id="loginVue">
+				<login>
+					<template v-slot:logged>
+						<button onclick="L4W_game.Game.save()">Save</button>
+						<button onclick="L4W_game.Game.load()">Load</button>
+					</template>
+					<template v-slot:unlogged>
+					</template>
+				</login>
+			</div>
 			<p>
 				<select id="comboLang" onchange="L4W_game.Game.changeLanguage()"></select>
 			</p>
@@ -101,7 +86,13 @@ function onSignIn(googleUser) {
 				<span id="dialogName" class="l4wDialogName">Sheev Palpatine</span>:
 				<span id="dialogArea" class="l4wDialog">
 				Did you ever hear the tragedy of Darth Plagueis the Wise?
-				I thought not. It's not a story the Jedi would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life... He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. It's ironic he could save others from death, but not himself.
+				I thought not. It's not a story the Jedi would tell you. It's a Sith legend. 
+				Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life...
+				He had such a knowledge of the dark side that he could even keep the ones he cared about from dying.
+				The dark side of the Force is a pathway to many abilities some consider to be unnatural.
+				He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did.
+				Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep.
+				It's ironic he could save others from death, but not himself.
 				</span>
 				<div id="dialogEdgeArea" class="dialogEdgeArea">
 					<div id="dialogEdge1" class="l4wDialogEdge">Tell me more...</div>

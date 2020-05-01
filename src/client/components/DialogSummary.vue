@@ -46,7 +46,7 @@ export default Vue.extend({
     }
 })
 
-Vue.filter('str_limit', function (value: string, size?: number) {
+Vue.filter("str_limit", function (value: string, size?: number) {
     if (value === undefined) {
         return "";
     } 

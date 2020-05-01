@@ -14,6 +14,7 @@ import { session } from "./session"
 import * as utils from "./utils"
 import { security } from "./security"
 import { database } from "./database"
+import { IAuthResponse } from "../common/ServerAPI"
 
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
@@ -68,24 +69,8 @@ app.use(function(req: Request, res: Response, next: NextFunction) {
 });
 
 // Views redirection
-app.get("/", function(request: Request, response: Response) {
-    if(!utils.isEmpty(request.query.logout) && request.query.logout === "1") {
-        session.doLogout(request,response,function() {
-            utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
-        });
-    } else {
-        if(session.isAuthenticated(request)) {
-           database.logUserSessionAccess(session.getUser(request)!);
-            utils.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
-        } else {
-            utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
-        };
-    }
-});
-app.post("/", function(request: Request, response: Response) {
-    session.doLogin(request,response,function() {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "home-auth.html", response);
-    }, function() {
+app.all("/", function(request: Request, response: Response) {
+    session.doLogout(request,response,function() {
         utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
     });
 });
@@ -218,5 +203,21 @@ app.get("/v", function(request: Request, response: Response) {
             let packageJson = JSON.parse(<string> data);
             response.send(packageJson.name + " " + packageJson.version);
         }
+    });
+});
+app.post("/auth", function(request: Request, response: Response) {
+    let authResponse: IAuthResponse;
+    session.doLogin(request, response, function() {
+        authResponse = {
+            result: true
+        }
+        response.json(authResponse);
+    },
+    function() {
+        console.warn("Login failed");
+        authResponse = {
+            result: false
+        }
+        response.json(authResponse);
     });
 });

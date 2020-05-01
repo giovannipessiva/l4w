@@ -329,7 +329,8 @@ export namespace database {
     }
 
     export function logUser(mail: string, request: Request, response: Response) {
-        security.computeUnsafeHash(mail)
+        security
+        .computeUnsafeHash(mail)
         .catch((reason: any) => {
             console.error(reason);
             response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");

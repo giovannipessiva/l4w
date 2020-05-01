@@ -76,11 +76,9 @@ div.event{
 		<h2>Authentication with Vue component</h2>
 		<div id="loginVue">
 			<login>
-				<template v-slot:whenLoggedIn>
-					Test per login --> {{ name }}
+				<template v-slot:logged>
 				</template>
-				<template v-slot:whenLoggedOut>
-					Test per login --> non loggato ({{ logged }})
+				<template v-slot:unlogged>
 				</template>
 			</login>
 		</div>

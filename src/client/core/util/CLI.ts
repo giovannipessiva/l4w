@@ -87,10 +87,6 @@ export namespace CLI {
     function su(): void {
         Speaker.gandalf();
         console.log("%c\n"
-            + "WWWWWWWWWWWWWWWWWWWWWWWWW@WWxxW@W@@@@@@WWWWWWWWWWWMMMMMWWMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@WW@@Wx#+#nW@@@@@@@W@@@@@@@@@@@@@@@@@@@@\n"
-            + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWnMW@@WW@@@WWWWWWWWWWWWMMMMMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@@WMz+#zx@@@@@W@@@@@@@@@@@@@@@@@@@@@@\n"
-            + "WWWWWWWWWWWWWWWWWWWWWWWWWWWMxMW@W@@@@@@@WWWWWWWWWWMMMMMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@WW@WWWWWW@@@Wn#+#nW@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
-            + "WWWWWWWWWWWWWWWWWWWWWWWWWWWMxM@W@@@@@@@@@WWWWWWWWWMMMMWWWMWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW@WWWxz+#zM@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
             + "WWWWWWWWWWWWWWWWWWWWWWW@@@@xxM@@@@@@@@@@@@@WWWWWWWWWWWWMWWWWWWWWWWWWWWW@@@@@WWWWWWWWWWWWWWWWWWWWWW@@@@@@@WWW@@@@@@WWWMn###xW@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
             + "WWWWWWWWWWWWWWWWWWWWWWWzzzzzxWnzzzn@@@W#;::izWWWWWzzzzzWxzzzzxWWWWWWW@ni:::*n@WWWMzzzzx@zzzzzWWWWzzzzzzzMWW@Mzzzzx@WWWz##+#M@W@@@@@@@@@@@@@@@@@@@@@@@@\n"
             + "WWWWWWWWWWWWWWWWWWWWWW@:   :MW.   i@@n.      ,MWWW`   `W+    +WWWWWWW;       :WW@#    *@.   `MWWW`      +@W@z    i@WW@:    n@@@@@@@@@@@@@@@@@@@@@@@@@@\n"
@@ -170,12 +166,6 @@ export namespace CLI {
             + "@@@MWWWW@#WnW@@@@@@@@@@@@@.   +#W`   .@MWx.       .MWMMM@,    #x#zz+##nx     Mz+#+#W.    +@x    `W@#`       .xWxW;        :WWWMMMWMMM@@WMMxxxxMxnxW@@@\n"
             + "@@WMWWWW@#WxW@@@@@@@@@@@@@i;;;z@@*;;;i@MMWM*.```.*WWMnMx@*;;;;nx###++#zx;;;;;x#+#+#M;;;;;nWM;;;;;MW@x;.```.*MWxnMW#:````,#@WMMMMWWMMM@@WMMxxxxxxxxM@@@\n"
             + "@@WWWWW@@@Mx@@@@@@@@@@@@@@@@@@@@@@@@@@WMMxW@WMMWWWMxxzxnMWW@WWWz#*#+*++xMMWWMn#++++zxWWW@WxM@WWWWWMMWWWMMWWWMxxxxMWWWMMW@@WWMMMMMMMMM@@WMMxxxMMxxxxW@@\n"
-            + "@@WWWWWW@@xx@@@@@@@@@@@@@WMW@WWWW@WWWWMMMnxxxnMxnxxxxznxzzxznnnx+*z#+++*++#+z+#**+i+*##zMxzznnnnxWMxxxxMMxxxxxxxxxxxxMMWWMWMMMMMMMMMMW@WMMMMMMWxxxxW@@\n"
-            + "@@MWWWWW@WxM@@@@@@@@@@@@WWMWWWWWWWWWWMMMMMzzMzzxn#xxnzzxnzxznnnx#*z##+#+++z+n##+++i+*#z#xxzznnxnxWMMxxxxxxxxxxxxxxxxxxxWWMMWWMMMMWWMMM@WMMMMMM@xxnxM@@\n"
-            + "@@WWWWW@WMnM@@@@@@@@@@@@WWW@@WWWWWWWWMMMMWnnMnzMMzMnnnnzxnxxnxnnn+zz###+#+#+nzz#++**+##nnxnzxnxxnWMMxxxxxxxxxxxxxxxxxxxWWMWWMWWWWWWWMM@WMMMMMMWWxxnxW@\n"
-            + "@@WWWWWWxxzM@@@@@@@@@@#@@WW@@WWWWWWWWMMMMWMMMxxMMMMMxMxxxxxMMMMMx#zzzz#zzz#znnnn##**+znxxxMMMMMMMWWMxxxxxxxxxxxxxxxxxxxWWMWWWWWMMWWMMMWWMMMMMMWWxxxxW@\n"
-            + "@@MWWW@@WxzM@@@@@@@@@@@@@WW@@WWWWWMMMMMMWMMMMMMMMMMWxxxMxMxxMMMMxnzzzzzzzn##nnxnz####znxxMMxMMMMMMWMMxxxxxxxxxxxxxxxxxMWWMWWWWWMMWMMWMWWMMMMMMWWMxxxM@\n"
-            + "@@WWWW@@@MMW@@@@WW@@@@@@WWW@@@WWWWWMMMMWWMMMMMMMMMxWxxxMxMMxxMMWxnzzzz#znnn#znnxz###zznMMMMMMMMMxMWMMxxxxxxxxxxxxxxxxxxWWMWWWWWMMznzzzznzzzzzzzxznz#zM\n"
             , STYLE_ASCII_ART);
     }
 }

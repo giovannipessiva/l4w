@@ -72,16 +72,6 @@ export function isEmpty(obj: any) {
     return false;
 }
 
-export function parseParameters(parameters: string) {
-    let paramMap: any = {};
-    let paramArray = parameters.split("&"); 
-    for (let i = 0; i < paramArray.length; i++) {
-        let tokens = paramArray[i].split("=");
-        paramMap[tokens[0]] = tokens[1];
-    }
-    return paramMap;
-}
-
 /**
  * List the files in a directory (excluding dirs, hidden, 404)
  * @param filePath path to read
