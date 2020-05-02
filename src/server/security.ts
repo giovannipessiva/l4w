@@ -6,8 +6,12 @@ import bcrypt from "bcrypt"
 import { Request, Response } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"
+import { IAuthRequest } from "../common/ServerAPI"
 
 export namespace security {
+
+    const FACEBOOK_APPLICATION_ID = "1885551381575204";
+    const GOOGLE_APPLICATION_ID = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
 
     export function isDevEnv() {
         return "development" === process.env.NODE_ENV;
@@ -50,32 +54,71 @@ export namespace security {
         }
     }
     
-    export function validateTokeninfoResponse(data: any) {
+    export function validateGoogleTokeninfoResponse(data: any) {
         if(utils.isEmpty(data)) {
             return false;
         }
         
         //see: https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token
 
-        //The value of aud in the ID token is equal to one of your app"s client IDs. This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app"s backend server.
-        if(data.aud !== "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com") {
-            logSecurityEvent("Login.aud",data.aud);
+        //The value of aud in the ID token is equal to one of your app's client IDs.
+        //This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
+        if(data.aud !== GOOGLE_APPLICATION_ID) {
+            logSecurityEvent("Login.aud", data.aud);
+            console.warn("Access token is invalid for this application");
             return false;
         }
         
         //The value of iss in the ID token is equal to accounts.google.com or https://accounts.google.com.
         if(data.iss !== "accounts.google.com" && data.iss !== "https://accounts.google.com") {
-            logSecurityEvent("Login.iss",data.iss);
+            logSecurityEvent("Login.iss", data.iss);
+            console.warn("Access token is invalid for this user");
             return false;
         }
         
         //The expiry time (exp) of the ID token has not passed.
         if(data.exp < Math.floor((new Date).getTime()/1000)) {
-            console.log("expiry time passed"); //TODO is the expiry time enough?
+            console.warn("Expiry time passed");
             return false;
         }
         
         return true;        
+    }
+
+    export function validateFacebookTokeninfoResponse(data: any, authRequest: IAuthRequest) {
+        if(utils.isEmpty(data)) {
+            return false;
+        }
+
+        //see: https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#checktoken
+
+        // Check that access token is valid for this application
+        if(data.app_id !== FACEBOOK_APPLICATION_ID) {
+            logSecurityEvent("Login.aud", data.app_id);
+            console.warn("Access token is invalid for this application");
+            return false;
+        }
+        
+        // Check that access token is valid for this user
+        if(data.user_id !== authRequest.userId) {
+            logSecurityEvent("Login.iss", data.user_id);
+            console.warn("Access token is invalid for this user");
+            return false;
+        }
+
+        // Check validity flag
+        if(!data.is_valid) {
+            console.warn("Flag is_valid is not set to true");
+            return false;
+        }
+
+        //The expiry time (expires_at) of the ID token has not passed.
+        if(data.expires_at < Math.floor((new Date).getTime()/1000)) {
+            console.warn("Expiry time passed");
+            return false;
+        }
+
+        return true;
     }
     
     export function getSecureCookieSetting() {
@@ -127,7 +170,7 @@ export namespace security {
      * @param plaintext string to hash
      */
     export function computeUnsafeHash(plaintext: string): Promise<string> {
-        return bcrypt.hash(plaintext, "$2b$10$when_life_gives_you_lemons,_ask_for_salt_and_tequila");
+        return bcrypt.hash(plaintext, "$2b$10$OBjW2ZGF6rpUJKWEA9/kmO");
     }
 
     /**
@@ -142,5 +185,9 @@ export namespace security {
             key: readFileSync("assets/localdev-key.pem"),
             cert: readFileSync("assets/localdev-cert.pem")
         };
+    }
+
+    export function getFacebookAccessToken(): string {
+        return FACEBOOK_APPLICATION_ID + "|" + process.env.FACEBOOK_SECRET;
     }
 }

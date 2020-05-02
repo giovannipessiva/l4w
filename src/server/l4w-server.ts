@@ -70,47 +70,20 @@ app.use(function(req: Request, res: Response, next: NextFunction) {
 
 // Views redirection
 app.all("/", function(request: Request, response: Response) {
-    session.doLogout(request,response,function() {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
-    });
+    utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
 });
-app.get("/edit", function(request: Request, response: Response) {
-    if(!session.isAuthenticated(request)) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
-    } else {
-        database.logUserSessionAccess(session.getUser(request)!);
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
-    }
+app.all("/edit", function(request: Request, response: Response) {
+    utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
 });
-app.post("/edit", function(request: Request, response: Response) {
-    session.doLogin(request,response,function() {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
-    }, function() {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
-    });
+app.all("/edit/:editor", function(request: Request, response: Response) {
+    let editor = request.params.editor;
+    utils.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
 });
-app.get("/edit/:editor", function(request: Request, response: Response) {
-    if(!session.isAuthenticated(request)) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
-    } else {
-        database.logUserSessionAccess(session.getUser(request)!);
-        let editor = request.params.editor;
-        utils.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
-    }
-});
-
 app.all("/test", function(request: Request, response: Response) {
     utils.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
 });
-
 app.all("/privacy", function(request: Request, response: Response) {
     utils.sendFile(dirname + path.sep + "views" + path.sep, "privacy.html", response);
-});
-
-app.get("/logout", function(request: Request, response: Response) {
-    session.doLogout(request,response,function() {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "auth.html", response);
-    });
 });
 
 // Resources redirection
@@ -194,7 +167,6 @@ app.get("/news", function(request: Request, response: Response) {
     }
 });
 app.get("/v", function(request: Request, response: Response) {
-    // Need to do this, since resolveJsonModule does not work as expected
     readFile("package.json", "utf8", function(err: NodeJS.ErrnoException | null, data: string | Buffer) {
         if(err !== null) {
             console.error(err);
@@ -214,10 +186,15 @@ app.post("/auth", function(request: Request, response: Response) {
         response.json(authResponse);
     },
     function() {
-        console.warn("Login failed");
+        console.error("Login failed");
         authResponse = {
             result: false
         }
         response.json(authResponse);
+    });
+});
+app.all("/logout", function(request: Request, response: Response) {
+    session.doLogout(request, response, function() {
+        response.send("");
     });
 });

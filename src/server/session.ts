@@ -82,8 +82,8 @@ export namespace session {
                             res.on("end", function() {
                                 try {
                                     let auth = JSON.parse(authResponse);
-                                    if(security.validateTokeninfoResponse(auth)) {
-                                        database.logUser(auth.email, request, response);
+                                    if(security.validateGoogleTokeninfoResponse(auth)) {
+                                        database.doUserLogin(auth.email, request, response);
                                         onSuccess();
                                     } else {
                                         // Authentication failed
@@ -92,7 +92,7 @@ export namespace session {
                                 } catch(e) {
                                     console.error("Unrecoverable session:");
                                     console.error(e);
-                                    // Invalidate existing session, since it"s unrecoverable
+                                    // Invalidate existing session, since it's unrecoverable
                                     doLogout(request, response, onFailure);
                                 }
                             });
@@ -102,7 +102,56 @@ export namespace session {
                             onFailure();
                         });
                     } else if(authRequest.service === "facebook") {
-                        //TODO
+                        let access_token = security.getFacebookAccessToken();
+                        https.get("https://graph.facebook.com/debug_token?input_token=" + authRequest.token + "&access_token=" + access_token, function(res: https.ClientRequest) {
+                            res.setEncoding("utf8");
+                            let authResponse: string = "";
+                            res.on("data", function(buffer: string) {
+                                authResponse += buffer;
+                            });
+                            res.on("end", function() {
+                                try {
+                                    let auth = JSON.parse(authResponse);
+                                    if(security.validateFacebookTokeninfoResponse(auth.data, authRequest)) {
+                                        https.get("https://graph.facebook.com/" + authRequest.userId + "?fields=email&access_token=" + authRequest.token, function(res: https.ClientRequest) {
+                                            let graphResponse: string = "";
+                                            res.on("data", function(buffer: string) {
+                                                graphResponse += buffer;
+                                            });
+                                            res.on("end", function() {
+                                                try {
+                                                    let graphData = JSON.parse(graphResponse);    
+                                                    database.doUserLogin(graphData.email, request, response);
+                                                    onSuccess();
+                                                } catch(e) {
+                                                    console.error("Cannot read graph response");
+                                                    console.error(e);
+                                                    // Invalidate existing session, since it cannot be initialized
+                                                    doLogout(request, response, onFailure);
+                                                }
+                                            });
+
+                                        }).on("error", function(e: Error) {
+                                            // Facebook API problem
+                                            console.error(e);
+                                            onFailure();
+                                        });
+                                    } else {
+                                        // Authentication failed
+                                        onFailure();
+                                    }
+                                } catch(e) {
+                                    console.error("Unrecoverable session:");
+                                    console.error(e);
+                                    // Invalidate existing session, since it's unrecoverable
+                                    doLogout(request, response, onFailure);
+                                }
+                            });
+                        }).on("error", function(e: Error) {
+                            // Facebook API problem
+                            console.error(e);
+                            onFailure();
+                        });
                     }
                 } else {
                     onFailure();
@@ -110,18 +159,20 @@ export namespace session {
             });
         } else {
             // Valid session found
-            database.logUserSessionAccess(request.session!.user);
+            database.logAccess(request.session!.user);
             onSuccess();
         }
     }
         
-    export function doLogout(request: Request, response: Response, callback: any) {
+    export function doLogout(request: Request, response: Response, callback: IEmptyCallback) {
+        response.clearCookie(session.cookieName, { path: "/" });
         if(request.session !== undefined) {
             request.session.destroy(function(){
                 request.session = undefined;
-                response.clearCookie(session.cookieName,{ path: "/" });
                 callback();
             });
+        } else {
+            callback();
         }
     }
 }

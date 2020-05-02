@@ -3,12 +3,12 @@
         <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0&appId=1885551381575204"></script>
         <script type="application/javascript" async defer src="https://apis.google.com/js/platform.js?onload=gAsyncInit"></script>
         <div v-show="!loginStatus">
-            <img class="statusIcon unloggedIcon" src="/style/ui/unlogged.png" alt="Unlogged icon" title="You are not currently logged in">
+            <!-- <img class="statusIcon unloggedIcon" src="/style/ui/unlogged.png" alt="Unlogged icon" title="You are not currently logged in"> -->
             <!-- Google login -->
             <div class="g-signin2" data-onsuccess="gLoginCallback" data-theme="dark"></div>
             <!-- Facebook login -->
-            <div class="fb-login-button" data-size="medium" data-button-type="login_with" data-layout="default" data-auto-logout-link="false"
-                data-use-continue-as="false" data-width=""></div>
+            <div class="fb-login-button" data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false"
+                data-use-continue-as="false" data-width="" data-scope="email" ></div>
             <br>
             <slot name="unlogged"></slot>
         </div>
@@ -121,6 +121,9 @@ export default Vue.extend({
                 default:
                     console.error("Unexpected loginService: " + this.loginService);
                 }
+                Resource.sendGETRequest("logout", function(response?: string) {
+                    // Nothing to do
+                });
             } else {
                 console.error("Cannot logout, user is not currently logged in")
             }
@@ -129,7 +132,8 @@ export default Vue.extend({
             if(response.status === "connected") {
                 let request: IAuthRequest = {
                     service: "facebook",
-                    token: response.authResponse!.accessToken
+                    token: response.authResponse!.accessToken,
+                    userId: response.authResponse!.userID
                 };
                 this.doLogin(request);
             }
@@ -150,7 +154,6 @@ export default Vue.extend({
                         if(authResponse.result) {
                             Vue.set(vueScope, "loginStatus", true);
                             Vue.set(vueScope, "loginService", request.service);
-                            console.log("Logged with " + request.service);
                             return;
                         }
                     } catch(e) {
@@ -174,6 +177,7 @@ export default Vue.extend({
 }
 .root div {
     margin:0.5em;
+    text-align: center;
 }
 .statusIcon {
     margin:1em;

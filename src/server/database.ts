@@ -72,7 +72,7 @@ export namespace database {
         langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
     };
     
-    function logAccess(user: string) {
+    export function logAccess(user: string) {
         // User already known, log this access
         models.log_access.update({
             last_seen : new Date(),
@@ -82,6 +82,7 @@ export namespace database {
                 user : user,
             }
         }).then(function(r: any) {
+            // Nothing to do
         }, function(error: any) {
             console.log(error);
         });
@@ -324,11 +325,7 @@ export namespace database {
         }
     }
 
-    export function logUserSessionAccess(user: string) {
-        logAccess(user)
-    }
-
-    export function logUser(mail: string, request: Request, response: Response) {
+    export function doUserLogin(mail: string, request: Request, response: Response) {
         security
         .computeUnsafeHash(mail)
         .catch((reason: any) => {
