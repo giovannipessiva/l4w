@@ -9,3 +9,12 @@ export interface IAuthRequest {
 export interface IAuthResponse {
     result: boolean;
 }
+
+export interface IIssueRequest {
+    label?: string,
+    description: string    
+}
+
+export interface IIssueResponse {
+    url?: string
+}

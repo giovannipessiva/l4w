@@ -1,9 +1,12 @@
 import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
+
 // @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import DialogSummaryComponent from "../../components/DialogSummary.vue"
 // @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import DialogEditorComponent from "../../components/DialogEditor.vue"
+// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
+import LoginComponent from "../../components/Login.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -72,6 +75,13 @@ export namespace MapperPage {
     export function start() {
         Compatibility.check();
         initDialogEditor();
+
+        new Vue({
+            el: "#loginVue",
+            components: {
+                "login": LoginComponent,
+            }
+        });
         
         let jsTreeOptions: JSTreeStaticDefaults = {
             core: {
@@ -204,10 +214,12 @@ export namespace MapperPage {
     }
 
     export function loadNews() {
+        /*
         $.getJSON(base_path + "news", function(data) {
             //let news = $("#news");
             //TODO manage json response
         });
+        */
     }
 
     export function changeTile() {

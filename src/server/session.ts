@@ -4,12 +4,11 @@ import Session from "express-session"
 import SequelizeSessionInit from "connect-session-sequelize"
 /* tslint:disable-next-line */
 let SequelizeStore = SequelizeSessionInit(Session.Store);
-//@ts-ignore TS1192
-import https from "https"
 import { Request, Response } from "express"
 
 import * as utils from "./utils"
 import { security } from "./security"
+import { services } from "./services"
 import { models } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
@@ -72,86 +71,20 @@ export namespace session {
                         onFailure();
                         return;
                     }
+                    let successCallback = function(email?: string) {
+                        database.doUserLogin(email!, request, response);
+                        onSuccess();
+                    }
+                    let errorCallback = function() {
+                        doLogout(request, response, onFailure);
+                    }
                     if(authRequest.service === "google") {
-                        https.get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + authRequest.token, function(res: https.ClientRequest) {
-                            res.setEncoding("utf8");
-                            let authResponse: string = "";
-                            res.on("data", function(buffer: string) {
-                                authResponse += buffer;
-                            });
-                            res.on("end", function() {
-                                try {
-                                    let auth = JSON.parse(authResponse);
-                                    if(security.validateGoogleTokeninfoResponse(auth)) {
-                                        database.doUserLogin(auth.email, request, response);
-                                        onSuccess();
-                                    } else {
-                                        // Authentication failed
-                                        onFailure();
-                                    }
-                                } catch(e) {
-                                    console.error("Unrecoverable session:");
-                                    console.error(e);
-                                    // Invalidate existing session, since it's unrecoverable
-                                    doLogout(request, response, onFailure);
-                                }
-                            });
-                        }).on("error", function(e: Error) {
-                            // Google API problem
-                            console.error(e);
-                            onFailure();
-                        });
+                        services.validateGoogleToken(request, response, successCallback, errorCallback, authRequest.token);
                     } else if(authRequest.service === "facebook") {
-                        let access_token = security.getFacebookAccessToken();
-                        https.get("https://graph.facebook.com/debug_token?input_token=" + authRequest.token + "&access_token=" + access_token, function(res: https.ClientRequest) {
-                            res.setEncoding("utf8");
-                            let authResponse: string = "";
-                            res.on("data", function(buffer: string) {
-                                authResponse += buffer;
-                            });
-                            res.on("end", function() {
-                                try {
-                                    let auth = JSON.parse(authResponse);
-                                    if(security.validateFacebookTokeninfoResponse(auth.data, authRequest)) {
-                                        https.get("https://graph.facebook.com/" + authRequest.userId + "?fields=email&access_token=" + authRequest.token, function(res: https.ClientRequest) {
-                                            let graphResponse: string = "";
-                                            res.on("data", function(buffer: string) {
-                                                graphResponse += buffer;
-                                            });
-                                            res.on("end", function() {
-                                                try {
-                                                    let graphData = JSON.parse(graphResponse);    
-                                                    database.doUserLogin(graphData.email, request, response);
-                                                    onSuccess();
-                                                } catch(e) {
-                                                    console.error("Cannot read graph response");
-                                                    console.error(e);
-                                                    // Invalidate existing session, since it cannot be initialized
-                                                    doLogout(request, response, onFailure);
-                                                }
-                                            });
-
-                                        }).on("error", function(e: Error) {
-                                            // Facebook API problem
-                                            console.error(e);
-                                            onFailure();
-                                        });
-                                    } else {
-                                        // Authentication failed
-                                        onFailure();
-                                    }
-                                } catch(e) {
-                                    console.error("Unrecoverable session:");
-                                    console.error(e);
-                                    // Invalidate existing session, since it's unrecoverable
-                                    doLogout(request, response, onFailure);
-                                }
-                            });
-                        }).on("error", function(e: Error) {
-                            // Facebook API problem
-                            console.error(e);
-                            onFailure();
-                        });
+                        services.validateFacebookToken(request, response, successCallback, errorCallback, authRequest.token, authRequest.userId);
+                    } else {
+                        console.error("Unexpected auth service:" + authRequest.service);
+                        onFailure();
                     }
                 } else {
                     onFailure();

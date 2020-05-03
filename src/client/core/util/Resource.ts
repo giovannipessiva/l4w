@@ -81,12 +81,12 @@ export namespace Resource {
             callback(this.responseText);
         };
         request.onerror = function(this: XMLHttpRequest, ev: ProgressEvent): any {
-            console.error("Error while getting " + uri);
+            console.error("Error for request to: " + uri);
             console.error(ev);
             callback();
         };
         request.ontimeout = function() {
-            console.error("Timeout while getting " + uri);
+            console.error("Timeout for request to: " + uri);
             callback();
         };
         request.open(requestType, uri, true);

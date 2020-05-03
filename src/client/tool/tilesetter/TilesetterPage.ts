@@ -1,3 +1,8 @@
+import Vue from "vue"
+
+// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
+import LoginComponent from "../../components/Login.vue"
+
 import { Resource } from "../../core/util/Resource"
 import { IPropertiesCallback } from "../../core/util/Commons"
 import { Constant } from "../../core/util/Constant"
@@ -12,6 +17,13 @@ export namespace TilesetterPage {
 
     export function start() {
         Compatibility.check(); 
+
+        new Vue({
+            el: "#loginVue",
+            components: {
+                "login": LoginComponent,
+            }
+        });
         
         // Resize the panel to match the tileset
         let resizerCallback: IPropertiesCallback = function(props: Map<string, number>) {
@@ -38,10 +50,12 @@ export namespace TilesetterPage {
     }
 
     export function loadNews() {
+        /*
         $.getJSON(base_path + "news", function(data) {
             //let news = document.getElementById("news");
             //TODO manage json response
         });
+        */
     }
     
     export function changeTile() {

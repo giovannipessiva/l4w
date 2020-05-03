@@ -3,7 +3,7 @@ import fs from "fs"
 
 import { HttpStatus } from "../common/Constants"
 import { Response } from "express";
-import { IDialogNode, IDialogEdge } from "../common/model/Dialog";
+import { IDialogNode, IDialogEdge } from "../common/model/Dialog"
 
 const placeholder = "404.png";
 

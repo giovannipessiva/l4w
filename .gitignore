@@ -1,8 +1,8 @@
 .tscache
+.env
 dist
 node_modules
 npm-debug.log
 data/database/data
 data/database/setRemoteConnectionConfig.bat
 data/database/setLocalConnectionConfig.bat
-.env

@@ -22,7 +22,7 @@ window.onload = function(){
 function finishedLoading(){
 	L4W_tester.Tester.drawMap();
 	document.getElementById("footer").style.visibility = "visible";
-	L4W_tester.Tester.loadAuth();
+	L4W_tester.Tester.loadVueComponents();
 };
 </script>
 
@@ -72,8 +72,18 @@ div.event{
 </head>
 <body>
 	<h1>L4W tests</h1>
+
 	<div class="framed">
-		<h2>Authentication with Vue component</h2>
+		<h2>Bug reporting component</h2>
+		<div id="bugReportingVue">
+			<bug-reporting>
+			</bug-reporting>
+		</div>
+	</div>
+	<br>
+
+	<div class="framed">
+		<h2>Authentication component</h2>
 		<div id="loginVue">
 			<login>
 				<template v-slot:logged>
@@ -84,6 +94,7 @@ div.event{
 		</div>
 	</div>
 	<br>
+
 	<div class="framed">
 		<h2>Pathfinding</h2>
 		<div style="float:left;">

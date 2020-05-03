@@ -1,3 +1,8 @@
+import Vue from "vue"
+
+// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
+import LoginComponent from "../components/Login.vue"
+
 import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../common/model/Commons";
 import { ISave } from "../../common/model/Save";
 import { Launcher } from "../core/events/Launcher";
@@ -16,10 +21,6 @@ import { ResourceType, ScreenSize } from "../../common/Constants";
 import { Utils } from "../../common/Utils";
 import { CLI } from "../core/util/CLI";
 import { DataDefaults } from "../../common/DataDefaults";
-
-import Vue from "vue"
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
-import LoginComponent from "../components/Login.vue"
 
 /**
  * Module for initializing and launching a game

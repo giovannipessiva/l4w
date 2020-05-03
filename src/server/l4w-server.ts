@@ -14,7 +14,8 @@ import { session } from "./session"
 import * as utils from "./utils"
 import { security } from "./security"
 import { database } from "./database"
-import { IAuthResponse } from "../common/ServerAPI"
+import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
+import { services } from "./services"
 
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
@@ -193,8 +194,22 @@ app.post("/auth", function(request: Request, response: Response) {
         response.json(authResponse);
     });
 });
-app.all("/logout", function(request: Request, response: Response) {
+app.get("/logout", function(request: Request, response: Response) {
     session.doLogout(request, response, function() {
         response.send("");
+    });
+});
+app.post("/issue", function(request: Request, response: Response) {
+    security.getBodyData(request, response, function(data: any){
+        let req: IIssueRequest;
+        try {
+            req = JSON.parse(data);
+        } catch(e) {
+            console.error("Cannot parse body: ");
+            console.error(data);
+            response.status(HttpStatus.BAD_REQUEST).send("");
+            return;
+        }
+        services.openGitHubIssue(request, response, req);
     });
 });

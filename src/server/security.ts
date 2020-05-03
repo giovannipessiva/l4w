@@ -1,12 +1,12 @@
-import { HttpStatus } from "../common/Constants"
-import * as utils from "./utils"
-import { models } from "./models/index"
 //@ts-ignore TS1192
 import bcrypt from "bcrypt"
 import { Request, Response } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"
-import { IAuthRequest } from "../common/ServerAPI"
+
+import { HttpStatus } from "../common/Constants"
+import * as utils from "./utils"
+import { models } from "./models/index"
 
 export namespace security {
 
@@ -85,7 +85,7 @@ export namespace security {
         return true;        
     }
 
-    export function validateFacebookTokeninfoResponse(data: any, authRequest: IAuthRequest) {
+    export function validateFacebookTokeninfoResponse(data: any, userId?: string) {
         if(utils.isEmpty(data)) {
             return false;
         }
@@ -100,7 +100,7 @@ export namespace security {
         }
         
         // Check that access token is valid for this user
-        if(data.user_id !== authRequest.userId) {
+        if(data.user_id !== userId) {
             logSecurityEvent("Login.iss", data.user_id);
             console.warn("Access token is invalid for this user");
             return false;
@@ -189,5 +189,17 @@ export namespace security {
 
     export function getFacebookAccessToken(): string {
         return FACEBOOK_APPLICATION_ID + "|" + process.env.FACEBOOK_SECRET;
+    }
+
+    export function sanitizeIssueDescription(description: string): string {
+        // Should be rendered as a quote
+        description = description.split("\n").join("\n>");
+        // Should not contains active links
+        description = description.split("http").join("ht#p");
+        description = description.split("href").join("hr#f");
+        description = description.replace(/\(.+[^ ]\.[^ ].+\)/g, "(###)");
+        // Should not contains javascript
+        description = description.split("javascript").join("javascri#t");
+        return description;
     }
 }
