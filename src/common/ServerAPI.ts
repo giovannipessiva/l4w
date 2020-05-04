@@ -12,7 +12,8 @@ export interface IAuthResponse {
 
 export interface IIssueRequest {
     label?: string,
-    description: string    
+    description: string,
+    captchaToken: string
 }
 
 export interface IIssueResponse {

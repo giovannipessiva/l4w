@@ -1,5 +1,6 @@
 <template>
     <div>
+        <script type="application/javascript" async defer src="https://www.google.com/recaptcha/api.js?render=6LfudvIUAAAAADY9aLIgdcbuY8kekIKAv6WYEYFb"></script>
         <div v-if="!flagSent">
             <p>
                 <label for="issueLabel">Do you what to report something?</label><br>
@@ -49,6 +50,8 @@ import { Resource } from "../core/util/Resource";
 import { Utils } from "../../common/Utils";
 import { IIssueRequest, IIssueResponse } from "../../common/ServerAPI"
 
+declare let grecaptcha: any; // Loaded from Google script
+
 export default Vue.extend({
     name: "bug-reporting",
     data: function(): {
@@ -69,24 +72,29 @@ export default Vue.extend({
     methods: {
         send: function() {
             if(this.description.trim().length > 0) {
-                Vue.set(this, "flagSent", true);
-                let request: IIssueRequest = {
-                    label: this.label, 
-                    description: this.description
-                };
                 let vueScope = this;
-                Resource.sendPOSTRequest("issue", JSON.stringify(request), function(response?: string) {
-                    Vue.set(vueScope, "flagReceived", true);
-                    if(!Utils.isEmpty(response)) {
-                        try {
-                            let resp: IIssueResponse = JSON.parse(response!);
-                            Vue.set(vueScope, "url", resp.url);
-                            return;
-                        } catch(e) {
-                            console.error(response);
-                        }
-                    }
-                    console.error("Issue creation failed");
+                grecaptcha.ready(function() {
+                    grecaptcha.execute("6LfudvIUAAAAADY9aLIgdcbuY8kekIKAv6WYEYFb", {action: "bugReport"}).then(function(token: string) {
+                        let request: IIssueRequest = {
+                            label: vueScope.label, 
+                            description: vueScope.description,
+                            captchaToken: token
+                        };
+                        Vue.set(vueScope, "flagSent", true);
+                        Resource.sendPOSTRequest("issue", JSON.stringify(request), function(response?: string) {
+                            Vue.set(vueScope, "flagReceived", true);
+                            if(!Utils.isEmpty(response)) {
+                                try {
+                                    let resp: IIssueResponse = JSON.parse(response!);
+                                    Vue.set(vueScope, "url", resp.url);
+                                    return;
+                                } catch(e) {
+                                    console.error(response);
+                                }
+                            }
+                            console.error("Issue creation failed");
+                        });
+                    });
                 });
             }
         },

@@ -7,11 +7,9 @@ import { readFileSync } from "fs"
 import { HttpStatus } from "../common/Constants"
 import * as utils from "./utils"
 import { models } from "./models/index"
+import { services } from "./services"
 
 export namespace security {
-
-    const FACEBOOK_APPLICATION_ID = "1885551381575204";
-    const GOOGLE_APPLICATION_ID = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
 
     export function isDevEnv() {
         return "development" === process.env.NODE_ENV;
@@ -63,7 +61,7 @@ export namespace security {
 
         //The value of aud in the ID token is equal to one of your app's client IDs.
         //This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
-        if(data.aud !== GOOGLE_APPLICATION_ID) {
+        if(data.aud !== services.GOOGLE_APPLICATION_ID) {
             logSecurityEvent("Login.aud", data.aud);
             console.warn("Access token is invalid for this application");
             return false;
@@ -93,7 +91,7 @@ export namespace security {
         //see: https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#checktoken
 
         // Check that access token is valid for this application
-        if(data.app_id !== FACEBOOK_APPLICATION_ID) {
+        if(data.app_id !== services.FACEBOOK_APPLICATION_ID) {
             logSecurityEvent("Login.aud", data.app_id);
             console.warn("Access token is invalid for this application");
             return false;
@@ -118,6 +116,17 @@ export namespace security {
             return false;
         }
 
+        return true;
+    }
+
+    export function validateGoogleReCaptchaResponse(gResponse: any): boolean {
+        //see: https://developers.google.com/recaptcha/docs/v3#site_verify_response
+        if(gResponse.success !== true) {
+            return false;
+        }
+        if(gResponse.score < 0.5) {
+            return false;
+        }
         return true;
     }
     
@@ -185,10 +194,6 @@ export namespace security {
             key: readFileSync("assets/localdev-key.pem"),
             cert: readFileSync("assets/localdev-cert.pem")
         };
-    }
-
-    export function getFacebookAccessToken(): string {
-        return FACEBOOK_APPLICATION_ID + "|" + process.env.FACEBOOK_SECRET;
     }
 
     export function sanitizeIssueDescription(description: string): string {

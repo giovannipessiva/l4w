@@ -210,6 +210,14 @@ app.post("/issue", function(request: Request, response: Response) {
             response.status(HttpStatus.BAD_REQUEST).send("");
             return;
         }
-        services.openGitHubIssue(request, response, req);
+        let reCaptchaCallback = function(success: boolean) {
+            if(success) {
+                services.openGitHubIssue(request, response, req);
+            } else {
+                console.error("ReCaptcha token validation failed");
+                response.status(HttpStatus.BAD_REQUEST).send("");
+            }
+        }
+        services.validateReCaptchaToken(request, response, reCaptchaCallback, req.captchaToken, request.ip);
     });
 });

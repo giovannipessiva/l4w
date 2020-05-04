@@ -3,15 +3,19 @@ import { get, request } from "https"
 import { Request, Response } from "express"
 
 import { security } from "./security"
-import { IEmptyCallback, IResponseCallback } from "../client/core/util/Commons";
+import { IEmptyCallback, IResponseCallback, IBooleanCallback } from "../client/core/util/Commons";
 import { IIssueRequest, IIssueResponse } from "../common/ServerAPI";
 import { session } from "./session";
 import { HttpStatus } from "../common/Constants";
+import { Utils } from "../common/Utils";
 
 /**
  * This module manage invocation of external services
  */
 export namespace services {
+
+    export const FACEBOOK_APPLICATION_ID = "1885551381575204";
+    export const GOOGLE_APPLICATION_ID = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
 
     export function validateGoogleToken(request: Request, response: Response, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string) {
         get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token, function(res: IncomingMessage) {
@@ -42,7 +46,12 @@ export namespace services {
     }
 
     export function validateFacebookToken(request: Request, response: Response, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string, userId?: string) {
-        let access_token = security.getFacebookAccessToken();
+        if(Utils.isEmpty(process.env.FACEBOOK_SECRET)) {
+            console.error("No env variable FACEBOOK_SECRET defined");
+            onFailure();
+            return;
+        }
+        let access_token = FACEBOOK_APPLICATION_ID + "|" + process.env.FACEBOOK_SECRET;
         get("https://graph.facebook.com/debug_token?input_token=" + token + "&access_token=" + access_token, function(res: IncomingMessage) {
             let authResponse: string = "";
             res.on("data", function(buffer: string) {
@@ -90,6 +99,27 @@ export namespace services {
         });
     }
 
+    export function validateReCaptchaToken(request: Request, response: Response, callback: IBooleanCallback, token: string, ip: string) {
+        let body = "secret=" + process.env.RECAPTCHA_SECRET + "&response=" + token + "&remoteip=" + ip;
+        let headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        post("www.google.com", "/recaptcha/api/siteverify", body, headers, function(responseBody?: string) {
+            try {
+                if(responseBody === undefined) {
+                    response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                } else {
+                    let gResponse = JSON.parse(responseBody);
+                    callback(security.validateGoogleReCaptchaResponse(gResponse));
+                }
+            } catch(e) {
+                console.error("Cannot read Google ReCaptcha response");
+                console.error(e);
+                callback(false);
+            }
+        });
+    }
+
     const ACCEPTED_LABELS = [
         "bug", "enhancement", "question"
     ]
@@ -101,7 +131,7 @@ export namespace services {
             response.status(HttpStatus.FORBIDDEN).send("");
             return;
         }
-        if(process.env.GITHUB_TOKEN === undefined) {
+        if(Utils.isEmpty(process.env.GITHUB_TOKEN)) {
             console.error("No env variable GITHUB_TOKEN defined");
             response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
             return;
