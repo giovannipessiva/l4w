@@ -1,7 +1,7 @@
 import Vue from "vue"
 
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import LoginComponent from "../components/Login.vue"
+import BugReportingComponent from "../components/BugReporting.vue"
 
 import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../common/model/Commons";
 import { ISave } from "../../common/model/Save";
@@ -38,6 +38,12 @@ export namespace Game {
             el: "#loginVue",
             components: {
                 "login": LoginComponent,
+            }
+        });
+        new Vue({
+            el: "#bugReportingVue",
+            components: {
+                "bug-reporting": BugReportingComponent,
             }
         });
 

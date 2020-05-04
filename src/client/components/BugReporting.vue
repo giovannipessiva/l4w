@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div class="root">
         <script type="application/javascript" async defer src="https://www.google.com/recaptcha/api.js?render=6LfudvIUAAAAADY9aLIgdcbuY8kekIKAv6WYEYFb"></script>
         <div v-if="!flagSent">
             <p>
-                <label for="issueLabel">Do you what to report something?</label><br>
+                <label for="issueLabel">Do you want to report something?</label><br>
                 <select v-model="label" id="issueLabel">
                     <option selected disabled />
                     <option value="bug">Problem</option>
@@ -112,6 +112,9 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.root {
+    margin: 1em;
+}
 .description{
     width: 21em;
     height: 4em;
