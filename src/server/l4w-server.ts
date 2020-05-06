@@ -16,26 +16,23 @@ import { security } from "./security"
 import { database } from "./database"
 import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
 import { services } from "./services"
+import { emptyFz } from "../client/core/util/Commons"
 
 //TODO import.meta require target=esnext and module=esnext
 // see also: https://github.com/Microsoft/TypeScript/issues/24082
 //let dirname = path.dirname(new URL(import.meta.url).pathname);
 let dirname = process.cwd() + path.sep;
 
+// Initialization
 let app: Express = express();
 app.use(compression());
-app.use(session.init());
 app.set("port",(process.env.PORT || 5000));
-
-// Initialization
 database.init().then(
     function() {
-        console.log("Database ready");
-    },
-    function() {
-        process.exit();
+        // Initialize session middleware only when DB is available
+        app.use(session.init());
     }
-);
+).catch(emptyFz);
 let server;
 if(!security.isDevEnv()) {
     // Heroku will take care of HTTPS
@@ -55,6 +52,7 @@ server.on("listening", function() {
     process.exit();
 });
 
+
 // Middleware
 app.use(function(req: Request, res: Response, next: NextFunction) {
     // Remove trailing slash
@@ -66,7 +64,8 @@ app.use(function(req: Request, res: Response, next: NextFunction) {
     }
 });
 app.use(function(req: Request, res: Response, next: NextFunction) {
-    security.requestFilter(req, res, next)
+    security.requestFilter(req, res);
+    next();
 });
 
 // Views redirection
@@ -220,4 +219,7 @@ app.post("/issue", function(request: Request, response: Response) {
         }
         services.validateReCaptchaToken(request, response, reCaptchaCallback, req.captchaToken, request.ip);
     });
+});
+app.post("/teapot", function(request: Request, response: Response) {
+    response.status(HttpStatus.IM_A_TEAPOT).send("🫖");
 });

@@ -1564,7 +1564,7 @@
             143,
             null,
             null,
-            113,
+            null,
             null,
             null,
             null,
@@ -1594,7 +1594,7 @@
             151,
             null,
             null,
-            121,
+            40,
             null,
             null,
             null,
@@ -3038,7 +3038,7 @@
           "charaset": "155-Animal05.png",
           "states": [
             {
-              "direction": 1,
+              "direction": 0,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085484700,
               "mSpeed": 0.1024,
@@ -3114,7 +3114,7 @@
           "j": 17,
           "states": [
             {
-              "direction": 3,
+              "direction": 0,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085494758,
               "mSpeed": 0.1536,
@@ -3214,7 +3214,7 @@
         }
       ],
       "dynamicBlocks": [
-        0,
+        15,
         0,
         0,
         0,

@@ -8,7 +8,8 @@ export enum HttpStatus {
     NOT_FOUND = 404,
     REQUEST_TOO_LONG = 413,
     IM_A_TEAPOT = 418,
-    INTERNAL_SERVER_ERROR = 500
+    INTERNAL_SERVER_ERROR = 500,
+    NOT_IMPLEMENTED = 501
 }
 
 export enum HttpResponseHeader {

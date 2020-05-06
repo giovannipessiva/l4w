@@ -1,6 +1,6 @@
 {
   "name": "l4w",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A TypeScript engine + web editor for tile-based games (it's not ready yet)",
   "main": "l4w-server",
   "type": "module",

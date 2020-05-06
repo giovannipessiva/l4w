@@ -92,7 +92,7 @@ export namespace session {
             });
         } else {
             // Valid session found
-            database.logAccess(request.session!.user);
+            database.logAccess(getUser(request));
             onSuccess();
         }
     }

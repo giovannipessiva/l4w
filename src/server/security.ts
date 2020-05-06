@@ -138,7 +138,7 @@ export namespace security {
         }
     }
     
-    export function requestFilter(req: Request, res: Response, next: any) {
+    export function requestFilter(req: Request, res: Response) {
         // Always redirect to https
         if (!req.secure
                 && req.get("x-forwarded-proto") !== "https") {
@@ -170,8 +170,6 @@ export namespace security {
         // Reduce information exposure
         res.removeHeader("Server");
         res.removeHeader("X-Powered-By");
-
-        next();
     }
 
     /**

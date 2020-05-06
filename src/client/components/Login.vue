@@ -147,7 +147,7 @@ export default Vue.extend({
         },
         doLogin(request: IAuthRequest) {
             let vueScope = this;
-            Resource.sendPOSTRequest("auth", JSON.stringify(request), function(response?: string) {
+            Resource.sendPOSTRequest("/auth", JSON.stringify(request), function(response?: string) {
                 if(response !== undefined) {
                     try {
                         let authResponse: IAuthResponse = JSON.parse(response);
@@ -180,7 +180,7 @@ export default Vue.extend({
     text-align: center;
 }
 .statusIcon {
-    margin:1em;
+    margin: 0.5em;
     border-radius: 100%;
     width: 40px;
     height: 40px;

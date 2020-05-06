@@ -71,8 +71,13 @@ export namespace database {
         genericMessages: LowdbModule.LowdbSync<genericMessageSchemaType>;
         langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
     };
+
+    let flagPostgresUnavailable = false;
     
-    export function logAccess(user: string) {
+    export function logAccess(user?: string) {
+        if(flagPostgresUnavailable || user === undefined) {
+            return;
+        }
         // User already known, log this access
         models.log_access.update({
             last_seen : new Date(),
@@ -113,23 +118,29 @@ export namespace database {
             // Load the language files
             let files = await utils.listFiles("data/lang/");
             for(let file of files) {
-                try {
-                    // example: gameData.langs.it: {database from messages_it.json}
-                    let lang = file.replace("messages_","").replace(".json","");
-                    gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
-                } catch(e) {
-                    console.error("Error while reading language file: " + file);
-                    console.trace(e);
+                    try {
+                        // example: gameData.langs.it: {database from messages_it.json}
+                        let lang = file.replace("messages_","").replace(".json","");
+                        gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
+                    } catch(e) {
+                        console.error("Error while reading language file: " + file);
+                        console.trace(e);
+                    }
                 }
-            }
 
             // Test PostGres authentication
             models.sequelize.authenticate().then(function() {
+                // Database ready
                 resolve();
             }, function(err: any) {
-                //TODO in the future, this shold not be mandatory for local developement 
-                console.error("Authentication on PostgreSQL failed: " + err);
-                reject();
+                if(security.isDevEnv()) {
+                    console.info("PostgreSQL database not available, functionalities will be limitated");
+                    flagPostgresUnavailable = true;
+                    reject();
+                } else {
+                    console.error("Authentication on PostgreSQL failed: " + err);
+                    process.exit();
+                }
             });
         });
     }
@@ -197,7 +208,7 @@ export namespace database {
             }
             break;
         case ResourceType.SAVE:
-            if (!utils.isEmpty(user)) {
+            if (!utils.isEmpty(user) && !flagPostgresUnavailable) {
                 models.usr_save.findOne({
                     where : {
                         user : user,
@@ -307,6 +318,9 @@ export namespace database {
             response.status(HttpStatus.OK).send(dialogId + "");
             break;
         case ResourceType.SAVE:
+            if(flagPostgresUnavailable) {
+                response.status(HttpStatus.OK).send("");
+            }
             models.usr_save.upsert({
                 user: user,
                 id : file,
@@ -326,6 +340,9 @@ export namespace database {
     }
 
     export function doUserLogin(mail: string, request: Request, response: Response) {
+        if(flagPostgresUnavailable) {
+            response.status(HttpStatus.NOT_IMPLEMENTED).send("");
+        }
         security
         .computeUnsafeHash(mail)
         .catch((reason: any) => {
@@ -413,7 +430,7 @@ export namespace database {
     }
 
     export function getNews(user: string, response: any) {
-        if (utils.isEmpty(user)) {
+        if (utils.isEmpty(user) || flagPostgresUnavailable) {
             response.json({});
         } else {
             models.usr_event.findAll({
