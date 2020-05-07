@@ -1,9 +1,9 @@
 //@ts-ignore TS1192
-import Session from "express-session"
+import Session, { SessionOptions } from "express-session"
 //@ts-ignore TS1192
 import SequelizeSessionInit from "connect-session-sequelize"
 /* tslint:disable-next-line */
-let SequelizeStore = SequelizeSessionInit(Session.Store);
+let SequelizeStoreConstructor = SequelizeSessionInit(Session.Store);
 import { Request, Response } from "express"
 
 import * as utils from "./utils"
@@ -18,20 +18,16 @@ export namespace session {
         
     export let cookieName = "l4w.session";
     
-    export function init(){
+    export function init() {
         let secret: string =  process.env.SESSION_SECRET!;
-        let sessionOptions : Session.SessionOptions = {
-            cookie: {
-                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-                secure: security.getSecureCookieSetting(),
-                sameSite: "lax"
-            },
+        let sessionOptions: SessionOptions = {
+            cookie: security.getCookieSettings(),
             name: session.cookieName,
             proxy: true,
             resave: false,
             saveUninitialized: true,
             secret: secret,
-            store: new SequelizeStore({
+            store: new SequelizeStoreConstructor({
                 db: models,
                 table: "usr_session"
             })

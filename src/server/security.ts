@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import { Request, Response } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"
+import { SessionOptions } from "express-session"
 
 import { HttpStatus } from "../common/Constants"
 import * as utils from "./utils"
@@ -130,12 +131,12 @@ export namespace security {
         return true;
     }
     
-    export function getSecureCookieSetting() {
-        if(isDevEnv()) {
-            return false; // Cookies will work on http connection
-        } else {
-            return true; // Cookies will work only with https
-        }
+    export function getCookieSettings(): SessionOptions["cookie"] {
+        return {
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+            secure: !isDevEnv(), // In development, cookies will work on http connection
+            sameSite: "lax"
+        };
     }
     
     export function requestFilter(req: Request, res: Response) {
