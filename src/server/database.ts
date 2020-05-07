@@ -320,6 +320,7 @@ export namespace database {
         case ResourceType.SAVE:
             if(flagPostgresUnavailable) {
                 response.status(HttpStatus.OK).send("");
+                return;
             }
             models.usr_save.upsert({
                 user: user,
