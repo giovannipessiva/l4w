@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>L4W</title>
-<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+	<title>L4W</title>
+	
+	<meta charset="UTF-8">
+	<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+	<meta name="description" content="An engine + editor for tile-based webgames">
+	<meta name="theme-color" content="#ffffff">
 
-<link rel='icon' href='style/favicon/game.ico' />
-<link rel="manifest" href="data/configuration/manifest.json"> 
-<link href="https://fonts.googleapis.com/css?family=Oldenburg" rel="stylesheet"> 
+	<link rel="preload" href="/style/l4w.css" as="style">
+	<link rel="preload" href="https://fonts.googleapis.com/css?family=Oldenburg" as="style">
 
-<meta name="theme-color" content="#ffffff">
+	<link rel='icon' href='/style/favicon/game.ico' />
+	<link rel="manifest" href="/data/configuration/manifest.json"> 
+	<link rel="stylesheet" type="text/css" href="/style/l4w.css" >
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oldenburg"> 
 
-<script src="lib/require.min.js" async></script>
+	<script src="/lib/require.min.js" async></script>
 
-<script type='text/javascript'>
+	<script type='text/javascript'>
 var base_path = "./";
 let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
 
@@ -39,10 +44,7 @@ window.onload = () => {
 	    L4W_game.Game.start(canvas);
 	};
 }
-</script>
-
-<link rel="stylesheet" type="text/css" href="style/l4w.css">
-
+	</script>
 </head>
 <body>
 	<div>
@@ -96,7 +98,7 @@ window.onload = () => {
 				</span>
 				<div id="dialogEdgeArea" class="dialogEdgeArea">
 					<div id="dialogEdge1" class="l4wDialogEdge">Tell me more...</div>
-					<div id="dialogEdge2" class="l4wDialogEdge">Die, you Sith scum</div>
+					<div id="dialogEdge2" class="l4wDialogEdge">Die, Sith scum!</div>
 				</div>
 			</div>
 		</div>

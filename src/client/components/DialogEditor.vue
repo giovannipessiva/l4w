@@ -305,6 +305,7 @@ function loadEdgeScriptActions(edge: IDialogEdge): void {
     width: 21em;
     height: 3em;
     font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-display: swap;
     font-size: medium;
     resize: vertical;
 }

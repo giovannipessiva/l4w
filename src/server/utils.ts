@@ -42,12 +42,16 @@ export function sendFile(path: string, filename: string, response: Response) {
                 } else {
                     // Do not log requests aborted
                     if(err.message !== "Request aborted") {
-                        console.warn("utils.sendFile - " + err);
+                        console.warn("utils.sendFile (file: " + path + "/" + filename + ") " + err);
                     }
-                    if(err.status !== undefined) {
-                        response.status(err.status).send("");
-                    } else {
-                        response.status(HttpStatus.NO_CONTENT).send("");
+                    try {
+                        if(err.status !== undefined) {
+                            response.status(err.status).send("");
+                        } else {
+                            response.status(HttpStatus.NO_CONTENT).send("");
+                        }
+                    } catch(e) {
+                        console.error(e);
                     }
                 }
             }

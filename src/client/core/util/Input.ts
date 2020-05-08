@@ -134,29 +134,29 @@ export namespace Input {
         canvas.addEventListener("wheel", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             wheelCallback(position.i, position.j);
-        });
+        }, {passive: true});
         
         // Touch events
         canvas.addEventListener("touchstart", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             startActionCallback(position.i, position.j, position.x, position.y);
             executeActionCallback();
-        });
+        }, {passive: true});
         canvas.addEventListener("touchend", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
 
-        });
+        }, {passive: true});
         canvas.addEventListener("touchcancel", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(undefined, undefined);
             endActionCallback(position.i, position.j);
-        });
+        }, {passive: true});
         canvas.addEventListener("touchmove", function(e: Event) {
             let position = mapEvent(<PointerEvent> e);
             ongoingActionCallback(position.i, position.j);
-        });
+        }, {passive: true});
         
         // Keyboard events
         document.addEventListener("keydown", function(e: Event) {

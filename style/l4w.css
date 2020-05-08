@@ -4,19 +4,23 @@ html {
 }
 body {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-display: swap;
 	margin: 0px;
 	height: 100%;
 	text-align: center;
 }
 input {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-display: swap;
 }
 button {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-display: swap;
 	border-radius: 4px;
 }
 select {
 	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-display: swap;
 }
 .footer {
 	visibility: hidden;
@@ -103,7 +107,8 @@ select {
 	text-align: left;
 	text-shadow: 1px 1px 0.2em darkblue;
 	color: lightgoldenrodyellow; 
-	font-family: Oldenburg;
+	font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-display: swap;
 	overflow: auto;
 	background-image: linear-gradient(to bottom right, rgba(110, 110, 170, 0.9), rgba(41, 42, 67, 0.9));
 	background-origin: border-box; /* this is needed for transparent border on gradient background */ 

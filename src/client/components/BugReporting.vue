@@ -119,6 +119,7 @@ export default Vue.extend({
     width: 21em;
     height: 4em;
     font-family: Oldenburg, Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-display: swap;
     font-size: medium;
     resize: vertical;
 }
