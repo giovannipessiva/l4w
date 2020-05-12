@@ -15,9 +15,14 @@
         <div v-if="loginStatus">
             <img class="statusIcon loggedIcon" src="/style/ui/logged.png" alt="Logged icon" title="You are currently logged in!">
             <br>
-            <button v-on:click="logout">Logout</button>
-            <br><br>
-            <slot name="logged"></slot>
+            <div v-if="flagLoggingOut">
+                <img class="loading" src="/style/ui/spinner.gif" alt="logging out..." />
+            </div>
+            <div v-else>
+                <button v-on:click="logout">Logout</button>
+                <br><br>
+                <slot name="logged"></slot>
+            </div>
         </div>
     </div>
 </template>
@@ -51,11 +56,15 @@ export default Vue.extend({
     },
     data: function (): {
         loginStatus: boolean,
-        loginService?: AuthService
+        loginService?: AuthService,
+        fbToken?: string,
+        flagLoggingOut: boolean
     } {
         return {
             loginStatus: false,
-            loginService: undefined
+            loginService: undefined,
+            fbToken: undefined,
+            flagLoggingOut: false
        }
     },
     created: function() {
@@ -83,6 +92,9 @@ export default Vue.extend({
             FB.Event.subscribe("auth.statusChange", function(response: FBLoginResponse) {
                 vueScope.fbLoginStatusChangeCallback(response);
             });
+            FB.getLoginStatus(function(response: FBLoginResponse) {
+                vueScope.fbLoginStatusChangeCallback(response);
+            });
         };
 
         // Init Google login
@@ -101,6 +113,7 @@ export default Vue.extend({
         logoutCallback: function() {
             Vue.set(this, "loginStatus", false);
             Vue.set(this, "loginService", undefined);
+            Vue.set(this, "flagLoggingOut", false);
         },
         logout: function logout() {
             // Check which service is used, only logout from that service
@@ -108,10 +121,24 @@ export default Vue.extend({
                 switch(this.loginService) {
                 case "facebook":
                     // Facebook logout
-                    let vueScope = this;
-                    FB.logout(function(response: any) {
-                        vueScope.logoutCallback();
-                    });
+                    if(this.fbToken !== undefined) {
+                        // Since Facebook logout is slow, display an animation and hide the buttons
+                        Vue.set(this, "flagLoggingOut", true);
+                        let vueScope = this;
+                        // Remove permission, so that the user is asked to authenticate the app again
+                        // (seems like FB.logout() isn't enough, if you refresh the page you are still logged)
+                        FB.api("/me/permissions", "delete", {
+                            access_token: vueScope.fbToken
+                        }, function(response: any) {
+                            if(response.success !== true) {
+                                console.error("Facebook permission revoking failed: ", response);
+                            }
+                            FB.logout(function(response: FBLoginResponse)  {
+                                vueScope.logoutCallback();
+                            });
+                        });
+                        this.fbToken = undefined;
+                    }
                     break;
                 case "google":
                     // Google logout
@@ -130,6 +157,7 @@ export default Vue.extend({
         },
         fbLoginStatusChangeCallback: function(response: FBLoginResponse) {
             if(response.status === "connected") {
+                this.fbToken = response.authResponse!.accessToken;
                 let request: IAuthRequest = {
                     service: "facebook",
                     token: response.authResponse!.accessToken,
@@ -196,5 +224,9 @@ export default Vue.extend({
     border-style: dashed;
     border-color: gray;
     background-color: lightgray;
+}
+.loading {
+    width: 2em;
+    height: 2em;   
 }
 </style>
