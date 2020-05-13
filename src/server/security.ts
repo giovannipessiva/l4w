@@ -141,8 +141,7 @@ export namespace security {
     
     export function requestFilter(req: Request, res: Response) {
         // Always redirect to https
-        if (!req.secure
-                && req.get("x-forwarded-proto") !== "https") {
+        if (!req.secure && req.get("x-forwarded-proto") !== "https") {
             // The "x-forwarded-proto" check is for Heroku
             return res.redirect("https://" + req.get("host") + req.url);
         }

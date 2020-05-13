@@ -30,6 +30,9 @@ export function sendFile(path: string, filename: string, response: Response) {
         case "css":
             response.type("text/css");
             break;
+        case "woff2":
+            response.type("font/woff2");
+            break;
     }
 
     response.sendFile(
