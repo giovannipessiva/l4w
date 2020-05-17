@@ -8,8 +8,7 @@
 
 A game engine for tile-based web games.
 
-[Demo game](https://l4w.herokuapp.com/)
-
-[Online editors](https://l4w.herokuapp.com/edit)
-
-[Project roadmap](https://github.com/giovannipessiva/l4w/projects)
+* [Demo game](https://l4w.herokuapp.com/)
+* [Online editors](https://l4w.herokuapp.com/edit)
+* [Local install](https://github.com/giovannipessiva/l4w/wiki/Local-install)
+* [About](https://rpt.altervista.org/blog/l4w-for-real/)
