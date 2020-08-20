@@ -8,7 +8,7 @@
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
   "dependencies": {
-    "bcrypt": "4.0.1",
+    "bcrypt": "5.0.0",
     "compression": "1.7.4",
     "connect-session-sequelize": "6.1.1",
     "express": "4.17.1",
