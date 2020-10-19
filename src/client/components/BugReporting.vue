@@ -1,5 +1,6 @@
 <template>
     <div class="root">
+        <!-- TODO load only when user start writing, so that the overlay wont normally appear -->
         <script type="application/javascript" async defer src="https://www.google.com/recaptcha/api.js?render=6LfudvIUAAAAADY9aLIgdcbuY8kekIKAv6WYEYFb"></script>
         <div v-if="!flagSent">
             <p>
