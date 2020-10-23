@@ -1,10 +1,11 @@
 const webpackConfig = require("./webpack.config.cjs");
+const path = require("path");
 
 module.exports = function(grunt) {
     grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"), 
+        pkg: grunt.file.readJSON("package.json"),
 
-        tslint: {
+        eslint: {
             files: {
                 src: [
                       "./src/client/**/*.ts",
@@ -15,10 +16,10 @@ module.exports = function(grunt) {
                 ]
             },
             options: {
-                configuration: grunt.file.readJSON("tslint.json")
+                configFile: path.resolve(__dirname, ".eslintrc.cjs")
             }
         },
-        
+
         ts: {
             server: {
                 tsconfig: "./src/tsconfig-server.json"
@@ -28,13 +29,13 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [{
-                    expand: true, 
-                    cwd: ".", 
+                    expand: true,
+                    cwd: ".",
                     src: [
                         "./dist/server/**/*.js"
                     ],
 
-                    dest: ".", 
+                    dest: ".",
                     rename: function(dest, src) {
                         if(!src.includes("/models/") || src.endsWith("/models/index.js")) {
                             return dest + "/" + src.replace(".js",".mjs");
@@ -45,14 +46,14 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        
+
         webpack: {
             dev: webpackConfig("development"),
             prod: webpackConfig("production")
         },
 
         clean: {
-            options: { 
+            options: {
                 force: true
             },
             client: {
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
                 ]
             }
         },
-        
+
         babel: {
             options: {
                 presets: ["@babel/preset-env"]
@@ -89,7 +90,7 @@ module.exports = function(grunt) {
                 }
             }
         },
-    
+
         uglify: {
             options: {
                 banner: "/* <%= pkg.name %> <%= grunt.template.date((new Date()).getTime() + 3600000*2,'yyyy-mm-dd HH:MM') %> */\n",
@@ -116,18 +117,18 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks("grunt-tslint");
+    grunt.loadNpmTasks("grunt-eslint");
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-webpack");
-    
+
     // Default L4W build task (linter, client and server)
-    grunt.registerTask("task_lint", "Clean the dist folders and execute tslint (can fail)", function () {
+    grunt.registerTask("task_lint", "Clean the dist folders and execute eslint (can fail)", function () {
         grunt.option("force", true);
-        grunt.task.run(["clean:client","clean:server","tslint"]);
+        grunt.task.run(["clean:client","clean:server","eslint"]);
     });
     grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack:prod","clean:post"]);
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
