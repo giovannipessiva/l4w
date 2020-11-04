@@ -1,4 +1,4 @@
-# L4W :cyclone: 
+# ![L4W](/style/logo/L4W%20logo%201.png?raw=true "L4W")
 [![Travis Build](https://travis-ci.org/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.org/giovannipessiva/l4w)
 [![Heroku](https://heroku-badge.herokuapp.com/?app=l4w)](https://l4w.herokuapp.com/)
 [![GitHub version](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
