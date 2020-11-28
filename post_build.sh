@@ -16,6 +16,7 @@ rm assets/lib/jstree.min.js
 rm assets/localdev-cert.pem
 rm assets/localdev-key.pem
 rm .env
+rm .eslintrc.cjs
 rm .travis.yml
 rm CONTRIBUTING.md
 rm Gruntfile.cjs
@@ -26,7 +27,6 @@ rm Procfile_inspect
 rm *.md
 rm *.bat
 rm tsconfig.json
-rm tslint.json
 rm webpack.config.cjs
 
 git add .

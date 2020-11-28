@@ -90,6 +90,7 @@ export class AbstractGrid {
 
     /**
      * Convert a position in the webpage to a position on the grid (cell coordinates)
+     * 
      * @param position : position in pixels (absolute coordinates in the page)
      */
     mapPositionToGrid(position: IPoint): IExtendedCell {
@@ -109,6 +110,7 @@ export class AbstractGrid {
 
     /**
      * Convert a position on the grid to a position on the canvas (relative coordinates in pixels)
+     * 
      * @param position : position in cell coordinates
      */
     mapCellToCanvas(position: ICell): IPoint {
@@ -120,6 +122,7 @@ export class AbstractGrid {
 
     /**
      * Convert a position on the map to a map cell
+     * 
      * @param position : position in pixels
      */
     mapCanvasToCell(position: IPoint): ICell {

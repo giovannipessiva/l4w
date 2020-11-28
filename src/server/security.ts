@@ -185,6 +185,7 @@ export namespace security {
 
     /**
      * NB this cannot be used for password hashing, since it uses a fixed salt
+     * 
      * @param plaintext string to hash
      */
     export function computeUnsafeHash(plaintext: string): Promise<string> {
