@@ -1,9 +1,8 @@
 //@ts-ignore TS1192
-import Session, { SessionOptions } from "express-session"
+import Session, { SessionOptions, SessionData, Store } from "express-session"
 //@ts-ignore TS1192
 import SequelizeSessionInit from "connect-session-sequelize"
-/* tslint:disable-next-line */
-let SequelizeStoreConstructor = SequelizeSessionInit(Session.Store);
+let SequelizeStoreConstructor = SequelizeSessionInit(Store);
 import { Request, Response } from "express"
 
 import * as utils from "./utils"
@@ -13,6 +12,11 @@ import { models } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
+
+// Add a new field through interface merging
+interface SessionData { // eslint-disable-line no-redeclare
+    user: string; 
+};
 
 export namespace session {
         
@@ -35,17 +39,21 @@ export namespace session {
         return Session(sessionOptions);
     }
     
-    export function getUser(request: Request): string | undefined {
-        if(request.session === undefined || utils.isEmpty(request.session.user)) {
+    export function getUser(session: Session.Session & Partial<SessionData>): string | undefined {
+        if(session === undefined || utils.isEmpty(session.user)) {
             if(security.isAuthenticationDisabled()) {
-                // Nel caso l"autenticazione sia disabilitata, forza l'utente 0
+                // Nel caso l'autenticazione sia disabilitata, forza l'utente 0
                 return "0";
             }
             return undefined;
         }
-        return request.session.user;
+        return session.user;
     }
     
+    export function setUser(session: Session.Session & Partial<SessionData>, user: string) {
+        return session.user = user;
+    }
+
     export function isAuthenticated(request: Request): boolean {
         if(security.isAuthenticationDisabled()) {
             return true;
@@ -96,8 +104,10 @@ export namespace session {
     export function doLogout(request: Request, response: Response, callback: IEmptyCallback) {
         response.clearCookie(session.cookieName, { path: "/" });
         if(request.session !== undefined) {
-            request.session.destroy(function(){
-                request.session = undefined;
+            request.session.destroy(function() {
+                if(request.session !== undefined) {
+                    console.warn("Session is not undefined after destroy, is this ok?");
+                }
                 callback();
             });
         } else {

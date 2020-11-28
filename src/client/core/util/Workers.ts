@@ -17,7 +17,7 @@ export namespace Workers {
     export function launchWebWorker(data: any) {
         if(Compatibility.webWorker()) {
             if(Utils.isEmpty(worker)) {
-               worker = new Worker(WEBWORKER_URL); 
+                worker = new Worker(WEBWORKER_URL); 
             }
             worker.postMessage(data);
         }

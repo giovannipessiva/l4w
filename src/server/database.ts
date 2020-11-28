@@ -8,7 +8,7 @@ import { Request, Response } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
-import { models } from "./models/index"
+import { models, sequelizeInstance } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { DataDefaults } from "../common/DataDefaults"
@@ -19,6 +19,7 @@ import { ITileset } from "../common/model/Tileset";
 import { Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
+import { session } from "./session";
 
 /**
  * This module manage persistency for:
@@ -118,30 +119,38 @@ export namespace database {
             // Load the language files
             let files = await utils.listFiles("data/lang/");
             for(let file of files) {
-                    try {
-                        // example: gameData.langs.it: {database from messages_it.json}
-                        let lang = file.replace("messages_","").replace(".json","");
-                        gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
-                    } catch(e) {
-                        console.error("Error while reading language file: " + file);
-                        console.trace(e);
-                    }
+                try {
+                    // example: gameData.langs.it: {database from messages_it.json}
+                    let lang = file.replace("messages_","").replace(".json","");
+                    gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
+                } catch(e) {
+                    console.error("Error while reading language file: " + file);
+                    console.trace(e);
                 }
+            }
 
             // Test PostGres authentication
-            models.sequelize.authenticate().then(function() {
-                // Database ready
-                resolve();
-            }, function(err: any) {
-                if(security.isDevEnv()) {
-                    console.info("PostgreSQL database not available, functionalities will be limitated");
-                    flagPostgresUnavailable = true;
-                    reject();
-                } else {
-                    console.error("Authentication on PostgreSQL failed: " + err);
-                    process.exit();
+            if(sequelizeInstance !== undefined) {
+                try {
+                    console.log("Testing Sequelize authentication...");
+                    await sequelizeInstance.authenticate();
+                    console.log("Sequelize authentication OK");
+                    // Database ready
+                    resolve();
+                    return;
+                } catch(e) {
+                    console.trace(e);
                 }
-            });
+            }
+            // Manage database connection fail
+            if(security.isDevEnv()) {
+                console.info("PostgreSQL database not available, functionalities will be limitated");
+                flagPostgresUnavailable = true;
+                reject();
+            } else {
+                console.error("Authentication on PostgreSQL failed");
+                process.exit();
+            }
         });
     }
 
@@ -373,7 +382,7 @@ export namespace database {
                         }).then(function(user_new_record: any) {
                             if(user_record == null) {                        
                                 // Add user id to session
-                                request.session!.user = user_new_record.user;
+                                session.setUser(request.session, user_new_record.user);
                                 request.session!.save(function(err) {
                                     if(!Utils.isEmpty(err)) {
                                         console.error("Error while saving session: %s", err);
@@ -413,7 +422,7 @@ export namespace database {
                     });
                 } else {
                     // Add user id to session
-                    request.session!.user = user_record.user;
+                    session.setUser(request.session, user_record.user);
                     request.session!.save(function(err) {
                         if(!Utils.isEmpty(err)) {
                             console.error("Error while saving session: %s", err);

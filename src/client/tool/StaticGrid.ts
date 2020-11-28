@@ -18,7 +18,7 @@ export class StaticGrid extends AbstractGrid {
         onCompleted: { (grid: StaticGrid): void },
         gridType: GridTypeEnum,
         overriddenProperties?: Map<string, number>
-        ) {
+    ) {
         super(canvas, <{ (grid: AbstractGrid): void }> onCompleted, gridType);
         if(overriddenProperties !== undefined) {
             this.overriddenProps = overriddenProperties;

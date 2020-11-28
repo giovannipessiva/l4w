@@ -9,7 +9,7 @@ import { Utils } from "../../../common/Utils";
  */
 export namespace TilesetManager {
    
-     export function loadTileset(tilesetImage: string, context: CanvasRenderingContext2D, callback: (tileset?: ITileset) => void) {
+    export function loadTileset(tilesetImage: string, context: CanvasRenderingContext2D, callback: (tileset?: ITileset) => void) {
         Resource.load(tilesetImage+"", ResourceType.TILESET, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
                 console.error("Error while loading tileset: " + tilesetImage);

@@ -81,6 +81,7 @@ export function isEmpty(obj: any) {
 
 /**
  * List the files in a directory (excluding dirs, hidden, 404)
+ * 
  * @param filePath path to read
  * @param response array of files (async)
  */
