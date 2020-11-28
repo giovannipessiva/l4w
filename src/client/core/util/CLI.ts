@@ -59,15 +59,16 @@ export namespace CLI {
         if(!gameConfig.ui.enableCLI) {
             return;
         }
-        console.log("%c"
-            + "                       ____       _____  __      __                        \n"
-            + "                      |    |     /  |  |/  \\    /  \\                       \n"
-            + "                      |    |    /   |  |\\   \\/\\/   /                       \n"
-            + "                      |    |___/    ^   /\\        /                        \n"
-            + "                      |_______ \\____   |  \\__/\\  /                         \n"
-            + "                              \\/    |__|       \\/                          \n%c"
-            + "Welcome to L4W command line interface! Type 'help' for listing commands    ", STYLE_LOGO, STYLE_HEADER);
-        
+        setTimeout(() => {
+            console.log("%c"
+                + "                       ____       _____  __      __                        \n"
+                + "                      |    |     /  |  |/  \\    /  \\                       \n"
+                + "                      |    |    /   |  |\\   \\/\\/   /                       \n"
+                + "                      |    |___/    ^   /\\        /                        \n"
+                + "                      |_______ \\____   |  \\__/\\  /                         \n"
+                + "                              \\/    |__|       \\/                          \n%c"
+                + "Welcome to L4W command line interface! Type 'help' for listing commands    ", STYLE_LOGO, STYLE_HEADER);
+        }, 1000);
         // Hacky way to invoke methods without using parentheses
         Object.defineProperty(window, "help", { get: function() {
             setTimeout(help, 0);

@@ -1,8 +1,8 @@
 import { readdirSync } from "fs"
 import { sep, join} from "path"
-import * as SequelizeModule from "sequelize"
 //@ts-ignore TS1192
-import Sequelize, { Options } from "sequelize"
+import { Options } from "sequelize"
+import * as SequelizeModule from "sequelize"
 
 export let models: any = {};
 export let sequelizeInstance: SequelizeModule.Sequelize; 
@@ -18,8 +18,7 @@ if (process.env.DATABASE_URL === undefined) {
         },
         logging: false
     };
-
-    sequelizeInstance = new Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
+    sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
     //TODO import.meta require target=esnext and module=esnext
     // see also: https://github.com/Microsoft/TypeScript/issues/24082

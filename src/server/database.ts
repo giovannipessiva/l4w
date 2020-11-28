@@ -132,14 +132,13 @@ export namespace database {
             // Test PostGres authentication
             if(sequelizeInstance !== undefined) {
                 try {
-                    console.log("Testing Sequelize authentication..."); //TODO test
+                    console.log("Testing Sequelize authentication...");
                     await sequelizeInstance.authenticate();
-                    console.log("Test OK"); //TODO test
+                    console.log("Sequelize authentication OK");
                     // Database ready
                     resolve();
                     return;
                 } catch(e) {
-                    console.error("Test KO!"); //TODO test
                     console.trace(e);
                 }
             }

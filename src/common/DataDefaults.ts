@@ -106,10 +106,10 @@ export namespace DataDefaults {
             i: 0,
             j: 0,
             states: [{
-               charaset: "",
-               condition: "always",
-               trigger: ActionTriggerEnum.CLICK,
-               action: ""
+                charaset: "",
+                condition: "always",
+                trigger: ActionTriggerEnum.CLICK,
+                action: ""
             }],
             memory: {},
             script: "BaseScript",
@@ -125,10 +125,10 @@ export namespace DataDefaults {
         hero.j = gameConfig.maps.start.j;
         hero.states = [];
         hero.states[0] = {
-           charaset: gameConfig.hero.charaset,
-           condition: "always",
-           trigger: ActionTriggerEnum.CLICK,
-           action: ""
+            charaset: gameConfig.hero.charaset,
+            condition: "always",
+            trigger: ActionTriggerEnum.CLICK,
+            action: ""
         };
         return hero;
     }
@@ -150,7 +150,7 @@ export namespace DataDefaults {
 
     export function getCharacter(): ICharacter {
         return {
-           charaset: ""
+            charaset: ""
         };
     };
 };

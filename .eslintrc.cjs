@@ -15,7 +15,7 @@ module.exports = {
     ],
     "rules": {
         "@typescript-eslint/dot-notation": "off",
-        "@typescript-eslint/indent": ["error", 4],
+        "@typescript-eslint/indent": ["warn", 4],
         "@typescript-eslint/naming-convention": [
             "error",
             {
