@@ -166,7 +166,7 @@ function onDatabaseInit(flagDBAvailable: boolean) {
     });
     app.get("/news", function(request: Request, response: Response) {
         if(session.isAuthenticated(request)) {
-        database.getNews(session.getUser(request)!, response);
+            database.getNews(session.getUser(request)!, response);
         } else {
             response.status(HttpStatus.FORBIDDEN).send("");
         }
@@ -188,7 +188,12 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             authResponse = {
                 result: true
             }
-            response.json(authResponse);
+            try {
+                response.json(authResponse);
+            } catch(e) {
+                console.warn("Exception catched on response.json(): ");
+                console.trace(e);
+            }
         },
         function() {
             console.error("Login failed");

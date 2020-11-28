@@ -19,7 +19,7 @@ export namespace Tester {
             }
         });
 
-       new Vue({
+        new Vue({
             el: "#bugReportingVue",
             components: {
                 "bug-reporting": BugReportingComponent,

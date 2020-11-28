@@ -8,7 +8,7 @@ import { Request, Response } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
-import { models } from "./models/index"
+import { models, sequelizeInstance } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { DataDefaults } from "../common/DataDefaults"
@@ -20,7 +20,6 @@ import { Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
 import { session } from "./session";
-
 
 /**
  * This module manage persistency for:
@@ -130,25 +129,28 @@ export namespace database {
                 }
             }
 
-            let onDatabaseUnavailable = function(err: any) {
-                if(security.isDevEnv()) {
-                    console.info("PostgreSQL database not available, functionalities will be limitated");
-                    flagPostgresUnavailable = true;
-                    reject();
-                } else {
-                    console.error("Authentication on PostgreSQL failed: " + err);
-                    process.exit();
-                }
-            }
-
             // Test PostGres authentication
-            if(models.sequelize !== undefined) {
-                models.sequelize.authenticate().then(function() {
+            if(sequelizeInstance !== undefined) {
+                try {
+                    console.log("Testing Sequelize authentication..."); //TODO test
+                    await sequelizeInstance.authenticate();
+                    console.log("Test OK"); //TODO test
                     // Database ready
                     resolve();
-                }, onDatabaseUnavailable);
+                    return;
+                } catch(e) {
+                    console.error("Test KO!"); //TODO test
+                    console.trace(e);
+                }
+            }
+            // Manage database connection fail
+            if(security.isDevEnv()) {
+                console.info("PostgreSQL database not available, functionalities will be limitated");
+                flagPostgresUnavailable = true;
+                reject();
             } else {
-                onDatabaseUnavailable("sequelizeInstance is undefined");
+                console.error("Authentication on PostgreSQL failed");
+                process.exit();
             }
         });
     }

@@ -94,7 +94,7 @@ export namespace CLI {
             + "iddqd   activates God Mode (only Talos supported)                          \n"
             + "man     opens manual pages                                                 \n"
             + "uname   show system info                                                   \n"
-            , STYLE_TITLE, STYLE_BODY)
+        , STYLE_TITLE, STYLE_BODY);
     }
 
     function iddqd(): void {
@@ -102,13 +102,13 @@ export namespace CLI {
         let state = flagGodMode? "enabled " : "disabled";
         console.log("%c"
             + "God Mode " + state + "                                                          \n"
-            , STYLE_BODY);
+        , STYLE_BODY);
     }
 
     function man(): void {
         console.log("%c"
             + "Opening manual pages...                                                    \n"
-            , STYLE_BODY);
+        , STYLE_BODY);
         window.open("https://github.com/giovannipessiva/l4w/wiki","_blank");
     }
 
@@ -117,7 +117,7 @@ export namespace CLI {
             response = response?.padEnd(20);
             console.log("%c"
                 + response +  "                                                       \n"
-                , STYLE_BODY);
+            , STYLE_BODY);
         })
     }
 

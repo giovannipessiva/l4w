@@ -59,7 +59,7 @@ export namespace Game {
                     let languageCombo = <HTMLSelectElement> document.getElementById("comboLang");
                     if(save !== undefined && save.config !== undefined) {
                         if(save.config.lang !== undefined) {
-                             languageCombo.value = save.config.lang;
+                            languageCombo.value = save.config.lang;
                             changeLanguage();
                         }
                         if(save.config.flagAntialiasing !== undefined) {
