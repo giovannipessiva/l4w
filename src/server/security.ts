@@ -12,7 +12,18 @@ import { services } from "./services"
 
 export namespace security {
 
+    let flagAlertNoEndVar = false;
+
     export function isDevEnv() {
+        if(process.env.NODE_ENV === undefined) {
+            if(flagAlertNoEndVar) {
+                flagAlertNoEndVar = true;
+                console.warn("No ENV defined, defaulting to development");
+            }
+            // This is a bad practice, but necessary in order to
+            // being able to run the node server locally without any config
+            return true;
+        }
         return "development" === process.env.NODE_ENV;
     }
     

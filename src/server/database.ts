@@ -118,21 +118,17 @@ export namespace database {
             // Load the language files
             let files = await utils.listFiles("data/lang/");
             for(let file of files) {
-                    try {
-                        // example: gameData.langs.it: {database from messages_it.json}
-                        let lang = file.replace("messages_","").replace(".json","");
-                        gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
-                    } catch(e) {
-                        console.error("Error while reading language file: " + file);
-                        console.trace(e);
-                    }
+                try {
+                    // example: gameData.langs.it: {database from messages_it.json}
+                    let lang = file.replace("messages_","").replace(".json","");
+                    gameData.langs.set(lang, lowdb(new fileSync("data/lang/" + file)));
+                } catch(e) {
+                    console.error("Error while reading language file: " + file);
+                    console.trace(e);
                 }
+            }
 
-            // Test PostGres authentication
-            models.sequelize.authenticate().then(function() {
-                // Database ready
-                resolve();
-            }, function(err: any) {
+            let onDatabaseUnavailable = function(err: any) {
                 if(security.isDevEnv()) {
                     console.info("PostgreSQL database not available, functionalities will be limitated");
                     flagPostgresUnavailable = true;
@@ -141,7 +137,17 @@ export namespace database {
                     console.error("Authentication on PostgreSQL failed: " + err);
                     process.exit();
                 }
-            });
+            }
+
+            // Test PostGres authentication
+            if(models.sequelize !== undefined) {
+                models.sequelize.authenticate().then(function() {
+                    // Database ready
+                    resolve();
+                }, onDatabaseUnavailable);
+            } else {
+                onDatabaseUnavailable("sequelizeInstance is undefined");
+            }
         });
     }
 
