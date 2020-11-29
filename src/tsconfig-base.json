@@ -1,12 +1,13 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-		"target": "es6",
+        "target": "esnext",
+        "module": "esnext",
         "moduleResolution": "node",
         "sourceMap": false,
 
         /* Good cop */
-        "strictPropertyInitialization": false,
+        "strictPropertyInitialization": false, /* TODO set to true, so that all strict check are on */
         "suppressImplicitAnyIndexErrors": true,
         "noUnusedParameters": false,
         "noFallthroughCasesInSwitch": false,
@@ -15,6 +16,7 @@
         "noImplicitAny": true,
         "noImplicitThis": true,
         "alwaysStrict": true,
+        "strictBindCallApply": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "noUnusedLocals": true,

@@ -1,8 +1,8 @@
 //@ts-ignore TS1192
 import fs from "fs"
+import { Response } from "express";
 
 import { HttpStatus } from "../common/Constants"
-import { Response } from "express";
 import { IDialogNode, IDialogEdge } from "../common/model/Dialog"
 
 const placeholder = "404.png";

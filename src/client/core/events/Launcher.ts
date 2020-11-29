@@ -15,16 +15,16 @@ export namespace Launcher {
         // On click  the hero should face the event
         if (eventState.trigger === ActionTriggerEnum.CLICK) {
             let heroDirection = ClientUtils.getDirection(event, hero);
-            let state = EventManager.getState(hero);
-            if(state !== undefined) {
-                state.direction = heroDirection;
+            let heroState = EventManager.getState(hero);
+            if(heroState !== undefined) {
+                heroState.direction = heroDirection;
             } else {
                 console.error("Hero state undefined");
             }
             let eventDirection = ClientUtils.getOpposedDirections(heroDirection);
-            state = EventManager.getState(event);
-            if(state !== undefined) {
-                state.direction = eventDirection;
+            heroState = EventManager.getState(event);
+            if(heroState !== undefined) {
+                heroState.direction = eventDirection;
             } else {
                 console.error("Event state undefined:" + event);
             }
