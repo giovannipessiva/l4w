@@ -1,20 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface log_securityAttributes {
-  event?: string;
-  info?: string;
-  date?: Date;
-}
-
-export class log_security extends Model<log_securityAttributes, log_securityAttributes> implements log_securityAttributes {
-  event?: string;
-  info?: string;
-  date?: Date;
-
-  static initModel(sequelize: Sequelize) {
-    log_security.init({
+export default class log_security extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     event: {
       type: DataTypes.STRING(15),
       allowNull: false,

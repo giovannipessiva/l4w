@@ -1,20 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface usr_eventAttributes {
-  user?: number;
-  event?: number;
-  date?: Date;
-}
-
-export class usr_event extends Model<usr_eventAttributes, usr_eventAttributes> implements usr_eventAttributes {
-  user?: number;
-  event?: number;
-  date?: Date;
-
-  static initModel(sequelize: Sequelize) {
-    usr_event.init({
+export default class usr_event extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,

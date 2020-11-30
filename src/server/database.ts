@@ -4,7 +4,7 @@ import * as LowdbModule from "lowdb";
 import * as FileSyncModule from "lowdb/adapters/FileSync"
 const lowdb: LowdbModule.lowdb = LowdbModule["default"];
 const fileSync: LowdbModule.AdapterSync<any> = FileSyncModule["default"];
-import { Request, Response } from "express"
+import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
@@ -350,7 +350,7 @@ export namespace database {
         }
     }
 
-    export function doUserLogin(mail: string, request: Request, response: Response) {
+    export function doUserLogin(mail: string, request: ExpressRequest, response: ExpressResponse) {
         if(flagPostgresUnavailable) {
             response.status(HttpStatus.NOT_IMPLEMENTED).send("");
         }

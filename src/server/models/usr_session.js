@@ -1,20 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface usr_sessionAttributes {
-  sid?: string;
-  expires?: Date;
-  data?: string;
-}
-
-export class usr_session extends Model<usr_sessionAttributes, usr_sessionAttributes> implements usr_sessionAttributes {
-  sid?: string;
-  expires?: Date;
-  data?: string;
-
-  static initModel(sequelize: Sequelize) {
-    usr_session.init({
+export default class usr_session extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     sid: {
       type: DataTypes.STRING(32),
       allowNull: false,

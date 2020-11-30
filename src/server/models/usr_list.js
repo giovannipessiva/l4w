@@ -1,18 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface usr_listAttributes {
-  user?: number;
-  mail?: string;
-}
-
-export class usr_list extends Model<usr_listAttributes, usr_listAttributes> implements usr_listAttributes {
-  user?: number;
-  mail?: string;
-
-  static initModel(sequelize: Sequelize) {
-    usr_list.init({
+export default class usr_list extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       autoIncrement: true,
       type: DataTypes.INTEGER,

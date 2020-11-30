@@ -99,7 +99,7 @@
     "webpack": "Javascript modules bundler"
   },
   "engines": {
-    "node": "14.15"
+    "node": "15.3"
   },
   "repository": {
     "type": "git",

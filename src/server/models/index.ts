@@ -1,13 +1,11 @@
-//import { readdirSync } from "fs"
-//import { join, resolve } from "path"
+import { readdirSync } from "fs"
+import { join, resolve } from "path"
 //@ts-ignore TS1192
 import { Options } from "sequelize"
 import * as SequelizeModule from "sequelize"
+import * as log_access from "./log_access"
 
-import * as initModelsModule from "init-models"
-import { initModels } from "init-models"
-
-export let models: any = initModelsModule;
+export let models: any = {};
 export let sequelizeInstance: SequelizeModule.Sequelize; 
 
 if (process.env.DATABASE_URL === undefined) {
@@ -16,7 +14,8 @@ if (process.env.DATABASE_URL === undefined) {
     initSequelizeModules();
 }
 
-async function initSequelizeModules() {
+function initSequelizeModules() {
+    log_access.init(null, null);
     let sequelizeOptions: Options = {
         dialect: "postgres",
         protocol: "postgres",
@@ -27,18 +26,15 @@ async function initSequelizeModules() {
     };
     sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
-    initModels(sequelizeInstance);
-
-    /*
-    const dirname = join(".", "dist", "server", "l4w", "src", "server", "models");
+    const dirname = join("dist", "server", "l4w", "src", "server", "models");
     readdirSync(dirname).filter(function(file: string) {
-        return (file.indexOf(".") !== 0) && (file !== "index.mjs");
+        return file.indexOf(".") !== 0 && file !== "index.mjs" && file !== "init-models.mjs" && file.indexOf(".mjs") !== 0 ;
     }).forEach(function(file: string) {
-        console.log(resolve(join(dirname, file)));
-        //let model = require(join(dirname, file))(sequelizeInstance, SequelizeModule.Sequelize);
-        let modulePath = join(dirname, file); 
+        let modulePath = join(".", dirname, file); 
+        console.log(resolve(modulePath));
         //@ts-ignore TS1323
         import(modulePath).then(importedModelModule => {
+            console.log(importedModelModule);
             let model = importedModelModule(sequelizeInstance, SequelizeModule.Sequelize);
             models[model.name] = model;
         }).catch(e => {
@@ -53,5 +49,4 @@ async function initSequelizeModules() {
             models[modelName].associate(models);
         }
     });
-    */
 }

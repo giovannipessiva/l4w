@@ -1,22 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface log_accessAttributes {
-  user?: number;
-  first_seen?: Date;
-  last_seen?: Date;
-  access_counter?: number;
-}
-
-export class log_access extends Model<log_accessAttributes, log_accessAttributes> implements log_accessAttributes {
-  user?: number;
-  first_seen?: Date;
-  last_seen?: Date;
-  access_counter?: number;
-
-  static initModel(sequelize: Sequelize) {
-    log_access.init({
+export default class log_access extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,

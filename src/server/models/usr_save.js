@@ -1,24 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface usr_saveAttributes {
-  user?: number;
-  id?: number;
-  date?: Date;
-  name?: string;
-  save?: any;
-}
-
-export class usr_save extends Model<usr_saveAttributes, usr_saveAttributes> implements usr_saveAttributes {
-  user?: number;
-  id?: number;
-  date?: Date;
-  name?: string;
-  save?: any;
-
-  static initModel(sequelize: Sequelize) {
-    usr_save.init({
+export default class usr_save extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,

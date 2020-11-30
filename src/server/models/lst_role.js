@@ -1,18 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface lst_roleAttributes {
-  role?: number;
-  name?: string;
-}
-
-export class lst_role extends Model<lst_roleAttributes, lst_roleAttributes> implements lst_roleAttributes {
-  role?: number;
-  name?: string;
-
-  static initModel(sequelize: Sequelize) {
-    lst_role.init({
+export default class lst_role extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     role: {
       autoIncrement: true,
       type: DataTypes.INTEGER,

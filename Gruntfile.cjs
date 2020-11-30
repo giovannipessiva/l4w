@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                         if(!src.includes("/models/") || src.endsWith("/models/index.js")) {
                             return dest + "/" + src.replace(".js",".mjs");
                         } else {
-                            return dest + "/" + src.replace(".js",".cjs");
+                            return dest + "/" + src.replace(".js",".mjs");
                         }
                     }
                 }]

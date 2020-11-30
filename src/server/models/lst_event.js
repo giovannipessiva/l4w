@@ -1,24 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface lst_eventAttributes {
-  event?: number;
-  message?: string;
-  type?: string;
-  action?: string;
-  action_key?: string;
-}
-
-export class lst_event extends Model<lst_eventAttributes, lst_eventAttributes> implements lst_eventAttributes {
-  event?: number;
-  message?: string;
-  type?: string;
-  action?: string;
-  action_key?: string;
-
-  static initModel(sequelize: Sequelize) {
-    lst_event.init({
+export default class lst_event extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     event: {
       autoIncrement: true,
       type: DataTypes.INTEGER,

@@ -13,8 +13,8 @@ rem - local_user
 rem - local_password
 call setLocalConnectionConfig.bat
 
-rem The database tables must grant privileges to the user
+rem Using lang "esm" instead of "ts", because generate ts files have compilation issues
 
-sequelize-auto --lang ts --host %local_host% --database %local_db% --user %local_user% --pass %local_password% --port %local_port% --dialect postgres --output "../../src/server/models"
+sequelize-auto --lang esm --host %local_host% --database %local_db% --user %local_user% --pass %local_password% --port %local_port% --dialect postgres --output "../../src/server/models"
 
 pause

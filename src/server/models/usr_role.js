@@ -1,18 +1,10 @@
 /* jshint indent: 2 */
 
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Model, Sequelize } from 'sequelize';
 
-export interface usr_roleAttributes {
-  user?: number;
-  role?: number;
-}
-
-export class usr_role extends Model<usr_roleAttributes, usr_roleAttributes> implements usr_roleAttributes {
-  user?: number;
-  role?: number;
-
-  static initModel(sequelize: Sequelize) {
-    usr_role.init({
+export default class usr_role extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,

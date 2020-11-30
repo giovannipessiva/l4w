@@ -1,6 +1,6 @@
 import { IncomingMessage } from "http"
 import { get, request } from "https"
-import { Request, Response } from "express"
+import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import { security } from "./security"
 import { IEmptyCallback, IResponseCallback, IBooleanCallback } from "../client/core/util/Commons";
@@ -17,7 +17,7 @@ export namespace services {
     export const FACEBOOK_APPLICATION_ID = "1885551381575204";
     export const GOOGLE_APPLICATION_ID = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
 
-    export function validateGoogleToken(request: Request, response: Response, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string) {
+    export function validateGoogleToken(request: ExpressRequest, response: ExpressResponse, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string) {
         get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token, function(res: IncomingMessage) {
             let authResponse: string = "";
             res.on("data", function(buffer: string) {
@@ -45,7 +45,7 @@ export namespace services {
         });
     }
 
-    export function validateFacebookToken(request: Request, response: Response, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string, userId?: string) {
+    export function validateFacebookToken(request: ExpressRequest, response: ExpressResponse, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string, userId?: string) {
         if(Utils.isEmpty(process.env.FACEBOOK_SECRET)) {
             console.error("No env variable FACEBOOK_SECRET defined");
             onFailure();
@@ -99,7 +99,7 @@ export namespace services {
         });
     }
 
-    export function validateReCaptchaToken(request: Request, response: Response, callback: IBooleanCallback, token: string, ip: string) {
+    export function validateReCaptchaToken(request: ExpressRequest, response: ExpressResponse, callback: IBooleanCallback, token: string, ip: string) {
         let body = "secret=" + process.env.RECAPTCHA_SECRET + "&response=" + token + "&remoteip=" + ip;
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -124,7 +124,7 @@ export namespace services {
         "bug", "enhancement", "question"
     ]
 
-    export function openGitHubIssue(request: Request, response: Response, req: IIssueRequest): void {
+    export function openGitHubIssue(request: ExpressRequest, response: ExpressResponse, req: IIssueRequest): void {
         let user = session.getUser(request);
         if(user === undefined) {
             console.error("Cannot open issue if there is no valid session");

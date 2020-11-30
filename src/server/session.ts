@@ -3,7 +3,7 @@ import Session, { SessionOptions, SessionData, Store } from "express-session"
 //@ts-ignore TS1192
 import SequelizeSessionInit from "connect-session-sequelize"
 let SequelizeStoreConstructor = SequelizeSessionInit(Store);
-import { Request, Response } from "express"
+import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import * as utils from "./utils"
 import { security } from "./security"
@@ -54,14 +54,14 @@ export namespace session {
         return session.user = user;
     }
 
-    export function isAuthenticated(request: Request): boolean {
+    export function isAuthenticated(request: ExpressRequest): boolean {
         if(security.isAuthenticationDisabled()) {
             return true;
         }
         return !utils.isEmpty(getUser(request));
     }
 
-    export function doLogin(request: Request, response: Response, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
+    export function doLogin(request: ExpressRequest, response: ExpressResponse, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
             security.getBodyData(request, response, function(data: any){
@@ -101,7 +101,7 @@ export namespace session {
         }
     }
         
-    export function doLogout(request: Request, response: Response, callback: IEmptyCallback) {
+    export function doLogout(request: ExpressRequest, response: ExpressResponse, callback: IEmptyCallback) {
         response.clearCookie(session.cookieName, { path: "/" });
         if(request.session !== undefined) {
             request.session.destroy(function() {
