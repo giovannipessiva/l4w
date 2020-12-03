@@ -37,11 +37,7 @@ module.exports = function(grunt) {
 
                     dest: ".",
                     rename: function(dest, src) {
-                        if(!src.includes("/models/") || src.endsWith("/models/index.js")) {
-                            return dest + "/" + src.replace(".js",".mjs");
-                        } else {
-                            return dest + "/" + src.replace(".js",".mjs");
-                        }
+                        return dest + "/" + src.replace(".js",".mjs");
                     }
                 }]
             }

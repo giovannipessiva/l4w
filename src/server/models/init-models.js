@@ -20,19 +20,19 @@ function initModels(sequelize) {
   var usr_save = _usr_save(sequelize, DataTypes);
   var usr_session = _usr_session(sequelize, DataTypes);
 
+  usr_list.belongsToMany(lst_event, { through: usr_event, foreignKey: "user", otherKey: "event" });
+  lst_event.belongsToMany(usr_list, { through: usr_event, foreignKey: "event", otherKey: "user" });
+  usr_list.belongsToMany(lst_role, { through: usr_role, foreignKey: "user", otherKey: "role" });
+  lst_role.belongsToMany(usr_list, { through: usr_role, foreignKey: "role", otherKey: "user" });
   log_access.belongsTo(usr_list, { foreignKey: "user"});
   usr_list.hasOne(log_access, { foreignKey: "user"});
   usr_event.belongsTo(lst_event, { foreignKey: "event"});
-  usr_list.belongsToMany(lst_event, { through: usr_event, foreignKey: "user", otherKey: "event" });
   lst_event.hasMany(usr_event, { foreignKey: "event"});
   usr_event.belongsTo(usr_list, { foreignKey: "user"});
-  lst_event.belongsToMany(usr_list, { through: usr_event, foreignKey: "event", otherKey: "user" });
   usr_list.hasMany(usr_event, { foreignKey: "user"});
   usr_role.belongsTo(lst_role, { foreignKey: "role"});
-  usr_list.belongsToMany(lst_role, { through: usr_role, foreignKey: "user", otherKey: "role" });
   lst_role.hasMany(usr_role, { foreignKey: "role"});
   usr_role.belongsTo(usr_list, { foreignKey: "user"});
-  lst_role.belongsToMany(usr_list, { through: usr_role, foreignKey: "role", otherKey: "user" });
   usr_list.hasMany(usr_role, { foreignKey: "user"});
   usr_save.belongsTo(usr_list, { foreignKey: "user"});
   usr_list.hasMany(usr_save, { foreignKey: "user"});

@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
-
-import { Model, Sequelize } from 'sequelize';
+import pkg from 'sequelize';
+const { Model } = pkg;
 
 export default class usr_list extends Model {
   static init(sequelize, DataTypes) {

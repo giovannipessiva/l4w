@@ -1,10 +1,9 @@
 import { readdirSync } from "fs"
-import { join, resolve } from "path"
-//@ts-ignore TS1192
+import { join } from "path"
 import { Options } from "sequelize"
 import * as SequelizeModule from "sequelize"
-import * as log_access from "./log_access"
 
+// export let models: Map<String, Model> = new Map; // TODO usa a typed map
 export let models: any = {};
 export let sequelizeInstance: SequelizeModule.Sequelize; 
 
@@ -15,7 +14,6 @@ if (process.env.DATABASE_URL === undefined) {
 }
 
 function initSequelizeModules() {
-    log_access.init(null, null);
     let sequelizeOptions: Options = {
         dialect: "postgres",
         protocol: "postgres",
@@ -30,23 +28,14 @@ function initSequelizeModules() {
     readdirSync(dirname).filter(function(file: string) {
         return file.indexOf(".") !== 0 && file !== "index.mjs" && file !== "init-models.mjs" && file.indexOf(".mjs") !== 0 ;
     }).forEach(function(file: string) {
-        let modulePath = join(".", dirname, file); 
-        console.log(resolve(modulePath));
+        let modulePath = "./" + file.replace(".mjs",""); 
         //@ts-ignore TS1323
         import(modulePath).then(importedModelModule => {
-            console.log(importedModelModule);
-            let model = importedModelModule(sequelizeInstance, SequelizeModule.Sequelize);
+            let model = importedModelModule.default.init(sequelizeInstance, SequelizeModule.Sequelize);
             models[model.name] = model;
         }).catch(e => {
             console.trace(e);
             process.exit();
         });
-       
-    });
-
-    Object.keys(models).forEach(function(modelName) {
-        if ("associate" in models[modelName]) {
-            models[modelName].associate(models);
-        }
     });
 }

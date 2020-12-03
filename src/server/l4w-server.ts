@@ -1,6 +1,4 @@
-//@ts-ignore TS1192
-import path from "path"
-import { join } from "path"
+import { join, resolve } from "path"
 //@ts-ignore TS1192
 import express, { Request as ExpressRequest, Response as ExpressResponse, NextFunction } from "express"
 import { Express } from "express-serve-static-core"
@@ -52,48 +50,44 @@ function onDatabaseInit(flagDBAvailable: boolean) {
     });
 
     // Views redirection
-    //TODO import.meta require target=esnext and module=esnext
-    // see also: https://github.com/Microsoft/TypeScript/issues/24082
-    //let dirname = path.dirname(new URL(import.meta.url).pathname);
-    let dirname = process.cwd() + path.sep;
-
+    const viewPath = resolve("views");
     app.all("/", function(request: ExpressRequest, response: ExpressResponse) {
-        utils.sendFile("views", "home.html", response);
+        utils.sendFile(viewPath, "home.html", response);
     });
     app.all("/edit", function(request: ExpressRequest, response: ExpressResponse) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
+        utils.sendFile(viewPath, "hub.html", response);
     });
     app.all("/edit/:editor", function(request: ExpressRequest, response: ExpressResponse) {
         let editor = request.params.editor;
-        utils.sendFile(join("views", "editor"), editor + ".html", response);
+        utils.sendFile(viewPath, editor + ".html", response);
     });
     app.all("/test", function(request: ExpressRequest, response: ExpressResponse) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
+        utils.sendFile(viewPath, "test.html", response);
     });
     app.all("/privacy", function(request: ExpressRequest, response: ExpressResponse) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "privacy.html", response);
+        utils.sendFile(viewPath, "privacy.html", response);
     });
 
     // Resources redirection
+    const jsPath = resolve(join("dist", "client"));
     app.get("/js/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file: string = request.params.script;
-        let filePath = path.resolve(dirname + "dist" + path.sep + "client");
         if(security.isDevEnv()) {
             // In development, use files with sourcemaps
             file = file.replace(".min.",".");
         }
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(jsPath, file, response);
     });
+    let libPath = resolve(join("assets", "lib"));
     app.get("/lib/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.script;
-        let filePath = path.resolve(dirname + "assets" + path.sep + "lib");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(libPath, file, response);
     });
     app.get("/data/:type/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
         if (type === ResourceType.CONFIGURATION) {
-            let filePath = path.resolve(dirname + "data" + path.sep + ResourceType.CONFIGURATION);
+            let filePath = resolve(join("data", ResourceType.CONFIGURATION));
             utils.sendFile(filePath, file, response);
             return;
         } else {
@@ -101,38 +95,38 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             database.read(type, file, session.getUser(request), response, lang);
         }
     });
+    const assetsPath = resolve("assets");
     app.get("/assets/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "assets");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(assetsPath, file, response);
     });
     app.get("/assets/:type/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-        let filePath = path.resolve(dirname + "assets" + path.sep + type);
+        let filePath = resolve(join("assets", type));
         utils.sendFile(filePath, file, response);
     });
     app.get("/assetlist/:type/", function(request: ExpressRequest, response: ExpressResponse) {
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-        let filePath = path.resolve(dirname + "assets" + path.sep + type);
+        let filePath = resolve(join("assets", type));
         utils.listFiles(filePath, response);
     });
+    const stylePath = resolve(join("style"));
     app.get("/style/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "style");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(stylePath, file, response);
     });
     app.get("/style/:path/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let pathS = request.params.path;
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "style" + path.sep + pathS);
+        let filePath = resolve(join("style", pathS));
         utils.sendFile(filePath, file, response);
     });
+    let workersPath = resolve(join("src", "workers"));
     app.get("/workers/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.script;
-        let filePath = path.resolve(dirname + "src" + path.sep + "workers");
         response.set("Service-Worker-Allowed", "..")
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(workersPath, file, response);
     });
 
     // Server logic
