@@ -5,7 +5,7 @@
 [![Dependencies](https://david-dm.org/giovannipessiva/l4w.svg)](https://david-dm.org/giovannipessiva/l4w)
 [![DevDependencies](https://david-dm.org/giovannipessiva/l4w/dev-status.svg)](https://david-dm.org/giovannipessiva/l4w?type=dev)
 
-A game engine for tile-based web games, check it out: [l4w.herokuapp.com](https://l4w.herokuapp.com)
+A game engine & editor for tile-based web games, check it out: [l4w.herokuapp.com](https://l4w.herokuapp.com)
 
 ![Preview](/style/logo/preview.png?raw=true "L4W preview")
 
