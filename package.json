@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "grunt l4w-build-pipeline --gruntfile Gruntfile.cjs",
-    "start": "heroku local"
+    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
   "dependencies": {
     "bcrypt": "5.0.0",
@@ -45,7 +45,6 @@
     "grunt-eslint": "23.0.0",
     "grunt-ts": "6.0.0-beta.22",
     "grunt-webpack": "4.0.2",
-    "heroku": "^0.2.0",
     "ts-loader": "8.0.11",
     "typescript": "4.1.2",
     "vue-loader": "15.9.5",
@@ -90,7 +89,6 @@
     "grunt-eslint": "Grunt Plugin for ESLint",
     "grunt-ts": "Grun Plugin for TypeScript compiler",
     "grunt-webpack": "Grunt Plugin for WebPack",
-    "heroku": "CLI for Heroku, required for launching the app as Heroku does in Production",
     "ts-loader": "TypeScript loader for webpack",
     "typescript": "TypeScript language",
     "vue-loader": "Vue single-file component loader for Webpack",

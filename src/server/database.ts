@@ -105,7 +105,7 @@ export namespace database {
      * - load the game file database
      * - initialize the PG database connection
      */
-    export async function init(): Promise<void> {
+    export async function init(): Promise<boolean> {
         return new Promise(async function(resolve, reject) {
             // Load game data from json files
             gameData = {
@@ -137,7 +137,7 @@ export namespace database {
                     await sequelizeInstance.authenticate();
                     console.log("Sequelize authentication OK");
                     // Database ready
-                    resolve();
+                    resolve(true);
                     return;
                 } catch(e) {
                     console.trace(e);
@@ -147,7 +147,7 @@ export namespace database {
             if(security.isDevEnv()) {
                 console.info("PostgreSQL database not available, functionalities will be limitated");
                 flagPostgresUnavailable = true;
-                reject();
+                resolve(false);
             } else {
                 console.error("Authentication on PostgreSQL failed");
                 process.exit();

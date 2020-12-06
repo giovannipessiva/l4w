@@ -1,8 +1,9 @@
 import { join, resolve } from "path"
-//@ts-ignore TS1192
-import express, { Request as ExpressRequest, Response as ExpressResponse, NextFunction } from "express"
+//@ts-ignore
+import express from "express"
+import { Request as ExpressRequest, Response as ExpressResponse, NextFunction } from "express"
 import { Express } from "express-serve-static-core"
-//@ts-ignore TS1192
+//@ts-ignore
 import compression from "compression"
 import { readFile } from "fs"
 import { createServer } from "https"
@@ -17,15 +18,9 @@ import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
 import { services } from "./services"
 
 // Database initialization
-database.init().then(() => {
-    // Initialize session middleware only when DB is available
-    onDatabaseInit(true);
-}, () => function() {
-    // Do not initialize session middleware when DB is not available
-    onDatabaseInit(false);
-});
+database.init().then(onDatabaseInit);
 
-// Server initialization
+// Server initialization (will initialize session middleware only when DB is available)
 function onDatabaseInit(flagDBAvailable: boolean) {
     let app: Express = express();
     app.set("port",(process.env.PORT || 5000));
