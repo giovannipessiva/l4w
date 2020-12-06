@@ -2,7 +2,7 @@
 :loop
 
 rem Run as Heroku local application (will use .env file)
-call npm start
+call heroku local -f Procfile_inspect
 
 echo Restarting...
 goto loop

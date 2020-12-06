@@ -1,6 +1,7 @@
-//@ts-ignore TS1192
-import Session, { SessionOptions, SessionData, Store } from "express-session"
-//@ts-ignore TS1192
+//@ts-ignore
+import Session from "express-session"
+import { SessionOptions, Store } from "express-session"
+//@ts-ignore
 import SequelizeSessionInit from "connect-session-sequelize"
 let SequelizeStoreConstructor = SequelizeSessionInit(Store);
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
@@ -12,11 +13,6 @@ import { sequelizeInstance } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
-
-// Add a new field through interface merging
-interface SessionData {
-    user: string; 
-};
 
 export namespace session {
         
@@ -42,19 +38,19 @@ export namespace session {
         return Session(sessionOptions);
     }
     
-    export function getUser(session: Session.Session & Partial<SessionData>): string | undefined {
-        if(session === undefined || utils.isEmpty(session.user)) {
+    export function getUser(request: ExpressRequest): string | undefined {
+        if(request === undefined || request.session === undefined || utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l'autenticazione sia disabilitata, forza l'utente 0
                 return "0";
             }
             return undefined;
         }
-        return session.user;
+        return request.session.user;
     }
     
-    export function setUser(session: Session.Session & Partial<SessionData>, user: string) {
-        return session.user = user;
+    export function setUser(request: ExpressRequest, user: string) {
+        return request.session!.user = user;
     }
 
     export function isAuthenticated(request: ExpressRequest): boolean {

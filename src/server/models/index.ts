@@ -3,7 +3,6 @@ import { join } from "path"
 import { Options } from "sequelize"
 import * as SequelizeModule from "sequelize"
 
-// export let models: Map<String, Model> = new Map; // TODO usa a typed map
 export let models: Map<String, SequelizeModule.Model> = new Map();
 export let sequelizeInstance: SequelizeModule.Sequelize; 
 

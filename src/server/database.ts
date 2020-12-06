@@ -385,7 +385,7 @@ export namespace database {
                             }).then(function(user_new_record: any) {
                                 if(user_record == null) {                        
                                     // Add user id to session
-                                    session.setUser(request.session, user_new_record.user);
+                                    session.setUser(request, user_new_record.user);
                                     request.session!.save(function(err) {
                                         if(!Utils.isEmpty(err)) {
                                             console.error("Error while saving session: %s", err);
@@ -425,7 +425,7 @@ export namespace database {
                         });
                     } else {
                         // Add user id to session
-                        session.setUser(request.session, user_record.user);
+                        session.setUser(request, user_record.user);
                         request.session!.save(function(err) {
                             if(!Utils.isEmpty(err)) {
                                 console.error("Error while saving session: %s", err);
