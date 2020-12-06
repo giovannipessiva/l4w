@@ -14,7 +14,7 @@ import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
 
 // Add a new field through interface merging
-interface SessionData { // eslint-disable-line no-redeclare
+interface SessionData {
     user: string; 
 };
 
@@ -24,6 +24,12 @@ export namespace session {
     
     export function init() {
         let secret: string =  process.env.SESSION_SECRET!;
+        let store = new SequelizeStoreConstructor({
+            db: sequelizeInstance,
+            tableName: "usr_session2" //TODO delete original usr_session table, rename usr_session2 --> usr_session
+        });
+        // Call sync in order to generate the ${tableName} table
+        store.sync();
         let sessionOptions: SessionOptions = {
             cookie: security.getCookieSettings(),
             name: session.cookieName,
@@ -31,10 +37,7 @@ export namespace session {
             resave: false,
             saveUninitialized: true,
             secret: secret,
-            store: new SequelizeStoreConstructor({
-                db: sequelizeInstance,
-                table: "usr_session"
-            })
+            store: store
         };
         return Session(sessionOptions);
     }

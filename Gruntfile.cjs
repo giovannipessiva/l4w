@@ -12,7 +12,6 @@ module.exports = function(grunt) {
                       "!./src/client/interfaces/**",
                       "./src/common/**/*.ts",
                       "./src/server/**/*.ts",
-                      "!./src/server/@types/**",
                       "!./src/server/models/**",
                       "./src/server/models/index.ts"
                 ]
