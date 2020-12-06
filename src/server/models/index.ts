@@ -1,8 +1,11 @@
-import { Options, Sequelize } from "sequelize"
+import { readdirSync } from "fs"
+import { join } from "path"
+import { Options } from "sequelize"
+import * as SequelizeModule from "sequelize"
 
-import { initModels } from "./init-models"
-
-export let sequelizeInstance: Sequelize; 
+// export let models: Map<String, Model> = new Map; // TODO usa a typed map
+export let models: Map<String, SequelizeModule.Model> = new Map();
+export let sequelizeInstance: SequelizeModule.Sequelize; 
 
 if (process.env.DATABASE_URL === undefined) {
     console.warn("Env variable DATABASE_URL undefined");
@@ -19,7 +22,19 @@ function initSequelizeModules() {
         },
         logging: false
     };
-    sequelizeInstance = new Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
+    sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
-    initModels(sequelizeInstance);
+    const dirname = join("dist", "server", "l4w", "src", "server", "models");
+    readdirSync(dirname).filter(function(file: string) {
+        return file.indexOf(".") !== 0 && file !== "index.mjs" && file !== "init-models.mjs" && file.indexOf(".mjs") !== 0 ;
+    }).forEach(function(file: string) {
+        let modulePath = "./" + file.replace(".mjs",""); 
+        import(modulePath).then(importedModelModule => {
+            let model = importedModelModule.default.init(sequelizeInstance, SequelizeModule.Sequelize);
+            models.set(model.name, model);
+        }).catch(e => {
+            console.trace(e);
+            process.exit();
+        });
+    });
 }

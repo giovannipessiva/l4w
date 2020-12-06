@@ -7,7 +7,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
-import { log_access, log_security, lst_event, usr_event, usr_list, usr_save } from "./models/init-models"
+import { models } from "./models/index"
 import { sequelizeInstance } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
@@ -79,7 +79,7 @@ export namespace database {
             return;
         }
         // User already known, log this access
-        log_access.update({
+        models.get("log_access")!.update({
             last_seen : new Date(),
             //@ts-ignore
             access_counter : Sequelize.literal("access_counter + 1")
@@ -219,7 +219,7 @@ export namespace database {
                 break;
             case ResourceType.SAVE:
                 if (!utils.isEmpty(user) && !flagPostgresUnavailable) {
-                    usr_save.findOne({
+                    models.get("usr_save")!["findOne"]({
                         where : {
                             user : user!,
                             id : file
@@ -333,7 +333,7 @@ export namespace database {
                     response.status(HttpStatus.OK).send("");
                     return;
                 }
-                usr_save.upsert({
+                models.get("usr_save")!["upsert"]({
                     user: parseInt(user),
                     id : parseInt(file),
                     date: new Date(),
@@ -367,18 +367,18 @@ export namespace database {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
                     return;
                 }
-                usr_list.findOne({
+                models.get("usr_list")!["findOne"]({
                     where: {
                         mail: hashedMail
                     }
                 }).then(function(user_record: any) {
                     if(user_record == null) {
                         // First access, create the user
-                        usr_list.upsert({
+                        models.get("usr_list")!["upsert"]({
                             mail: hashedMail,
                         }).then(function(updated: any) {
                             // Get the new user record
-                            usr_list.findOne({
+                            models.get("usr_list")!["findOne"]({
                                 where: {
                                     mail: hashedMail
                                 }
@@ -393,7 +393,7 @@ export namespace database {
                                     });
                                     
                                     // Send welcome event to the new user
-                                    usr_event.upsert({
+                                    models.get("usr_event")!["upsert"]({
                                         user: user_new_record.user,
                                         event: constants.event.WELCOME,
                                         date: new Date()
@@ -403,7 +403,7 @@ export namespace database {
                                     });
                                     
                                     // Log first access for the new user user
-                                    log_access.upsert({
+                                    models.get("log_access")!["upsert"]({
                                         user: user_new_record.user,
                                         first_seen: new Date(),
                                         last_seen: new Date(),
@@ -446,7 +446,7 @@ export namespace database {
         if (utils.isEmpty(user) || flagPostgresUnavailable) {
             response.json({});
         } else {
-            usr_event.findAll({
+            models.get("usr_event")!["findAll"]({
                 where : {
                     user : user
                 },
@@ -457,7 +457,7 @@ export namespace database {
                     for (var i = 0; i < events.length; i++) {
                         eventsArray.push(events[i].event);
                     }
-                    lst_event.findAll({
+                    models.get("lst_event")!["findAll"]({
                         where : {
                             event : eventsArray
                         }
@@ -587,7 +587,7 @@ export namespace database {
 }
 
 export function registerSecurityEvent(event: string, info: string) {
-    log_security.upsert({
+    models.get("log_security")!["upsert"]({
         event: event,
         info: info,
         date: new Date()
