@@ -1,5 +1,4 @@
-import * as SequelizeModule from "sequelize"
-const sequelize = SequelizeModule["default"];
+import { Sequelize } from "sequelize"
 import * as LowdbModule from "lowdb";
 import * as FileSyncModule from "lowdb/adapters/FileSync"
 const lowdb: LowdbModule.lowdb = LowdbModule["default"];
@@ -8,7 +7,8 @@ import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import { LanguageEnum } from "../common/model/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
-import { models, sequelizeInstance } from "./models/index"
+import { log_access, log_security, lst_event, usr_event, usr_list, usr_save } from "./models/init-models"
+import { sequelizeInstance } from "./models/index"
 import * as utils from "./utils"
 import { constants } from "./constants"
 import { DataDefaults } from "../common/DataDefaults"
@@ -25,7 +25,6 @@ import { session } from "./session";
  * This module manage persistency for:
  * - Game data: on lowdb files, written only during development, and read at runtime
  * - User data: on PG database, read and written only during runtime
- * TODO make local developement possibile without a PG database
  */
 export namespace database {
 
@@ -80,9 +79,9 @@ export namespace database {
             return;
         }
         // User already known, log this access
-        models.log_access.update({
+        log_access.update({
             last_seen : new Date(),
-            access_counter : sequelize.literal("access_counter + 1")
+            access_counter : Sequelize.literal("access_counter + 1")
         }, {
             where : {
                 user : user,
@@ -218,9 +217,9 @@ export namespace database {
                 break;
             case ResourceType.SAVE:
                 if (!utils.isEmpty(user) && !flagPostgresUnavailable) {
-                    models.usr_save.findOne({
+                    usr_save.findOne({
                         where : {
-                            user : user,
+                            user : user!,
                             id : file
                         },
                         attributes : [ "save" ]
@@ -332,7 +331,7 @@ export namespace database {
                     response.status(HttpStatus.OK).send("");
                     return;
                 }
-                models.usr_save.upsert({
+                usr_save.upsert({
                     user: user,
                     id : file,
                     date: new Date(),
@@ -364,19 +363,20 @@ export namespace database {
                 if(hashedMail === undefined) {
                     console.log("Hash not available");
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
+                    return;
                 }
-                models.usr_list.findOne({
+                usr_list.findOne({
                     where: {
                         mail: hashedMail
                     }
                 }).then(function(user_record: any) {
                     if(user_record == null) {
                         // First access, create the user
-                        models.usr_list.upsert({
+                        usr_list.upsert({
                             mail: hashedMail,
                         }).then(function(updated: any) {
                             // Get the new user record
-                            models.usr_list.findOne({
+                            usr_list.findOne({
                                 where: {
                                     mail: hashedMail
                                 }
@@ -391,7 +391,7 @@ export namespace database {
                                     });
                                     
                                     // Send welcome event to the new user
-                                    models.usr_event.upsert({
+                                    usr_event.upsert({
                                         user: user_new_record.user,
                                         event: constants.event.WELCOME,
                                         date: new Date()
@@ -401,7 +401,7 @@ export namespace database {
                                     });
                                     
                                     // Log first access for the new user user
-                                    models.log_access.upsert({
+                                    log_access.upsert({
                                         user: user_new_record.user,
                                         first_seen: new Date(),
                                         last_seen: new Date(),
@@ -444,7 +444,7 @@ export namespace database {
         if (utils.isEmpty(user) || flagPostgresUnavailable) {
             response.json({});
         } else {
-            models.usr_event.findAll({
+            usr_event.findAll({
                 where : {
                     user : user
                 },
@@ -455,7 +455,7 @@ export namespace database {
                     for (var i = 0; i < events.length; i++) {
                         eventsArray.push(events[i].event);
                     }
-                    models.lst_event.findAll({
+                    lst_event.findAll({
                         where : {
                             event : eventsArray
                         }
@@ -582,4 +582,12 @@ export namespace database {
     function getEdgeMessageStringId(edge: IDialogEdge) {
         return "E" + edge.id + "M";
     }
+}
+
+export function registerSecurityEvent(event: string, info: string) {
+    log_security.upsert({
+        event: event,
+        info: info,
+        date: new Date()
+    });
 }

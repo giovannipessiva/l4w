@@ -63,7 +63,7 @@
     "lowdb": "JSON database",
     "npm": "dependency manager for Javascript",
     "pg": "PostgreSQL DB client",
-    "sequelize": "ORM framework for Node.js. Cant update to v6, import method change and I could not get it work with sequelize-auto modules",
+    "sequelize": "ORM framework for Node.js. Cant update to v6, import method change and I could not get it work with sequelize-auto modules. It is a CommonJS module, so importing can be tricky",
     "vue": "FE framework"
   },
   "devDependenciesDocumentation": {
@@ -92,7 +92,7 @@
     "grunt-ts": "Grun Plugin for TypeScript compiler",
     "grunt-webpack": "Grunt Plugin for WebPack",
     "heroku": "CLI for Heroku, required for launching the app as Heroku does in Production",
-    "sequelize-auto-3": " sequelize models generator; use a fork since main project is not updating deps and doesn't work anymore with my build",
+    "sequelize-auto": " sequelize models generator",
     "ts-loader": "TypeScript loader for webpack",
     "typescript": "TypeScript language",
     "vue-loader": "Vue single-file component loader for Webpack",

@@ -8,7 +8,7 @@ import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 import * as utils from "./utils"
 import { security } from "./security"
 import { services } from "./services"
-import { models } from "./models/index"
+import { sequelizeInstance } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
@@ -32,7 +32,7 @@ export namespace session {
             saveUninitialized: true,
             secret: secret,
             store: new SequelizeStoreConstructor({
-                db: models,
+                db: sequelizeInstance,
                 table: "usr_session"
             })
         };

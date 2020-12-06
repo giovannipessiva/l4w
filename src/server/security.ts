@@ -4,9 +4,9 @@ import { ServerOptions } from "https"
 import { readFileSync } from "fs"
 import { SessionOptions } from "express-session"
 
+import { registerSecurityEvent } from "./database"
 import { HttpStatus } from "../common/Constants"
 import * as utils from "./utils"
-import { models } from "./models/index"
 import { services } from "./services"
 
 export namespace security {
@@ -34,12 +34,7 @@ export namespace security {
         if(utils.isEmpty(info)) {
             info = "(empty)";
         }
-        let table: any = (models.log_security);
-        table.upsert({
-            event: event.substring(0,15),
-            info: info.substring(0,127),
-            date: new Date()
-        });
+        registerSecurityEvent(event, info);
     }
     
     export function getBodyData(request: ExpressRequest, response: ExpressResponse, callback: any) {

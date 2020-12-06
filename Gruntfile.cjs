@@ -12,7 +12,9 @@ module.exports = function(grunt) {
                       "!./src/client/interfaces/**",
                       "./src/common/**/*.ts",
                       "./src/server/**/*.ts",
-                      "!./src/server/@types/**"
+                      "!./src/server/@types/**",
+                      "!./src/server/models/**",
+                      "./src/server/models/index.ts"
                 ]
             },
             options: {
@@ -67,8 +69,7 @@ module.exports = function(grunt) {
                 // and make it use the .mjs modules
                 src: [
                     "./dist/client/l4w",
-                    "./dist/server/**/*.js",
-                    "./dist/server/**/models/index.js"
+                    "./dist/server/**/*.js"
                 ]
             }
         },
