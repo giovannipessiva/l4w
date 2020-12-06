@@ -11,8 +11,7 @@ module.exports = function(grunt) {
                       "./src/client/**/*.ts",
                       "!./src/client/interfaces/**",
                       "./src/common/**/*.ts",
-                      "./src/server/**/*.ts",
-                      "!./src/server/@types/**"
+                      "./src/server/**/*.ts"
                 ]
             },
             options: {
@@ -37,11 +36,7 @@ module.exports = function(grunt) {
 
                     dest: ".",
                     rename: function(dest, src) {
-                        if(!src.includes("/models/") || src.endsWith("/models/index.js")) {
-                            return dest + "/" + src.replace(".js",".mjs");
-                        } else {
-                            return dest + "/" + src.replace(".js",".cjs");
-                        }
+                        return dest + "/" + src.replace(".js",".mjs");
                     }
                 }]
             }
@@ -71,8 +66,7 @@ module.exports = function(grunt) {
                 // and make it use the .mjs modules
                 src: [
                     "./dist/client/l4w",
-                    "./dist/server/**/*.js",
-                    "./dist/server/**/models/index.js"
+                    "./dist/server/**/*.js"
                 ]
             }
         },

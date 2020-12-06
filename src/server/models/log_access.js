@@ -1,7 +1,11 @@
-/* jshint indent: 2 */
+import * as SequelizeModule from "sequelize";
+const { DataTypes } = SequelizeModule;
+import pgk from "sequelize";
+const { Model } = pgk;
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('log_access', {
+export default class log_access extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     user: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -24,6 +28,20 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'log_access'
+    sequelize,
+    tableName: 'log_access',
+    schema: 'public',
+    timestamps: false,
+    indexes: [
+      {
+        name: "log_access_key",
+        unique: true,
+        fields: [
+          { name: "user" },
+        ]
+      },
+    ]
   });
-};
+  return log_access;
+  }
+}

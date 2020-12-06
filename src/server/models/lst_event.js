@@ -1,30 +1,48 @@
-/* jshint indent: 2 */
+import * as SequelizeModule from "sequelize";
+const { DataTypes } = SequelizeModule;
+import pgk from "sequelize";
+const { Model } = pgk;
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('lst_event', {
+export default class lst_event extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     event: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     message: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(511),
       allowNull: true
     },
     type: {
-      type: DataTypes.CHAR,
+      type: DataTypes.CHAR(1),
       allowNull: true
     },
     action: {
-      type: DataTypes.CHAR,
+      type: DataTypes.CHAR(31),
       allowNull: true
     },
     action_key: {
-      type: DataTypes.CHAR,
+      type: DataTypes.CHAR(31),
       allowNull: true
     }
   }, {
-    tableName: 'lst_event'
+    sequelize,
+    tableName: 'lst_event',
+    schema: 'public',
+    timestamps: false,
+    indexes: [
+      {
+        name: "l4w_event_key",
+        unique: true,
+        fields: [
+          { name: "event" },
+        ]
+      },
+    ]
   });
-};
+  return lst_event;
+  }
+}

@@ -1,13 +1,13 @@
-//@ts-ignore TS1192
-import fs from "fs"
+import { lstatSync, readdir } from "fs"
+import { join } from "path"
+import { Response as ExpressResponse } from "express";
 
 import { HttpStatus } from "../common/Constants"
-import { Response } from "express";
 import { IDialogNode, IDialogEdge } from "../common/model/Dialog"
 
 const placeholder = "404.png";
 
-export function sendFile(path: string, filename: string, response: Response) {
+export function sendFile(path: string, filename: string, response: ExpressResponse) {
     //Send a file as response
     let options = {
         dotfiles: "deny",
@@ -85,14 +85,14 @@ export function isEmpty(obj: any) {
  * @param filePath path to read
  * @param response array of files (async)
  */
-export function listFiles(filePath: string, response?: Response): Promise<string[]> {
+export function listFiles(filePath: string, response?: ExpressResponse): Promise<string[]> {
     return new Promise<string[]>(resolve => {
-        fs.readdir(filePath, (err: Error, files: string[]) => {
+        readdir(filePath, (err, files) => {
             for(let i = 0; i < files.length; i++) {
                 let file = files[i];
                 let is404 = file.startsWith("404")
                 let isHidden = file.startsWith(".")
-                let isDirectory = fs.lstatSync(filePath + "/" + file).isDirectory();
+                let isDirectory = lstatSync(join(filePath, file)).isDirectory();
                 if (is404 || isHidden || isDirectory) {
                     files.splice(i, 1);
                     i--;

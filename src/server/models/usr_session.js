@@ -1,14 +1,18 @@
-/* jshint indent: 2 */
+import * as SequelizeModule from "sequelize";
+const { DataTypes } = SequelizeModule;
+import pgk from "sequelize";
+const { Model } = pgk;
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('usr_session', {
+export default class usr_session extends Model {
+  static init(sequelize, DataTypes) {
+  super.init({
     sid: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(32),
       allowNull: false,
       primaryKey: true
     },
     expires: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: true
     },
     data: {
@@ -16,6 +20,20 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     }
   }, {
-    tableName: 'usr_session'
+    sequelize,
+    tableName: 'usr_session',
+    schema: 'public',
+    timestamps: false,
+    indexes: [
+      {
+        name: "usr_session_key",
+        unique: true,
+        fields: [
+          { name: "sid" },
+        ]
+      },
+    ]
   });
-};
+  return usr_session;
+  }
+}

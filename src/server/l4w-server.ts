@@ -1,9 +1,9 @@
-//@ts-ignore TS1192
-import path from "path"
-//@ts-ignore TS1192
-import express, { Request, Response, NextFunction } from "express"
+import { join, resolve } from "path"
+//@ts-ignore
+import express from "express"
+import { Request as ExpressRequest, Response as ExpressResponse, NextFunction } from "express"
 import { Express } from "express-serve-static-core"
-//@ts-ignore TS1192
+//@ts-ignore
 import compression from "compression"
 import { readFile } from "fs"
 import { createServer } from "https"
@@ -17,49 +17,20 @@ import { database } from "./database"
 import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
 import { services } from "./services"
 
-//TODO import.meta require target=esnext and module=esnext
-// see also: https://github.com/Microsoft/TypeScript/issues/24082
-//let dirname = path.dirname(new URL(import.meta.url).pathname);
-let dirname = process.cwd() + path.sep;
-
 // Database initialization
-database.init().then(function() {
-    // Initialize session middleware only when DB is available
-    onDatabaseInit(true);
-}).catch(function() {
-    // Do not initialize session middleware when DB is not available
-    onDatabaseInit(false);
-});
+database.init().then(onDatabaseInit);
 
-// Server initialization
+// Server initialization (will initialize session middleware only when DB is available)
 function onDatabaseInit(flagDBAvailable: boolean) {
     let app: Express = express();
     app.set("port",(process.env.PORT || 5000));
-    let server;
-    if(!security.isDevEnv()) {
-        // Heroku will take care of HTTPS
-        server = app.listen(app.get("port"));
-    } else {
-        // Setup HTTPS with self-signed cert for local dev
-        server = createServer(security.getLocalServerOptions(), app).listen(app.get("port"));
-    }
-    server.on("listening", function() {
-        console.log("L4W is running on port", app.get("port"));
-    }).on("error", function(err: any) {
-        if(err.code === "EADDRINUSE") {
-            console.error("Another instance is already running on port " + err.port);
-        } else {
-            console.error(err);
-        }
-        process.exit();
-    });
 
     // Middleware
     if(flagDBAvailable) {
         app.use(session.init());
     }
     app.use(compression());
-    app.use(function(req: Request, res: Response, next: NextFunction) {
+    app.use(function(req: ExpressRequest, res: ExpressResponse, next: NextFunction) {
         // Remove trailing slash
         if (req.path.substr(-1) === "/" && req.path.length > 1) {
             let query = req.url.slice(req.path.length);
@@ -68,49 +39,50 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             next();
         }
     });
-    app.use(function(req: Request, res: Response, next: NextFunction) {
+    app.use(function(req: ExpressRequest, res: ExpressResponse, next: NextFunction) {
         security.requestFilter(req, res);
         next();
     });
 
     // Views redirection
-    app.all("/", function(request: Request, response: Response) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "home.html", response);
+    const viewPath = resolve("views");
+    app.all("/", function(request: ExpressRequest, response: ExpressResponse) {
+        utils.sendFile(viewPath, "home.html", response);
     });
-    app.all("/edit", function(request: Request, response: Response) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "hub.html", response);
+    app.all("/edit", function(request: ExpressRequest, response: ExpressResponse) {
+        utils.sendFile(viewPath, "hub.html", response);
     });
-    app.all("/edit/:editor", function(request: Request, response: Response) {
+    app.all("/edit/:editor", function(request: ExpressRequest, response: ExpressResponse) {
         let editor = request.params.editor;
-        utils.sendFile(dirname + path.sep + "views" + path.sep + "editor" + path.sep, editor + ".html", response);
+        utils.sendFile(viewPath, editor + ".html", response);
     });
-    app.all("/test", function(request: Request, response: Response) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "test.html", response);
+    app.all("/test", function(request: ExpressRequest, response: ExpressResponse) {
+        utils.sendFile(viewPath, "test.html", response);
     });
-    app.all("/privacy", function(request: Request, response: Response) {
-        utils.sendFile(dirname + path.sep + "views" + path.sep, "privacy.html", response);
+    app.all("/privacy", function(request: ExpressRequest, response: ExpressResponse) {
+        utils.sendFile(viewPath, "privacy.html", response);
     });
 
     // Resources redirection
-    app.get("/js/:script", function(request: Request, response: Response) {
+    const jsPath = resolve(join("dist", "client"));
+    app.get("/js/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file: string = request.params.script;
-        let filePath = path.resolve(dirname + "dist" + path.sep + "client");
         if(security.isDevEnv()) {
             // In development, use files with sourcemaps
             file = file.replace(".min.",".");
         }
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(jsPath, file, response);
     });
-    app.get("/lib/:script", function(request: Request, response: Response) {
+    let libPath = resolve(join("assets", "lib"));
+    app.get("/lib/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.script;
-        let filePath = path.resolve(dirname + "assets" + path.sep + "lib");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(libPath, file, response);
     });
-    app.get("/data/:type/:file", function(request: Request, response: Response) {
+    app.get("/data/:type/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
         if (type === ResourceType.CONFIGURATION) {
-            let filePath = path.resolve(dirname + "data" + path.sep + ResourceType.CONFIGURATION);
+            let filePath = resolve(join("data", ResourceType.CONFIGURATION));
             utils.sendFile(filePath, file, response);
             return;
         } else {
@@ -118,42 +90,42 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             database.read(type, file, session.getUser(request), response, lang);
         }
     });
-    app.get("/assets/:file", function(request: Request, response: Response) {
+    const assetsPath = resolve("assets");
+    app.get("/assets/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "assets");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(assetsPath, file, response);
     });
-    app.get("/assets/:type/:file", function(request: Request, response: Response) {
+    app.get("/assets/:type/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-        let filePath = path.resolve(dirname + "assets" + path.sep + type);
+        let filePath = resolve(join("assets", type));
         utils.sendFile(filePath, file, response);
     });
-    app.get("/assetlist/:type/", function(request: Request, response: Response) {
+    app.get("/assetlist/:type/", function(request: ExpressRequest, response: ExpressResponse) {
         let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
-        let filePath = path.resolve(dirname + "assets" + path.sep + type);
+        let filePath = resolve(join("assets", type));
         utils.listFiles(filePath, response);
     });
-    app.get("/style/:file", function(request: Request, response: Response) {
+    const stylePath = resolve(join("style"));
+    app.get("/style/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "style");
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(stylePath, file, response);
     });
-    app.get("/style/:path/:file", function(request: Request, response: Response) {
+    app.get("/style/:path/:file", function(request: ExpressRequest, response: ExpressResponse) {
         let pathS = request.params.path;
         let file = request.params.file;
-        let filePath = path.resolve(dirname + "style" + path.sep + pathS);
+        let filePath = resolve(join("style", pathS));
         utils.sendFile(filePath, file, response);
     });
-    app.get("/workers/:script", function(request: Request, response: Response) {
+    let workersPath = resolve(join("src", "workers"));
+    app.get("/workers/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file = request.params.script;
-        let filePath = path.resolve(dirname + "src" + path.sep + "workers");
         response.set("Service-Worker-Allowed", "..")
-        utils.sendFile(filePath, file, response);
+        utils.sendFile(workersPath, file, response);
     });
 
     // Server logic
-    app.post("/edit/:type/:id", function(request: Request, response: Response) {
+    app.post("/edit/:type/:id", function(request: ExpressRequest, response: ExpressResponse) {
         if(session.isAuthenticated(request)) {
             let fileId = request.params.id;
             let type: ResourceType = Utils.convertStringToEnum<ResourceType>(ResourceType, request.params.type);
@@ -164,14 +136,14 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             response.status(HttpStatus.FORBIDDEN).send("");
         }
     });
-    app.get("/news", function(request: Request, response: Response) {
+    app.get("/news", function(request: ExpressRequest, response: ExpressResponse) {
         if(session.isAuthenticated(request)) {
             database.getNews(session.getUser(request)!, response);
         } else {
             response.status(HttpStatus.FORBIDDEN).send("");
         }
     });
-    app.get("/v", function(request: Request, response: Response) {
+    app.get("/v", function(request: ExpressRequest, response: ExpressResponse) {
         readFile("package.json", "utf8", function(err: NodeJS.ErrnoException | null, data: string | Buffer) {
             if(err !== null) {
                 console.error(err);
@@ -182,7 +154,7 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             }
         });
     });
-    app.post("/auth", function(request: Request, response: Response) {
+    app.post("/auth", function(request: ExpressRequest, response: ExpressResponse) {
         let authResponse: IAuthResponse;
         session.doLogin(request, response, function() {
             authResponse = {
@@ -203,12 +175,12 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             response.json(authResponse);
         });
     });
-    app.get("/logout", function(request: Request, response: Response) {
+    app.get("/logout", function(request: ExpressRequest, response: ExpressResponse) {
         session.doLogout(request, response, function() {
             response.send("");
         });
     });
-    app.post("/issue", function(request: Request, response: Response) {
+    app.post("/issue", function(request: ExpressRequest, response: ExpressResponse) {
         security.getBodyData(request, response, function(data: any){
             let req: IIssueRequest;
             try {
@@ -230,7 +202,28 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             services.validateReCaptchaToken(request, response, reCaptchaCallback, req.captchaToken, request.ip);
         });
     });
-    app.all("/teapot", function(request: Request, response: Response) {
+    app.all("/teapot", function(request: ExpressRequest, response: ExpressResponse) {
         response.status(HttpStatus.IM_A_TEAPOT).send("🫖");
+    });
+
+    let server;
+    let port = app.get("port");
+    if(!security.isDevEnv()) {
+        // Heroku will take care of HTTPS
+        server = app.listen(port);
+    } else {
+        // Setup HTTPS with self-signed cert for local dev
+        server = createServer(security.getLocalServerOptions(), app).listen(port);
+    }
+    server.on("listening", function() {
+        console.log("L4W is running on port", port);
+    }).on("error", function(err: any) {
+        console.trace(err);
+        if(err.code === "EADDRINUSE") {
+            console.error("Another instance is already running on port " + err.port);
+        } else {
+            console.error(err);
+        }
+        process.exit();
     });
 }

@@ -1,22 +1,18 @@
-//@ts-ignore TS1192
-import Session, { SessionOptions, SessionData, Store } from "express-session"
-//@ts-ignore TS1192
+//@ts-ignore
+import Session from "express-session"
+import { SessionOptions, Store } from "express-session"
+//@ts-ignore
 import SequelizeSessionInit from "connect-session-sequelize"
 let SequelizeStoreConstructor = SequelizeSessionInit(Store);
-import { Request, Response } from "express"
+import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import * as utils from "./utils"
 import { security } from "./security"
 import { services } from "./services"
-import { models } from "./models/index"
+import { sequelizeInstance } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
-
-// Add a new field through interface merging
-interface SessionData { // eslint-disable-line no-redeclare
-    user: string; 
-};
 
 export namespace session {
         
@@ -24,6 +20,12 @@ export namespace session {
     
     export function init() {
         let secret: string =  process.env.SESSION_SECRET!;
+        let store = new SequelizeStoreConstructor({
+            db: sequelizeInstance,
+            tableName: "usr_session2" //TODO delete original usr_session table, rename usr_session2 --> usr_session
+        });
+        // Call sync in order to generate the ${tableName} table
+        store.sync();
         let sessionOptions: SessionOptions = {
             cookie: security.getCookieSettings(),
             name: session.cookieName,
@@ -31,37 +33,34 @@ export namespace session {
             resave: false,
             saveUninitialized: true,
             secret: secret,
-            store: new SequelizeStoreConstructor({
-                db: models,
-                table: "usr_session"
-            })
+            store: store
         };
         return Session(sessionOptions);
     }
     
-    export function getUser(session: Session.Session & Partial<SessionData>): string | undefined {
-        if(session === undefined || utils.isEmpty(session.user)) {
+    export function getUser(request: ExpressRequest): string | undefined {
+        if(request === undefined || request.session === undefined || utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l'autenticazione sia disabilitata, forza l'utente 0
                 return "0";
             }
             return undefined;
         }
-        return session.user;
+        return request.session.user;
     }
     
-    export function setUser(session: Session.Session & Partial<SessionData>, user: string) {
-        return session.user = user;
+    export function setUser(request: ExpressRequest, user: string) {
+        return request.session!.user = user;
     }
 
-    export function isAuthenticated(request: Request): boolean {
+    export function isAuthenticated(request: ExpressRequest): boolean {
         if(security.isAuthenticationDisabled()) {
             return true;
         }
         return !utils.isEmpty(getUser(request));
     }
 
-    export function doLogin(request: Request, response: Response, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
+    export function doLogin(request: ExpressRequest, response: ExpressResponse, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
             security.getBodyData(request, response, function(data: any){
@@ -101,7 +100,7 @@ export namespace session {
         }
     }
         
-    export function doLogout(request: Request, response: Response, callback: IEmptyCallback) {
+    export function doLogout(request: ExpressRequest, response: ExpressResponse, callback: IEmptyCallback) {
         response.clearCookie(session.cookieName, { path: "/" });
         if(request.session !== undefined) {
             request.session.destroy(function() {

@@ -1,13 +1,12 @@
-//@ts-ignore TS1192
-import bcrypt from "bcrypt"
-import { Request, Response } from "express"
+import { hash } from "bcrypt"
+import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"
 import { SessionOptions } from "express-session"
 
+import { registerSecurityEvent } from "./database"
 import { HttpStatus } from "../common/Constants"
 import * as utils from "./utils"
-import { models } from "./models/index"
 import { services } from "./services"
 
 export namespace security {
@@ -35,15 +34,10 @@ export namespace security {
         if(utils.isEmpty(info)) {
             info = "(empty)";
         }
-        let table: any = (models.log_security);
-        table.upsert({
-            event: event.substring(0,15),
-            info: info.substring(0,127),
-            date: new Date()
-        });
+        registerSecurityEvent(event, info);
     }
     
-    export function getBodyData(request: Request, response: Response, callback: any) {
+    export function getBodyData(request: ExpressRequest, response: ExpressResponse, callback: any) {
         var queryData = "";
         if(request.method === "POST") {
             request.on("data", function(chunk: any) {
@@ -150,7 +144,7 @@ export namespace security {
         };
     }
     
-    export function requestFilter(req: Request, res: Response) {
+    export function requestFilter(req: ExpressRequest, res: ExpressResponse) {
         // Always redirect to https
         if (!req.secure && req.get("x-forwarded-proto") !== "https") {
             // The "x-forwarded-proto" check is for Heroku
@@ -189,7 +183,7 @@ export namespace security {
      * @param plaintext string to hash
      */
     export function computeUnsafeHash(plaintext: string): Promise<string> {
-        return bcrypt.hash(plaintext, "$2b$10$OBjW2ZGF6rpUJKWEA9/kmO");
+        return hash(plaintext, "$2b$10$OBjW2ZGF6rpUJKWEA9/kmO");
     }
 
     /**

@@ -322,10 +322,10 @@ export namespace EventManager {
                 if (Utils.isEmpty(currentState.animationStartTime)) {
                     currentState.animationStartTime = Utils.now();
                 }
-                let animationTime = Utils.now() - currentState.animationStartTime!;
+                let animationTimeDelta = Utils.now() - currentState.animationStartTime!;
                 // Rotation frequency is a forth of movement rotation
                 frequency /= 4;
-                let direction = Math.floor((animationTime * frequency) % 4);
+                let direction = Math.floor((animationTimeDelta * frequency) % 4);
                 if (currentState.rotation === RotationEnum.COUNTERCLOCKWISE) {
                     if(direction === DirectionEnum.LEFT) {
                         direction = DirectionEnum.RIGHT;

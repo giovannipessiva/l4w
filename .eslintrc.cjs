@@ -1,11 +1,16 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true,
+        "es2021": true,
         "node": true
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
+        "ecmaFeatures": {
+            "impliedStrict": true,
+            "modules": true
+        },
+        "ecmaVersion": "esnext",
         "project": "tsconfig.json",
         "sourceType": "module"
     },
@@ -59,7 +64,7 @@ module.exports = {
         "jsdoc/check-indentation": "error",
         "jsdoc/newline-after-description": "warn",
         "no-multiple-empty-lines": "error",
-        "no-redeclare": "error",
+        "no-redeclare": "warn",
         "no-underscore-dangle": "off",
         "no-var": "off",
         "indent": "off"

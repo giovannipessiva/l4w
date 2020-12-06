@@ -144,9 +144,9 @@ export abstract class AbstractStaticScene extends AbstractScene {
                 i2 = tmp;
             }
             if (j1 > j2) {
-                let tmp = j1;
+                let tmp2 = j1;
                 j1 = j2;
-                j2 = tmp;
+                j2 = tmp2;
             }
         } else {
             i2 = this.renderingConfiguration.selectCellStart.i;
