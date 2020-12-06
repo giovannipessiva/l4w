@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin } from 'sequelize';
+import { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, HasOneCreateAssociationMixin, HasOneGetAssociationMixin, HasOneSetAssociationMixin, Optional } from 'sequelize';
 import type { log_access, log_accessCreationAttributes, log_accessId } from './log_access';
 import type { lst_event, lst_eventId } from './lst_event';
 import type { lst_role, lst_roleId } from './lst_role';
@@ -15,7 +15,7 @@ export interface usr_listAttributes {
 
 export type usr_listPk = "user";
 export type usr_listId = usr_list[usr_listPk];
-export type usr_listCreationAttributes = usr_listAttributes & usr_listPk;
+export type usr_listCreationAttributes = Optional<usr_listAttributes, usr_listPk>;
 
 export class usr_list extends Model<usr_listAttributes, usr_listCreationAttributes> implements usr_listAttributes {
   user!: number;

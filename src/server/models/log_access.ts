@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import type { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, Sequelize } from "sequelize";
+import type { BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, Optional, Sequelize } from "sequelize";
 import type { usr_list, usr_listId } from './usr_list';
 
 export interface log_accessAttributes {
@@ -12,7 +12,7 @@ export interface log_accessAttributes {
 
 export type log_accessPk = "user";
 export type log_accessId = log_access[log_accessPk];
-export type log_accessCreationAttributes = log_accessAttributes & log_accessPk;
+export type log_accessCreationAttributes = Optional<log_accessAttributes, log_accessPk>;
 
 export class log_access extends Model<log_accessAttributes, log_accessCreationAttributes> implements log_accessAttributes {
   user!: number;

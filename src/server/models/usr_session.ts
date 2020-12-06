@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import type { Sequelize } from 'sequelize';
+import type { Optional, Sequelize } from 'sequelize';
 
 export interface usr_sessionAttributes {
   sid: string;
@@ -10,7 +10,7 @@ export interface usr_sessionAttributes {
 
 export type usr_sessionPk = "sid";
 export type usr_sessionId = usr_session[usr_sessionPk];
-export type usr_sessionCreationAttributes = usr_sessionAttributes & usr_sessionPk;
+export type usr_sessionCreationAttributes = Optional<usr_sessionAttributes, usr_sessionPk>;
 
 export class usr_session extends Model<usr_sessionAttributes, usr_sessionCreationAttributes> implements usr_sessionAttributes {
   sid!: string;

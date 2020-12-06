@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
+import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, Optional } from 'sequelize';
 import type { usr_list, usr_listId } from './usr_list';
 
 export interface usr_saveAttributes {
@@ -13,7 +13,7 @@ export interface usr_saveAttributes {
 
 export type usr_savePk = "user" | "id";
 export type usr_saveId = usr_save[usr_savePk];
-export type usr_saveCreationAttributes = usr_saveAttributes & usr_savePk;
+export type usr_saveCreationAttributes = Optional<usr_saveAttributes, usr_savePk>;
 
 export class usr_save extends Model<usr_saveAttributes, usr_saveCreationAttributes> implements usr_saveAttributes {
   user!: number;

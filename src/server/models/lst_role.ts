@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
+import { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, Optional } from 'sequelize';
 import type { usr_list, usr_listId } from './usr_list';
 import type { usr_role, usr_roleId } from './usr_role';
 
@@ -11,7 +11,7 @@ export interface lst_roleAttributes {
 
 export type lst_rolePk = "role";
 export type lst_roleId = lst_role[lst_rolePk];
-export type lst_roleCreationAttributes = lst_roleAttributes & lst_rolePk;
+export type lst_roleCreationAttributes = Optional<lst_roleAttributes, lst_rolePk>;
 
 export class lst_role extends Model<lst_roleAttributes, lst_roleCreationAttributes> implements lst_roleAttributes {
   role!: number;

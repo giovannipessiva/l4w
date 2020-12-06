@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
+import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, Optional } from 'sequelize';
 import type { lst_role, lst_roleId } from './lst_role';
 import type { usr_list, usr_listId } from './usr_list';
 
@@ -11,7 +11,7 @@ export interface usr_roleAttributes {
 
 export type usr_rolePk = "user" | "role";
 export type usr_roleId = usr_role[usr_rolePk];
-export type usr_roleCreationAttributes = usr_roleAttributes & usr_rolePk;
+export type usr_roleCreationAttributes = Optional<usr_roleAttributes, usr_rolePk>;
 
 export class usr_role extends Model<usr_roleAttributes, usr_roleCreationAttributes> implements usr_roleAttributes {
   user!: number;

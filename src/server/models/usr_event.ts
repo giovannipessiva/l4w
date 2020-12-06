@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
+import { Sequelize, BelongsToCreateAssociationMixin, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, Optional } from 'sequelize';
 import type { lst_event, lst_eventId } from './lst_event';
 import type { usr_list, usr_listId } from './usr_list';
 
@@ -12,7 +12,7 @@ export interface usr_eventAttributes {
 
 export type usr_eventPk = "user" | "event";
 export type usr_eventId = usr_event[usr_eventPk];
-export type usr_eventCreationAttributes = usr_eventAttributes & usr_eventPk;
+export type usr_eventCreationAttributes = Optional<usr_eventAttributes, usr_eventPk>;
 
 export class usr_event extends Model<usr_eventAttributes, usr_eventCreationAttributes> implements usr_eventAttributes {
   user!: number;

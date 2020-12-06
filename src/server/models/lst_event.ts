@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import type { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
+import type { Sequelize, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin, Optional } from 'sequelize';
 import type { usr_event, usr_eventId } from './usr_event';
 import type { usr_list, usr_listId } from './usr_list';
 
@@ -14,7 +14,7 @@ export interface lst_eventAttributes {
 
 export type lst_eventPk = "event";
 export type lst_eventId = lst_event[lst_eventPk];
-export type lst_eventCreationAttributes = lst_eventAttributes & lst_eventPk;
+export type lst_eventCreationAttributes = Optional<lst_eventAttributes, lst_eventPk>;
 
 export class lst_event extends Model<lst_eventAttributes, lst_eventCreationAttributes> implements lst_eventAttributes {
   event!: number;

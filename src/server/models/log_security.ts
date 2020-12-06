@@ -1,6 +1,6 @@
 import * as SequelizeModule from "sequelize"
 const { Model, DataTypes } = SequelizeModule;
-import type { Sequelize } from "sequelize";
+import type { Optional, Sequelize } from "sequelize";
 
 export interface log_securityAttributes {
   event: string;
@@ -10,7 +10,7 @@ export interface log_securityAttributes {
 
 export type log_securityPk = "event";
 export type log_securityId = log_security[log_securityPk];
-export type log_securityCreationAttributes = log_securityAttributes & log_securityPk;
+export type log_securityCreationAttributes = Optional<log_securityAttributes, log_securityPk>;
 
 export class log_security extends Model<log_securityAttributes, log_securityCreationAttributes> implements log_securityAttributes {
   event!: string;

@@ -81,11 +81,13 @@ export namespace database {
         // User already known, log this access
         log_access.update({
             last_seen : new Date(),
+            //@ts-ignore
             access_counter : Sequelize.literal("access_counter + 1")
         }, {
             where : {
                 user : user,
-            }
+            },
+
         }).then(function(r: any) {
             // Nothing to do
         }, function(error: any) {
@@ -332,10 +334,10 @@ export namespace database {
                     return;
                 }
                 usr_save.upsert({
-                    user: user,
-                    id : file,
+                    user: parseInt(user),
+                    id : parseInt(file),
                     date: new Date(),
-                    name: null,
+                    name: undefined,
                     save : JSON.parse(data)
                 }).then(function(result: any) {
                     response.status(HttpStatus.OK).send("");
