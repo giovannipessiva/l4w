@@ -9,7 +9,8 @@
             ],
             "task": "l4w-build-pipeline",
             "group": "build",
-            "label": "grunt: l4w-build-pipeline"
+            "label": "grunt: l4w-build-pipeline",
+            "problemMatcher": []
         },
         {
             "type": "grunt",
