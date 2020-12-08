@@ -218,7 +218,7 @@ export namespace database {
                 }
                 break;
             case ResourceType.SAVE:
-                if (!utils.isEmpty(user) && !flagPostgresUnavailable) {
+                if (!Utils.isEmpty(user) && !flagPostgresUnavailable) {
                     models.get("usr_save")!["findOne"]({
                         where : {
                             user : user!,
@@ -227,7 +227,7 @@ export namespace database {
                         attributes : [ "save" ]
                     }).then(
                         function(result: any) {
-                            if (!utils.isEmpty(result)) {
+                            if (!Utils.isEmpty(result)) {
                                 response.send(result.dataValues.save);
                             } else {
                                 response.send(DataDefaults.getSave());
@@ -443,7 +443,7 @@ export namespace database {
     }
 
     export function getNews(user: string, response: any) {
-        if (utils.isEmpty(user) || flagPostgresUnavailable) {
+        if (Utils.isEmpty(user) || flagPostgresUnavailable) {
             response.json({});
         } else {
             models.get("usr_event")!["findAll"]({
@@ -452,7 +452,7 @@ export namespace database {
                 },
                 attributes : [ "event" ],
             }).then(function(events: any) {
-                if (!utils.isEmpty(events)) {
+                if (!Utils.isEmpty(events)) {
                     var eventsArray = new Array;
                     for (var i = 0; i < events.length; i++) {
                         eventsArray.push(events[i].event);

@@ -1,6 +1,6 @@
 import { AbstractScript } from "../AbstractScript"
 
-export class Transport extends AbstractScript {
+export class Transports extends AbstractScript {
 
     public static tooltip: string = "Provide transportation from one map to another";
 

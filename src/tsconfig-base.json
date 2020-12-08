@@ -7,7 +7,7 @@
         "sourceMap": false,
 
         /* Good cop */
-        "strictPropertyInitialization": false, /* TODO set to true, so that all strict check are on */
+        "strictPropertyInitialization": false,
         "suppressImplicitAnyIndexErrors": true,
         "noUnusedParameters": false,
         "noFallthroughCasesInSwitch": false,

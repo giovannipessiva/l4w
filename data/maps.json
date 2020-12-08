@@ -3137,7 +3137,7 @@
         },
         {
           "name": "Teleport",
-          "script": "Transport",
+          "script": "Transports",
           "i": 15,
           "j": 17,
           "states": [
@@ -3146,7 +3146,7 @@
               "charaset": "",
               "mSpeed": 0.128,
               "visible": false,
-              "trigger": 0,
+              "trigger": 2,
               "block": false,
               "action": "forest",
               "frequencyVal": 0.006,
@@ -7609,7 +7609,7 @@
       "events": [
         {
           "name": "Trasporto",
-          "script": "Transport",
+          "script": "Transports",
           "i": 15,
           "j": 0,
           "states": [

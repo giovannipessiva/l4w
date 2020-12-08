@@ -6,13 +6,13 @@ import SequelizeSessionInit from "connect-session-sequelize"
 let SequelizeStoreConstructor = SequelizeSessionInit(Store);
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
-import * as utils from "./utils"
 import { security } from "./security"
 import { services } from "./services"
 import { sequelizeInstance } from "./models/index"
 import { database } from "./database"
 import { IEmptyCallback } from "../client/core/util/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
+import { Utils } from "../common/Utils";
 
 export namespace session {
         
@@ -39,7 +39,7 @@ export namespace session {
     }
     
     export function getUser(request: ExpressRequest): string | undefined {
-        if(request === undefined || request.session === undefined || utils.isEmpty(request.session.user)) {
+        if(request === undefined || request.session === undefined || Utils.isEmpty(request.session.user)) {
             if(security.isAuthenticationDisabled()) {
                 // Nel caso l'autenticazione sia disabilitata, forza l'utente 0
                 return "0";
@@ -57,14 +57,14 @@ export namespace session {
         if(security.isAuthenticationDisabled()) {
             return true;
         }
-        return !utils.isEmpty(getUser(request));
+        return !Utils.isEmpty(getUser(request));
     }
 
     export function doLogin(request: ExpressRequest, response: ExpressResponse, onSuccess: IEmptyCallback, onFailure: IEmptyCallback) {
         if(!session.isAuthenticated(request)) {
             // No valid session, use post data to authenticate user
             security.getBodyData(request, response, function(data: any){
-                if(!utils.isEmpty(data)) {
+                if(!Utils.isEmpty(data)) {
                     let authRequest: IAuthRequest;
                     try {
                         authRequest = JSON.parse(data);

@@ -34,9 +34,9 @@ export function sendFile(path: string, filename: string, response: ExpressRespon
             response.type("font/woff2");
             break;
     }
-
+    let filePath = join(path, filename);
     response.sendFile(
-        path + "/" + filename,
+        filePath,
         options,
         function(err: Error | any) {
             if (err && response.statusCode !== HttpStatus.NOT_MODIFIED && err.code !== "ECONNABORT") {
@@ -45,7 +45,7 @@ export function sendFile(path: string, filename: string, response: ExpressRespon
                 } else {
                     // Do not log requests aborted
                     if(err.message !== "Request aborted") {
-                        console.warn("utils.sendFile (file: " + path + "/" + filename + ") " + err);
+                        console.warn("utils.sendFile (file: " + filePath + ") " + err);
                     }
                     try {
                         if(err.status !== undefined) {
@@ -64,19 +64,6 @@ export function sendFile(path: string, filename: string, response: ExpressRespon
 
 export function endsWith(file: string, suffix: string) {
     return file.indexOf(suffix, file.length - suffix.length) !== -1;
-}
-    
-export function isEmpty(obj: any) {
-    if (obj === null || typeof obj === "undefined") {
-        return true;
-    } else if (typeof obj === "string") {
-        return obj === "";
-    } else if (typeof obj === "object" && "size" in obj) {
-        return obj.size === 0;
-    } else if (obj.constructor === Array || obj.constructor === String) {
-        return obj.length === 0;
-    }
-    return false;
 }
 
 /**
@@ -98,7 +85,7 @@ export function listFiles(filePath: string, response?: ExpressResponse): Promise
                     i--;
                 }    
             }
-            if(!isEmpty(err)) {
+            if(err !== null) {
                 console.error(err);
             }
             if(response !== undefined) {

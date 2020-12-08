@@ -6,8 +6,8 @@ import { SessionOptions } from "express-session"
 
 import { registerSecurityEvent } from "./database"
 import { HttpStatus } from "../common/Constants"
-import * as utils from "./utils"
 import { services } from "./services"
+import { Utils } from "../common/Utils"
 
 export namespace security {
 
@@ -31,7 +31,7 @@ export namespace security {
     }
     
     export function logSecurityEvent(event: any, info: string) {
-        if(utils.isEmpty(info)) {
+        if(Utils.isEmpty(info)) {
             info = "(empty)";
         }
         registerSecurityEvent(event, info);
@@ -59,7 +59,7 @@ export namespace security {
     }
     
     export function validateGoogleTokeninfoResponse(data: any) {
-        if(utils.isEmpty(data)) {
+        if(Utils.isEmpty(data)) {
             return false;
         }
         
@@ -90,7 +90,7 @@ export namespace security {
     }
 
     export function validateFacebookTokeninfoResponse(data: any, userId?: string) {
-        if(utils.isEmpty(data)) {
+        if(Utils.isEmpty(data)) {
             return false;
         }
 

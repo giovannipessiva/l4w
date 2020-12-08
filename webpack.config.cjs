@@ -46,10 +46,15 @@ module.exports = function(mode) {
 				},
 				{
 					test: /\.css$/,
-					use: [
-						"vue-style-loader",
-						"css-loader"
-					]
+					loader: "vue-style-loader"
+				},
+				{
+					test: /\.css$/,
+					loader: 'css-loader',
+					options: {
+						/* https://github.com/vuejs/vue-style-loader/issues/46#issuecomment-670624576 */
+						esModule: false
+					}
 				},
 			]
 		},

@@ -1,3 +1,4 @@
+<!-- TODO migrate here the event editor code and convert it to Vue -->
 <template>
 	<div id="eventPanel" style="border:1px solid black;position:relative" hidden=true>
 		<table style="width:100%">
@@ -35,8 +36,8 @@
 				<tr><td>Dialog</td>			<td><input id="toggleDialogEditor" type="checkbox" onclick="L4W_mapper.MapperPage.toggleDialogEditor()"/></td></tr>
 				<tr><td>&nbsp;</td>			<td></td></tr>
 				<tr><td>Charaset</td>		<td><select id="charasets"></select></td></tr>
-				<tr><td>Visible</td>		<td><input id="visible" type="checkbox" checked></input></td></tr>
-				<tr><td>Opacity</td>		<td><input id="opacity" type="number" min="0" max="100" step="1" value="100" style="width:3em"></input></td></tr>
+				<tr><td>Visible</td>		<td><input id="visible" type="checkbox" checked /></td></tr>
+				<tr><td>Opacity</td>		<td><input id="opacity" type="number" min="0" max="100" step="1" value="100" style="width:3em" /></td></tr>
 				<tr><td>Direction</td>		<td><select id="direction"></select></td></tr>
 				<tr><td>Speed</td>			<td><select id="speed"></select></td></tr>
 				<tr><td>Frequency</td>		<td><select id="frequency"></select></td></tr>
