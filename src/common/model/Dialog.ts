@@ -11,6 +11,7 @@ export const enum DialogInputTypeEnum {
 export interface IDialogNode {
     // Persistent data
     id: number; // ID of the dialog node
+    name?: string; // Name to display for this dialog
     face?: string; // Faceset to display for this dialog
     genericMessage?: number; // ID of the generic string displayed for this dialog
     edgeIds?: number[]; // Array of ID of edges which start from this node

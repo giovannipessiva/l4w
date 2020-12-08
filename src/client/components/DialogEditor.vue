@@ -6,6 +6,13 @@
                 <div class="elementId">N{{ node.id }}</div>
                 <textarea ref="dialogNodeMessage" class="message" type="text" placeholder="<message>" v-model="node.message"/><br>
                 <!-- TODO Generic message: <select id="genericMessage"></select><br/> -->
+                Face: <select ref="nodes" v-model="node.face" v-on:change="onFaceChange($event, node)">
+                    <option selected value="">&nbsp;</option>
+                    <option v-for="option in faces" v-bind:key="option" v-bind:value="option">
+                        {{ option }}
+                    </option>
+                </select>
+                Name: <input v-model="node.name" /><br />
                 Autoclose in <input ref="nodeClosingTimeout" type="number" min="0" max="10000" step="1" v-model="node.closingTimeout"/> msec<br>
                 <br>
                 <div style="float:none"/>
@@ -89,6 +96,7 @@
 import Vue, { PropType } from "vue"
 import { Resource } from "../core/util/Resource";
 import { DataDefaults } from "../../common/DataDefaults";
+import { ResourceType } from "../../common/Constants";
 import { Utils } from "../../common/Utils";
 import { IDialogNode, IDialogEdge } from "../../common/model/Dialog";
 import { DialogManager } from "../core/manager/DialogManager";
@@ -134,6 +142,12 @@ export default Vue.extend({
             default: function() {
                 return [];
             }
+        },
+        faces: {
+            type: Array as () => Array<string>,
+            default: function() {
+                return [];
+            }
         }
     },
     mounted: function() {
@@ -150,6 +164,14 @@ export default Vue.extend({
                 loadEdgeScriptActions(edge);
             }
         }
+        let moduleContext = this;
+        Resource.listResources(ResourceType.FACE, function(list?: string[]) {
+            if(list !== undefined) {
+                for(let face of list) {
+                    moduleContext.faces.push(face);
+                }
+            }
+        });
     },
 
     updated: function() {
@@ -252,6 +274,12 @@ export default Vue.extend({
         },
         onScriptChange(event: Event, edge: IDialogEdge) {
             loadEdgeScriptActions(edge);
+        },
+        onFaceChange(event: Event, node: IDialogNode) {
+            if(node.name === undefined && !Utils.isEmpty(node.face)) {
+                // Initialize the name for this dialog node with the selected faceset file name
+                node.name = node.face!.replace(".png","").replace(".jpg","");
+            }
         }
     }
 })

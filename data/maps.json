@@ -3038,7 +3038,7 @@
           "charaset": "155-Animal05.png",
           "states": [
             {
-              "direction": 0,
+              "direction": 3,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085484700,
               "mSpeed": 0.1024,
@@ -3114,7 +3114,7 @@
           "j": 17,
           "states": [
             {
-              "direction": 0,
+              "direction": 3,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085494758,
               "mSpeed": 0.1536,
@@ -3163,7 +3163,7 @@
         },
         {
           "name": "Ann",
-          "script": "BaseScript",
+          "script": "",
           "i": 13,
           "j": 13,
           "states": [
@@ -3172,9 +3172,10 @@
               "charaset": "ann.png",
               "mSpeed": 0.128,
               "trigger": 0,
-              "action": "speak",
+              "action": "",
               "frequencyVal": 0.006,
-              "condition": "always"
+              "condition": "always",
+              "dialog": 2
             }
           ],
           "memory": {

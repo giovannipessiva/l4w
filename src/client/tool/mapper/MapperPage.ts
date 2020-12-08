@@ -405,19 +405,21 @@ export namespace MapperPage {
 
     function loadActions() {
         let scriptClass = (<HTMLSelectElement>document.getElementById("script")).value;
-        let actions: string[] = Resource.listScriptActions(scriptClass);
-        actions.push("");
         let selectActions = (<HTMLSelectElement>document.getElementById("action"));
-        let actionOptions: HTMLOptionsCollection = selectActions.options;
-        let i = 0;
         ClientUtils.resetSelect(selectActions);
-        selectActions.selectedIndex = -1;
-        for (let a of actions) {
-            actionOptions[i] = new Option(a);
-            if (a === currentState.action) {
-                selectActions.selectedIndex = i;
+        if(!Utils.isEmpty(scriptClass)) {
+            let actions: string[] = Resource.listScriptActions(scriptClass);
+            actions.push("");
+            let actionOptions: HTMLOptionsCollection = selectActions.options;
+            let i = 0;
+            selectActions.selectedIndex = -1;
+            for (let a of actions) {
+                actionOptions[i] = new Option(a);
+                if (a === currentState.action || (a === "" && currentState.action === undefined)) {
+                    selectActions.selectedIndex = i;
+                }
+                i++;
             }
-            i++;
         }
     }
 
@@ -594,12 +596,13 @@ export namespace MapperPage {
         let selectScript = (<HTMLSelectElement>document.getElementById("script"));
         ClientUtils.resetSelect(selectScript);
         let classes: Map<string, string> = Resource.listScriptClasses();
+        classes.set("","");
         let options: HTMLOptionsCollection = selectScript.options;
         let i = 0;
         for (let c of classes) {
             options[i] = new Option(c[0]);
             options[i].title = c[1];
-            if (c[0] === currentEvent.script) {
+            if (c[0] === currentEvent.script || (c[0] === "" && currentEvent.script === undefined)) {
                 selectScript.selectedIndex = i;
             }
             i++;

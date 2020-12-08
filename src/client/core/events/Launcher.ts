@@ -33,25 +33,29 @@ export namespace Launcher {
         // Try yo launch the action for the script of this event
         {
             let script = event.script;
-            let scriptClass = new Script[script](event, hero, scene);
-            if (Utils.isEmpty(scriptClass)) {
-                console.error("Script \"" + script + "\" not found (event: " + event.name + ")");
-                return false;
-            }
-            let action = eventState.action;
-            if(Utils.isEmpty(action)) {
-                // No action to perform
-            } else if (!(action! in scriptClass)) {
-                console.error("Action \"" + action + "\" not found in script \"" + script + "\" (event: " + event.name + ")");
+            if(Utils.isEmpty(script)) {
+                // No script associated to the event
             } else {
-                try {
-                    if (Utils.isEmpty(parameters)) {
-                        return scriptClass[action]();
-                    } else {
-                        return scriptClass[action](parameters);
+                let scriptClass = new Script[script](event, hero, scene);
+                if (Utils.isEmpty(scriptClass)) {
+                    console.error("Script \"" + script + "\" not found (event: " + event.name + ")");
+                    return false;
+                }
+                let action = eventState.action;
+                if(Utils.isEmpty(action)) {
+                    // No action to perform
+                } else if (!(action! in scriptClass)) {
+                    console.error("Action \"" + action + "\" not found in script \"" + script + "\" (event: " + event.name + ")");
+                } else {
+                    try {
+                        if (Utils.isEmpty(parameters)) {
+                            return scriptClass[action]();
+                        } else {
+                            return scriptClass[action](parameters);
+                        }
+                    } catch(e) {
+                        console.error(e);
                     }
-                } catch(e) {
-                    console.error(e);
                 }
             }
         }

@@ -279,7 +279,7 @@ export namespace Resource {
                 if(key === "constructor") {
                     return false;
                 }
-                return typeof classInstance[key] === "function";
+                return !Utils.isEmpty(key) && typeof classInstance[key] === "function";
             } catch (e) {
                 return false;
             }
