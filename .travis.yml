@@ -8,6 +8,9 @@ node_js:
 sudo:
   required
 
+cache:
+  npm: true
+
 before-script:
 - npm add grunt
 - npm add grunt-cli
