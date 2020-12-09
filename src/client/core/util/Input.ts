@@ -12,31 +12,41 @@ import { IEmptyCallback } from "./Commons";
  */
 export namespace Input {
 
+    let disableActionCallback = false;
     let onActionCallbacks: IEmptyCallback[] = [];
 
     export class Keys {
-        static UP = "38";
-        static DOWN = "40";
-        static LEFT = "37";
-        static RIGHT = "39";
-        static CTRL = "17";
-        static ALT = "18";
-        static ENTER = "13";
-        static SPACE = "32";
-        static CAPS = "20";
-        static SHIFT = "16";
-        static W = "87";
-        static A = "65";
-        static D = "68";
-        static S = "83";
-        static J = "74";
-        static K = "75";
-        static F1 = "112";
-        static F2 = "113";
-        static F3 = "114";
-        static F4 = "115";
-        static F5 = "116";
-        static F6 = "117";
+        static UP = "ArrowUp";
+        static DOWN = "ArrowDown";
+        static LEFT = "ArrowLeft";
+        static RIGHT = "ArrowRight";
+        static CTRL = "Control";
+        static ALT = "Alt";
+        static ENTER = "Enter";
+        static SPACEBAR = " ";
+        static CAPS = "CapsLock";
+        static SHIFT = "Shift";
+        static W = "W";
+        static A = "A";
+        static D = "D";
+        static S = "S";
+        static P = "P";
+        static F1 = "F1";
+        static F2 = "F2";
+        static F3 = "F3";
+        static F4 = "F4";
+        static F5 = "F5";
+        static F6 = "F6";
+        static N_0 = "0";
+        static N_1 = "1";
+        static N_2 = "2";
+        static N_3 = "3";
+        static N_4 = "4";
+        static N_5 = "5";
+        static N_6 = "6";
+        static N_7 = "7";
+        static N_8 = "8";
+        static N_9 = "9";    
     }
 
     export class MouseButtons {
@@ -76,11 +86,11 @@ export namespace Input {
         doubleClickCallback: IPositionCallback,
         wheelCallback: IPositionCallback) {
 
-        let lastKey: number;
+        let lastKey: string;
         let flagPause: boolean = false;
         
-        // Always use SPACE for pause
-        inputCallbacks[Keys.SPACE] = function(e: KeyboardEvent) {
+        // Always use P for pause
+        inputCallbacks[Keys.P] = function(e: KeyboardEvent) {
             if (flagPause) {
                 unpauseCallback();
                 flagPause = false;
@@ -93,7 +103,9 @@ export namespace Input {
         let flagMouseDown: boolean = false;
         canvas.addEventListener("click", function(e: Event) {
             let precisePosition: IExtendedCell = mapEvent(<PointerEvent> e);
-            actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
+            if(!disableActionCallback) {
+                actionCallback(precisePosition.i, precisePosition.j, precisePosition.x, precisePosition.y);
+            }
             executeActionCallback();
         });
         canvas.addEventListener("mousemove", function(e: Event) {
@@ -159,15 +171,19 @@ export namespace Input {
         }, {passive: true});
         
         // Keyboard events
-        document.addEventListener("keydown", function(e: Event) {
-            let callback = inputCallbacks[String((<KeyboardEvent> e).keyCode)];
+        document.addEventListener("keydown", function(e: KeyboardEvent) {
+            let callback = inputCallbacks[String(e.key)];
             if (callback !== undefined) {
                 callback(e);
             }
-            lastKey = (<KeyboardEvent> e).keyCode;
+            if(e.key === Input.Keys.SPACEBAR) {
+                executeActionCallback();
+                e.preventDefault();
+            }
+            lastKey = e.key;
         });
-        document.addEventListener("keyup", function(e: Event) {
-            if ((<KeyboardEvent> e).keyCode === lastKey) {
+        document.addEventListener("keyup", function(e: KeyboardEvent) {
+            if (e.key === lastKey) {
                 resetCallback();
             }
         });
@@ -215,7 +231,7 @@ export namespace Input {
 
     /**
      * Register a callback which will be called
-     * only once on next user action (click, touch)
+     * only once on next user action (click, touch, spacebar)
      */
     export function addActionCallback(callback: IEmptyCallback) {
         onActionCallbacks.push(callback);
@@ -232,4 +248,52 @@ export namespace Input {
         }
         onActionCallbacks = [];
     }
+
+    export function disableActionEvents() {
+        disableActionCallback = true;
+    }
+    export function enableActionEvents() {
+        disableActionCallback = false;
+    }
 }
+
+let numericKeyListeners: Input.IKeyboardCallback[] = [];
+
+export function resetNumericKeyListener() {
+    for(let listener of numericKeyListeners) {
+        document.removeEventListener("keydown", listener);
+    }
+    numericKeyListeners = [];
+}
+
+/**
+ * Register a new listener for key press of a specific number.
+ * Whenevet that key is pressed, all the numeric listeners are removed
+ */
+export function registerNumericKeyListener(n: number, callback: Input.IKeyboardCallback) {
+    let key: String;
+    switch(n) {
+        case 0: key = Input.Keys.N_0; break;
+        case 1: key = Input.Keys.N_1; break;
+        case 2: key = Input.Keys.N_2; break;
+        case 3: key = Input.Keys.N_3; break;
+        case 4: key = Input.Keys.N_4; break;
+        case 5: key = Input.Keys.N_5; break;
+        case 6: key = Input.Keys.N_6; break;
+        case 7: key = Input.Keys.N_7; break;
+        case 8: key = Input.Keys.N_8; break;
+        case 9: key = Input.Keys.N_9; break;
+        default:
+            console.error("Unexpected numericKey: " + n);
+            return; 
+    }
+    let listener = function(e: KeyboardEvent) {
+        if(e.key === key) {
+            callback(e);
+            resetNumericKeyListener();
+        }
+    };
+    numericKeyListeners.push(listener);
+    document.addEventListener("keydown", listener);
+}
+

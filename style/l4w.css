@@ -172,7 +172,7 @@ select {
 	min-width: 20em;
 	min-height: 5em;
 
-	font-size: x-large;
+	font-size: large;
 	padding-top: 0.5em; /* Leave space for the dialogNameBox */
 
 	/* Override values of l4wPanel */
@@ -199,23 +199,51 @@ select {
 	margin-right:1em;
 }
 .dialogEdgeArea {
-	margin: 0.5em;
+	margin-top: 0.5em;
 }
 .l4wDialogEdge {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
-	font-style: italic;
+	color: yellow;
 	cursor: pointer;
 }
 .l4wDialogEdge:before {
-    content: ">";
-    margin-right: 6px;
+	margin-right: 0.5em;
+	text-align: right;
+}
+.l4wDialogEdge:nth-child(1):before {
+    content: "1.";
+}
+.l4wDialogEdge:nth-child(2):before {
+    content: "2.";
+}
+.l4wDialogEdge:nth-child(3):before {
+    content: "3.";
+}
+.l4wDialogEdge:nth-child(4):before {
+    content: "4.";
+}
+.l4wDialogEdge:nth-child(5):before {
+    content: "5.";
+}
+.l4wDialogEdge:nth-child(6):before {
+    content: "6.";
+}
+.l4wDialogEdge:nth-child(7):before {
+    content: "7.";
+}
+.l4wDialogEdge:nth-child(8):before {
+    content: "8.";
+}
+.l4wDialogEdge:nth-child(9):before {
+    content: "9.";
 }
 .l4wDialogEdge:hover {
-	/*
-	border: 1px solid black;
-	border-radius: 0.5em;
-	*/
+	text-shadow: 0px 0px 0.5em yellow;
+}
+.l4wDialogEdgeSelected {
+	/* This is the same of .l4wDialogEdge:hover
+	 It gets triggered by keyboard action */
 	text-shadow: 0px 0px 0.5em yellow;
 }
 /************ Editor hub page ***********/

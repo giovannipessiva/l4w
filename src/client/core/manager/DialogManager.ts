@@ -5,7 +5,7 @@ import { ResourceType } from "../../../common/Constants";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
 import { IBooleanCallback, IEmptyCallback, INumberCallback } from "../util/Commons";
-import { Input } from "../util/Input";
+import { Input, registerNumericKeyListener } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { ClientUtils } from "../util/Utils";
 import { IConfig } from "../../../common/model/Save";
@@ -27,6 +27,7 @@ export namespace DialogManager {
     
     const FADING_TIME = 200;
     const MIN_TIME_BEFORE_MANUAL_CLOSE = 500;
+    const EDGE_ACTIVATION_DELAY = 100;
 
     let genericMessages: Map<number, IGenericMessage>;
 
@@ -45,12 +46,14 @@ export namespace DialogManager {
         setTimeout(function() {
             dlgContainer!.style.display = "none";
         }, FADING_TIME);
+        Input.disableActionEvents();
     };
 
     /**
      * Method called when the dialog is to be closed
      */
     export function closeDialog(stopIt: boolean = false) {
+        Input.enableActionEvents();
         let dlgContainer: HTMLElement | null = document.getElementById(DIALOG_CONTAINER_ID); 
         if(dlgContainer === null) {
             console.error("Element not foud: " + DIALOG_CONTAINER_ID);
@@ -387,17 +390,22 @@ export namespace DialogManager {
                     dialogEdgeArea.appendChild(input);   
                 }
             } else {
-                //Display active edges messages
+                // Display active edges messages
+                let i = 1;
                 for(let edge of activeEdges) {
                     let div = document.createElement("div");
+                    div.classList.add("l4wDialogEdge");
+                    dialogEdgeArea.appendChild(div);
                     if(edge.message !== undefined) {
                         div.innerText = edge.message; 
                     }
-                    div.onclick = function() {
-                        selectEdge(edge);
+                    let selectionCallbacK = function(e: Event) {
+                        div.classList.add("l4wDialogEdgeSelected");
+                        setTimeout(() => { selectEdge(edge); }, EDGE_ACTIVATION_DELAY);
                     }
-                    div.classList.add("l4wDialogEdge");
-                    dialogEdgeArea.appendChild(div);
+                    div.onclick = selectionCallbacK;
+                    registerNumericKeyListener(i, selectionCallbacK);
+                    i++;
                 }
             }
         }
