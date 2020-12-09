@@ -105,6 +105,7 @@ select {
     cursor: url("/assets/pointer/sword-on.png"), url("/assets/pointer/sword-off.png"), pointer;
 }
 .visibleFadeIn {
+	display: block !important;
 	visibility: visible;
 	opacity: 1;
 	transition: opacity 0.2s linear;
@@ -142,22 +143,52 @@ select {
 	user-select: none;
 }
 /* Dialog panel */
-.l4wDialogFrame {
+.l4wDialogContainer {
 	width: 50%;
-	left:0px;
-	right: 1em;
+	
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	margin: auto;
 	bottom: 1em;
+}
+.l4wDialogName {
+	z-index: 2; /* Over the dialog frame */
+	position: absolute;
+	top: -1em;
+	left: 1.5em;
+	border: 2px solid darkblue;
+	border-radius: 4px;
+}
+.l4wDialogName :only-child {
+	border: 3px solid white;
+	border-radius: 4px;
+	background-color: black;
+	color: white;
+	padding: 0.1em 0.5em 0.1em 0.5em;
+}
+.l4wDialogFrame {
 	resize: both;
+	min-width: 20em;
+	min-height: 5em;
+
 	font-size: x-large;
+	padding-top: 0.5em; /* Leave space for the dialogNameBox */
+
+	/* Override values of l4wPanel */
+	position: relative !important;
+	margin: initial !important;
 }
 .l4wDialogHeader {
 	user-select: none;
 	cursor: all-scroll;
-	float: right;
-	padding-right: 0.5em;
-	position: relative;
+	font-size: medium;
+
+	position: absolute;
+	top: -0.3em;
+	right: 0em;
+
 	color: lightgoldenrodyellow;
-	/* background-color: hsl(240, 100%, 50%, 80%); */
 }
 .l4wDialogFace {
 	float: left;
@@ -166,9 +197,6 @@ select {
 	background-image: url("/assets/faceset/palpatine.jpg");
 	border: 1px solid black;
 	margin-right:1em;
-}
-.l4wDialogName {
-	font-weight: bold;
 }
 .dialogEdgeArea {
 	margin: 0.5em;

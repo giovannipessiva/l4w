@@ -27,6 +27,12 @@
     "E4M": "Do you have a permit for that bonfire, sir?"
   },
   "D2": {
-    "N0M": "Hey"
+    "N0M": "Greeting, what are you looking for?",
+    "N1M": "Not right now",
+    "N2M": "You mean the old Jack? He wouldn't hurt a fly",
+    "N3M": "I am not selling them, sorry",
+    "E0M": "Do you have any work for me?",
+    "E1M": "Please hide me, a big giant is coming to get me!",
+    "E2M": "How much for a pig?"
   }
 }

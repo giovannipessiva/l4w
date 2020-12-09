@@ -58,6 +58,8 @@
           1,
           4
         ],
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "I don't want any trouble. I'm just resting, I'll be on my way soon"
       },
       {
@@ -67,18 +69,26 @@
           6,
           7
         ],
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "My name is Asgar, I am headed to the capital."
       },
       {
         "id": 5,
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "Tell you what, if you can find me a mount I will pay you 50 golds"
       },
       {
         "id": 6,
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "I'm not sure about it..."
       },
       {
         "id": 7,
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "Mmh... Interesting... I guess?"
       },
       {
@@ -88,10 +98,14 @@
           9,
           10
         ],
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "I'm afraid not, it would surely help me on my journey"
       },
       {
         "id": 8,
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "Now leave me alone, please"
       },
       {
@@ -99,6 +113,8 @@
         "edgeIds": [
           11
         ],
+        "face": "Asgan.png",
+        "name": "Asgan",
         "message": "As you can see for yourself, it is not lit"
       }
     ],
@@ -159,9 +175,42 @@
       {
         "id": 0,
         "face": "Ann.png",
+        "name": "Ann",
+        "edgeIds": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": 1,
+        "face": "Ann.png",
+        "name": "Ann"
+      },
+      {
+        "id": 2,
+        "face": "Ann.png",
+        "name": "Ann"
+      },
+      {
+        "id": 3,
+        "face": "Ann.png",
         "name": "Ann"
       }
     ],
-    "edges": []
+    "edges": [
+      {
+        "id": 0,
+        "nodeId": 1
+      },
+      {
+        "id": 1,
+        "nodeId": 2
+      },
+      {
+        "id": 2,
+        "nodeId": 3
+      }
+    ]
   }
 }

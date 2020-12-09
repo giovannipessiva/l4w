@@ -79,25 +79,28 @@ window.onload = () => {
 			<canvas id="canvas1" width="672" height="512">
 			Your browser does not support HTML5 Canvas!
 			</canvas>
-			<div id="dialog1" class="l4wPanel l4wDialogFrame hiddenFadeOut" style="visibility:hidden">
-				<div id="dialog1Header" class="l4wDialogHeader">
-					&#x205e;&#x205e;&#x205e;	
-				</div>
-				<div id="dialogFace" class="l4wDialogFace"></div>
-				<span id="dialogName" class="l4wDialogName">Sheev Palpatine</span>:
-				<span id="dialogArea" class="l4wDialog">
-				Did you ever hear the tragedy of Darth Plagueis the Wise?
-				I thought not. It's not a story the Jedi would tell you. It's a Sith legend. 
-				Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life...
-				He had such a knowledge of the dark side that he could even keep the ones he cared about from dying.
-				The dark side of the Force is a pathway to many abilities some consider to be unnatural.
-				He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did.
-				Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep.
-				It's ironic he could save others from death, but not himself.
-				</span>
-				<div id="dialogEdgeArea" class="dialogEdgeArea">
-					<div id="dialogEdge1" class="l4wDialogEdge">Tell me more...</div>
-					<div id="dialogEdge2" class="l4wDialogEdge">Die, Sith scum!</div>
+			<div id="dialogContainer" class="l4wDialogContainer hiddenFadeOut">
+				<div id="dialogName" class="l4wDialogName"><div>Sheev Palpatine</div></div>
+
+				<div id="dialogFrame" class="l4wPanel l4wDialogFrame">
+					<div id="dialogContainerHeader" class="l4wDialogHeader">
+						&#x205e;&#x205e;&#x205e;
+					</div>
+					<div id="dialogFace" class="l4wDialogFace"></div>
+					<span id="dialogArea" class="l4wDialog">
+					Did you ever hear the tragedy of Darth Plagueis the Wise?
+					I thought not. It's not a story the Jedi would tell you. It's a Sith legend. 
+					Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life...
+					He had such a knowledge of the dark side that he could even keep the ones he cared about from dying.
+					The dark side of the Force is a pathway to many abilities some consider to be unnatural.
+					He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did.
+					Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep.
+					It's ironic he could save others from death, but not himself.
+					</span>
+					<div id="dialogEdgeArea" class="dialogEdgeArea">
+						<div id="dialogEdge1" class="l4wDialogEdge">Tell me more...</div>
+						<div id="dialogEdge2" class="l4wDialogEdge">Die, Sith scum!</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -121,12 +124,31 @@ ctx.fillStyle='#000000';
 ctx.font='38px Arial';
 ctx.fillText("Loading...",10,40);
 
-// Copy-pasted from: https://www.w3schools.com/howto/howto_js_draggable.asp
-//Make the DIV element draggagle:
-dragElement(document.getElementById("dialog1"));
+// Manage dialog resiziong
+let observer = new MutationObserver(function(mutations) {
+  if(mutations !== undefined) {
+	for(let mutation of mutations) {
+		if(mutation.oldValue !== null && mutation.oldValue.indexOf("width") !== 0) {
+			// Remove this property, it is  required only for the first positioning
+			// and must be changed when the dialogFrame is resized
+			document.getElementById("dialogContainer").style.width = "0px";
+			observer.disconnect();
+		}
+	}
+  }
+});
+observer.observe(document.getElementById("dialogFrame"), { 
+	attributes: true,
+	attributeOldValue: true,
+	attributeFilter: [ "style" ]
+});
 
+// Make the dialogContainer draggagle:
+dragElement(document.getElementById("dialogContainer"));
+
+// Copy-pasted from: https://www.w3schools.com/howto/howto_js_draggable.asp
 function dragElement(elmnt) {
-	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+	let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 	if (document.getElementById(elmnt.id + "Header")) {
 		/* if present, the header is where you move the DIV from:*/
 		document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
@@ -159,6 +181,9 @@ function dragElement(elmnt) {
 		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
 		// Secret sauce fox fixing my use case
 		elmnt.style.margin="0px";
+		// Remove this property, it is  required only for the first positioning
+		// and must be changed when the dialog is dragged
+		document.getElementById("dialogContainer").style.bottom = "initial";
 	}
 
 	function closeDragElement() {

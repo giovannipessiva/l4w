@@ -17,30 +17,50 @@ import { Utils } from "../../../common/Utils";
  */
 export namespace DialogManager {
 
-    const DIALOG_FRAME_ID = "dialog1";
+    const DIALOG_CONTAINER_ID = "dialogContainer";
+    const DIALOG_FRAME_ID = "dialogFrame";
     const DIALOG_FACE_ID = "dialogFace";
     const DIALOG_NAME_ID = "dialogName";
     const DIALOG_AREA_ID = "dialogArea";
     const DIALOG_EDGE_AREA_ID = "dialogEdgeArea";
     const DIALOG_USER_INPUT_ID = "userInput";
-
-    const MIN_TIME_BEFORE_MANAL_CLOSE = 500;
+    
+    const FADING_TIME = 200;
+    const MIN_TIME_BEFORE_MANUAL_CLOSE = 500;
 
     let genericMessages: Map<number, IGenericMessage>;
 
     let onDialogClose: IEmptyCallback | undefined;
 
     /**
+     * Method called when the dialog is to be opened
+     */
+    export function openDialog() {
+        let dlgContainer: HTMLElement | null = document.getElementById(DIALOG_CONTAINER_ID); 
+        if(dlgContainer === null) {
+            console.error("Element not foud: " + DIALOG_CONTAINER_ID);
+            return;
+        }
+        dlgContainer.classList.replace("hiddenFadeOut", "visibleFadeIn");
+        setTimeout(function() {
+            dlgContainer!.style.display = "none";
+        }, FADING_TIME);
+    };
+
+    /**
      * Method called when the dialog is to be closed
      */
     export function closeDialog(stopIt: boolean = false) {
-        let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID); 
-        if(dlgFrame === null) {
-            console.error("Element not foud: " + DIALOG_FRAME_ID);
+        let dlgContainer: HTMLElement | null = document.getElementById(DIALOG_CONTAINER_ID); 
+        if(dlgContainer === null) {
+            console.error("Element not foud: " + DIALOG_CONTAINER_ID);
             return;
         }
-        dlgFrame.classList.remove("visibleFadeIn");
-        dlgFrame.classList.add("hiddenFadeOut");
+        dlgContainer.classList.remove("visibleFadeIn");
+        dlgContainer.classList.add("hiddenFadeOut");
+        setTimeout(function() {
+            dlgContainer!.style.display = "none";
+        }, FADING_TIME);
         if(onDialogClose !== undefined && !stopIt) {
             onDialogClose();
         }
@@ -56,12 +76,12 @@ export namespace DialogManager {
                 closeDialog();
             }, closingTimeout);
         } else {
-            // Close on user action, not less than "MIN_TIME_BEFORE_MANAL_CLOSE" ms after showing it
+            // Close on user action, not less than "MIN_TIME_BEFORE_MANUAL_CLOSE" ms after showing it
             setTimeout(function() {
                 Input.addActionCallback(function() {
                     closeDialog();
                 })
-            }, MIN_TIME_BEFORE_MANAL_CLOSE);
+            }, MIN_TIME_BEFORE_MANUAL_CLOSE);
         }
     }
 
@@ -257,7 +277,7 @@ export namespace DialogManager {
             console.error("Element not foud: " + DIALOG_FACE_ID);
             return;
         }
-        if(dlgName === null) {
+        if(dlgName === null || dlgName.firstChild === null) {
             console.error("Element not foud: " + DIALOG_NAME_ID);
             return;
         }
@@ -269,14 +289,12 @@ export namespace DialogManager {
             console.error("Element not foud: " + DIALOG_FRAME_ID);
             return;
         }
-    
-        dlgFrame.classList.replace("hiddenFadeOut", "visibleFadeIn");
+        openDialog();
         if(Utils.isEmpty(skin)) {
             console.error("skin is not defined!");
         } else {
             dlgFrame.style.borderImageSource = "url('/assets/skin/" + skin + "')";
         }
-        dlgFrame.style.visibility = "visible";
 
         let faceset: string | undefined = dialog.face;
         if(faceset !== undefined) {
@@ -285,7 +303,7 @@ export namespace DialogManager {
         } else {
             dlgFace.style.display = "none";
         }
-        dlgName.innerText = name;
+        dlgName.firstChild.textContent = name;
 
         let dialogMessage = getMessage(dialog);
         if(dialogMessage !== undefined) {
@@ -351,6 +369,7 @@ export namespace DialogManager {
                     onDialogClose = function() {
                         selectEdge(activeEdges[0]);
                     }
+                    defineClosingCondition(dialog.closingTimeout);
                 } else {
                     // Request input
                     let input = document.createElement("input");
