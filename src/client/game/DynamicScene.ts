@@ -104,12 +104,6 @@ export class DynamicScene extends AbstractScene {
 
     protected mainGameLoop_post() {
         super.mainGameLoop_post();
-
-        //TODO rimuovere a regime
-        this.context.fillStyle = "#000000";
-        this.context.font = "bold 30px Oldenburg";
-        this.context.fillText("(it's not ready yet)", this.grid.getCurrentTranslation().x + 20, this.grid.getCurrentTranslation().y + 40);
-
         this.renderFPS();
     }
 

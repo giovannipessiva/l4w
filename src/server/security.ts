@@ -1,4 +1,4 @@
-import { hash } from "bcrypt"
+import { hash } from "bcryptjs"
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"

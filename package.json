@@ -9,7 +9,7 @@
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
   "dependencies": {
-    "bcrypt": "5.0.0",
+    "bcryptjs": "2.4.3",
     "compression": "1.7.4",
     "connect-session-sequelize": "7.0.4",
     "express": "4.17.1",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@babel/core": "7.12.9",
     "@babel/preset-env": "7.12.7",
-    "@types/bcrypt": "3.0.0",
+    "@types/bcryptjs": "2.4.2",
     "@types/bluebird": "3.5.33",
     "@types/compression": "1.7.0",
     "@types/express": "4.17.9",
@@ -52,7 +52,7 @@
     "webpack": "5.9.0"
   },
   "dependenciesDocumentation": {
-    "bcrypt": "required for hashing of emails",
+    "bcryptjs": "required for hashing of emails",
     "compression": "compression middleware for express, required for GZipping of textual responses",
     "connect-session-sequelize": "session store for connect-session using sequelize",
     "express": "web framework",
@@ -66,7 +66,7 @@
   "devDependenciesDocumentation": {
     "@babel/core": "Babel compiler core",
     "@babel/preset-env": "Babel preset for each environment",
-    "@types/bcrypt": "TypeScript definitions for bcrypt",
+    "@types/bcryptjs": "TypeScript definitions for bcryptjs",
     "@types/bluebird": "TypeScript definitions for Bluebird implementation of Promise. Required by sequelize",
     "@types/compression": "TypeScript definitions for compression",
     "@types/express": "TypeScript definitions for express",
