@@ -8,6 +8,7 @@
     "build": "grunt l4w-build-pipeline --gruntfile Gruntfile.cjs",
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w/src/server/l4w-server.mjs"
   },
+  "heroku-run-build-script": false,
   "dependencies": {
     "bcryptjs": "2.4.3",
     "compression": "1.7.4",
