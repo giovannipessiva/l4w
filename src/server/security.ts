@@ -1,4 +1,6 @@
-import { hash } from "bcryptjs"
+//@ts-ignore
+import pkg from "bcryptjs";
+const { hash } = pkg;
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 import { ServerOptions } from "https"
 import { readFileSync } from "fs"

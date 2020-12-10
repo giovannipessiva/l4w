@@ -13,7 +13,7 @@ Download the project with [Git](https://git-scm.com/downloads):
 
     git clone https://github.com/giovannipessiva/l4w.git
 
-Install its dependencies, build the sources and run it with [npm](https://nodejs.org/it/download/):
+Install its dependencies, build the sources and run it with [npm, Node.js](https://nodejs.org/it/download/) and [Grunt](https://gruntjs.com/getting-started#installing-the-cli):
 
     npm install
     npm run build
