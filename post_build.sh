@@ -15,13 +15,12 @@ rm assets/lib/jquery-ui.min.js
 rm assets/lib/jstree.min.js
 rm assets/localdev-cert.pem
 rm assets/localdev-key.pem
-rm .env
+rm .env_example
 rm .eslintrc.cjs
 rm .travis.yml
 rm CONTRIBUTING.md
 rm Gruntfile.cjs
 rm LICENSE
-rm node_modules
 rm post_build.sh
 rm Procfile_inspect
 rm *.md
