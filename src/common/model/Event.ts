@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum } from "./Commons"
+import { ICell, IPoint, DirectionEnum } from "../Commons"
 import { ICharacter } from "./Character"
 
 /**

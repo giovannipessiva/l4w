@@ -1,6 +1,6 @@
 import { AbstractStaticScene } from "./AbstractStaticScene"
 import { StaticGrid } from "./StaticGrid"
-import { IRectangle } from "../../common/model/Commons";
+import { IRectangle } from "../../common/Commons";
 
 /**
  * Abstract scene for managing Tileset logics

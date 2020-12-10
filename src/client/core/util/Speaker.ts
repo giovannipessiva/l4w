@@ -1,4 +1,4 @@
-import { LanguageEnum } from "../../../common/model/Commons"
+import { LanguageEnum } from "../../../common/Commons"
 import { Compatibility } from "./Compatibility";
 
 export namespace Speaker {

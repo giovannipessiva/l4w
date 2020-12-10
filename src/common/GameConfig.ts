@@ -1,4 +1,4 @@
-import { LanguageEnum } from "./model/Commons"
+import { LanguageEnum } from "./Commons"
 
 //TODO place in a yml file
 /**

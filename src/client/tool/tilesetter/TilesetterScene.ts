@@ -3,7 +3,7 @@ import { TilesetterPage } from "./TilesetterPage"
 import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
 import { ClientUtils } from "../../core/util/Utils"
-import { SelectionAreaEnum, BlockDirection } from "../../../common/model/Commons"
+import { SelectionAreaEnum, BlockDirection } from "../../../common/Commons"
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
 

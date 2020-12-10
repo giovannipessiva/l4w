@@ -2,7 +2,7 @@ import { AbstractScene } from "../core/AbstractScene"
 import { StaticGrid } from "./StaticGrid"
 import { Constant } from "../core/util/Constant"
 import { IMap } from "../../common/model/Map"
-import { IRectangle } from "../../common/model/Commons"
+import { IRectangle } from "../../common/Commons"
 import { ClientUtils } from "../core/util/Utils";
 
 /**

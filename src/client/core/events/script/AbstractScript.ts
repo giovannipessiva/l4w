@@ -1,11 +1,11 @@
-import { DirectionEnum, ICell } from "../../../../common/model/Commons";
+import { DirectionEnum, ICell } from "../../../../common/Commons";
 import { IEvent } from "../../../../common/model/Event";
 import { IConfig } from "../../../../common/model/Save";
 import { DynamicScene } from "../../../game/DynamicScene";
 import { DialogManager } from "../../manager/DialogManager";
 import { EventManager } from "../../manager/EventManager";
 import { SaveManager } from "../../manager/SaveManager";
-import { IEmptyCallback } from "../../util/Commons";
+import { IEmptyCallback } from "../../../../common/Commons";
 import { ClientUtils } from "../../util/Utils";
 import { DataDefaults } from "../../../../common/DataDefaults";
 

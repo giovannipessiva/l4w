@@ -77,3 +77,15 @@ export enum LanguageEnum {
     IT = "it",
     EN = "en"    
 }
+
+export interface IEmptyCallback {
+    (): void;
+};
+
+export interface IResponseCallback {
+    (response?: string): void;
+};
+
+export interface IBooleanCallback {
+    (success: boolean): void;
+};

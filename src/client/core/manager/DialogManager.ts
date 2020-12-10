@@ -1,10 +1,10 @@
-import { LanguageEnum, } from "../../../common/model/Commons";
+import { LanguageEnum, IBooleanCallback, IEmptyCallback } from "../../../common/Commons";
 import { DialogInputTypeEnum, IDialogEdge, IDialogNode, IGenericMessage, IGenericMessageValue } from "../../../common/model/Dialog";
 import { IEvent } from "../../../common/model/Event";
 import { ResourceType } from "../../../common/Constants";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
-import { IBooleanCallback, IEmptyCallback, INumberCallback } from "../util/Commons";
+import { INumberCallback } from "../util/Commons";
 import { Input, registerNumericKeyListener } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { ClientUtils } from "../util/Utils";

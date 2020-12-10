@@ -1,12 +1,11 @@
 import { ISave } from "../../../common/model/Save"
-import { ICell } from "../../../common/model/Commons"
+import { ICell, IBooleanCallback } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { IEvent } from "../../../common/model/Event"
 import { IEventSave } from "../../../common/model/Save"
 import { EventManager } from "./EventManager"
 import { MapManager } from "./MapManager"
 import { DynamicScene } from "../../game/DynamicScene"
-import { IBooleanCallback } from "../util/Commons";
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
 

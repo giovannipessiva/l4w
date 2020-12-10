@@ -10,7 +10,7 @@ import { security } from "./security"
 import { services } from "./services"
 import { sequelizeInstance } from "./models/index"
 import { database } from "./database"
-import { IEmptyCallback } from "../client/core/util/Commons";
+import { IEmptyCallback } from "../common/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
 import { Utils } from "../common/Utils";
 

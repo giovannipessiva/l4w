@@ -5,7 +5,7 @@ const lowdb: LowdbModule.lowdb = LowdbModule["default"];
 const fileSync: LowdbModule.AdapterSync<any> = FileSyncModule["default"];
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
-import { LanguageEnum } from "../common/model/Commons"
+import { LanguageEnum } from "../common/Commons"
 import { HttpStatus, ResourceType } from "../common/Constants"
 import { models } from "./models/index"
 import { sequelizeInstance } from "./models/index"

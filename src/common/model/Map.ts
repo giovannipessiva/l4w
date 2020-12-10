@@ -1,5 +1,5 @@
 import { IEvent } from "./Event"
-import { ICell } from "./Commons"
+import { ICell } from "../Commons"
 import { ITileset } from "./Tileset"
 
 /**

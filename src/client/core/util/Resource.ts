@@ -1,8 +1,9 @@
 import { ResourceType } from "../../../common/Constants";
+import { IResponseCallback } from "../../../common/Commons";
 import { Condition } from "../events/Conditions";
 import { AbstractScript } from "../events/script/AbstractScript";
 import * as Script from "../events/script/ScriptsRoot";
-import { IPropertiesCallback, IResponseCallback, IListCallback } from "./Commons";
+import { IPropertiesCallback, IListCallback } from "./Commons";
 import { Constant } from "./Constant";
 import { Utils } from "../../../common/Utils";
 

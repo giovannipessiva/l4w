@@ -1,7 +1,7 @@
 import { AbstractStaticScene } from "../AbstractStaticScene"
 import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
-import { IRectangle, ICell } from "../../../common/model/Commons"
+import { IRectangle, ICell } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { IMap } from "../../../common/model/Map"
 import { EventManager } from "../../core/manager/EventManager"

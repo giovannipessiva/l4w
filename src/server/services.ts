@@ -3,7 +3,7 @@ import { get, request } from "https"
 import { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
 import { security } from "./security"
-import { IEmptyCallback, IResponseCallback, IBooleanCallback } from "../client/core/util/Commons";
+import { IEmptyCallback, IResponseCallback, IBooleanCallback } from "../common/Commons";
 import { IIssueRequest, IIssueResponse } from "../common/ServerAPI";
 import { session } from "./session";
 import { HttpStatus } from "../common/Constants";

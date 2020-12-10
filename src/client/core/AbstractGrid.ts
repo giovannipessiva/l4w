@@ -1,4 +1,4 @@
-import { IPoint, ICell, IExtendedCell, IRectangle } from "../../common/model/Commons"
+import { IPoint, ICell, IExtendedCell, IRectangle } from "../../common/Commons"
 import { Resource } from "./util/Resource"
 import { IRange } from "./util/Commons"
 

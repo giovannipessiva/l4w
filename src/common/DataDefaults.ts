@@ -2,7 +2,7 @@ import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
 import { ISave, IConfig } from "../common/model/Save";
 import { IEvent, IEventState } from "../common/model/Event";
-import { ActionTriggerEnum } from "../common/model/Commons"
+import { ActionTriggerEnum } from "./Commons"
 import { gameConfig } from "../common/GameConfig";
 import { ICharacter } from "./model/Character";
 import { IDialogNode, IDialogEdge } from "./model/Dialog";

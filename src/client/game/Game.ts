@@ -3,7 +3,7 @@ import Vue from "vue"
 import LoginComponent from "../components/Login.vue"
 import BugReportingComponent from "../components/BugReporting.vue"
 
-import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../common/model/Commons";
+import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../common/Commons";
 import { ISave } from "../../common/model/Save";
 import { Launcher } from "../core/events/Launcher";
 import { DialogManager } from "../core/manager/DialogManager";

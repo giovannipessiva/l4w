@@ -1,4 +1,4 @@
-import { ICell, DirectionEnum } from "../../../common/model/Commons"
+import { ICell, DirectionEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { ClientUtils } from "../../core/util/Utils"
 import { MapManager } from "../../core/manager/MapManager"

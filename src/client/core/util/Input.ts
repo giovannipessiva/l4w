@@ -1,6 +1,5 @@
-import { IExtendedCell, IPoint } from "../../../common/model/Commons";
+import { IExtendedCell, IPoint, IEmptyCallback } from "../../../common/Commons";
 import { AbstractGrid } from "../AbstractGrid";
-import { IEmptyCallback } from "./Commons";
 
 /**
  * Module for input handling:

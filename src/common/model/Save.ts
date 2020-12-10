@@ -1,5 +1,5 @@
 import { IEvent } from "./Event"
-import { LanguageEnum } from "./Commons"
+import { LanguageEnum } from "../Commons"
 
 /**
  * ISava is used to store the game state in order to restore it without loosing the progress and the choices made

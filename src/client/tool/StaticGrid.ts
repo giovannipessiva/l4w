@@ -1,6 +1,6 @@
 import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
 import { IRange } from "../core/util/Commons"
-import { ICell, IRectangle } from "../../common/model/Commons";
+import { ICell, IRectangle } from "../../common/Commons";
 import { Utils } from "../../common/Utils";
 
 /**

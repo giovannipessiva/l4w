@@ -1,4 +1,4 @@
-import { ICell } from "../../../common/model/Commons"
+import { ICell } from "../../../common/Commons"
 
 /**
  * Module for common type structures and function interfaces
@@ -31,10 +31,6 @@ export interface IPropertiesCallback {
     (props: Map<string, number>): void;
 };
 
-export interface IResponseCallback {
-    (response?: string): void;
-};
-
 export interface INumberCallback {
     (n?: number): void;
 };
@@ -47,20 +43,12 @@ export interface IProgressCallback {
     (this: XMLHttpRequest, e: ProgressEvent): any;
 };
 
-export interface IBooleanCallback {
-    (success: boolean): void;
-};
-
 export interface ICoordinatesCallback {
     (x: number, y: number): void,
 };
 
 export interface ICellCallback {
     (c: ICell): void,
-};
-
-export interface IEmptyCallback {
-    (): void;
 };
 
 export function emptyFz(): void {

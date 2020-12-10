@@ -6,12 +6,13 @@ import { EventManager } from "../../core/manager/EventManager"
 import { Constant } from "../../core/util/Constant"
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
-import { emptyFz, IBooleanCallback } from "../../core/util/Commons"
+import { emptyFz } from "../../core/util/Commons"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { MapperPage } from "./MapperPage"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { ResourceType } from "../../../common/Constants";
+import { IBooleanCallback } from "../../../common/Commons";
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
 

@@ -1,4 +1,4 @@
-import { ICell, LanguageEnum, IRectangle } from "../../common/model/Commons";
+import { ICell, LanguageEnum, IRectangle, IBooleanCallback } from "../../common/Commons";
 import { gameConfig } from "../../common/GameConfig";
 import { IEvent } from "../../common/model/Event";
 import { ISave } from "../../common/model/Save";
@@ -6,7 +6,7 @@ import { AbstractScene } from "../core/AbstractScene";
 import { EventManager } from "../core/manager/EventManager";
 import { MapManager } from "../core/manager/MapManager";
 import { SaveManager } from "../core/manager/SaveManager";
-import { emptyFz, IBooleanCallback } from "../core/util/Commons";
+import { emptyFz } from "../core/util/Commons";
 import { Constant } from "../core/util/Constant";
 import { DynamicGrid } from "./DynamicGrid";
 import { Utils } from "../../common/Utils";

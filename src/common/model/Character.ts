@@ -1,4 +1,4 @@
-import { RotationEnum, ScaleEnum, DirectionEnum } from "./Commons"
+import { RotationEnum, ScaleEnum, DirectionEnum } from "../Commons"
 
 /**
  * ICharacter is used to describe an event visible as animated charaset

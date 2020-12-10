@@ -1,6 +1,6 @@
 import { Resource } from "../../core/util/Resource"
 import { Input } from "../../core/util/Input"
-import { emptyFz, IBooleanCallback, IEmptyCallback } from "../../core/util/Commons"
+import { emptyFz } from "../../core/util/Commons"
 import { TilesetterPage } from "./TilesetterPage"
 import { TilesetterScene } from "./TilesetterScene"
 import { Constant } from "../../core/util/Constant"
@@ -8,6 +8,7 @@ import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { ITileset } from "../../../common/model/Tileset"
 import { ResourceType } from "../../../common/Constants";
+import { IBooleanCallback, IEmptyCallback } from "../../../common/Commons";
 import { Utils } from "../../../common/Utils"
 
 export namespace Tilesetter {

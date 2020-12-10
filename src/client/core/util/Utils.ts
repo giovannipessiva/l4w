@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle } from "../../../common/model/Commons"
+import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { Constant } from "./Constant"
 import { Utils } from "../../../common/Utils";

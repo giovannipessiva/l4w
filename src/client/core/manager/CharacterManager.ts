@@ -1,7 +1,7 @@
 import { Constant } from "../util/Constant"
 import { ClientUtils } from "../util/Utils"
 import { ICharacter } from "../../../common/model/Character"
-import { ScaleEnum } from "../../../common/model/Commons"
+import { ScaleEnum } from "../../../common/Commons"
 import { AbstractGrid } from "../AbstractGrid"
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
