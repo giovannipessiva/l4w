@@ -1,12 +1,10 @@
 import Vue from "vue"
 import { CombinedVueInstance } from "vue/types/vue"
 
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import DialogSummaryComponent from "../../components/DialogSummary.vue"
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import DialogEditorComponent from "../../components/DialogEditor.vue"
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
 import LoginComponent from "../../components/Login.vue"
+import EventEditorComponent from "../../components/EventEditor.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -42,6 +40,8 @@ export namespace MapperPage {
     let currentState: IEventState;
     let currentEvent: IEvent | undefined;
     let currentDialogId: number | undefined;
+    let eventEditor: CombinedVueInstance<Vue, {
+    }, object, object, Record<never, any>>;
     let dialogSummary: CombinedVueInstance<Vue, {
         root: IDialogNode;
         selectedNodeId: {
@@ -74,6 +74,7 @@ export namespace MapperPage {
 
     export function start() {
         Compatibility.check();
+        initEventEditor();
         initDialogEditor();
 
         new Vue({
@@ -762,6 +763,20 @@ export namespace MapperPage {
 
     export function createEdge(): IDialogEdge {
         return DataDefaults.getDialogEdge();
+    }
+
+    function initEventEditor() {
+        // Instantiate Vue for the event summary
+        if(eventEditor === undefined) {
+            eventEditor = new Vue({
+                el: "#eventEditorVue",
+                components: {
+                    "event-editor": EventEditorComponent,
+                },
+                data: {
+                }
+            });
+        }
     }
 
     function initDialogEditor() {
