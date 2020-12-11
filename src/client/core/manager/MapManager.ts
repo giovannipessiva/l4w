@@ -11,7 +11,6 @@ import { AbstractScene } from "../AbstractScene"
 import { DynamicScene } from "../../game/DynamicScene"
 import { EventManager } from "../manager/EventManager"
 import { TilesetManager } from "../manager/TilesetManager"
-import {  } from "../manager/CharacterManager"
 import { ResourceType } from "../../../common/Constants";
 import { Utils } from "../../../common/Utils"
 
@@ -291,6 +290,8 @@ export namespace MapManager {
         if(scene instanceof DynamicScene) {
             hero = scene.hero;    
         }
+
+        TilesetManager.initTransientData(map.tileset);
         
         loadBlocks(map);
         loadDynamicBlocks(hero, map);
@@ -304,7 +305,6 @@ export namespace MapManager {
         // Make sure these values are numeric
         map.width = parseInt(map.width + "");
         map.height = parseInt(map.height + "");
-        TilesetManager.initTransientData(map.tileset);
     }
     
     export function updateDynamicData(hero: IEvent, map: IMap) {

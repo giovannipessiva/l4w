@@ -93,7 +93,7 @@ export namespace DataDefaults {
         return {
             lang: gameConfig.ui.lang,
             skin: gameConfig.ui.skin,
-            flagAntialiasing: true,
+            flagAntialiasing: false,
             flagDouble: false,
             flagNatural: false
         };

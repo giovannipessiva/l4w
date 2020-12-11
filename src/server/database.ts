@@ -20,6 +20,7 @@ import { Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
 import { session } from "./session";
+import { sanitizeMap } from "./sanitizer";
 
 /**
  * This module manage persistency for:
@@ -253,6 +254,7 @@ export namespace database {
         switch (type) {
             case ResourceType.MAP:
                 let newMap: IMap = JSON.parse(data);
+                sanitizeMap(newMap);
                 gameData.maps.set(["maps", file], newMap).write();
                 response.status(HttpStatus.OK).send("");
                 break;
