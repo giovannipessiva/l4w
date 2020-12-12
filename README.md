@@ -1,9 +1,9 @@
 # ![L4W](/style/logo/L4W%20logo%201.png?raw=true "L4W logo by @nancu")
-[![Travis Build](https://travis-ci.org/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.org/giovannipessiva/l4w)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=l4w)](https://l4w.herokuapp.com/)
-[![GitHub version](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
-[![Dependencies](https://david-dm.org/giovannipessiva/l4w.svg)](https://david-dm.org/giovannipessiva/l4w)
-[![DevDependencies](https://david-dm.org/giovannipessiva/l4w/dev-status.svg)](https://david-dm.org/giovannipessiva/l4w?type=dev)
+[![](https://travis-ci.org/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.org/giovannipessiva/l4w)
+[![](https://heroku-badge.herokuapp.com/?app=l4w)](https://l4w.herokuapp.com/)
+[![](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
+[![](https://david-dm.org/giovannipessiva/l4w.svg)](https://david-dm.org/giovannipessiva/l4w)
+[![](https://david-dm.org/giovannipessiva/l4w/dev-status.svg)](https://david-dm.org/giovannipessiva/l4w?type=dev)
 
 A game engine & editor for tile-based web games, check it out: [l4w.herokuapp.com](https://l4w.herokuapp.com)
 
