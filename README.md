@@ -3,4 +3,4 @@
 [![](https://heroku-badge.herokuapp.com/?app=l4w)](https://l4w.herokuapp.com/)
 [![](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
 
-A web game based on [l4w](https://github.com/giovannipessiva/l4w)
+A web game based on [L4W](https://github.com/giovannipessiva/l4w).
