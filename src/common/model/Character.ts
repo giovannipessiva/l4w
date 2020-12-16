@@ -13,7 +13,7 @@ export interface ICharacterData {
     rotation?: RotationEnum; //Define Character rotation
     speed?: ScaleEnum; // Movement speed
     frequency?: ScaleEnum; // Animation change speed
-    direction?: DirectionEnum; // Current direction
+    direction: DirectionEnum; // Current direction
     onTop?: number; // Integer > 0 if this Character should be rendered on top
     block?: boolean; // False if Character does not block movement (you can walk through it)
 }

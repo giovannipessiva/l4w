@@ -47,9 +47,5 @@ export interface ICoordinatesCallback {
     (x: number, y: number): void,
 };
 
-export interface ICellCallback {
-    (c: ICell): void,
-};
-
 export function emptyFz(): void {
 };

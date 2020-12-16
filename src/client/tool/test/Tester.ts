@@ -1,6 +1,6 @@
-import { ICell, DirectionEnum } from "../../../common/Commons"
+import { ICell, DirectionEnum, PathfinderEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
-import { ClientUtils } from "../../core/util/Utils"
+import { ClientUtils } from "../../core/util/ClientUtils"
 import { MapManager } from "../../core/manager/MapManager"
 import { DataDefaults } from "../../../common/DataDefaults"
 
@@ -46,18 +46,18 @@ export namespace Tester {
             j:targetJ
         };
         // Set pathfinding algorithm
-        let pathfinder: MapManager.PathfinderEnum;
+        let pathfinder: PathfinderEnum;
         let alg: string = (<HTMLSelectElement> document.getElementById("alg")).value;
         switch(alg) {
             case "Basic":
-                pathfinder = MapManager.PathfinderEnum.BASIC;
+                pathfinder = PathfinderEnum.BASIC;
                 break;
             case "D* Lite":
-                pathfinder = MapManager.PathfinderEnum.D_STAR_LITE;
+                pathfinder = PathfinderEnum.D_STAR_LITE;
                 break;
             default:
                 console.error("Unexpected pathfinding algo: " + alg);
-                pathfinder = MapManager.PathfinderEnum.BASIC;
+                pathfinder = PathfinderEnum.BASIC;
         }
         // Find path
         let result: IPathfinderTestResult[] = [];

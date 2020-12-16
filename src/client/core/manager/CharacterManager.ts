@@ -1,5 +1,5 @@
 import { Constant } from "../util/Constant"
-import { ClientUtils } from "../util/Utils"
+import { ClientUtils } from "../util/ClientUtils"
 import { ICharacter } from "../../../common/model/Character"
 import { ScaleEnum } from "../../../common/Commons"
 import { AbstractGrid } from "../AbstractGrid"

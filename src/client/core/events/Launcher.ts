@@ -1,6 +1,6 @@
 import { IEvent } from "../../../common/model/Event"
 import { ActionTriggerEnum } from "../../../common/Commons"
-import { ClientUtils } from "../util/Utils"
+import { ClientUtils } from "../util/ClientUtils"
 import { EventManager } from "../manager/EventManager"
 import { DynamicScene } from "../../game/DynamicScene"
 import * as Script from "../events/script/ScriptsRoot"

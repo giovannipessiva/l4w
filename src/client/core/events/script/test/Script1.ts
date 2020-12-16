@@ -32,8 +32,10 @@ export class Script1 extends AbstractScript {
             
     public giantTest3(): boolean {
         this.showSimpleDialog("6", emptyFz);
-        this.moveToTarget({ i: 0, j: 0 });
-        this.setStateVar(0);
+        let giant = this;
+        this.moveToTarget({ i: 0, j: 0 }, function() {
+            giant.setStateVar(0);
+        });
         return true;
     }
     

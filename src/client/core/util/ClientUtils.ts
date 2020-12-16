@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle } from "../../../common/Commons"
+import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle, RelativeDirectionEnum } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { Constant } from "./Constant"
 import { Utils } from "../../../common/Utils";
@@ -63,7 +63,7 @@ export namespace ClientUtils {
         return cell.i + cell.j * width;
     }
     
-    export function getDirectionTarget(start: ICell, direction?: DirectionEnum) {
+    export function getDirectionTarget(start: ICell, direction?: DirectionEnum): ICell {
         let target: ICell = {
             i: start.i,
             j: start.j
@@ -181,6 +181,40 @@ export namespace ClientUtils {
             default:
                 return DirectionEnum.NONE;
         }
+    }
+
+    /**
+     * Given current absolute direction and the relative direction of next movement, return next absolute direction 
+     */
+    export function getNextAbsoluteDirection(currentDirection: DirectionEnum, newRelativeDirection: RelativeDirectionEnum): DirectionEnum {
+        if(newRelativeDirection === RelativeDirectionEnum.STRAIGHT || currentDirection === DirectionEnum.NONE) {
+            return currentDirection;
+        }
+        let directions = [ DirectionEnum.UP, DirectionEnum.RIGHT, DirectionEnum.DOWN, DirectionEnum.LEFT ];
+        let index = 0;
+        for(let tmp of directions) {
+            if(currentDirection === tmp) {
+                break;
+            }
+            index++;
+        }
+        switch(newRelativeDirection) {
+            case RelativeDirectionEnum.LEFT:
+                index--;
+                break;
+            case RelativeDirectionEnum.RIGHT:
+                index++;
+                break;
+            case RelativeDirectionEnum.BACK:
+                index+=2;
+                break;
+        }
+        if(index < 0) {
+            index = directions.length - 1;
+        } else if(index >= directions.length) {
+            index -= directions.length;
+        }
+        return directions[index];
     }
 
     /** Return the direction from start to target */

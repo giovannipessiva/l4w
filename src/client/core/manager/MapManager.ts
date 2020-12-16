@@ -1,10 +1,10 @@
 import { Constant } from "../util/Constant"
 import { RenderConfiguration } from "../util/Commons"
-import { ClientUtils } from "../util/Utils"
+import { ClientUtils } from "../util/ClientUtils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
 import { IMap, IVertex } from "../../../common/model/Map"
-import { BlockDirection, DirectionEnum, ICell } from "../../../common/Commons"
+import { BlockDirection, DirectionEnum, ICell, PathfinderEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { AbstractGrid } from "../AbstractGrid"
 import { AbstractScene } from "../AbstractScene"
@@ -18,11 +18,6 @@ import { Utils } from "../../../common/Utils"
  * Helper class for handling game maps
  */
 export namespace MapManager {
-
-    export enum PathfinderEnum {
-        BASIC,
-        D_STAR_LITE
-    }
 
     export function loadMap(mapId: string, canvas: HTMLCanvasElement, callback: (map?: IMap) => void) {
         Resource.load(mapId + "", ResourceType.MAP, function(resourceText: any) {
@@ -370,11 +365,13 @@ export namespace MapManager {
         }
     }
     
-    /** check if the movement is allowed, but consider the final target as without dynamic block */
-    function isMovementTowardsTargetBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, finalTarget: ICell): boolean {
+    /** 
+     * Check if the movement is allowed, but consider the final target as without dynamic block
+     */
+    export function isMovementTowardsTargetBlocked(map: IMap, i: number, j: number, direction: DirectionEnum, finalTarget?: ICell): boolean {
         let target: ICell = ClientUtils.getDirectionTarget({ i:i, j:j }, direction);
         let ignoreDynamicBlocks = false;
-        if(ClientUtils.getDirection(target, finalTarget) === DirectionEnum.NONE) {
+        if(finalTarget !== undefined && ClientUtils.getDirection(target, finalTarget) === DirectionEnum.NONE) {
             // Always consider the final target as walkable, if it is an event
             // Otherwise it would be difficult to compute a path to it
             ignoreDynamicBlocks = true;    

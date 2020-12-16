@@ -1,8 +1,14 @@
+/**
+ * Identify a point on the map, in pixels
+ */
 export interface IPoint {
     x: number;
     y: number;
 };
 
+/**
+ * Identify the coordinates of a cell on the map
+ */
 export interface ICell {
     i: number;
     j: number;
@@ -31,6 +37,13 @@ export const enum DirectionEnum {
     DOWN,
     LEFT,
     NONE
+};
+
+export const enum RelativeDirectionEnum {
+    STRAIGHT,
+    RIGHT,
+    BACK,
+    LEFT
 };
 
 export const enum SelectionAreaEnum {
@@ -78,6 +91,11 @@ export enum LanguageEnum {
     EN = "en"    
 }
 
+export enum PathfinderEnum {
+    BASIC,
+    D_STAR_LITE
+}
+
 export interface IEmptyCallback {
     (): void;
 };
@@ -88,4 +106,8 @@ export interface IResponseCallback {
 
 export interface IBooleanCallback {
     (success: boolean): void;
+};
+
+export interface ICellCallback {
+    (c: ICell): void,
 };

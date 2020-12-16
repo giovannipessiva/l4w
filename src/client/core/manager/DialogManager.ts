@@ -7,7 +7,7 @@ import { Condition } from "../events/Conditions";
 import { INumberCallback } from "../util/Commons";
 import { Input, registerNumericKeyListener } from "../util/Input";
 import { Resource } from "../util/Resource";
-import { ClientUtils } from "../util/Utils";
+import { ClientUtils } from "../util/ClientUtils";
 import { IConfig } from "../../../common/model/Save";
 import { DataDefaults } from "../../../common/DataDefaults";
 import { Utils } from "../../../common/Utils";

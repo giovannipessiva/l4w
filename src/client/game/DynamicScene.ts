@@ -56,7 +56,6 @@ export class DynamicScene extends AbstractScene {
         let movements: boolean = false;
         let scene = this;
         let time = Utils.now();
-        let context: DynamicScene = this;
         if (!Utils.isEmpty(this.hero)) {
             let launchableState = EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
             if(launchableState !== undefined) {
@@ -69,8 +68,6 @@ export class DynamicScene extends AbstractScene {
                 // Update focus
                 scene.focus.x += w;
                 scene.focus.y += h;
-            }, function(target: ICell) {
-                context.registerAction(target.i, target.j);   
             });
         }
         if (!Utils.isEmpty(this.map.events)) {
@@ -79,7 +76,7 @@ export class DynamicScene extends AbstractScene {
                 if(launchableState !== undefined) {
                     this.launcher(<IEvent> event, this, this.hero, launchableState);
                 }
-                movements = movements || EventManager.manageMovements(this.map, this.grid, <IEvent> event, emptyFz, emptyFz, emptyFz);
+                movements = movements || EventManager.manageMovements(this.map, this.grid, <IEvent> event, emptyFz, emptyFz);
             }
             // Reset the action
             this.action = undefined;
@@ -199,15 +196,19 @@ export class DynamicScene extends AbstractScene {
         SaveManager.loadMapSave(this, mapId, hero, callback);
     }
 
-    startMovement(i: number, j: number): boolean {
+    registerAction(i: number, j: number) {
+        this.action = { i:i, j:j };
+    }
+    
+    startHeroMovement(i: number, j: number): boolean {
         if(i < 0 || i >= this.map.width || j < 0 || j >= this.map.height) {
             return false;    
         }
-        return EventManager.startMovement(this.grid, this.hero, i, j);
-    }
-    
-    registerAction(i: number, j: number) {
-        this.action = { i:i, j:j };
+        let scene: DynamicScene = this;
+        let onTargetReached = function(target: ICell) {
+            scene.registerAction(target.i, target.j);   
+        }
+        return EventManager.startMovement(this.hero, i, j, onTargetReached);
     }
     
     isDialogOpen() {

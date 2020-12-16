@@ -2,7 +2,7 @@ import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
 import { ISave, IConfig } from "../common/model/Save";
 import { IEvent, IEventState } from "../common/model/Event";
-import { ActionTriggerEnum } from "./Commons"
+import { ActionTriggerEnum, DirectionEnum } from "./Commons"
 import { gameConfig } from "../common/GameConfig";
 import { ICharacter } from "./model/Character";
 import { IDialogNode, IDialogEdge } from "./model/Dialog";
@@ -105,12 +105,7 @@ export namespace DataDefaults {
             name: "NPC",
             i: 0,
             j: 0,
-            states: [{
-                charaset: "",
-                condition: "always",
-                trigger: ActionTriggerEnum.CLICK,
-                action: ""
-            }],
+            states: [getEventState()],
             memory: {},
             script: "BaseScript",
             currentState: 0
@@ -124,17 +119,14 @@ export namespace DataDefaults {
         hero.i = gameConfig.maps.start.i;
         hero.j = gameConfig.maps.start.j;
         hero.states = [];
-        hero.states[0] = {
-            charaset: gameConfig.hero.charaset,
-            condition: "always",
-            trigger: ActionTriggerEnum.CLICK,
-            action: ""
-        };
+        hero.states[0] = getEventState();
+        hero.states[0].charaset = gameConfig.hero.charaset;
         return hero;
     }
     
     export function getEventState(): IEventState {
         return {
+            ...getCharacter(),
             condition: "always",
             trigger: ActionTriggerEnum.CLICK
         };
@@ -150,7 +142,7 @@ export namespace DataDefaults {
 
     export function getCharacter(): ICharacter {
         return {
-            charaset: ""
+            direction: DirectionEnum.DOWN
         };
     };
 };

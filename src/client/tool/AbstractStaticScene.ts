@@ -3,7 +3,7 @@ import { StaticGrid } from "./StaticGrid"
 import { Constant } from "../core/util/Constant"
 import { IMap } from "../../common/model/Map"
 import { IRectangle } from "../../common/Commons"
-import { ClientUtils } from "../core/util/Utils";
+import { ClientUtils } from "../core/util/ClientUtils";
 
 /**
  * Abstract scene class for managing static rendering

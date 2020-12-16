@@ -6,7 +6,7 @@ import { IPoint, ICell, DirectionEnum, IRectangle } from "../../common/Commons"
 import { ITileset } from "../../common/model/Tileset"
 import { Constant } from "./util/Constant"
 import { RenderConfiguration } from "./util/Commons"
-import { ClientUtils } from "./util/Utils"
+import { ClientUtils } from "./util/ClientUtils"
 import { Resource } from "./util/Resource"
 import { AbstractGrid } from "./AbstractGrid"
 import { ResourceType } from "../../common/Constants";
@@ -316,7 +316,7 @@ export abstract class AbstractScene {
         let minColumn = this.redrawArea.x;
         let maxColumn = this.redrawArea.x + this.redrawArea.w;
 
-        if (!Utils.isEmpty(map)) {
+        if (!Utils.isEmpty(map) && map.tileset.imageData !== undefined) {
             // Render base cells and events
             for (let j = minRow; j <= maxRow; j++) {
                 for (let i = minColumn; i <= maxColumn; i++) {
@@ -431,5 +431,9 @@ export abstract class AbstractScene {
     }
 
     protected onFocusPixelChange(x: number, y: number) {
+    }
+
+    getMap() {
+        return this.map;
     }
 }

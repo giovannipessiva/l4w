@@ -1,10 +1,10 @@
-import { ICoordinatesCallback, ICellCallback } from "../util/Commons"
+import { ICoordinatesCallback } from "../util/Commons"
 import { Constant } from "../util/Constant"
 import { Resource } from "../util/Resource"
 import { AbstractGrid } from "../AbstractGrid"
-import { ClientUtils } from "../util/Utils"
+import { ClientUtils } from "../util/ClientUtils"
 import { IEvent } from "../../../common/model/Event"
-import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum } from "../../../common/Commons"
+import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum, RelativeDirectionEnum, ICellCallback } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { CharacterManager } from "../manager/CharacterManager"
 import { MapManager } from "../manager/MapManager"
@@ -39,11 +39,16 @@ export namespace EventManager {
             event.currentState = newState;
 
             if(event === hero) {
-                // For the hero, don't trigger actions
+                // For the hero there is nothing to do
                 return;    
+            }
+            // Check if a predetermined movement needs to be started
+            if(event.currentState !== NO_STATE && event.states[event.currentState].movement !== undefined && event.movementStartTime === undefined) {
+                startPredeterminatedMovement(scene.getMap(), event);
             }
             // Check if an action has been triggered
             if(isActionTriggered(event, event.currentState, hero, actionCell)) {
+                // Return a launchable state
                 return event.currentState;
             }
         }
@@ -81,11 +86,12 @@ export namespace EventManager {
         }
     }
     
-    export function startMovement(grid: AbstractGrid, e: IEvent, i: number, j: number): boolean {
-        e.newTarget = grid.mapCellToCanvas({
+    export function startMovement(e: IEvent, i: number, j: number, onTargetReached?: ICellCallback): boolean {
+        e.newTarget = {
             i: i,
             j: j
-        });
+        };
+        e.newOnTargetReached = onTargetReached;
         return true;
     }
     
@@ -99,7 +105,7 @@ export namespace EventManager {
     /**
      * Move max 1 step at a time, return true if a step has been made
      */
-    export function manageMovements(map: IMap, grid: AbstractGrid, e: IEvent, onCoordinatesChange: ICoordinatesCallback, onCellChange: ICoordinatesCallback, onTargetReached: ICellCallback, timeToMove: number = 0): boolean {
+    export function manageMovements(map: IMap, grid: AbstractGrid, e: IEvent, onCoordinatesChange: ICoordinatesCallback, onCellChange: ICoordinatesCallback, timeToMove: number = 0): boolean {
         let stepCompleted: boolean = false;
         // If I am moving 
         if (!Utils.isEmpty(e.movementStartTime)) {
@@ -113,44 +119,9 @@ export namespace EventManager {
                 console.error("No target set for movement");
                 return true;
             }
-            let target: ICell = {
-                i: Math.floor(e.target.x / grid.cellW),
-                j: Math.floor(e.target.y / grid.cellH)
-            };
+            let target = e.target;
+            let direction = determineNextStepDirection(map, e, target);
 
-            let direction;
-            // Check if target can be reached
-            let targetGui = ClientUtils.cellToGid(target, map.width);
-            let cellStaticBlock = ClientUtils.getMapStaticBlock(map,targetGui);
-            let cellDynamicBlock = ClientUtils.getMapDynamicBlock(map,targetGui);
-            if((ClientUtils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !ClientUtils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL))
-                || (targetGui < 0 || targetGui >= map.width * map.height)) {
-                // Target is blocked and does not contain and event, or it is invalid, so no movement needed
-                direction = DirectionEnum.NONE;
-            } else {
-                // Check if I am currently moving a step
-                direction = e.movementDirection;
-                if (Utils.isEmpty(direction) || direction === DirectionEnum.NONE) {
-                    // Decide next step
-                    try {
-                        direction = MapManager.pathFinder(map, e, target);
-                    } catch(e) {
-                        console.error(e);    
-                    }
-                    let stepTarget = ClientUtils.getDirectionTarget(e, direction);
-                    // Check if target contains an event
-                    let stepTargetGID = ClientUtils.cellToGid(stepTarget, map.width);
-                    let stepTargetBlock = ClientUtils.getMapDynamicBlock(map,stepTargetGID);
-                    if(ClientUtils.isDirectionEnumBlocked(stepTargetBlock, ClientUtils.getOpposedDirections(direction))) {
-                        // I cant go further, stop now
-                        direction = DirectionEnum.NONE;
-                        if(stepTargetGID === targetGui) {
-                            // Reached target
-                            onTargetReached(target);
-                        }
-                    }
-                }
-            }
             let movementX = 0;
             let movementY = 0;
             let absMovement;
@@ -180,7 +151,9 @@ export namespace EventManager {
                 case DirectionEnum.NONE:
                     // Stop movement
                     stopMovement(e);
-                    onTargetReached(target);
+                    if(e.onTargetReached !== undefined) {
+                        e.onTargetReached(target);
+                    }
                     break;
             };
 
@@ -210,8 +183,9 @@ export namespace EventManager {
                     e.j = cell.j;
                     onCellChange(movementX, movementY);
                     
-                    // Check If I am arrived, or a new target has been requested
-                    if (!Utils.isEmpty(e.newTarget) || (e.position.x === e.target.x && e.position.y === e.target.y)) {
+                    // Check if I am arrived, or a new target has been requested
+                    let targetPosition = grid.mapCellToCanvas(e.target);
+                    if (!Utils.isEmpty(e.newTarget) || (e.position.x === targetPosition.x && e.position.y === targetPosition.y)) {
                         // Reset current movement
                         stopMovement(e);
                     }
@@ -223,15 +197,61 @@ export namespace EventManager {
         if (!Utils.isEmpty(e.newTarget) && Utils.isEmpty(e.movementStartTime)) {
             // Configure new movement
             e.target = e.newTarget;
+            e.onTargetReached = e.newOnTargetReached;
             e.newTarget = undefined;
+            e.newOnTargetReached = undefined;
             e.movementStartTime = Utils.now();
 
             // If I have some time left, use it to move
-            stepCompleted = stepCompleted || manageMovements(map, grid, e, onCoordinatesChange, onCellChange, onTargetReached, timeToMove);
+            stepCompleted = stepCompleted || manageMovements(map, grid, e, onCoordinatesChange, onCellChange, timeToMove);
         }
         return stepCompleted;
     }
     
+    /**
+     * Return the direction of next step to reach target.
+     * If no more steps are necessary, return DirectionEnum.NONE and call e.onTargetReached
+     * If no more steps are possible, return DirectionEnum.NONE
+     */
+    function determineNextStepDirection(map: IMap, e: IEvent, target: ICell): DirectionEnum {
+        let direction = DirectionEnum.NONE;
+        // Check if target can be reached
+        let targetGui = ClientUtils.cellToGid(target, map.width);
+        let cellStaticBlock = ClientUtils.getMapStaticBlock(map,targetGui);
+        let cellDynamicBlock = ClientUtils.getMapDynamicBlock(map,targetGui);
+        if((ClientUtils.isBlockDirectionBlocked(cellStaticBlock, BlockDirection.ALL) && !ClientUtils.isBlockDirectionBlocked(cellDynamicBlock, BlockDirection.ALL))
+            || (targetGui < 0 || targetGui >= map.width * map.height)) {
+            // Target is blocked and does not contain and event, or it is invalid, so no movement needed
+            direction = DirectionEnum.NONE;
+        } else {
+            // Check if I am currently moving a step
+            if (!Utils.isEmpty(e.movementDirection) && e.movementDirection === DirectionEnum.NONE) {
+                direction = e.movementDirection!;
+            } else {
+                try {
+                    direction = MapManager.pathFinder(map, e, target)
+                } catch (e) {
+                    console.error(e)
+                }
+                let stepTarget = ClientUtils.getDirectionTarget(e, direction)
+                // Check if target contains an event
+                let stepTargetGID = ClientUtils.cellToGid(stepTarget, map.width)
+                let stepTargetBlock = ClientUtils.getMapDynamicBlock(map, stepTargetGID)
+                if (ClientUtils.isDirectionEnumBlocked(stepTargetBlock, ClientUtils.getOpposedDirections(direction))) {
+                    // I can't go further, stop now
+                    direction = DirectionEnum.NONE
+                    if (stepTargetGID === targetGui) {
+                        // Reached target
+                        if(e.onTargetReached !== undefined) {
+                            e.onTargetReached(target);
+                        }
+                    }
+                }
+            }
+        }
+        return direction;
+    }
+
     function getMSpeed(e: IEvent): number {
         let state = getState(e);
         if(state !== undefined) {
@@ -426,5 +446,105 @@ export namespace EventManager {
             return undefined;
         }
         return event.states[event.currentState];    
+    }
+
+    function startPredeterminatedMovement(map: IMap, event: IEvent) {
+        let movement = event.states[event.currentState].movement!;
+        let target;
+        let onTargetReached: ICellCallback | undefined;
+        switch(movement.strategy) {
+            case "target":
+                // Reach movement.target
+                if(movement.target === undefined) {
+                    console.warn("event: " + event.id + " has strategy=target, but target is undefined. Will fallback to random");
+                    movement.target = getRandomStepTarget(map, event);
+                } 
+                target = movement.target;
+                break;
+            case "event":
+                // Make a single step towards movement.eventId using movement.pathfinder
+                let targetEvent: IEvent | undefined;
+                for(let tmp of map.events) {
+                    if(tmp.id === movement.eventId) {
+                        targetEvent = tmp;
+                    }
+                }
+                if(targetEvent === undefined) {
+                    console.error("Cannot find event: " + movement.eventId);
+                    return;
+                }
+                let newDirection = MapManager.pathFinder(map, event, targetEvent, movement.pathfinder);
+                target = ClientUtils.getDirectionTarget(event, newDirection);
+                onTargetReached = function(cell) {
+                    // Keep doing steps towards the event, if reached then pause
+                    let newDirection = MapManager.pathFinder(map, event, targetEvent!, movement.pathfinder);
+                    if(newDirection !== DirectionEnum.NONE) {
+                        let nextTarget = ClientUtils.getDirectionTarget(event, newDirection);
+                        startMovement(event, nextTarget.i, nextTarget.j, onTargetReached);
+                    } else {
+                        // Pause a bit, then starts again
+                        setTimeout(() => { onTargetReached!(cell); }, 1000);
+                    }
+                }
+                break;
+            case "random":
+                // Make a single step in a random direction
+                target = getRandomStepTarget(map, event);
+                onTargetReached = function() {
+                    // Take a pause, then keep doing random steps
+                    setTimeout(function() {
+                        let nextTarget = getRandomStepTarget(map, event);
+                        startMovement(event, nextTarget.i, nextTarget.j, onTargetReached);
+                    }, movement.pause);
+                }
+                break;
+            default:
+                console.error("Unexpected movement strategy: " + movement.strategy + " for event: " + event.id);
+                return;
+        }
+        if(target !== undefined) {
+            startMovement(event, target.i, target.j, onTargetReached);
+        }
+    }
+
+    function getRandomStepTarget(map: IMap, event: IEvent): ICell {
+        let currentDirection = event.states[event.currentState].direction;
+        if(currentDirection === undefined) {
+            currentDirection = DirectionEnum.NONE;
+        }
+        let straightDirection = ClientUtils.getNextAbsoluteDirection(currentDirection, RelativeDirectionEnum.STRAIGHT);
+        let leftDirection = DirectionEnum.NONE;
+        let rightDirection = DirectionEnum.NONE;
+        let backDirection = DirectionEnum.NONE;
+
+        // Decide next pseudo-random direction, excluding blocked directions
+        let straightScore = MapManager.isMovementTowardsTargetBlocked(map, event.i, event.j, straightDirection)? 0 : 3; // Probabily keep current direction
+        let leftScore = MapManager.isMovementTowardsTargetBlocked(map, event.i, event.j, leftDirection)? 0 : 2; // Same probability of turning left or right
+        let rightScore = MapManager.isMovementTowardsTargetBlocked(map, event.i, event.j, rightDirection)? 0 : 2; // Same probability of turning left or right
+        let backScore = MapManager.isMovementTowardsTargetBlocked(map, event.i, event.j, backDirection)? 0 : 1; // Rarely turn back
+        let tot = straightScore + leftScore + rightScore + backScore;
+
+        let newDirection = DirectionEnum.NONE;
+        if(tot > 0) {
+            let random = ClientUtils.getRandomInteger(1, tot);
+            // Check in which interval falls the random value, and use it to decide the new direction
+            random -= straightScore;
+            if(random <= 0) {
+                newDirection = straightDirection;
+            } else {
+                random -= leftScore;
+                if(random <= 0) {
+                    newDirection = leftDirection;
+                } else {
+                    random -= rightScore;
+                    if(random <= 0) {
+                        newDirection = rightDirection;
+                    } else {
+                        newDirection = backDirection;
+                    }
+                }
+            }
+        }
+        return ClientUtils.getDirectionTarget(event, newDirection);
     }
 }

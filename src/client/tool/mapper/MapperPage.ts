@@ -10,7 +10,7 @@ import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
 import { IPropertiesCallback } from "../../core/util/Commons"
 import { Constant } from "../../core/util/Constant"
-import { ClientUtils } from "../../core/util/Utils"
+import { ClientUtils } from "../../core/util/ClientUtils"
 import { IEvent, IEventState } from "../../../common/model/Event"
 import { Utils } from "../../../common/Utils"
 import { ActionTriggerEnum, RotationEnum, DirectionEnum, ScaleEnum } from "../../../common/Commons"
@@ -538,9 +538,9 @@ export namespace MapperPage {
         }
         currentState.opacity = opacity;
 
-        let direction: number | undefined = (<HTMLSelectElement>document.getElementById("direction")).selectedIndex;
+        let direction = (<HTMLSelectElement>document.getElementById("direction")).selectedIndex;
         if (Utils.isEmpty(direction) || direction < DirectionEnum.UP || direction > DirectionEnum.LEFT) {
-            direction = undefined;
+            direction = DirectionEnum.NONE;
         }
         currentState.direction = direction;
 

@@ -3,7 +3,7 @@ import Vue from "vue"
 import LoginComponent from "../components/Login.vue"
 import BugReportingComponent from "../components/BugReporting.vue"
 
-import { DirectionEnum, ICell, IPoint, LanguageEnum } from "../../common/Commons";
+import { DirectionEnum, ICell, LanguageEnum } from "../../common/Commons";
 import { ISave } from "../../common/model/Save";
 import { Launcher } from "../core/events/Launcher";
 import { DialogManager } from "../core/manager/DialogManager";
@@ -13,7 +13,7 @@ import { Compatibility } from "../core/util/Compatibility";
 import { Errors } from "../core/util/Errors";
 import { Input } from "../core/util/Input";
 import { Resource } from "../core/util/Resource";
-import { ClientUtils } from "../core/util/Utils";
+import { ClientUtils } from "../core/util/ClientUtils";
 import { Workers } from "../core/util/Workers";
 import { DynamicGrid } from "./DynamicGrid";
 import { DynamicScene } from "./DynamicScene";
@@ -161,37 +161,37 @@ export namespace Game {
         });
     }
     
-    function moveToDirection(scene: DynamicScene, direction: DirectionEnum) {
+    function moveHeroToDirection(scene: DynamicScene, direction: DirectionEnum) {
         let startingCell: ICell = scene.hero;
         // If hero is currently moving
-        let currentTargetPoint: IPoint | undefined = scene.hero.target;
-        if(currentTargetPoint === undefined) {
-            currentTargetPoint = scene.hero.newTarget;
+        let currentTarget = scene.hero.target;
+        if(currentTarget === undefined) {
+            currentTarget = scene.hero.newTarget;
         }
-        if(currentTargetPoint !== undefined) {
-            let distance = ClientUtils.getPointDistance(scene.hero.position!, currentTargetPoint);
+        if(currentTarget !== undefined) {
+            let distance = ClientUtils.getPointDistance(scene.hero.position!, scene.grid.mapCellToCanvas(currentTarget));
             if(distance <= Math.floor(scene.grid.cellH / 2)) {
                 // If currentTarget is half-cell away, start new movement from target (not from hero's current position)
-                startingCell = scene.grid.mapCanvasToCell(currentTargetPoint);
+                startingCell = currentTarget;
             }
         }
         let target = ClientUtils.getDirectionTarget(startingCell, direction);
-        scene.startMovement(target.i, target.j);    
+        scene.startHeroMovement(target.i, target.j);    
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, grid: DynamicGrid) {
         let inputCallbackMap: Map<string, Input.IKeyboardCallback> = new Map<string, Input.IKeyboardCallback>();
         inputCallbackMap[Input.Keys.W] = function(e: KeyboardEvent) {
-            moveToDirection(scene, DirectionEnum.UP);
+            moveHeroToDirection(scene, DirectionEnum.UP);
         };
         inputCallbackMap[Input.Keys.S] = function(e: KeyboardEvent) {
-            moveToDirection(scene, DirectionEnum.DOWN);
+            moveHeroToDirection(scene, DirectionEnum.DOWN);
         };
         inputCallbackMap[Input.Keys.A] = function(e: KeyboardEvent) {
-            moveToDirection(scene, DirectionEnum.LEFT);
+            moveHeroToDirection(scene, DirectionEnum.LEFT);
         };
         inputCallbackMap[Input.Keys.D] = function(e: KeyboardEvent) {
-            moveToDirection(scene, DirectionEnum.RIGHT);
+            moveHeroToDirection(scene, DirectionEnum.RIGHT);
         };
 
         inputCallbackMap[Input.Keys.F1] = function(e: KeyboardEvent) {
@@ -259,7 +259,7 @@ export namespace Game {
 
         function doAction(i: number, j: number) {
             scene.registerAction(i, j);
-            scene.startMovement(i, j);
+            scene.startHeroMovement(i, j);
         };
     };
 

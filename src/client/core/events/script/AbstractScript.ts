@@ -1,4 +1,4 @@
-import { DirectionEnum, ICell } from "../../../../common/Commons";
+import { DirectionEnum, ICell, ICellCallback } from "../../../../common/Commons";
 import { IEvent } from "../../../../common/model/Event";
 import { IConfig } from "../../../../common/model/Save";
 import { DynamicScene } from "../../../game/DynamicScene";
@@ -6,7 +6,7 @@ import { DialogManager } from "../../manager/DialogManager";
 import { EventManager } from "../../manager/EventManager";
 import { SaveManager } from "../../manager/SaveManager";
 import { IEmptyCallback } from "../../../../common/Commons";
-import { ClientUtils } from "../../util/Utils";
+import { ClientUtils } from "../../util/ClientUtils";
 import { DataDefaults } from "../../../../common/DataDefaults";
 
 export abstract class AbstractScript {
@@ -43,25 +43,25 @@ export abstract class AbstractScript {
         return true;
     }
     
-    protected moveToTarget(target: ICell): boolean {
-        EventManager.startMovement(this.scene.grid, this.event, target.i, target.j);
+    protected moveToTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
+        EventManager.startMovement(this.event, target.i, target.j, onTargetReached);
         return true;  
     }
     
-    protected stepToTarget(target: ICell): boolean {
+    protected stepToTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
         let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
-        return this.stepToDirection(direction);  
+        return this.stepToDirection(direction, onTargetReached);  
     }
     
-    protected stepToDirection(direction: DirectionEnum): boolean {
+    protected stepToDirection(direction: DirectionEnum, onTargetReached?: ICellCallback): boolean {
         let target: ICell = ClientUtils.moveToDirection(this.event, direction);
-        return this.moveToTarget(target);
+        return this.moveToTarget(target, onTargetReached);
     }
     
-    protected stepFromTarget(target: ICell): boolean {
+    protected stepFromTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
         let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
         direction = ClientUtils.getOpposedDirections(direction);
-        return this.stepToDirection(direction);  
+        return this.stepToDirection(direction, onTargetReached);  
     }
     
     /* im sorry */
