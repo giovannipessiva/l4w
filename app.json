@@ -1,15 +1,17 @@
 {
-  "name": "Light & Dark IV",
-  "description": "A game that will never be finished",
+  "name": "L4W",
+  "description": "A TypeScript engine + web editor for tile-based games",
   "keywords": [
     "game",
+    "game engine",
+    "game editor",
     "rpg",
     "canvas",
     "HTML5",
     "typescript",
     "node.js"
   ],
-  "website": "https://l4d.herokuapp.com",
-  "repository": "https://github.com/RaptorStudios/light-and-dark-4",
+  "website": "https://l4w.herokuapp.com",
+  "repository": "https://github.com/giovannipessiva/l4w",
   "image": "heroku/nodejs"
 }

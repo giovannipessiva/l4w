@@ -19,7 +19,7 @@
             </p>
             <p>
                 When you send the report <strong>what you wrote will be publicly visible on the <a href="https://github.com/giovannipessiva/l4w/issues">project issue tracker</a></strong>.<br>
-                If you want some privacy, <a href="mailto:rpt@altervista.org?subject=Feedback%20on%20LD4">drop me a mail</a>
+                If you want some privacy, <a href="mailto:rpt@altervista.org?subject=Feedback%20on%20L4W">drop me a mail</a>
             </p>
             <button v-on:click="send()" v-bind:disabled="description.trim().length === 0">Send</button>
         </div>
