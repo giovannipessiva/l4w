@@ -30,6 +30,6 @@ rm webpack.config.cjs
 
 git add .
 git commit -m "Travis build"
-git push -f https://${GH_TOKEN}@github.com/giovannipessiva/l4w deploy > git.log 2>&1
+git push -f https://${GH_TOKEN}@github.com/RaptorStudios/light-and-dark-4 deploy > git.log 2>&1
 cat git.log | sed -e 's/\/\/.*@github/\/\/[double secured]/'
 rm git.log
