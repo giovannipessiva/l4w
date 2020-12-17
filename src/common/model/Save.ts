@@ -15,7 +15,7 @@ export interface ISave {
 }
 
 export interface IMapSave {
-    events: IEventSave[]; // Memory of the events  
+    events: IEventSave[]; // Events dynamic data  
 }
 
 export interface IEventSave {

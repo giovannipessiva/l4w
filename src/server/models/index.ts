@@ -23,7 +23,7 @@ function initSequelizeModules() {
     };
     sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
-    const dirname = join("dist", "server", "l4w", "src", "server", "models");
+    const dirname = join("dist", "server", "src", "server", "models");
     readdirSync(dirname).filter(function(file: string) {
         return file.indexOf(".") !== 0 && file !== "index.mjs" && file !== "init-models.mjs" && file.indexOf(".mjs") !== 0 ;
     }).forEach(function(file: string) {

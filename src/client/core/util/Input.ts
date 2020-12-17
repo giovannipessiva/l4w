@@ -25,11 +25,11 @@ export namespace Input {
         static SPACEBAR = " ";
         static CAPS = "CapsLock";
         static SHIFT = "Shift";
-        static W = "W";
-        static A = "A";
-        static D = "D";
-        static S = "S";
-        static P = "P";
+        static W = "w";
+        static A = "a";
+        static D = "d";
+        static S = "s";
+        static P = "p";
         static F1 = "F1";
         static F2 = "F2";
         static F3 = "F3";
@@ -171,7 +171,7 @@ export namespace Input {
         
         // Keyboard events
         document.addEventListener("keydown", function(e: KeyboardEvent) {
-            let callback = inputCallbacks[String(e.key)];
+            let callback = inputCallbacks[e.key];
             if (callback !== undefined) {
                 callback(e);
             }

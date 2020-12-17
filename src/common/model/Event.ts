@@ -9,8 +9,8 @@ export interface IEvent extends ICell {
     id: number; // ID of this event (unique in its map)
     name: string; // String assigned to name field in editor
     states: IEventState[]; // Array of states of this Event
-    memory: {}; // Map of generic key -> value pairs
     script: string; // Script Class which contains the methods used by this event
+    memory: {}; // Map of generic key -> value pairs
     sentientBeingData?: ISentientBeingData; // Additional data available for events which represent a sentient being
 
     // Transient data
@@ -23,7 +23,6 @@ export interface IEvent extends ICell {
     newTarget?: ICell; // New destination coordinates
     newOnTargetReached?: ICellCallback; // Function to call when newTarget will be reached
     path?: DirectionEnum[]; // Path computed for current target
-    //TODO: aggiungere proprietà per memorizzare la callback onTargetReached?
 }
 
 export interface IEventState extends ICharacter {

@@ -76,8 +76,9 @@ export namespace SaveManager {
         for(let se of saveEvents) {
             for(let e of map.events) {
                 if(se.id === e.id) {    
-                    // Override event with saved data
+                    // Override event dynamic data with saved data
                     e.memory = se.memory;
+                    //TODO manage other dynamic data (eg. sentientBeingData?)
                 }
             }
         }

@@ -1,1 +1,1 @@
-web: node --experimental-modules --es-module-specifier-resolution=node --inspect dist/server/l4w/src/server/l4w-server.mjs
+web: node --experimental-modules --es-module-specifier-resolution=node --inspect dist/server/src/server/l4w-server.mjs
