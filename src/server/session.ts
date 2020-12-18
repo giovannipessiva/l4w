@@ -22,7 +22,7 @@ export namespace session {
         let secret: string =  process.env.SESSION_SECRET!;
         let store = new SequelizeStoreConstructor({
             db: sequelizeInstance,
-            tableName: "usr_session2" //TODO delete original usr_session table, rename usr_session2 --> usr_session
+            tableName: "usr_session"
         });
         // Call sync in order to generate the ${tableName} table
         store.sync();
