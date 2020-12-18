@@ -1,5 +1,5 @@
 # ![L4W](/style/logo/L4W%20logo%201.png?raw=true "L4W logo by @nancu")
-[![](https://travis-ci.org/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.org/giovannipessiva/l4w)
+[![](https://api.travis-ci.com/giovannipessiva/l4w.svg?branch=master)](https://travis-ci.com/giovannipessiva/l4w)
 [![](https://heroku-badge.herokuapp.com/?app=l4w)](https://l4w.herokuapp.com/)
 [![](https://badge.fury.io/gh/giovannipessiva%2Fl4w.svg)](https://badge.fury.io/for/gh/giovannipessiva/l4w)
 [![](https://david-dm.org/giovannipessiva/l4w.svg)](https://david-dm.org/giovannipessiva/l4w)
