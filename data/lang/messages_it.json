@@ -1,6 +1,38 @@
 {
-  "GLOBAL":{
-	  "4": "Lasciami in pace",
-	  "5": "Non vedi che sono occupato?"
+  "GLOBAL": {
+    "1": "Hello world",
+    "2": "Oink oink",
+    "3": "Hey",
+    "4": "Lasciami in pace, piccoletto",
+    "5": "Non vedi che sono occupato?",
+    "6": "Aargh!!"
+  },
+  "D1": {
+    "N0M": "I don't want any trouble. I'm just resting, I'll be on my way soon",
+    "N1M": "My name is Asgar, I am headed to the capital.",
+    "N5M": "Tell you what, if you can find me a mount I will pay you 50 golds",
+    "N6M": "I'm not sure about it...",
+    "N7M": "Mmh... Interesting... I guess?",
+    "N2M": "I'm afraid not, it would surely help me on my journey",
+    "N8M": "Now leave me alone, please",
+    "N4M": "As you can see for yourself, it is not lit",
+    "E0M": "Who are you?",
+    "E5M": "The capital? It's still a long journey from here",
+    "E6M": "Are you going to start a revolution?",
+    "E7M": "Oh, the capital. I know everything about it. They call me the biggest expert of capitals around here",
+    "E1M": "Don't you have an horse or something?",
+    "E8M": "Well, walking is better anyway, it's good for your legs. Expecially walking with an armor on",
+    "E9M": "How much are you willing to pay for a mean of transport?",
+    "E10M": "Oh well, sucks to be you",
+    "E4M": "Do you have a permit for that bonfire, sir?"
+  },
+  "D2": {
+    "N0M": "Buongiorno a te, sei in cerca di qualcosa?",
+    "N1M": "In questo momento no",
+    "N2M": "Intendi il vecchio Jack? Non farebbe del male a una mosca",
+    "N3M": "Mi dispiace, non sono in vendita",
+    "E0M": "Hai del lavoro per me?",
+    "E1M": "Ti prego nascondimi, un gigante enorme sta venendo a prendermi!",
+    "E2M": "Quanto vuoi per un porco?"
   }
 }

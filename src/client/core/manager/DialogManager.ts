@@ -132,7 +132,7 @@ export namespace DialogManager {
                 let dialogRootNode: IDialogNode = reconstructDialogTree(DataDefaults.FIRST_ELEM_ID, data.nodes, data.edges);
                 callback(dialogRootNode);
             }
-        });
+        }, language);
     }
 
     export function saveDialog(dialogId: number, root: IDialogNode, callback: INumberCallback): void {

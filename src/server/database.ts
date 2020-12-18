@@ -16,7 +16,7 @@ import { gameConfig } from "../common/GameConfig"
 import { IDialogNode, IDialogEdge, IGenericMessage } from "../common/model/Dialog";
 import { IMap } from "../common/model/Map";
 import { ITileset } from "../common/model/Tileset";
-import { Utils } from "../common/Utils";
+import { enumFromValue, Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
 import { session } from "./session";
@@ -157,7 +157,7 @@ export namespace database {
     }
 
     export function read(type: ResourceType, file: string, user: string | undefined, response: any, lang?: string) {
-        let langVal = lang !== undefined? LanguageEnum[lang] : lang;
+        let langVal = enumFromValue(LanguageEnum, lang);
         switch (type) {
             case ResourceType.MAP:
                 let map: IMap = gameData.maps.get(["maps", file]).value();

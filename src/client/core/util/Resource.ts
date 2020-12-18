@@ -1,5 +1,5 @@
 import { ResourceType } from "../../../common/Constants";
-import { IResponseCallback } from "../../../common/Commons";
+import { IResponseCallback, LanguageEnum } from "../../../common/Commons";
 import { Condition } from "../events/Conditions";
 import { AbstractScript } from "../events/script/AbstractScript";
 import * as Script from "../events/script/ScriptsRoot";
@@ -68,7 +68,7 @@ export namespace Resource {
         return props;
     };
 
-    export function sendGETRequest(uri: string, callback: IResponseCallback, lang?: string) {
+    export function sendGETRequest(uri: string, callback: IResponseCallback, lang?: LanguageEnum) {
         sendRequest(Constant.RequestType.GET, undefined, uri, callback, lang);
     };
 
@@ -76,7 +76,7 @@ export namespace Resource {
         sendRequest(Constant.RequestType.POST, data, uri, callback);
     };
 
-    function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback, lang?: string) {
+    function sendRequest(requestType: string, data: string | undefined, uri: string, callback: IResponseCallback, lang?: LanguageEnum) {
         let request = new XMLHttpRequest();
         request.onload = function(this: XMLHttpRequest, ev: ProgressEvent): any {
             callback(this.responseText);
@@ -114,7 +114,7 @@ export namespace Resource {
     /**
      * Load an asset and call a callback
      */
-    export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }, lang?: string) {
+    export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }, lang?: LanguageEnum) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
             console.trace();

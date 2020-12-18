@@ -98,3 +98,15 @@ export namespace Utils {
         return (new Date()).getTime();
     }
 }
+
+/**
+ * Convert the value of a String enum to the enum object 
+ */
+export const enumFromValue = <T extends Record<string, string>>(_enum: T, val?: string) => {
+    const enumName = (Object.keys(_enum) as Array<keyof T>).find(k => _enum[k] === val)
+    if (!enumName || val === undefined) {
+        return undefined;
+    } else {
+        return _enum[enumName];
+    }
+}
