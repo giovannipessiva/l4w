@@ -151,9 +151,10 @@ export namespace Tilesetter {
             type: Constant.RequestType.GET,
             contentType: Constant.MimeType.JSON,
             success: function(result: ITileset) {
-                let image = tilesetterScene.map.tileset.imageData;  
+                // Override the tileset, just preserve imageData
+                let backupImage = tilesetterScene.map.tileset.imageData;
                 tilesetterScene.map.tileset = <ITileset> result;
-                tilesetterScene.map.tileset.imageData = image;
+                tilesetterScene.map.tileset.imageData = backupImage;
                 if (!Utils.isEmpty(tilesetterScene)) {
                     if (tilesetterScene.map.tileset.blocks === undefined) {
                         tilesetterScene.map.tileset.blocks = [];

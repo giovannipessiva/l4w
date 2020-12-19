@@ -61,8 +61,8 @@ export namespace Mapper {
         mapper.setTilePicker(tilePicker);
     }
     
-    export function changeSize(rows: number, columns: number) {
-        mapper.resizeMap(rows, columns);
+    export function changeSize(columns: number, rows: number) {
+        mapper.resizeMap(columns, rows);
         mapper.requestedNewFrame = true;
     }
 

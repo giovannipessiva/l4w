@@ -75,7 +75,7 @@ export class StaticGrid extends AbstractGrid {
      * - on tileset change 
      * - on map change
      */
-    updateSize(rows: number, columns: number) {
+    updateSize(columns: number, rows: number) {
         this.rows = rows;
         this.columns = columns;
         this.updateSizingDerivates();
@@ -98,7 +98,10 @@ export class StaticGrid extends AbstractGrid {
             }
         } else {
             // Redraw the whole visible canvas area
-            return super.getBoundariesX(focusX, columns);
+            return {
+                min: 0,
+                max: this.columns
+            }
         }
     }
 
@@ -119,7 +122,10 @@ export class StaticGrid extends AbstractGrid {
             }
         } else {
             // Redraw the whole visible canvas area
-            return super.getBoundariesY(focusY, rows);
+            return {
+                min: 0,
+                max: this.rows
+            }
         }
     }
 

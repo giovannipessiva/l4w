@@ -8,9 +8,11 @@ import { IRectangle } from "../../common/Commons";
 export abstract class AbstractTileScene extends AbstractStaticScene {
 
     updateSize(widthPx: number, heightPx: number) {
+        this.map.tileset.imageWidth = widthPx;
+        this.map.tileset.imageHeight = heightPx;
         this.map.width = Math.floor(widthPx / this.grid.cellW);
         this.map.height = Math.floor(heightPx / this.grid.cellH);
-        
+
         (<StaticGrid> this.grid).updateSize(this.map.width, this.map.height);
         this.requestedNewFrame = true;
     }

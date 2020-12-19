@@ -40,10 +40,7 @@ export namespace TilesetterPage {
                 opt.label = data[i];
                 sel.appendChild(opt);
             }
-            Tilesetter.start(<HTMLCanvasElement> document.getElementById("canvasSelector"), getEditMode(), function() {
-                let tile = (<HTMLSelectElement> document.getElementById("tiles")).value;
-                Tilesetter.loadTile(tile, function(result, w: number, h: number) { });
-            });
+            Tilesetter.start(<HTMLCanvasElement> document.getElementById("canvasSelector"), getEditMode(), changeTile);
         });
 
         loadNews();
@@ -106,11 +103,14 @@ export namespace TilesetterPage {
         } else {
             document.title = PAGE_TITLE;
         }
-        (<HTMLButtonElement> document.getElementById("saveButton")).disabled = !edited;
-        (<HTMLButtonElement> document.getElementById("reloadButton")).disabled = !edited;
-
-        if (mapChanged) {
-
+        // Buttons can be null while login component is loading
+        let save = (<HTMLButtonElement> document.getElementById("saveButton"));
+        if(save !== null) {
+            save.disabled = !edited;
+        }
+        let reload = (<HTMLButtonElement> document.getElementById("reloadButton"));
+        if(reload !== null) {
+            reload.disabled = !edited;
         }
     }
 }

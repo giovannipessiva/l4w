@@ -20,10 +20,6 @@ export class TilesetterScene extends AbstractTileScene {
         // Init the map for rendering blocks
         this.map = DataDefaults.getEmptyMap("blocks");
         this.map.tileset = DataDefaults.getTileset();
-        this.map.width = this.getSceneWidth();
-        this.map.height = this.getSceneHeight();
-        this.map.tileset.imageWidth = this.getSceneWidth();
-        this.map.tileset.imageHeight = this.getSceneHeight();
         callback(this);
     }
 

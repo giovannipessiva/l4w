@@ -201,7 +201,7 @@ export namespace MapperPage {
     export function changeSize() {
         let w = parseInt($("#mapSizeW").val());
         let h = parseInt($("#mapSizeH").val());
-        Mapper.changeSize(h, w);
+        Mapper.changeSize(w, h);
         changeEditState(true);
     }
 

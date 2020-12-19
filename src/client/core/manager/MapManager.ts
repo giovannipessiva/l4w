@@ -221,7 +221,7 @@ export namespace MapManager {
         }
     }
 
-    export function resizeMap(map: IMap, rows: number, columns: number) {
+    export function resizeMap(map: IMap, columns: number, rows: number) {
         let oldWidth: number = map.width;
         let newWidth: number = columns;
         let oldHeight: number = map.height;
