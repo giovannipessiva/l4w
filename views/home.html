@@ -9,43 +9,46 @@
 	<meta name="keywords" content="JavaScript, TypeScript, Vue, Node, game, engine, editor, rpg">
 	<meta name="theme-color" content="#ffffff">
 
-	<!-- FB OpenGraph metatag -->
+	<!-- Social preview metatags -->
 	<meta property="og:image" content="https://raw.githubusercontent.com/giovannipessiva/l4w/master/style/logo/preview-fb.png" />
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="L4W Game engine">
+	<meta name="twitter:image" content="https://raw.githubusercontent.com/giovannipessiva/l4w/master/style/logo/preview-t.png" />
+
 
 	<link rel="preload" href="/style/l4w.css" as="style">
-
 	<link rel='icon' href='/style/favicon/game.ico' />
 	<link rel="manifest" href="/data/configuration/manifest.json"> 
 	<link rel="stylesheet" type="text/css" href="/style/l4w.css" >
 
 	<script src="/lib/require.min.js" async></script>
 
-	<script type='text/javascript'>
-var base_path = "./";
-let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
+	<script>
+		var base_path = "./";
+		let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
 
-window.onload = () => {
-	if(isDevEnv()) {
-		// Enable offline local development by using local files instead of CDNs
-		requirejs(["lib/jquery3.min"],function($){
-			requirejs(["lib/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
-				finishedLoading();
-			});
-		});
-	} else {
-		//TODO check Sub Resource Integrity
-		requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
-			requirejs(["https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
-				finishedLoading();
-			});
-		});
-	}
+		window.onload = () => {
+			if(isDevEnv()) {
+				// Enable offline local development by using local files instead of CDNs
+				requirejs(["lib/jquery3.min"],function($){
+					requirejs(["lib/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
+						finishedLoading();
+					});
+				});
+			} else {
+				//TODO check Sub Resource Integrity
+				requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
+					requirejs(["https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", "js/l4w-game.min"],function(l4w){
+						finishedLoading();
+					});
+				});
+			}
 
-	function finishedLoading(){
-		let canvas = document.getElementById("canvas1");
-	    L4W_game.Game.start(canvas);
-	};
-}
+			function finishedLoading(){
+				let canvas = document.getElementById("canvas1");
+				L4W_game.Game.start(canvas);
+			};
+		}
 	</script>
 </head>
 <body>
