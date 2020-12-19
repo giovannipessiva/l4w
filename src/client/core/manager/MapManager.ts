@@ -562,9 +562,6 @@ export namespace MapManager {
                             }
                             s_start = s_min!;
 
-                            // Move to s_start
-                            return ClientUtils.getDirection(s_start.cell, event);
-
                             // Assuming constant edge costs, this part is not needed
                             /*
                             // Scan graph for changed edge costs
@@ -595,6 +592,14 @@ export namespace MapManager {
                                 computeShortestPath();
                             }
                             */
+                           
+                            if(s_min_c === MAX) {
+                                // Destination is unreachable
+                                return DirectionEnum.NONE;
+                            } else {
+                                // Move to s_start
+                                return ClientUtils.getDirection(s_start.cell, event);
+                            }
                         }
                         return DirectionEnum.NONE;
                     };
@@ -678,7 +683,7 @@ export namespace MapManager {
                      * s2 belongs to succ(s1)
                      */
                     function c(s1: IVertex, s2: IVertex): number {
-                        let movementDirection: number = ClientUtils.getDirection(s2.cell, s1.cell);
+                        let movementDirection: DirectionEnum = ClientUtils.getDirection(s2.cell, s1.cell);
                         // if s2 is the final target, ignore dynamic blocks
                         let ignoreDynamicBlocks = (ClientUtils.getDirection(s2.cell, s_goal.cell) === DirectionEnum.NONE);
                         // Check if movement to s2 is blocked

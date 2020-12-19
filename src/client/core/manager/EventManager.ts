@@ -286,6 +286,7 @@ export namespace EventManager {
             image = Resource.loadImageFromCache(currentState.charaset!, ResourceType.CHAR);
         } else if (!Utils.isEmpty(currentState.gid)) {
             //TODO Manage Event with tile grafic
+            console.warn("Not implemented");
         }
 
         if(e.position === undefined) {

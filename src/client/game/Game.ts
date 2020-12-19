@@ -163,20 +163,17 @@ export namespace Game {
     
     function moveHeroToDirection(scene: DynamicScene, direction: DirectionEnum) {
         let startingCell: ICell = scene.hero;
-        // If hero is currently moving
-        let currentTarget = scene.hero.target;
-        if(currentTarget === undefined) {
-            currentTarget = scene.hero.newTarget;
-        }
-        if(currentTarget !== undefined) {
-            let distance = ClientUtils.getPointDistance(scene.hero.position!, scene.grid.mapCellToCanvas(currentTarget));
-            if(distance <= Math.floor(scene.grid.cellH / 2)) {
-                // If currentTarget is half-cell away, start new movement from target (not from hero's current position)
-                startingCell = currentTarget;
+        // If hero is currently moving, I need to check where the hero is right now,
+        // in order to decide where will the target be following this direction
+        if(scene.hero.target !== undefined) {
+            let distance = ClientUtils.getPointDistance(scene.hero.position!, scene.grid.mapCellToCanvas(scene.hero.target));
+            if(distance <= scene.grid.cellH) {
+                // If current target is one cell away or less, start new movement from target (not from hero's current position)
+                startingCell = scene.hero.target;
             }
         }
-        let target = ClientUtils.getDirectionTarget(startingCell, direction);
-        scene.startHeroMovement(target.i, target.j);    
+        let directionTarget = ClientUtils.getDirectionTarget(startingCell, direction);
+        scene.startHeroMovement(directionTarget.i, directionTarget.j);    
     }
 
     function initInput(canvas: HTMLCanvasElement, scene: DynamicScene, grid: DynamicGrid) {
