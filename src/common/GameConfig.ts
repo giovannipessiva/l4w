@@ -12,8 +12,8 @@ export const gameConfig = {
          */
         start: {
             map: "0",   // id of the map
-            i: 0,   // position i of the hero
-            j: 0    // position i of the hero
+            i: 2,   // position i of the hero
+            j: 4    // position i of the hero
         }
     },
     hero: {

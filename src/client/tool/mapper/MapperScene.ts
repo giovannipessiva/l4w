@@ -1,7 +1,7 @@
 import { AbstractStaticScene } from "../AbstractStaticScene"
 import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
-import { IRectangle, ICell } from "../../../common/Commons"
+import { IRectangle, ICell, ISize } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { IMap } from "../../../common/model/Map"
 import { EventManager } from "../../core/manager/EventManager"
@@ -204,6 +204,16 @@ export class MapperScene extends AbstractStaticScene {
         MapManager.resizeMap(this.map, columns, rows);
         (<StaticGrid> this.grid).updateSize(columns, rows);
         MapperScene.onMapSizeChange(this);
+    }
+
+    shiftMap(i: number, j: number): ISize {
+        MapManager.shiftMap(this.map, i, j);
+        (<StaticGrid> this.grid).updateSize(this.map.width, this.map.height);
+        MapperScene.onMapSizeChange(this);
+        return {
+            w: this.map.width,
+            h: this.map.height
+        }
     }
     
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }): boolean {

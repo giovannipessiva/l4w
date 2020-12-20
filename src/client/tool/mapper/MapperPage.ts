@@ -205,6 +205,18 @@ export namespace MapperPage {
         changeEditState(true);
     }
 
+    export function shiftMapHorizontal() {
+        let i = parseInt($("#mapHorizontalShift").val());
+        let size = Mapper.shift(i, 0);
+        (<HTMLInputElement> document.getElementById("mapSizeW")).value = size.w + "";
+    }
+
+    export function shiftMapVertical() {
+        let j = parseInt($("#mapVerticalShift").val());
+        let size = Mapper.shift(0, j);
+        (<HTMLInputElement> document.getElementById("mapSizeH")).value = size.h + "";
+    }
+
     function loadTiles() {
         $.getJSON(base_path + "assetlist/tile", function(data) {
             let sel = <HTMLSelectElement> document.getElementById("tiles");

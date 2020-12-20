@@ -18,35 +18,6 @@
       },
       "children": [
         {
-          "id": "3",
-          "text": "Test",
-          "icon": true,
-          "li_attr": {
-            "id": "3"
-          },
-          "a_attr": {
-            "href": "#",
-            "id": "3_anchor"
-          },
-          "data": {},
-          "children": [
-            {
-              "id": "4",
-              "text": "Test2",
-              "icon": true,
-              "li_attr": {
-                "id": "4"
-              },
-              "a_attr": {
-                "href": "#",
-                "id": "4_anchor"
-              },
-              "data": {},
-              "children": []
-            }
-          ]
-        },
-        {
           "id": "1",
           "text": "Bosco",
           "icon": true,

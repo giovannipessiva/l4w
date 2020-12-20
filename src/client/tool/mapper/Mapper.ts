@@ -12,7 +12,7 @@ import { MapperPage } from "./MapperPage"
 import { MapperScene } from "./MapperScene"
 import { TilePickerScene } from "./TilePickerScene"
 import { ResourceType } from "../../../common/Constants";
-import { IBooleanCallback } from "../../../common/Commons";
+import { IBooleanCallback, ISize } from "../../../common/Commons";
 import { DataDefaults } from "../../../common/DataDefaults"
 import { Utils } from "../../../common/Utils"
 
@@ -64,8 +64,10 @@ export namespace Mapper {
     export function changeSize(columns: number, rows: number) {
         // Update the map model object, scaling rows/columns
         mapper.resizeMap(columns, rows);
+    }
 
-        mapper.requestedNewFrame = true;
+    export function shift(i: number, j: number): ISize {
+        return mapper.shiftMap(i, j);
     }
 
     export function reloadMap(callback: IBooleanCallback) {

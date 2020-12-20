@@ -490,15 +490,15 @@ export namespace database {
                             traverseDialogDatabase(dialogId, edge.nodeId, nodes, edges, edgeId);
                         }                    
                     } else {
-                        console.error("node " + node.id + " reference not-existing edge: " + edgeId);
+                        console.error("dialog " + dialogId + "- node " + node.id + " reference not-existing edge: " + edgeId);
                     }
                 }
             }
         } else {
             if(parentEdgeId === undefined) {
-                console.error("not-existing node: " + nodeId);
+                console.error("dialog " + dialogId + "- not-existing node: " + nodeId);
             } else {
-                console.error("edge " + parentEdgeId + " reference not-existing node: " + nodeId);
+                console.error("dialog " + dialogId + "- edge " + parentEdgeId + " reference not-existing node: " + nodeId);
             }
         }
     }

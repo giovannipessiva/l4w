@@ -221,6 +221,10 @@ export namespace MapManager {
         }
     }
 
+    /**
+     * Update the input map object and all its layes in order to reflect new size.
+     * This will add/remove rows/columns without breaking the map 
+     */
     export function resizeMap(map: IMap, columns: number, rows: number) {
         let oldWidth: number = map.width;
         let newWidth: number = columns;
@@ -241,8 +245,8 @@ export namespace MapManager {
             }
         }
 
-        for (let i = 0; i < map.layers.length; i++) {
-            let layer = map.layers[i];
+        for (let l = 0; l < map.layers.length; l++) {
+            let layer = map.layers[l];
             if (layer.data !== undefined) {
                 // Correct existing rows
                 if (oldWidth !== newWidth) {
@@ -275,6 +279,67 @@ export namespace MapManager {
 
         map.height = rows;
         map.width = columns;
+    }
+
+    /**
+     * Update the input map object and all its layes in order to reflect the shift of the map.
+     * This will add/remove rows/columns without breaking the map.
+     */
+    export function shiftMap(map: IMap, i: number, j: number) {
+        // Limit negative shift to a 1x1 map
+        if(i < -map.width) {
+            i = -map.width + 1;
+        }
+        if(j < -map.height) {
+            j = -map.height + 1;
+        }
+        // Update map size
+        let oldMapHeight = map.height;
+        map.width += i;
+        map.height += j;
+
+        let newColumns = [];
+        if(i > 0) {
+            for (let n = 0; n < i; n++) {
+                newColumns[n] = undefined;
+            }
+        }
+        let emptyRow = [];
+        if(j > 0) {
+            for (let n = 0; n < map.width; n++) {
+                emptyRow[n] = undefined;
+            }
+        }
+        for (let l = 0; l < map.layers.length; l++) {
+            let layer = map.layers[l];
+            if (layer.data !== undefined) {
+                if(i > 0) {
+                    // Add columns on left side
+                    for (let y = 0; y < oldMapHeight; y++) {
+                        layer.data.splice(y * map.width, 0, ...newColumns);
+                    }
+                } else if(i < 0) {
+                    // Remove columns on left side
+                    for (let y = 0; y < oldMapHeight; y++) {
+                        layer.data.splice(y * map.width, -i);
+                    }
+                }
+                if(j > 0) {
+                    // Add rows on top
+                    for (let n = 0; n < j; n++) {
+                        layer.data.splice(0, 0, ...emptyRow);
+                    }
+                } else if(j < 0) {
+                    // Remove rows on top
+                    layer.data.splice(0, -j * map.width);
+                }
+            }
+        }
+        // Shift events
+        for(let e of map.events) {
+            e.i += i;
+            e.j += j;
+        }
     }
     
     export function initTransientData(scene: AbstractScene) {
