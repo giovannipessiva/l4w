@@ -231,7 +231,7 @@ export namespace MapManager {
         }
         let referenceIndex: number = Math.min(oldWidth, newWidth);
         let removedColumns: number | undefined;
-        let newColumns: any;
+        let newColumns: undefined[] | undefined;
         if (newWidth < oldWidth) {
             removedColumns = oldWidth - newWidth;
         } else {
@@ -250,7 +250,7 @@ export namespace MapManager {
                         if (removedColumns !== undefined) {
                             layer.data.splice(referenceIndex + y * newWidth, removedColumns);
                         } else if (newColumns !== undefined) {
-                            layer.data.splice(referenceIndex + y * newWidth, 0, newColumns);
+                            layer.data.splice(referenceIndex + y * newWidth, 0, ...newColumns);
                         } else {
                             console.error("Unexpected case");
                         }

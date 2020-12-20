@@ -62,7 +62,9 @@ export namespace Mapper {
     }
     
     export function changeSize(columns: number, rows: number) {
+        // Update the map model object, scaling rows/columns
         mapper.resizeMap(columns, rows);
+
         mapper.requestedNewFrame = true;
     }
 

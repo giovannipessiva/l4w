@@ -68,6 +68,7 @@ export class StaticGrid extends AbstractGrid {
     selectScale(scaleId: number) {
         this.scaleX = this.canvasScales[scaleId];
         this.scaleY = this.canvasScales[scaleId];
+        this.refreshCanvasSize();
     }
     
     /**

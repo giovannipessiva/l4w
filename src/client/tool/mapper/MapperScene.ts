@@ -203,6 +203,7 @@ export class MapperScene extends AbstractStaticScene {
     resizeMap(columns: number, rows: number) {
         MapManager.resizeMap(this.map, columns, rows);
         (<StaticGrid> this.grid).updateSize(columns, rows);
+        MapperScene.onMapSizeChange(this);
     }
     
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }): boolean {
@@ -216,7 +217,6 @@ export class MapperScene extends AbstractStaticScene {
         super.changeMap(map, function(scene: AbstractScene) {
             callback(scene);
             mapperScene.resizeMap(map.width, map.height);
-            MapperScene.onMapSizeChange(mapperScene);
         });
         return true;   
     }
@@ -224,7 +224,6 @@ export class MapperScene extends AbstractStaticScene {
     static onMapSizeChange(scene: MapperScene) {
         let inputRange: HTMLInputElement = <HTMLInputElement>document.getElementById("zoom");
         (<StaticGrid> scene.grid).selectScale(+inputRange.value);
-        (<StaticGrid> scene.grid).refreshCanvasSize();
         scene.changeScale();
         scene.requestedNewFrame = true;
     }

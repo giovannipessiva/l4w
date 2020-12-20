@@ -59,11 +59,12 @@ export class AbstractGrid {
         this.baseW = this.cellW * this.columns;
         this.halfRows = Math.floor(this.rows / 2);
         this.halfColumns = Math.floor(this.columns / 2);
+        this.refreshCanvasSize();
     }
 
     /**
      * Update canvas size based on context size
-     * Needs to be called on scale changes
+     * Needs to be called on scale and map size changes 
      */
     refreshCanvasSize() {
         this.canvas.width = Math.floor(this.baseW * this.scaleX);
@@ -94,11 +95,11 @@ export class AbstractGrid {
      * @param position : position in pixels (absolute coordinates in the page)
      */
     mapPositionToGrid(position: IPoint): IExtendedCell {
-        let rect = this.canvas.getBoundingClientRect(); // TODO puo' essere recuperato una volta sola
+        let rect = this.canvas.getBoundingClientRect();
         let x = Math.floor((position.x - rect.left) / this.scaleX + this.currentTranslation.x);
         let y = Math.floor((position.y - rect.top) / this.scaleY + this.currentTranslation.y);
-        //TODO optimize        
-        let i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW); //TODO precalcola le cell scalate
+        //TODO optimize by precalculating scaled cells
+        let i = Math.floor((position.x - rect.left) / (this.cellW * this.scaleX) + this.currentTranslation.x / this.cellW);
         let j = Math.floor((position.y - rect.top) / (this.cellH * this.scaleY) + this.currentTranslation.y / this.cellH);
         return {
             i: i,
