@@ -38,15 +38,22 @@ export namespace TilePicker {
             // Resize the canvas
             let image = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
-            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "";
-            canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
-            canvasTilePicker.height = image.naturalHeight;
-            canvasTilePicker.width = image.naturalWidth;
+            canvasTile.height = image.naturalHeight;
+            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "px";
             // Paint the img in the canvas
             contextTile.drawImage(<HTMLImageElement> tileImage, 0, 0);
-            // Manage the tile selector canvas
-            TilePicker.start(canvasTilePicker, callback);
+
+            let onTilePickerStarted = (tilePicker: TilePickerScene) => {
+                // Save the image in the tileset (required for rendering on the tilepicker)
+                tilePicker.map.tileset.imageData = image;
+                // Need to set this now, since AbstractGrid constructor will initialize grid sizes
+                canvasTilePicker.width = image.naturalWidth;
+                canvasTilePicker.height = image.naturalHeight;
+                tilePicker.updateSize(image.naturalWidth, image.naturalHeight);
+                callback(tilePicker);
+            };
+            TilePicker.start(canvasTilePicker, onTilePickerStarted);
         });
     }
 

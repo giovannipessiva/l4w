@@ -45,11 +45,11 @@ export namespace Tilesetter {
             // Resize the canvas
             let image: HTMLImageElement = new Image();
             image.src = (<HTMLImageElement> tileImage).src;
-            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "";
             canvasTile.height = image.naturalHeight;
             canvasTile.width = image.naturalWidth;
             canvasTilesetter.height = image.naturalHeight;
             canvasTilesetter.width = image.naturalWidth;
+            document.getElementById("tilePanel")!.style.height = image.naturalHeight + "px";
             // Paint the img in the canvas
             contextTile.drawImage(<HTMLImageElement> tileImage, 0, 0);
             // Load tileset data
