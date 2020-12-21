@@ -85,4 +85,4 @@ jobs:
         git config --global user.name "GitHub Action"
         git add .
         git commit -m "GitHub Action build"
-        git push
+        git push --set-upstream origin deploy
