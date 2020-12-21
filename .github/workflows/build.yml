@@ -25,15 +25,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out repository under $GITHUB_WORKSPACE, so that job can access it
-      uses: actions/checkout@v2
-
-      # Setup dependencies
-    name: Use Node.js ${{ matrix.node-version }}
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    name: Cache Node.js modules
+    - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
         # npm cache files are stored in `~/.npm` on Linux
@@ -42,7 +39,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
-    name: Install dependencies
+    - name: Install dependencies
       run: |
         npm add grunt
         npm add grunt-cli
@@ -51,11 +48,11 @@ jobs:
         npm install
 
     # Build the application
-    name: Build
+    - name: Build
       run: npm run build
 
     # Cleanup and commit
-    name: Cleanup
+    - name: Cleanup
       run: |
         sed -i '/dist/d' .gitignore
         rm -rf .tscache
@@ -79,7 +76,7 @@ jobs:
         rm *.bat
         rm tsconfig.json
         rm webpack.config.cjs
-    name: Commit to branch "deploy"
+    - name: Commit to branch "deploy"
       run: |
         git config --global user.email "rpt@altervista.org"
         git config --global user.name "GitHub Action"
