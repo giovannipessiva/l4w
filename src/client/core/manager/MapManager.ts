@@ -444,7 +444,9 @@ export namespace MapManager {
         return ClientUtils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
     }
 
-    /** use an algorithm to decide the better step for Event to reach Target. Target is always considered as unblocked */
+    /** 
+     * Use an algorithm to decide the better step for Event to reach Target.
+     */
     export function pathFinder(map: IMap, event: IEvent, target: ICell, pathfinder: PathfinderEnum = PathfinderEnum.D_STAR_LITE): DirectionEnum {
         let startTime = Utils.now();
         let distI = target.i - event.i;

@@ -1,0 +1,88 @@
+# This workflow will run the build, and commit to "deploy" branch
+name: build
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [15.3.x]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out repository under $GITHUB_WORKSPACE, so that job can access it
+      uses: actions/checkout@v2
+
+      # Setup dependencies
+      name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          # npm cache files are stored in `~/.npm` on Linux
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-  
+      name: Install dependencies
+        run: |
+          npm add grunt
+          npm add grunt-cli
+          npm add typescript
+          npm add grunt-ts
+          npm install
+
+      # Build the application
+      name: Build
+        run: npm run build
+
+      # Cleanup and commit
+      name: Cleanup
+        run: |
+          sed -i '/dist/d' .gitignore
+          rm -rf .tscache
+          rm -rf .vscode
+          rm -rf data/database
+          rm -rf src
+          rm assets/lib/jquery3.min.js
+          rm assets/lib/jquery-ui.min.js
+          rm assets/lib/jstree.min.js
+          rm assets/localdev-cert.pem
+          rm assets/localdev-key.pem
+          rm .env_example
+          rm .eslintrc.cjs
+          rm .travis.yml
+          rm CONTRIBUTING.md
+          rm Gruntfile.cjs
+          rm LICENSE
+          rm post_build.sh
+          rm Procfile_inspect
+          rm *.md
+          rm *.bat
+          rm tsconfig.json
+          rm webpack.config.cjs
+      name: Commit to branch "deploy"
+        run: |
+          git config --global user.email "rpt@altervista.org"
+          git config --global user.name "GitHub Action"
+          git checkout deploy-test
+          git add .
+          git commit -m "GitHub Action build"
