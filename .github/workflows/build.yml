@@ -80,6 +80,7 @@ jobs:
       run: |
         git config --global user.email "rpt@altervista.org"
         git config --global user.name "GitHub Action"
-        git checkout deploy-test
+        git checkout deploy
         git add .
         git commit -m "GitHub Action build"
+        git push
