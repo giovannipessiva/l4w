@@ -39,6 +39,10 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
+    - name: Setup GitHub branch
+      run: |
+        git branch deploy
+        git checkout deploy     
     - name: Install dependencies
       run: |
         npm add grunt
@@ -79,7 +83,6 @@ jobs:
       run: |
         git config --global user.email "rpt@altervista.org"
         git config --global user.name "GitHub Action"
-        git checkout deploy
         git add .
         git commit -m "GitHub Action build"
         git push
