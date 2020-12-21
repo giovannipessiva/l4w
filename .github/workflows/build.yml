@@ -55,6 +55,7 @@ jobs:
     - name: Cleanup
       run: |
         sed -i '/dist/d' .gitignore
+        rm -rf .github
         rm -rf .tscache
         rm -rf .vscode
         rm -rf data/database
@@ -66,11 +67,9 @@ jobs:
         rm assets/localdev-key.pem
         rm .env_example
         rm .eslintrc.cjs
-        rm .travis.yml
         rm CONTRIBUTING.md
         rm Gruntfile.cjs
         rm LICENSE
-        rm post_build.sh
         rm Procfile_inspect
         rm *.md
         rm *.bat
