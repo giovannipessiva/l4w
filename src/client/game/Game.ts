@@ -190,6 +190,14 @@ export namespace Game {
         inputCallbackMap[Input.Keys.D] = function(e: KeyboardEvent) {
             moveHeroToDirection(scene, DirectionEnum.RIGHT);
         };
+        inputCallbackMap[Input.Keys.SPACEBAR] = function(e: KeyboardEvent) {
+            Input.executeActionCallback();
+            e.preventDefault();
+        }
+        inputCallbackMap[Input.Keys.E] = function(e: KeyboardEvent) {
+            Input.executeActionCallback();
+            e.preventDefault();
+        }
 
         inputCallbackMap[Input.Keys.F1] = function(e: KeyboardEvent) {
             scene.toggleFPS();

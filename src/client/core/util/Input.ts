@@ -30,6 +30,7 @@ export namespace Input {
         static D = "d";
         static S = "s";
         static P = "p";
+        static E = "e";
         static F1 = "F1";
         static F2 = "F2";
         static F3 = "F3";
@@ -175,10 +176,6 @@ export namespace Input {
             if (callback !== undefined) {
                 callback(e);
             }
-            if(e.key === Input.Keys.SPACEBAR) {
-                executeActionCallback();
-                e.preventDefault();
-            }
             lastKey = e.key;
         });
         document.addEventListener("keyup", function(e: KeyboardEvent) {
@@ -236,7 +233,7 @@ export namespace Input {
         onActionCallbacks.push(callback);
     }
 
-    function executeActionCallback() {
+    export function executeActionCallback() {
         for(let callback of onActionCallbacks) {
             try {
                 callback();
