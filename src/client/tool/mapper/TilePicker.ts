@@ -118,4 +118,9 @@ export namespace TilePicker {
     export function setMapper(mapper: MapperScene) {
         tilePicker.setMapper(mapper);
     };
+
+    export function cancelSelection() {
+        tilePicker.cleanSelection();
+        tilePicker.pointer = undefined;
+    }
 }

@@ -1,6 +1,6 @@
 import { IEvent } from "./Event"
 import { ICell } from "../Commons"
-import { ITileset } from "./Tileset"
+import { IAutoTileset, ITileset } from "./Tileset"
 
 /**
  * IMap is used to define a game map
@@ -16,6 +16,7 @@ export interface IMap {
     events: IEvent[]; //Events
     nextobjectid: number; //Auto-increments for each placed
     tileset: ITileset; //Tileset object for this map
+    autotilesets?: Map<number, IAutoTileset>; //Contains all the Autotilesets used in this map, with theirs gid (optional)
 
     // Transient data
     blocks?: number[]; //Array of codes representing the block attributes from layers
@@ -29,7 +30,7 @@ export interface IVertex {
 }
 
 export interface IMapLayer {
-    type: "tilelayer" | "imagelayer"; //TODO remove
+    type: "tilelayer" | "imagelayer"; //TODO implement "imagelayer"
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
     data?: (number | undefined)[]; //Array of GIDs. tilelayer only.

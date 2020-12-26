@@ -71,7 +71,6 @@ export namespace DataDefaults {
     
     export function getTileset() : ITileset {
         return  {
-            firstgid: 1,
             image: "002-Woods01.png",
             blocks: [],
             onTop: []
@@ -81,7 +80,8 @@ export namespace DataDefaults {
     export function getAutoTileset(): IAutoTileset {
         return {
             image: "001-G_Water01.png",
-            blocked: false
+            blocked: false,
+            selected: false
         };
     }
 

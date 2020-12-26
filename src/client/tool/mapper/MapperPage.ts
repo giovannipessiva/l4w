@@ -5,6 +5,7 @@ import DialogSummaryComponent from "../../components/DialogSummary.vue"
 import DialogEditorComponent from "../../components/DialogEditor.vue"
 import LoginComponent from "../../components/Login.vue"
 import EventEditorComponent from "../../components/EventEditor.vue"
+import AutotilePickerComponent from "../../components/AutotilePicker.vue"
 
 import { Resource } from "../../core/util/Resource"
 import { Compatibility } from "../../core/util/Compatibility"
@@ -81,6 +82,13 @@ export namespace MapperPage {
             el: "#loginVue",
             components: {
                 "login": LoginComponent,
+            }
+        });
+
+        new Vue({
+            el: "#autotilePickerVue",
+            components: {
+                "autotile-picker": AutotilePickerComponent,
             }
         });
         

@@ -189,6 +189,7 @@ export namespace Mapper {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + editMode)).disabled = true;
         (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
+        (<HTMLButtonElement>document.getElementById("autotilePickerVue")).hidden = isEditEvents;
         (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
     };
     

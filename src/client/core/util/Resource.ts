@@ -132,13 +132,19 @@ export namespace Resource {
             case ResourceType.SKIN:
             case ResourceType.TILE:
             case ResourceType.PICTURE:
-                // Load image file
-                let image = new Image();
-                image.onload = function() {
-                    resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+                // Try to load from cache
+                let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
+                if (image !== undefined) {
                     callback(image);
-                };
-                image.src = path;
+                } else {
+                    // Load image file
+                    let image = new Image();
+                    image.onload = function() {
+                        resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+                        callback(image);
+                    };
+                    image.src = path;
+                }
                 break;
             case ResourceType.AUTOTILESET:
             case ResourceType.MAP:
@@ -158,11 +164,11 @@ export namespace Resource {
     }
 
     /**
-     * Return an already loaded asset
+     * Return an already loaded asset (sync method)
      */
-    export function loadImageFromCache(file: string, assetType: ResourceType) {
+    export function loadImageFromCache(file: string, assetType: ResourceType): HTMLImageElement | undefined {
         let image = resourceCache.get(assetType + CACHE_SEPARATOR + file);
-        if (Utils.isEmpty(image)) {
+        if (image === undefined) {
             load(file, assetType, function(image?: HTMLImageElement | string) {
                 if(image === undefined || typeof image === "string") {
                     console.error("Error while reading image: " + file);

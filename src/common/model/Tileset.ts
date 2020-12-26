@@ -3,9 +3,7 @@
  */
 export interface ITileset {
     // Persistent data
-    firstgid: number; //GID corresponding to the first tile in the set
     image: string; //Image used for tiles in this set (also used as key)
-    autotiles?: IAutoTileset[]; //Array of Terrains (optional)
     blocks: number[]; //Array of codes representing the block attributes
     onTop: number[]; //Array of z-index for over-the-event positioning
     
@@ -25,5 +23,6 @@ export interface IAutoTileset {
 
     // Transient data
     imageData?: HTMLImageElement; //Image loaded as data
+    selected?:boolean; //True when this autotileset is selected in AutotilePicker
     //TODO: pre-render everything as transient data
 };
