@@ -1,5 +1,5 @@
 import { IMap } from "../common/model/Map";
-import { ITileset } from "../common/model/Tileset";
+import { IAutoTileset, ITileset } from "../common/model/Tileset";
 import { ISave, IConfig } from "../common/model/Save";
 import { IEvent, IEventState } from "../common/model/Event";
 import { ActionTriggerEnum, DirectionEnum } from "./Commons"
@@ -75,6 +75,13 @@ export namespace DataDefaults {
             image: "002-Woods01.png",
             blocks: [],
             onTop: []
+        };
+    }
+
+    export function getAutoTileset(): IAutoTileset {
+        return {
+            image: "001-G_Water01.png",
+            blocked: false
         };
     }
 

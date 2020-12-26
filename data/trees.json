@@ -18,6 +18,20 @@
       },
       "children": [
         {
+          "id": "3",
+          "text": "Casa",
+          "icon": true,
+          "li_attr": {
+            "id": "3"
+          },
+          "a_attr": {
+            "href": "#",
+            "id": "j1_3_anchor"
+          },
+          "data": {},
+          "children": []
+        },
+        {
           "id": "1",
           "text": "Bosco",
           "icon": true,

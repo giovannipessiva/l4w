@@ -34,5 +34,8 @@
     "E0M": "Do you have any work for me?",
     "E1M": "Please hide me, a big giant is coming to get me!",
     "E2M": "How much for a pig?"
+  },
+  "D3": {
+    "N0M": "Hello dear"
   }
 }

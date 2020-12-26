@@ -15,7 +15,7 @@ import { DataDefaults } from "../common/DataDefaults"
 import { gameConfig } from "../common/GameConfig"
 import { IDialogNode, IDialogEdge, IGenericMessage } from "../common/model/Dialog";
 import { IMap } from "../common/model/Map";
-import { ITileset } from "../common/model/Tileset";
+import { IAutoTileset, ITileset } from "../common/model/Tileset";
 import { enumFromValue, Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
@@ -49,6 +49,10 @@ export namespace database {
         value: ITileset;
     };
 
+    type autotilesetSchemaType = {
+        value: IAutoTileset;
+    };
+
     type genericMessageSchemaType = {
         id: number;
         value: IGenericMessage;
@@ -69,6 +73,7 @@ export namespace database {
         maps: LowdbModule.LowdbSync<mapSchemaType>;
         trees: LowdbModule.LowdbSync<treeSchemaType>;
         tilesets: LowdbModule.LowdbSync<tilesetSchemaType>;
+        autotiles: LowdbModule.LowdbSync<autotilesetSchemaType>;
         genericMessages: LowdbModule.LowdbSync<genericMessageSchemaType>;
         langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
     };
@@ -114,6 +119,7 @@ export namespace database {
                 maps: lowdb(new fileSync("data/maps.json")),
                 trees: lowdb(new fileSync("data/trees.json")),
                 tilesets: lowdb(new fileSync("data/tilesets.json")),
+                autotiles: lowdb(new fileSync("data/autotilesets.json")),
                 genericMessages: lowdb(new fileSync("data/dynmsgs.json")),
                 langs: new Map<string, LowdbModule.LowdbSync<stringsSchemaType>>()
             };
@@ -178,15 +184,25 @@ export namespace database {
                 response.json(tree);
                 break;
             case ResourceType.TILESET:
-                let tile: ITileset = gameData.tilesets.get("tilesets")
+                let tileset: ITileset = gameData.tilesets.get("tilesets")
                     ["find"]({image: file})
                     .value();
-                if (tile === undefined) {
+                if (tileset === undefined) {
                     console.log("Tileset \""+ file + "\" not found, returning default");
-                    tile = DataDefaults.getTileset();
-                    tile.image = file;
+                    tileset = DataDefaults.getTileset();
+                    tileset.image = file;
                 }
-                response.json(tile);
+                response.json(tileset);
+                break;
+            case ResourceType.AUTOTILESET:
+                let autotileset: IAutoTileset[] = gameData.tilesets.get("autotilesets")
+                    ["find"]({})
+                    .value();
+                if (autotileset === undefined) {
+                    // No autotileset data found, return empty array
+                    autotileset = [];
+                }
+                response.json(autotileset);
                 break;
             case ResourceType.STRING:
                 let value = getString(langVal, GLOBAL_GROUP_ID, file);
@@ -274,6 +290,20 @@ export namespace database {
                         ["push"]({
                             id: file,
                             value: newTileset
+                        })
+                }
+                response.status(HttpStatus.OK).send("");
+                break;
+            case ResourceType.AUTOTILESET:
+                let oldAutoTileset = gameData.tilesets.get("autotilesets")
+                    ["find"]({})
+                let autoTileset: IAutoTileset[] = JSON.parse(data);
+                if (oldAutoTileset.value() !== undefined) {
+                    oldAutoTileset.assign(autoTileset).write();
+                } else {
+                    gameData.maps.get("autotilesets")
+                        ["push"]({
+                            value: autoTileset
                         })
                 }
                 response.status(HttpStatus.OK).send("");

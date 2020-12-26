@@ -18,24 +18,26 @@ export enum HttpResponseHeader {
 
 export enum ResourceType {
     // Assets (graphic/audio resources)
+    AUTOTILE = "autotile",
     CHAR = "charset",
     FACE = "faceset",
     FAVICON = "favicon",
     SKIN = "skin",
     TILE = "tile",
-    TILESET = "tileset",
     PICTURE = "picture",
     POINTER = "pointer",
 
     // Static data (game data that cannot change during gameplay)
+    AUTOTILESET = "autotileset",
     MAP = "map",
     TREE = "tree",
     STRING = "string",
+    TILESET = "tileset",
     DIALOG = "dialog",
     GENERIC_MESSAGE = "generic-message",
     CONFIGURATION = "configuration",
 
-    // Dynamic data (user data that can change during gameplay)
+    // Dynamic data (user-bound data that can change during gameplay)
     SAVE = "save"
 }
 

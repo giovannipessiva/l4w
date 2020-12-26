@@ -19,4 +19,20 @@ export class Transports extends AbstractScript {
         });
         this.hero.movementDirection = DirectionEnum.UP;
     };
+
+    public farmOutsideHouse(): void {
+        this.goToMap("0", {
+            i: 13,
+            j: 16
+        });
+        this.hero.movementDirection = DirectionEnum.DOWN;
+    };
+
+    public house(): void {
+        this.goToMap("3", {
+            i: 13,
+            j: 12
+        });
+        this.hero.movementDirection = DirectionEnum.DOWN;
+    };
 };

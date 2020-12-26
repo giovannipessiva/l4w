@@ -117,7 +117,6 @@ export namespace Resource {
     export function load(file: string, assetType: ResourceType, callback: { (response?: HTMLImageElement | string): void }, lang?: LanguageEnum) {
         if (Utils.isEmpty(file)) {
             console.error("Trying to load empty file!");
-            console.trace();
         }
         let path = getResourcePath(file, assetType);
         if(path === undefined) {
@@ -127,6 +126,7 @@ export namespace Resource {
         }
 
         switch (assetType) {
+            case ResourceType.AUTOTILE:
             case ResourceType.CHAR:
             case ResourceType.FACE:
             case ResourceType.SKIN:
@@ -140,6 +140,7 @@ export namespace Resource {
                 };
                 image.src = path;
                 break;
+            case ResourceType.AUTOTILESET:
             case ResourceType.MAP:
             case ResourceType.SAVE:
             case ResourceType.STRING:
@@ -204,6 +205,7 @@ export namespace Resource {
             case ResourceType.SKIN:
             case ResourceType.PICTURE:
             case ResourceType.TILE:
+            case ResourceType.AUTOTILE:
                 path = ASSET_PATH;
                 break;
             case ResourceType.MAP:
@@ -212,6 +214,7 @@ export namespace Resource {
             case ResourceType.DIALOG:
             case ResourceType.GENERIC_MESSAGE:
             case ResourceType.TILESET:
+            case ResourceType.AUTOTILESET:
                 path = DATA_PATH;
                 break;
             default:

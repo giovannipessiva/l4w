@@ -10,6 +10,7 @@ module.exports = function(mode) {
 		entry: {
 			game: "./src/client/game/Game.ts",
 			mapper: "./src/client/tool/mapper/MapperPage.ts",
+			autotiler: "./src/client/tool/autotiler/AutotilerPage.ts",
 			tilesetter: "./src/client/tool/tilesetter/TilesetterPage.ts",
 			tester: "./src/client/tool/test/Tester.ts"
 		},

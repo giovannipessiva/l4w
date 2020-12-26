@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>L4W autotile editor</title>
+	<meta name='viewport' content='width=device-width, initial-scale=0.7, user-scalable=yes'/>
+	<link rel='icon' href='../style/favicon/edit.ico' />
+
+	<meta name="theme-color" content="#ffffff">
+
+	<script src="../lib/require.min.js"></script>
+	<script type='text/javascript'>
+		var base_path = "../";
+		let isDevEnv = () => { return location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.hostname === ""; }
+
+		if(isDevEnv()) {
+			// Enable offline local development by using local files instead of CDNs
+			requirejs([base_path + "lib/jquery3.min"],function($){
+				requirejs([base_path + "js/l4w-autotiler.min"],function(l4w){
+					finishedLoading();
+				});
+			});
+		} else {
+			//TODO check Sub Resource Integrity
+			requirejs(["https://code.jquery.com/jquery-3.4.1.min.js"],function($){
+				requirejs([base_path + "js/l4w-autotiler.min"],function(l4w){
+					finishedLoading();
+				});
+			});
+		}
+
+		function finishedLoading(){
+			if(L4W_autotiler !== undefined) {
+				L4W_autotiler.AutotilerPage.start();
+			} else {
+				console.warn("Stilla waiting");
+				setTimeout(finishedLoading, 500);
+			}
+			document.getElementById("footer").style.visibility = "visible";
+		};
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="../style/l4w.css">
+</head>
+<body>
+	<div style="position:fixed;top:10px;left:10px;overflow-y:scroll;height:100%;width:100%">
+		
+		<div id="autotileEditorVue">
+			<autotile-editor/>
+		</div>
+		
+		<div id="footer" class="footer">
+			Game: <a href="/">/</a><br/>
+			Editors: <a href="/edit">/edit</a><br/>
+			Test: <a href="/test">/test</a><br/>
+			Commands: <a href="https://github.com/giovannipessiva/l4w/wiki/Editors">https://github.com/giovannipessiva/l4w/wiki/Editors</a><br/>
+			Source code: <a href="https://github.com/giovannipessiva/l4w">https://github.com/giovannipessiva/l4w</a>
+		</div>
+	</div>
+
+</body>
+</html>
