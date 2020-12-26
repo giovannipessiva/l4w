@@ -1,1 +1,20 @@
-{}
+{
+  "autotilesets": [
+    {
+      "image": "001-G_Water01.png",
+      "blocked": true
+    },
+    {
+      "image": "002-G_Shadow01.png",
+      "blocked": false
+    },
+    {
+      "image": "003-G_Ground01.png",
+      "blocked": false
+    },
+    {
+      "image": "004-G_Ground02.png",
+      "blocked": false
+    }
+  ]
+}

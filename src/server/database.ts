@@ -50,9 +50,10 @@ export namespace database {
     };
 
     type autotilesetSchemaType = {
-        value: IAutoTileset;
+        id: number;
+        value: IAutoTileset[];
     };
-
+    
     type genericMessageSchemaType = {
         id: number;
         value: IGenericMessage;
@@ -73,7 +74,7 @@ export namespace database {
         maps: LowdbModule.LowdbSync<mapSchemaType>;
         trees: LowdbModule.LowdbSync<treeSchemaType>;
         tilesets: LowdbModule.LowdbSync<tilesetSchemaType>;
-        autotiles: LowdbModule.LowdbSync<autotilesetSchemaType>;
+        autotileset: LowdbModule.LowdbSync<autotilesetSchemaType>;
         genericMessages: LowdbModule.LowdbSync<genericMessageSchemaType>;
         langs: Map<string, LowdbModule.LowdbSync<stringsSchemaType>>;
     };
@@ -119,7 +120,7 @@ export namespace database {
                 maps: lowdb(new fileSync("data/maps.json")),
                 trees: lowdb(new fileSync("data/trees.json")),
                 tilesets: lowdb(new fileSync("data/tilesets.json")),
-                autotiles: lowdb(new fileSync("data/autotilesets.json")),
+                autotileset: lowdb(new fileSync("data/autotilesets.json")),
                 genericMessages: lowdb(new fileSync("data/dynmsgs.json")),
                 langs: new Map<string, LowdbModule.LowdbSync<stringsSchemaType>>()
             };
@@ -195,9 +196,7 @@ export namespace database {
                 response.json(tileset);
                 break;
             case ResourceType.AUTOTILESET:
-                let autotileset: IAutoTileset[] = gameData.tilesets.get("autotilesets")
-                    ["find"]({})
-                    .value();
+                let autotileset: IAutoTileset[] = gameData.autotileset.get("autotilesets").value();
                 if (autotileset === undefined) {
                     // No autotileset data found, return empty array
                     autotileset = [];
@@ -281,12 +280,12 @@ export namespace database {
                 break;
             case ResourceType.TILESET:
                 let oldTileset = gameData.tilesets.get("tilesets")
-                    ["find"]({image: file})
+                    ["find"]({image: file});
                 let newTileset: IMap = JSON.parse(data);
                 if (oldTileset.value() !== undefined) {
                     oldTileset.assign(newTileset).write();
                 } else {
-                    gameData.maps.get("tilesets")
+                    gameData.tilesets.get("tilesets")
                         ["push"]({
                             id: file,
                             value: newTileset
@@ -295,17 +294,8 @@ export namespace database {
                 response.status(HttpStatus.OK).send("");
                 break;
             case ResourceType.AUTOTILESET:
-                let oldAutoTileset = gameData.tilesets.get("autotilesets")
-                    ["find"]({})
-                let autoTileset: IAutoTileset[] = JSON.parse(data);
-                if (oldAutoTileset.value() !== undefined) {
-                    oldAutoTileset.assign(autoTileset).write();
-                } else {
-                    gameData.maps.get("autotilesets")
-                        ["push"]({
-                            value: autoTileset
-                        })
-                }
+                let autoTilesets: IAutoTileset[] = JSON.parse(data);
+                gameData.autotileset.set("autotilesets", autoTilesets).write();
                 response.status(HttpStatus.OK).send("");
                 break;
             case ResourceType.STRING:

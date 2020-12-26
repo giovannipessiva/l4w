@@ -16,7 +16,8 @@
         <div class="warning">{{ warning }}</div>
 
         <div class="autotile" v-for="autotileset in autotilesets" v-bind:key="autotileset.image">
-            Blocked <input type="checkbox" v-bind="autotileset.blocked" v-on:click="modified = true;" /><br>
+            <label for="checkbox">Blocked</label>
+            <input type="checkbox" id="checkbox" v-model="autotileset.blocked" v-on:click="modified = true;" /><br>
             <img :src="'../assets/autotile/' + autotileset.image" /><br>
             <i>{{ autotileset.image }}</i>
         </div>
@@ -62,7 +63,7 @@ export default Vue.extend({
                     this.warning = "No autotile asset available";
                 } else {
                     // Initialize IAutotiles array
-                    this.autotilesets = [];
+                    Vue.set(this, "autotilesets",  new Array());
                     for(let autotileImage of autotileImages) {
                         this.autotilesets.push({
                             image: autotileImage,
@@ -70,14 +71,13 @@ export default Vue.extend({
                         });
                     }
                     // Load autotiles data
-                    Resource.load("-", ResourceType.AUTOTILESET, (response) => {
+                    Resource.load("autotilesets", ResourceType.AUTOTILESET, (response) => {
                         if(response === undefined || typeof response !== "string") {
                             console.warn("Non parsable autotileset data: " + response);
                             return;
                         }
                         let autotilesetsData: IAutoTileset[] = JSON.parse(response);
                         for(let autotileset of this.autotilesets) {
-                            autotileset.blocked = false;
                             for(let autotilesetData of autotilesetsData) {
                                 if(autotilesetData.image === autotileset.image) {
                                     // Restore data
@@ -92,7 +92,7 @@ export default Vue.extend({
             });
         },
         save() {
-            Resource.save("-", JSON.stringify(this.$data.autotilesets), ResourceType.AUTOTILESET, (response, result) => {
+            Resource.save("autotilesets", JSON.stringify(this.$data.autotilesets), ResourceType.AUTOTILESET, (response, result) => {
                 if(result) {
                     this.changeEditState(false);
                 } else {
