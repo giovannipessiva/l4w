@@ -7,6 +7,7 @@ import { StaticGrid } from "../StaticGrid"
 import { GridTypeEnum } from "../../core/AbstractGrid"
 import { ResourceType, Tree } from "../../../common/Constants";
 import { Utils } from "../../../common/Utils"
+import { MapperPage } from "./MapperPage"
 
 export namespace TilePicker {
 
@@ -68,6 +69,7 @@ export namespace TilePicker {
             emptyFz,
             function(i, j, x, y, mouseButton) {
                 // Start action
+                MapperPage.onCancelAutotileSelection();
                 if (Utils.isEmpty(mouseButton) || mouseButton === Input.MouseButtons.LEFT) {
                     tilePicker.select(i, j);
                 }

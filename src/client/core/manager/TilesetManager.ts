@@ -3,6 +3,7 @@ import { Resource } from "../util/Resource"
 import { Errors } from "../util/Errors"
 import { ResourceType } from "../../../common/Constants";
 import { Utils } from "../../../common/Utils";
+import { AbstractGrid } from "../AbstractGrid";
 
 /**
  * Helper class for handling tilesets and autotile
@@ -33,10 +34,15 @@ export namespace TilesetManager {
         });
     }
     
-    export function initTransientData(tileset: ITileset) {
+    export function initTransientData(tileset: ITileset, grid: AbstractGrid) {
         if(tileset.imageData !== undefined) {
             tileset.imageWidth = tileset.imageData.width;
             tileset.imageHeight = tileset.imageData.height;
+            let cell = grid.mapPositionToGrid({
+                x: tileset.imageWidth,
+                y: tileset.imageHeight
+            })
+            tileset.maxGID = cell.i * cell.j - 1;
         }
     }
 }

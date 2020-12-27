@@ -351,7 +351,7 @@ export namespace MapManager {
             hero = scene.hero;    
         }
 
-        TilesetManager.initTransientData(map.tileset);
+        TilesetManager.initTransientData(map.tileset, grid);
         
         loadBlocks(map);
         loadDynamicBlocks(hero, map);

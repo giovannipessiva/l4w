@@ -251,4 +251,8 @@ export namespace Mapper {
         }
         return true;
     }
+
+    export function onAutotileSelection(imageName?: string): void {
+        mapper.autotileSelected = imageName;
+    }
 }

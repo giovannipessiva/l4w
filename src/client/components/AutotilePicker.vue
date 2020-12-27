@@ -13,6 +13,7 @@ import { DataDefaults } from "../../common/DataDefaults";
 import { Resource } from "../core/util/Resource";
 import { ResourceType } from "../../common/Constants";
 import { TilePicker } from "../tool/mapper/TilePicker";
+import { Mapper } from "../tool/mapper/Mapper";
 
 export default Vue.extend({
     name: "autotile-picker",
@@ -24,6 +25,9 @@ export default Vue.extend({
         };
     },
     mounted: function() {
+        // Register custom event listener
+        this.$root.$on("cancel-selection", this.cancelSelection)
+
         // Load autotiles
         Resource.listResources(ResourceType.AUTOTILE, (autotileImages) => {
             if(autotileImages !== undefined && autotileImages.length > 0) {
@@ -45,6 +49,14 @@ export default Vue.extend({
                 let selected = at.image === autotile.image;
                 Vue.set(at, "selected", selected);
             }
+            Mapper.onAutotileSelection(autotile.image);
+        },
+        cancelSelection() {
+            TilePicker.cancelSelection();
+            for(let at of this.autotiles) {
+                Vue.set(at, "selected", false);
+            }
+            Mapper.onAutotileSelection(undefined);
         }
     }
 });

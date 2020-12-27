@@ -60,6 +60,7 @@ export namespace MapperPage {
         nodeIds: number[];
         edgeIds: number[];
     }, object, object, Record<never, any>>;
+    let autotilePicker: CombinedVueInstance<Vue, {}, object, object, Record<never, any>>;
 
     const scaleOptions: string[] = [
         "Very low",
@@ -85,7 +86,7 @@ export namespace MapperPage {
             }
         });
 
-        new Vue({
+        autotilePicker = new Vue({
             el: "#autotilePickerVue",
             components: {
                 "autotile-picker": AutotilePickerComponent,
@@ -881,5 +882,9 @@ export namespace MapperPage {
 
     export function listEventStateConditions() {
         return Resource.listEventStateConditions();
+    }
+   
+    export function onCancelAutotileSelection(): void {
+        autotilePicker.$emit("cancel-selection");
     }
 }

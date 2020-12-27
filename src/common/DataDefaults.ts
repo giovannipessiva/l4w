@@ -63,7 +63,6 @@ export namespace DataDefaults {
                     x: 0,
                     y: 0
                 }],
-            nextobjectid: 2,
             tileset: getTileset(),
             events: []
         };
