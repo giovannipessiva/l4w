@@ -38,11 +38,11 @@ export namespace TilesetManager {
         if(tileset.imageData !== undefined) {
             tileset.imageWidth = tileset.imageData.width;
             tileset.imageHeight = tileset.imageData.height;
-            let cell = grid.mapPositionToGrid({
+            let cell = grid.mapCanvasToCell({
                 x: tileset.imageWidth,
                 y: tileset.imageHeight
             })
-            tileset.maxGID = cell.i * cell.j - 1;
+            tileset.maxGID = (cell.i * cell.j) - 1;
         }
     }
 }

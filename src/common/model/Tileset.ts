@@ -11,7 +11,7 @@ export interface ITileset {
     imageData?: HTMLImageElement; //Image loaded as data
     imageWidth?: number; //Width of source image in pixels
     imageHeight?: number; //Height of source image in pixels
-    maxGID?: number;
+    maxGID: number; // Calculated for optimization, = columns * rows -1 
 };
 
 /**

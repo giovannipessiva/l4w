@@ -321,7 +321,7 @@ export abstract class AbstractScene {
             for (let j = minRow; j <= maxRow; j++) {
                 for (let i = minColumn; i <= maxColumn; i++) {
                     
-                    let cellIndex = ClientUtils.cellToGid({i:i,j:j},map.width);
+                    let cellIndex = ClientUtils.cellToGid({i:i, j:j}, map.width);
                     
                     for (let layerIndex = Constant.MapLayer.LOW; layerIndex <= Constant.MapLayer.TOP; layerIndex++) { 
 
@@ -329,23 +329,48 @@ export abstract class AbstractScene {
                         if (layer === undefined || layer.data === undefined || layer.data.length < cellIndex) {
                             continue;
                         }
-                        let tileGID = layer.data[cellIndex];
-                        if (Utils.isEmpty(tileGID)) {
+                        let gid = layer.data[cellIndex];
+                        if (gid === null || gid === undefined) {
                             continue;
                         }
-                        // Check if it is the right time to render cell(i,j_real) (based on its z-index)
-                        let zindex = Constant.ZIndex.LV0;
-                        if(map.tileset.onTop !== undefined) {
-                            zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[tileGID!]);
-                        }
-                        if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
-                            this.applyLayerCustomizations(layerIndex);
-                            if (!Utils.isEmpty(layer.opacity)) {
-                                context.globalAlpha = layer.opacity!;
+                        if(gid <= map.tileset.maxGID) {
+                            // Render from tileset
+                            // Check if it is the right time to render cell(i,j_real) (based on its z-index)
+                            let zindex = Constant.ZIndex.LV0;
+                            if(map.tileset.onTop !== undefined) {
+                                zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[gid]);
                             }
-                            this.renderCell(context, map.tileset, tileGID!, i, j);
-                            context.globalAlpha = 1;
-                            this.removeLayerCustomizations(layerIndex);
+                            if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
+                                this.applyLayerCustomizations(layerIndex);
+                                if (!Utils.isEmpty(layer.opacity)) {
+                                    context.globalAlpha = layer.opacity!;
+                                }
+                                this.renderCell(context, map.tileset, gid, i, j);
+                                context.globalAlpha = 1;
+                                this.removeLayerCustomizations(layerIndex);
+                            }
+                        } else {
+                            // Render from autotileset
+                            let autotile;
+                            if(map.autotilesets !== undefined) {
+                                autotile = map.autotilesets.get(gid);
+                            }
+                            if(autotile === undefined) {
+                                console.warn("Autotile gid not set in map: " + gid);
+                                continue;
+                            }
+                            if(autotile.imageData === undefined) {
+                                autotile.imageData = Resource.loadImageFromCache(autotile.image, ResourceType.AUTOTILE);
+                            }
+                            if(autotile.imageData !== undefined) {
+                                this.applyLayerCustomizations(layerIndex);
+                                if (!Utils.isEmpty(layer.opacity)) {
+                                    context.globalAlpha = layer.opacity!;
+                                }
+                                this.renderAutotile(context, autotile.imageData, gid, i, j);
+                                context.globalAlpha = 1;
+                                this.removeLayerCustomizations(layerIndex);
+                            }
                         }
                     }
                     // Render UI base
@@ -416,6 +441,19 @@ export abstract class AbstractScene {
         context.drawImage(
             tileset.imageData!,
             Math.floor(tileCell.i * this.grid.cellW), Math.floor(tileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,
+            Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
+    }
+
+    private renderAutotile(context: CanvasRenderingContext2D, autotile: HTMLImageElement, tileGID: number, i: number, j: number): void {  
+        let autotileCell = {
+            i: 1,
+            j: 2
+        };
+        //TODO autotile rendering
+        //TODO animated autotile rendering
+        context.drawImage(
+            autotile,
+            Math.floor(autotileCell.i * this.grid.cellW), Math.floor(autotileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,
             Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }
     

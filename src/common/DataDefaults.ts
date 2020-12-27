@@ -72,7 +72,8 @@ export namespace DataDefaults {
         return  {
             image: "002-Woods01.png",
             blocks: [],
-            onTop: []
+            onTop: [],
+            maxGID: 199
         };
     }
 

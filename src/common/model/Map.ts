@@ -14,7 +14,6 @@ export interface IMap {
     height: number; //Number of tile rows
     layers: IMapLayer[]; //Array of Layers
     events: IEvent[]; //Events
-    nextobjectid: number; //Auto-increments for each placed
     tileset: ITileset; //Tileset object for this map
     autotilesets?: Map<number, IAutoTileset>; //Contains all the Autotilesets used in this map, with theirs gid (optional)
 
@@ -33,7 +32,7 @@ export interface IMapLayer {
     type: "tilelayer" | "imagelayer"; //TODO implement "imagelayer"
     x?: number; //Horizontal layer offset.
     y?: number; //Vertical layer offset.
-    data?: (number | undefined)[]; //Array of GIDs. tilelayer only.
+    data?: (number | null)[]; //Array of GIDs. tilelayer only.
     image?: string; //Image name. imagelayer only.
     opacity?: number; //Value between 0 and 1
     speedX?: number;

@@ -235,13 +235,13 @@ export namespace MapManager {
         }
         let referenceIndex: number = Math.min(oldWidth, newWidth);
         let removedColumns: number | undefined;
-        let newColumns: undefined[] | undefined;
+        let newColumns: null[] | undefined;
         if (newWidth < oldWidth) {
             removedColumns = oldWidth - newWidth;
         } else {
             newColumns = [];
             for (let n = 0; n < newWidth - oldWidth; n++) {
-                newColumns[n] = undefined;
+                newColumns[n] = null;
             }
         }
 
@@ -301,13 +301,13 @@ export namespace MapManager {
         let newColumns = [];
         if(i > 0) {
             for (let n = 0; n < i; n++) {
-                newColumns[n] = undefined;
+                newColumns[n] = null;
             }
         }
         let emptyRow = [];
         if(j > 0) {
             for (let n = 0; n < map.width; n++) {
-                emptyRow[n] = undefined;
+                emptyRow[n] = null;
             }
         }
         for (let l = 0; l < map.layers.length; l++) {
@@ -386,7 +386,7 @@ export namespace MapManager {
                     for (let gid = 0; gid < layer.data!.length; gid++) { 
                         let tileCell = layer.data[gid];
                         // Ignore invalid cells
-                        if (Utils.isEmpty(tileCell) || tileCell! < 0 || tileCell! >= map.tileset.blocks.length) {   
+                        if (tileCell === null || tileCell! < 0 || tileCell! >= map.tileset.blocks.length) {   
                             continue;
                         }
                         // Ignore cells onTop
