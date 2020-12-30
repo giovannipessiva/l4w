@@ -54,6 +54,10 @@ export const enum SelectionAreaEnum {
     CENTER
 };
 
+/**
+ * Set of constants that can be summed in a single number
+ * to represent which of the four directions are blocked
+ */
 export class BlockDirection {
     static NONE: number = 0;
     static UP: number = Math.pow(2, 0);
@@ -63,6 +67,27 @@ export class BlockDirection {
     static ALL: number = BlockDirection.UP + BlockDirection.DOWN + BlockDirection.LEFT + BlockDirection.RIGHT;
 };
 
+/**
+ * Set of constants that can be summed in a single number
+ * to represent a boolean state for each of the 8 adiacent cells
+ */
+export class CardinalDirection {
+    static NONE: number = 0;
+    static N: number = Math.pow(2, 0);
+    static S: number = Math.pow(2, 1);
+    static W: number = Math.pow(2, 2);
+    static E: number = Math.pow(2, 3);
+    static NE: number = Math.pow(2, 4);
+    static SE: number = Math.pow(2, 5);
+    static SW: number = Math.pow(2, 6);
+    static NW: number = Math.pow(2, 7);
+    static ALL: number = Math.pow(2, 8) - 1;
+};
+export let CardinalDirections = [ CardinalDirection.N, CardinalDirection.NE, CardinalDirection.E, CardinalDirection.SE, CardinalDirection.S, CardinalDirection.SW, CardinalDirection.W, CardinalDirection.NW ];
+
+/**
+ * Types of action required in order to trigger an action
+ */
 export const enum ActionTriggerEnum {
     CLICK,
     TOUCH,

@@ -18,7 +18,7 @@ export class TilesetterScene extends AbstractTileScene {
         this.changeTileEditMode(tileEditMode);
 
         // Init the map for rendering blocks
-        this.map = DataDefaults.getEmptyMap("blocks");
+        this.map = DataDefaults.getEmptyMap();
         this.map.tileset = DataDefaults.getTileset();
         callback(this);
     }

@@ -33,7 +33,7 @@ export namespace Tester {
 
     export function testPathfinding(width: number, height: number, eventI: number, eventJ: number, targetI: number,targetJ: number,blocks: number[]): IPathfinderTestResult[] {  
         // Initialize map
-        let map = DataDefaults.getEmptyMap("Test");
+        let map = DataDefaults.getEmptyMap();
         map.width = width;
         map.height = height;
         map.blocks = blocks;

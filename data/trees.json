@@ -47,7 +47,22 @@
             "h": "20",
             "w": "30"
           },
-          "children": []
+          "children": [
+            {
+              "id": "4",
+              "text": "Test",
+              "icon": true,
+              "li_attr": {
+                "id": "4"
+              },
+              "a_attr": {
+                "href": "#",
+                "id": "4_anchor"
+              },
+              "data": {},
+              "children": []
+            }
+          ]
         }
       ]
     }

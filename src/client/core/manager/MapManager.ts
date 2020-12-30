@@ -3,8 +3,8 @@ import { RenderConfiguration } from "../util/Commons"
 import { ClientUtils } from "../util/ClientUtils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
-import { IMap, IVertex } from "../../../common/model/Map"
-import { BlockDirection, DirectionEnum, ICell, PathfinderEnum } from "../../../common/Commons"
+import { IMap, IMapLayer, IVertex } from "../../../common/model/Map"
+import { BlockDirection, CardinalDirection, CardinalDirections, DirectionEnum, ICell, ISize, PathfinderEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { AbstractGrid } from "../AbstractGrid"
 import { AbstractScene } from "../AbstractScene"
@@ -342,6 +342,9 @@ export namespace MapManager {
         }
     }
     
+    /**
+     * Will compute the value of every transient field in the Map object
+     */
     export function initTransientData(scene: AbstractScene) {
         let hero: IEvent | undefined = undefined;
         let map: IMap = scene.map;
@@ -353,6 +356,7 @@ export namespace MapManager {
 
         TilesetManager.initTransientData(map.tileset, grid);
         
+        loadAutotiles(map);
         loadBlocks(map);
         loadDynamicBlocks(hero, map);
         if(!Utils.isEmpty(map.events)) {
@@ -372,6 +376,43 @@ export namespace MapManager {
     }
 
     /**
+     * For every autotile cell, compute the value used for rendering
+     * and based on proximity to other cells of the same autotile
+     */
+    function loadAutotiles(map: IMap) {
+        for (let l = 0; l < map.layers.length; l++) {
+            let layer = map.layers[l];
+            if (layer.data !== undefined) {
+                layer.autotileData = [];
+                for (let gid = 0; gid < layer.data!.length; gid++) { 
+                    let tileCell = layer.data[gid];
+                    if(tileCell != null && tileCell > map.tileset.maxGID) {
+                        let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, tileCell, layer);
+                        layer.autotileData.push(proximityValue);
+                    } else {
+                        layer.autotileData.push(null);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Given a map cell, return a CardinalDirection value representing
+     * which proximal cells contains the same autotile
+     */
+    export function getAutotileProximityValue(gid: number, size: ISize, autotile: number, layer: IMapLayer): number {
+        let proximityValue = CardinalDirection.NONE;
+        for(let direction of CardinalDirections) {
+            let targetGID = ClientUtils.getTargetGID(gid, direction, size);
+            if(targetGID === undefined || layer.data![targetGID] === autotile) {
+                proximityValue |= direction;
+            }
+        }
+        return proximityValue;
+    }
+
+    /**
      * Read the block in every map layer, and save them in the map.block array
      */
     function loadBlocks(map: IMap) {
@@ -380,6 +421,8 @@ export namespace MapManager {
             for (let j = 0; j < map.height * map.width; j++) {
                 map.blocks[j] = 0;
             }
+            //TODO manage autotile blocks
+
             for (let l = 0; l < map.layers.length; l++) {
                 let layer = map.layers[l];
                 if (layer.data !== undefined) {

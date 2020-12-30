@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle, RelativeDirectionEnum } from "../../../common/Commons"
+import { ICell, IPoint, DirectionEnum, BlockDirection, SelectionAreaEnum, IRectangle, RelativeDirectionEnum, CardinalDirection, ISize } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { Constant } from "./Constant"
 import { Utils } from "../../../common/Utils";
@@ -324,5 +324,43 @@ export namespace ClientUtils {
             case SelectionAreaEnum.CENTER: return "\u25A3 center";
             default: return "  none";
         };
+    }
+
+    export function getTargetGID(start: number, direction: number, size: ISize): number | undefined {
+        let target = start;
+        switch (direction) {
+            case CardinalDirection.N:
+                target -= size.w;
+                break;
+            case CardinalDirection.S:
+                target += size.w;
+                break;
+            case CardinalDirection.W:
+                target -= 1;
+                break;
+            case CardinalDirection.E:
+                target += 1;
+                break;
+            case CardinalDirection.NE:
+                target -= size.w - 1;
+                break;
+            case CardinalDirection.SE:
+                target += size.w + 1;
+                break;
+            case CardinalDirection.SW:
+                target += size.w - 1;
+                break;
+            case CardinalDirection.NW:
+                target -= size.w + 1;
+                break;
+            default:
+                console.error("Unexpected case: " + direction);
+        };
+        if(target >= 0 && target < size.w * size.h) {
+            return target;
+        } else {
+            // This direction is out of the map
+            return undefined;
+        }
     }
 }

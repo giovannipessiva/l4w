@@ -27,18 +27,17 @@ export namespace DataDefaults {
         };
     }
 
-    export function getEmptyMap(name?: string) : IMap {
-        let map = getMap(name);
+    export function getEmptyMap() : IMap {
+        let map = getMap();
         for(let layer of map.layers) {
             layer.data = undefined;
         }
         return map;
     }    
 
-    export function getMap(name?: string) : IMap {
+    export function getMap() : IMap {
         return {
             id: Utils.getRandomString(),
-            name: name !== undefined? name : "Map",
             height: 20,
             width: 25,
             layers: [

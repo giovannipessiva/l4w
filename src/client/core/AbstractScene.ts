@@ -2,7 +2,7 @@ import { TilesetManager } from "./manager/TilesetManager"
 import { MapManager } from "./manager/MapManager"
 import {  } from "./AbstractGrid"
 import { IMap } from "../../common/model/Map"
-import { IPoint, ICell, DirectionEnum, IRectangle } from "../../common/Commons"
+import { IPoint, ICell, DirectionEnum, IRectangle, CardinalDirection } from "../../common/Commons"
 import { ITileset } from "../../common/model/Tileset"
 import { Constant } from "./util/Constant"
 import { RenderConfiguration } from "./util/Commons"
@@ -353,11 +353,15 @@ export abstract class AbstractScene {
                             // Render from autotileset
                             let autotile;
                             if(map.autotilesets !== undefined) {
-                                autotile = map.autotilesets.get(gid);
+                                autotile = map.autotilesets[gid];
                             }
                             if(autotile === undefined) {
                                 console.warn("Autotile gid not set in map: " + gid);
                                 continue;
+                            }
+                            let proximityValue = CardinalDirection.ALL; // Default
+                            if(layer.autotileData !== undefined && layer.autotileData[cellIndex] !== null) {
+                                proximityValue = layer.autotileData[cellIndex]!;
                             }
                             if(autotile.imageData === undefined) {
                                 autotile.imageData = Resource.loadImageFromCache(autotile.image, ResourceType.AUTOTILE);
@@ -367,7 +371,7 @@ export abstract class AbstractScene {
                                 if (!Utils.isEmpty(layer.opacity)) {
                                     context.globalAlpha = layer.opacity!;
                                 }
-                                this.renderAutotile(context, autotile.imageData, gid, i, j);
+                                this.renderAutotile(context, autotile.imageData, gid, proximityValue, { i: i, j: j});
                                 context.globalAlpha = 1;
                                 this.removeLayerCustomizations(layerIndex);
                             }
@@ -444,17 +448,64 @@ export abstract class AbstractScene {
             Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
     }
 
-    private renderAutotile(context: CanvasRenderingContext2D, autotile: HTMLImageElement, tileGID: number, i: number, j: number): void {  
-        let autotileCell = {
-            i: 1,
-            j: 2
-        };
+    private renderAutotile(context: CanvasRenderingContext2D, autotile: HTMLImageElement, tileGID: number, proximityValue: number, cell: ICell): void {  
+        let i, j;
+        switch(proximityValue) {
+            case CardinalDirection.NONE:
+                i = 0;
+                j = 0;
+                break;
+            case CardinalDirection.N | CardinalDirection.E | CardinalDirection.S | CardinalDirection.W: 
+                i = 2;
+                j = 0;
+                break;
+            case CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S:
+                i = 0;
+                j = 1;
+                break;
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE | CardinalDirection.E:
+                i = 1;
+                j = 1;
+                break;
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S:
+                i = 2;
+                j = 1;
+                break;
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S:
+                i = 0;
+                j = 2;
+                break;
+            case CardinalDirection.ALL:
+                i = 1;
+                j = 2;
+                break;
+            case CardinalDirection.N | CardinalDirection.NW | CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S:
+                i = 2;
+                j = 2;
+                break;
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E:
+                i = 0;
+                j = 3;
+                break;
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E:
+                i = 1;
+                j = 3;
+                break;
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N:
+                i = 2;
+                j = 3;
+                break;
+            default:
+                //TODO manage vertex
+                i = 1;
+                j = 2;
+        }
         //TODO autotile rendering
         //TODO animated autotile rendering
         context.drawImage(
             autotile,
-            Math.floor(autotileCell.i * this.grid.cellW), Math.floor(autotileCell.j * this.grid.cellH), this.grid.cellW, this.grid.cellH,
-            Math.floor(i * this.grid.cellW), Math.floor(j * this.grid.cellH), this.grid.cellW, this.grid.cellH);
+            i * this.grid.cellW, j * this.grid.cellH, this.grid.cellW, this.grid.cellH,
+            cell.i * this.grid.cellW, cell.j * this.grid.cellH, this.grid.cellW, this.grid.cellH);
     }
     
     protected abstract renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean): void;

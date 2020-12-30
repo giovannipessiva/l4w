@@ -138,9 +138,9 @@ export namespace Resource {
                     callback(image);
                 } else {
                     // Load image file
-                    let image = new Image();
+                    image = new Image();
                     image.onload = function() {
-                        resourceCache.set(assetType + CACHE_SEPARATOR + file, image);
+                        resourceCache.set(assetType + CACHE_SEPARATOR + file, image!);
                         callback(image);
                     };
                     image.src = path;

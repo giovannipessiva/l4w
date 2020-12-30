@@ -1,7 +1,7 @@
 import { AbstractStaticScene } from "../AbstractStaticScene"
 import { StaticGrid } from "../StaticGrid"
 import { Constant } from "../../core/util/Constant"
-import { IRectangle, ICell, ISize } from "../../../common/Commons"
+import { IRectangle, ICell, ISize, CardinalDirections } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { IMap } from "../../../common/model/Map"
 import { EventManager } from "../../core/manager/EventManager"
@@ -11,7 +11,7 @@ import { TilePickerScene } from "./TilePickerScene"
 import { AbstractScene } from "../../core/AbstractScene"
 import { Utils } from "../../../common/Utils"
 import { DataDefaults } from "../../../common/DataDefaults"
-import { IAutoTileset } from "../../../common/model/Tileset"
+import { ClientUtils } from "../../core/util/ClientUtils"
 
 /**
  * Scene implementation for managing Mapper logics
@@ -85,8 +85,9 @@ export class MapperScene extends AbstractStaticScene {
         let changed: boolean = false;
         let pickerArea: IRectangle | undefined = this.tilePicker.getSelectionArea();
         let changedCell: number = i_apply + j_apply * this.map.width;
-        if (Utils.isEmpty(this.map.layers[this.activeLayer].data)) {
-            this.map.layers[this.activeLayer].data = [];
+        let layer = this.map.layers[this.activeLayer];
+        if (Utils.isEmpty(layer.data)) {
+            layer.data = [];
         }
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
@@ -97,44 +98,58 @@ export class MapperScene extends AbstractStaticScene {
                     } else {
                         // Apply autotileset
                         if(this.map.autotilesets === undefined) {
-                            this.map.autotilesets = new Map<number, IAutoTileset>();
+                            this.map.autotilesets = {};
                         }
                         let maxGID = this.map.tileset.maxGID;
                         let autotileGID: number | undefined;
                         // Check if autotile is registered, otherwise assing a GID, then apply it to the layer
-                        for(let entry of this.map.autotilesets.entries()) {
+                        for(let entry of Object.entries(this.map.autotilesets)) {
+                            let tmp = parseInt(entry[0]);
                             if(entry[1].image === this.autotileSelected) {
-                                autotileGID = entry[0];
+                                autotileGID = tmp;
                                 break;
                             }
-                            if(entry[0] > maxGID) {
-                                maxGID = entry[0];
+                            if(tmp > maxGID) {
+                                maxGID = tmp;
                             }
+                        }
+                        if(layer.autotileData === undefined) {
+                            layer.autotileData = [];
                         }
                         if(autotileGID === undefined) {
                             autotileGID = maxGID + 1;
                             let autotile = DataDefaults.getAutoTileset();
                             autotile.image = this.autotileSelected;
-                            this.map.autotilesets.set(autotileGID, autotile);
+                            this.map.autotilesets[autotileGID + ""] = autotile;
                         }
                         // Apply autotile GID to map
-                        if (this.map.layers[this.activeLayer].data![changedCell] !== autotileGID) {
+                        if (layer.data![changedCell] !== autotileGID) {
                             changed = true;
-                            this.map.layers[this.activeLayer].data![changedCell] = autotileGID;
+                            layer.data![changedCell] = autotileGID;
+                            // Compute proximity value for rendering
+                            let size: ISize = { w: this.map.width, h: this.map.height };
+                            layer.autotileData[changedCell] = MapManager.getAutotileProximityValue(changedCell, size, autotileGID, layer);
+                            // Also check and update proximity value for neighbours
+                            for(let direction of CardinalDirections) {
+                                let neighbourCell = ClientUtils.getTargetGID(changedCell, direction, size,)
+                                if(neighbourCell !== undefined && layer.data![neighbourCell] === autotileGID) {
+                                    layer.autotileData[neighbourCell] = MapManager.getAutotileProximityValue(neighbourCell, size, autotileGID, layer);
+                                }
+                            }
                         }
                     }
                 } else {
                     // Apply tileset
-                    let tileColumns: number = Math.floor(this.map.tileset.imageWidth! / this.grid.cellW); //TODO questa non cambia mai, ottimizzabile
+                    let tileColumns: number = Math.floor(this.map.tileset.imageWidth! / this.grid.cellW);
                     let appliedTile: number = pickerArea.x + pickerArea.y * tileColumns;
                     for (let j = 0; j <= pickerArea.h; j++) {
                         for (let i = 0; i <= pickerArea.w; i++) {
                             if (i_apply + i < this.map.width) {
                                 let appliedTileOffset: number = i + j * tileColumns;
                                 let changedCellOffset: number = i + j * this.map.width;
-                                if (this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
+                                if (layer.data![changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
                                     changed = true;
-                                    this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
+                                    layer.data![changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
                                 }
                             }
                         }
@@ -151,9 +166,9 @@ export class MapperScene extends AbstractStaticScene {
                     for (let i = 0; i <= pickerArea.w; i++) {
                         if (i_apply + i < this.map.width) {
                             let changedCellOffset: number = i + j * this.map.width;
-                            if (this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] !== undefined) {
+                            if (layer.data![changedCell + changedCellOffset] !== undefined) {
                                 changed = true;
-                                this.map.layers[this.activeLayer].data![changedCell + changedCellOffset] = null;
+                                layer.data![changedCell + changedCellOffset] = null;
                             }
                         }
                     }
@@ -171,7 +186,7 @@ export class MapperScene extends AbstractStaticScene {
             default:
                 console.error("Unexpected case");
         }
-        //TODO gestisci trascinamento del picker
+        //TODO manage cursor dragging for selections > 1x1
         return changed;
     }
 
