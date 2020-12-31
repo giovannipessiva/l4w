@@ -10265,41 +10265,14 @@
       "layers": [
         {
           "data": [
-            0,
-            0,
             200,
+            0,
+            0,
             200
           ],
           "type": "tilelayer",
           "x": 0,
-          "y": 0,
-          "autotileData": [
-            null,
-            null,
-            0,
-            0
-          ]
-        },
-        {
-          "type": "tilelayer",
-          "x": 0,
-          "y": 0,
-          "data": [
-            null,
-            null,
-            null,
-            null,
-            0,
-            0
-          ],
-          "autotileData": [
-            null,
-            null,
-            0,
-            0,
-            null,
-            null
-          ]
+          "y": 0
         },
         {
           "type": "tilelayer",
@@ -10310,8 +10283,13 @@
             null,
             null,
             null
-          ],
-          "autotileData": [
+          ]
+        },
+        {
+          "type": "tilelayer",
+          "x": 0,
+          "y": 0,
+          "data": [
             null,
             null,
             null,
@@ -11482,6 +11460,10 @@
       "autotilesets": {
         "200": {
           "image": "001-G_Water01.png",
+          "blocked": false
+        },
+        "201": {
+          "image": "002-G_Shadow01.png",
           "blocked": false
         }
       }

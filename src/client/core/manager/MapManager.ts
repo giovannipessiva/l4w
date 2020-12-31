@@ -385,9 +385,8 @@ export namespace MapManager {
             if (layer.data !== undefined) {
                 layer.autotileData = [];
                 for (let gid = 0; gid < layer.data!.length; gid++) { 
-                    let tileCell = layer.data[gid];
-                    if(tileCell != null && tileCell > map.tileset.maxGID) {
-                        let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, tileCell, layer);
+                    if(MapManager.isThisAnAutotileCell(gid, layer, map)) {
+                        let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, layer.data[gid]!, layer);
                         layer.autotileData.push(proximityValue);
                     } else {
                         layer.autotileData.push(null);
@@ -905,6 +904,17 @@ export namespace MapManager {
                 console.debug("Path found in: " + time);
             }
             return direction;
+        }
+    }
+
+    /**
+     * Return whether the cell contains an autotile value
+     */
+    export function isThisAnAutotileCell(gid: number | undefined, layer: IMapLayer, map: IMap): boolean {
+        if(gid !== undefined && gid >= 0 && gid < map.width * map.height) {
+            return layer.data![gid]! > map.tileset.maxGID;
+        } else {
+            return false;
         }
     }
 }

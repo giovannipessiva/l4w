@@ -91,6 +91,8 @@ export class MapperScene extends AbstractStaticScene {
         }
         switch (this.editMode) {
             case Constant.EditMode.APPLY:
+                let isAutotileChanged = false;
+                let size: ISize = { w: this.map.width, h: this.map.height };
                 if (pickerArea === undefined) {
                     // Check if autotile is selected
                     if(this.autotileSelected === undefined) {
@@ -113,9 +115,6 @@ export class MapperScene extends AbstractStaticScene {
                                 maxGID = tmp;
                             }
                         }
-                        if(layer.autotileData === undefined) {
-                            layer.autotileData = [];
-                        }
                         if(autotileGID === undefined) {
                             autotileGID = maxGID + 1;
                             let autotile = DataDefaults.getAutoTileset();
@@ -125,17 +124,13 @@ export class MapperScene extends AbstractStaticScene {
                         // Apply autotile GID to map
                         if (layer.data![changedCell] !== autotileGID) {
                             changed = true;
+                            isAutotileChanged = true;
                             layer.data![changedCell] = autotileGID;
                             // Compute proximity value for rendering
-                            let size: ISize = { w: this.map.width, h: this.map.height };
-                            layer.autotileData[changedCell] = MapManager.getAutotileProximityValue(changedCell, size, autotileGID, layer);
-                            // Also check and update proximity value for neighbours
-                            for(let direction of CardinalDirections) {
-                                let neighbourCell = ClientUtils.getTargetGID(changedCell, direction, size,)
-                                if(neighbourCell !== undefined && layer.data![neighbourCell] === autotileGID) {
-                                    layer.autotileData[neighbourCell] = MapManager.getAutotileProximityValue(neighbourCell, size, autotileGID, layer);
-                                }
+                            if(layer.autotileData === undefined) {
+                                layer.autotileData = [];
                             }
+                            layer.autotileData[changedCell] = MapManager.getAutotileProximityValue(changedCell, size, autotileGID, layer);
                         }
                     }
                 } else {
@@ -149,9 +144,24 @@ export class MapperScene extends AbstractStaticScene {
                                 let changedCellOffset: number = i + j * this.map.width;
                                 if (layer.data![changedCell + changedCellOffset] !== appliedTile + appliedTileOffset) {
                                     changed = true;
+                                    if(MapManager.isThisAnAutotileCell(changedCell + changedCellOffset, layer, this.map)) {
+                                        isAutotileChanged = true;
+                                    }
                                     layer.data![changedCell + changedCellOffset] = appliedTile + appliedTileOffset;
                                 }
                             }
+                        }
+                    }
+                }
+                if(isAutotileChanged) {
+                    // Check and update proximity value for neighbours
+                    for(let direction of CardinalDirections) {
+                        let neighbourCell = ClientUtils.getTargetGID(changedCell, direction, size)
+                        if(MapManager.isThisAnAutotileCell(neighbourCell, layer, this.map)) {
+                            if(layer.autotileData === undefined) {
+                                layer.autotileData = [];
+                            }
+                            layer.autotileData[neighbourCell!] = MapManager.getAutotileProximityValue(neighbourCell!, size, layer.data![neighbourCell!]!, layer);
                         }
                     }
                 }

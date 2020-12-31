@@ -327,6 +327,21 @@ export namespace ClientUtils {
     }
 
     export function getTargetGID(start: number, direction: number, size: ISize): number | undefined {
+        // Check if the direction is out of lateral map borders
+        switch (direction) {
+            case CardinalDirection.W:
+            case CardinalDirection.SW:
+            case CardinalDirection.NW:
+                if(start % size.w === 0) {
+                    return undefined;
+                }
+            case CardinalDirection.E:
+            case CardinalDirection.NE:
+            case CardinalDirection.SE:
+                if(start % (size.w -1) === 0) {
+                    return undefined;
+                }
+        };
         let target = start;
         switch (direction) {
             case CardinalDirection.N:

@@ -329,23 +329,23 @@ export abstract class AbstractScene {
                         if (layer === undefined || layer.data === undefined || layer.data.length < cellIndex) {
                             continue;
                         }
-                        let gid = layer.data[cellIndex];
-                        if (gid === null || gid === undefined) {
+                        let gidData = layer.data[cellIndex];
+                        if (gidData === null || gidData === undefined) {
                             continue;
                         }
-                        if(gid <= map.tileset.maxGID) {
+                        if(!MapManager.isThisAnAutotileCell(cellIndex, layer, map)) {
                             // Render from tileset
                             // Check if it is the right time to render cell(i,j_real) (based on its z-index)
                             let zindex = Constant.ZIndex.LV0;
                             if(map.tileset.onTop !== undefined) {
-                                zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[gid]);
+                                zindex = ClientUtils.normalizeZIndex(map.tileset.onTop[gidData]);
                             }
                             if(zindex === Constant.ZIndex.LV0 || !renderOnTop) {
                                 this.applyLayerCustomizations(layerIndex);
                                 if (!Utils.isEmpty(layer.opacity)) {
                                     context.globalAlpha = layer.opacity!;
                                 }
-                                this.renderCell(context, map.tileset, gid, i, j);
+                                this.renderCell(context, map.tileset, gidData, i, j);
                                 context.globalAlpha = 1;
                                 this.removeLayerCustomizations(layerIndex);
                             }
@@ -353,10 +353,10 @@ export abstract class AbstractScene {
                             // Render from autotileset
                             let autotile;
                             if(map.autotilesets !== undefined) {
-                                autotile = map.autotilesets[gid];
+                                autotile = map.autotilesets[gidData];
                             }
                             if(autotile === undefined) {
-                                console.warn("Autotile gid not set in map: " + gid);
+                                console.warn("Autotile gid not set in map: " + gidData);
                                 continue;
                             }
                             let proximityValue = CardinalDirection.ALL; // Default
@@ -371,7 +371,7 @@ export abstract class AbstractScene {
                                 if (!Utils.isEmpty(layer.opacity)) {
                                     context.globalAlpha = layer.opacity!;
                                 }
-                                this.renderAutotile(context, autotile.imageData, gid, proximityValue, { i: i, j: j});
+                                this.renderAutotile(context, autotile.imageData, gidData, proximityValue, { i: i, j: j});
                                 context.globalAlpha = 1;
                                 this.removeLayerCustomizations(layerIndex);
                             }
