@@ -2,7 +2,7 @@ import { IMap } from "../common/model/Map";
 import { IAutoTileset, ITileset } from "../common/model/Tileset";
 import { ISave, IConfig } from "../common/model/Save";
 import { IEvent, IEventState } from "../common/model/Event";
-import { ActionTriggerEnum, DirectionEnum } from "./Commons"
+import { ActionTriggerEnum, DirectionEnum, ScaleEnum } from "./Commons"
 import { gameConfig } from "../common/GameConfig";
 import { ICharacter } from "./model/Character";
 import { IDialogNode, IDialogEdge } from "./model/Dialog";
@@ -80,7 +80,8 @@ export namespace DataDefaults {
         return {
             image: "001-G_Water01.png",
             blocked: false,
-            selected: false
+            selected: false,
+            frequency: ScaleEnum.MEDIUM
         };
     }
 

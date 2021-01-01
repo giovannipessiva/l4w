@@ -1,9 +1,12 @@
 import { LanguageEnum } from "./Commons"
 
-//TODO place in a yml file
+//TODO migrate values from l4w.properties
 /**
- * Contains game configuration values.
- * This should be customized according to the needs of the specific game
+ * Contains game configuration variables.
+ * This should be customized according to the needs of the specific game.
+ * 
+ * Having these constant values in the code instead of a resource file
+ * is preferrable in order to enable compiler optimizations.
  */
 export const gameConfig = {
     maps: {

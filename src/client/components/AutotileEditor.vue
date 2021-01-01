@@ -18,6 +18,15 @@
         <div class="autotile" v-for="autotileset in autotilesets" v-bind:key="autotileset.image">
             <label for="checkbox">Blocked</label>
             <input type="checkbox" id="checkbox" v-model="autotileset.blocked" v-on:click="modified = true;" /><br>
+            
+            <div v-if="autotileset.frequency === undefined">
+                <button v-on:click="animate(autotileset)">Animate</button>
+            </div>
+            <div v-else>
+                <label for="frequency">Animation speed</label>
+                <input type="range" id="frequency" v-model="autotileset.frequency" v-on:click="modified = true;" :min="minFrequency" :max="maxFrequency" step="1" /><br>
+            </div>
+
             <img :src="'../assets/autotile/' + autotileset.image" /><br>
             <i>{{ autotileset.image }}</i>
         </div>
@@ -32,6 +41,8 @@ import { DataDefaults } from "../../common/DataDefaults";
 import { ResourceType } from "../../common/Constants";
 import { IAutoTileset } from "../../common/model/Tileset"
 import { Resource } from "../core/util/Resource";
+import { ScaleEnum } from "../../common/Commons";
+
 import LoginComponent from "./Login.vue"
 
 export default Vue.extend({
@@ -43,13 +54,17 @@ export default Vue.extend({
         warning: string,
         autotilesets: IAutoTileset[],
         pageTitle: string,
-        modified: boolean
+        modified: boolean,
+        minFrequency: number,
+        maxFrequency: number
     } {
         return {
             warning: "",
             autotilesets: [ DataDefaults.getAutoTileset() ],
             pageTitle: document.title,
-            modified: false
+            modified: false,
+            minFrequency: ScaleEnum.VERY_LOW,
+            maxFrequency: ScaleEnum.VERY_HIGH
         };
     },
     mounted: function() {
@@ -82,6 +97,7 @@ export default Vue.extend({
                                 if(autotilesetData.image === autotileset.image) {
                                     // Restore data
                                     autotileset.blocked = autotilesetData.blocked;
+                                    autotileset.frequency = autotilesetData.frequency;
                                     break;
                                 }
                             }
@@ -107,6 +123,10 @@ export default Vue.extend({
                 document.title = this.pageTitle;
             }
             this.modified = modified;
+        },
+        animate(autotile: IAutoTileset) {
+            Vue.set(autotile, "frequency", ScaleEnum.MEDIUM);
+            this.changeEditState(true);
         }
     }
 })

@@ -2,7 +2,8 @@
   "autotilesets": [
     {
       "image": "001-G_Water01.png",
-      "blocked": true
+      "blocked": true,
+      "frequency": "3"
     },
     {
       "image": "002-G_Shadow01.png",
@@ -14,6 +15,14 @@
     },
     {
       "image": "004-G_Ground02.png",
+      "blocked": false
+    },
+    {
+      "image": "007-G_Undulation01.png",
+      "blocked": false
+    },
+    {
+      "image": "erba.png",
       "blocked": false
     }
   ]

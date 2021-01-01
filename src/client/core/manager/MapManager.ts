@@ -27,15 +27,6 @@ export namespace MapManager {
             } else {
                 try {
                     let map: IMap = JSON.parse(resourceText);
-                    // Populate transient data
-                    if(!Utils.isEmpty(map.events)) {
-                        map.maxEventId = 0;
-                        for(let evt of map.events) {
-                            if(evt.id > map.maxEventId) {
-                                map.maxEventId = evt.id;
-                            }
-                        }
-                    }
                     callback(map);
                 } catch (exception) {
                     if (exception.name === "SyntaxError") {
@@ -345,7 +336,7 @@ export namespace MapManager {
     /**
      * Will compute the value of every transient field in the Map object
      */
-    export function initTransientData(scene: AbstractScene) {
+    export async function initTransientData(scene: AbstractScene) {
         let hero: IEvent | undefined = undefined;
         let map: IMap = scene.map;
         let grid: AbstractGrid = scene.grid;
@@ -356,11 +347,16 @@ export namespace MapManager {
 
         TilesetManager.initTransientData(map.tileset, grid);
         
-        loadAutotiles(map);
+        await loadAutotiles(map);
         loadBlocks(map);
         loadDynamicBlocks(hero, map);
+
         if(!Utils.isEmpty(map.events)) {
+            map.maxEventId = 0;
             for(let event of map.events) {
+                if(event.id > map.maxEventId) {
+                    map.maxEventId = event.id;
+                }
                 EventManager.initTransientData(map, grid, <IEvent> event);    
             }
         } else {
@@ -375,21 +371,22 @@ export namespace MapManager {
         loadDynamicBlocks(hero, map);
     }
 
-    /**
-     * For every autotile cell, compute the value used for rendering
-     * and based on proximity to other cells of the same autotile
-     */
-    function loadAutotiles(map: IMap) {
-        for (let l = 0; l < map.layers.length; l++) {
-            let layer = map.layers[l];
-            if (layer.data !== undefined) {
-                layer.autotileData = [];
-                for (let gid = 0; gid < layer.data!.length; gid++) { 
-                    if(MapManager.isThisAnAutotileCell(gid, layer, map)) {
-                        let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, layer.data[gid]!, layer);
-                        layer.autotileData.push(proximityValue);
-                    } else {
-                        layer.autotileData.push(null);
+    async function loadAutotiles(map: IMap) {
+        if(!Utils.isEmpty(map.autotilesets)) {
+            await TilesetManager.initTransientDataAutotiles(Object.values(map.autotilesets!));
+            // For every autotile cell, compute the value used for rendering
+            // and based on proximity to other cells of the same autotile
+            for (let l = 0; l < map.layers.length; l++) {
+                let layer = map.layers[l];
+                if (layer.data !== undefined) {
+                    layer.autotileData = [];
+                    for (let gid = 0; gid < layer.data!.length; gid++) { 
+                        if(MapManager.isThisAnAutotileCell(gid, layer, map)) {
+                            let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, layer.data[gid]!, layer);
+                            layer.autotileData.push(proximityValue);
+                        } else {
+                            layer.autotileData.push(null);
+                        }
                     }
                 }
             }
@@ -420,23 +417,32 @@ export namespace MapManager {
             for (let j = 0; j < map.height * map.width; j++) {
                 map.blocks[j] = 0;
             }
-            //TODO manage autotile blocks
-
             for (let l = 0; l < map.layers.length; l++) {
                 let layer = map.layers[l];
                 if (layer.data !== undefined) {
                     for (let gid = 0; gid < layer.data!.length; gid++) { 
-                        let tileCell = layer.data[gid];
-                        // Ignore invalid cells
-                        if (tileCell === null || tileCell! < 0 || tileCell! >= map.tileset.blocks.length) {   
-                            continue;
+                        let blockValue;
+                        if(isThisAnAutotileCell(gid, layer, map)) {
+                            let autotileId = layer.data[gid]!;
+                            if(map.autotilesets === undefined || map.autotilesets[autotileId] === undefined) {
+                                console.warn("Autotile: " +  + " undefined for gid:" + gid + " in map: " + map.id);
+                            } else {
+                                blockValue = map.autotilesets[autotileId].blocked? BlockDirection.ALL : BlockDirection.NONE;
+                            }
+                        } else {
+                            // Check tile block
+                            let tileCell = layer.data[gid];
+                            // Ignore invalid cells
+                            if (tileCell === null || tileCell! < 0 || tileCell! >= map.tileset.blocks.length) {   
+                                continue;
+                            }
+                            // Ignore cells onTop
+                            if(map.tileset.onTop !== undefined && ClientUtils.normalizeZIndex(map.tileset.onTop[tileCell!]) > Constant.ZIndex.LV0) {
+                                continue;
+                            }
+                            blockValue = map.tileset.blocks[tileCell!];
                         }
-                        // Ignore cells onTop
-                        if(map.tileset.onTop !== undefined && ClientUtils.normalizeZIndex(map.tileset.onTop[tileCell!]) > Constant.ZIndex.LV0) {
-                            continue;  
-                        }
-                        let blockValue = map.tileset.blocks[tileCell!];
-                        if(Utils.isEmpty(blockValue)) {
+                        if(blockValue === undefined) {
                             blockValue = BlockDirection.NONE;
                         }
                         // This will override a block if there's something over it that you can walk on
