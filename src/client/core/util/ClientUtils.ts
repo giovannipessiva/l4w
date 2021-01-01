@@ -335,12 +335,14 @@ export namespace ClientUtils {
                 if(start % size.w === 0) {
                     return undefined;
                 }
+                break;
             case CardinalDirection.E:
             case CardinalDirection.NE:
             case CardinalDirection.SE:
-                if(start % (size.w -1) === 0) {
+                if(start % size.w === size.w - 1) {
                     return undefined;
                 }
+                break;
         };
         let target = start;
         switch (direction) {

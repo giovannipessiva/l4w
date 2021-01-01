@@ -2,7 +2,7 @@ import { AbstractScene } from "../core/AbstractScene"
 import { StaticGrid } from "./StaticGrid"
 import { Constant } from "../core/util/Constant"
 import { IMap } from "../../common/model/Map"
-import { IRectangle } from "../../common/Commons"
+import { ICell, IRectangle, ISize } from "../../common/Commons"
 import { ClientUtils } from "../core/util/ClientUtils";
 
 /**
@@ -162,5 +162,17 @@ export abstract class AbstractStaticScene extends AbstractScene {
     }
        
     protected renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean) {
+    }
+
+    protected drawBottleneck(context: CanvasRenderingContext2D, autotile: HTMLImageElement, i: number, j: number,
+        cell: ICell, iOffset: number, jOffset: number, size: ISize) {
+        context.clearRect(cell.i * this.grid.cellW + iOffset, cell.j * this.grid.cellH + jOffset, size.w, size.h);
+        super.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+    }
+
+    protected drawAngle(context: CanvasRenderingContext2D, autotile: HTMLImageElement, i: number, j: number,
+        halfW: number, halfH: number, cell: ICell, iOffset: number, jOffset: number) {
+        context.clearRect(cell.i * this.grid.cellW + iOffset, cell.j * this.grid.cellH + jOffset, halfW, halfH);
+        super.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
     }
 }

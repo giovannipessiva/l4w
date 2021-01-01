@@ -2,7 +2,7 @@ import { TilesetManager } from "./manager/TilesetManager"
 import { MapManager } from "./manager/MapManager"
 import {  } from "./AbstractGrid"
 import { IMap } from "../../common/model/Map"
-import { IPoint, ICell, DirectionEnum, IRectangle, CardinalDirection } from "../../common/Commons"
+import { IPoint, ICell, DirectionEnum, IRectangle, CardinalDirection, ISize } from "../../common/Commons"
 import { ITileset } from "../../common/model/Tileset"
 import { Constant } from "./util/Constant"
 import { RenderConfiguration } from "./util/Commons"
@@ -450,7 +450,11 @@ export abstract class AbstractScene {
 
     private renderAutotile(context: CanvasRenderingContext2D, autotile: HTMLImageElement, tileGID: number, proximityValue: number, cell: ICell): void {  
         let i, j;
+        let drawAngles = false;
+        let verticalBottleneck = false;
+        let horizontalBottleneck = false;
         switch(proximityValue) {
+            // Header
             case CardinalDirection.NONE:
                 i = 0;
                 j = 0;
@@ -459,19 +463,33 @@ export abstract class AbstractScene {
                 i = 2;
                 j = 0;
                 break;
+            // Top row
             case CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S:
+            case CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.NE:
+            case CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.SW:
+            case CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.NE | CardinalDirection.SW:
                 i = 0;
                 j = 1;
                 break;
             case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE | CardinalDirection.E:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE | CardinalDirection.E | CardinalDirection.NW:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE | CardinalDirection.E | CardinalDirection.NE:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE | CardinalDirection.E | CardinalDirection.NW | CardinalDirection.NE:
                 i = 1;
                 j = 1;
                 break;
             case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.NW:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE:
+            case CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.NW | CardinalDirection.SE:
                 i = 2;
                 j = 1;
                 break;
+            // Central row
             case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.NW:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.SW:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE | CardinalDirection.S | CardinalDirection.NW | CardinalDirection.SW:
                 i = 0;
                 j = 2;
                 break;
@@ -480,32 +498,125 @@ export abstract class AbstractScene {
                 j = 2;
                 break;
             case CardinalDirection.N | CardinalDirection.NW | CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S:
+            case CardinalDirection.N | CardinalDirection.NW | CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.NE:
+            case CardinalDirection.N | CardinalDirection.NW | CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.SE:
+            case CardinalDirection.N | CardinalDirection.NW | CardinalDirection.W | CardinalDirection.SW | CardinalDirection.S | CardinalDirection.NE | CardinalDirection.SE:
                 i = 2;
                 j = 2;
                 break;
+            // Bottom row
             case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.NW:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE:
+            case CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.NW | CardinalDirection.SE:
                 i = 0;
                 j = 3;
                 break;
             case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SW:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SE:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE | CardinalDirection.E | CardinalDirection.SW | CardinalDirection.SE:
                 i = 1;
                 j = 3;
                 break;
             case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.SW:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.NE:
+            case CardinalDirection.W | CardinalDirection.NW | CardinalDirection.N | CardinalDirection.SW | CardinalDirection.NE:
                 i = 2;
                 j = 3;
                 break;
             default:
-                //TODO manage vertex
-                i = 1;
-                j = 2;
+                if((proximityValue & (CardinalDirection.N | CardinalDirection.E | CardinalDirection.S | CardinalDirection.W)) === (CardinalDirection.N | CardinalDirection.E | CardinalDirection.S | CardinalDirection.W)) {
+                    // Only angles
+                    i = 1;
+                    j = 2;
+                    drawAngles = true;
+                } else if((proximityValue & (CardinalDirection.N | CardinalDirection.S)) > 0 && (proximityValue & (CardinalDirection.W | CardinalDirection.E)) === 0) {
+                    // Vertical bottleneck
+                    i = 0;
+                    j = 2;
+                    verticalBottleneck = true;
+                } else if((proximityValue & (CardinalDirection.N | CardinalDirection.S)) === 0 && (proximityValue & (CardinalDirection.W | CardinalDirection.E)) > 0) {
+                    // Horizontal bottleneck
+                    i = 1;
+                    j = 1;
+                    horizontalBottleneck = true;
+                } else {
+                    i = 1;
+                    j = 2;
+                    console.error("Unexpected autotile proximity value:" + proximityValue);
+                }
         }
-        //TODO autotile rendering
         //TODO animated autotile rendering
         context.drawImage(
             autotile,
             i * this.grid.cellW, j * this.grid.cellH, this.grid.cellW, this.grid.cellH,
             cell.i * this.grid.cellW, cell.j * this.grid.cellH, this.grid.cellW, this.grid.cellH);
+
+        if(drawAngles) {
+            i = 2;
+            j = 0;
+            let iOffset, jOffset;
+            let halfW = Math.floor(this.grid.cellW / 2);
+            let halfH = Math.floor(this.grid.cellH / 2);
+            if((proximityValue & CardinalDirection.NW) === 0) {
+                iOffset = 0;
+                jOffset = 0;
+                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+            }
+            if((proximityValue & CardinalDirection.NE) === 0) {
+                iOffset = halfW;
+                jOffset = 0;
+                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+            }
+            if((proximityValue & CardinalDirection.SW) === 0) {
+                iOffset = 0;
+                jOffset = halfH;
+                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+            }
+            if((proximityValue & CardinalDirection.SE) === 0) {
+                iOffset = halfW;
+                jOffset = halfH;
+                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+            }
+        } else if(verticalBottleneck) {
+            i = 2;
+            j = 2;
+            let iOffset = Math.floor(this.grid.cellW / 2);
+            let jOffset = 0;
+            let size = {
+                w: Math.floor(this.grid.cellW / 2),
+                h: this.grid.cellH
+            };
+            this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+        } else if(horizontalBottleneck) {
+            i = 1;
+            j = 3;
+            let iOffset = 0;
+            let jOffset = Math.floor(this.grid.cellH / 2);
+            let size = {
+                w: this.grid.cellW,
+                h: Math.floor(this.grid.cellH / 2)
+            };
+            this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+        }
+    }
+
+    protected drawBottleneck(context: CanvasRenderingContext2D, autotile: HTMLImageElement, i: number, j: number,
+        cell: ICell, iOffset: number, jOffset: number, size: ISize) {
+        context.drawImage(
+            autotile,
+            i * this.grid.cellW + iOffset, j * this.grid.cellH + jOffset, size.w, size.h,
+            cell.i * this.grid.cellW + iOffset, cell.j * this.grid.cellH + jOffset, size.w, size.h);
+    }
+
+    protected drawAngle(context: CanvasRenderingContext2D, autotile: HTMLImageElement, i: number, j: number,
+        halfW: number, halfH: number, cell: ICell, iOffset: number, jOffset: number) {
+        context.drawImage(
+            autotile,
+            i * this.grid.cellW + iOffset, j * this.grid.cellH + jOffset, halfW, halfH,
+            cell.i * this.grid.cellW + iOffset, cell.j * this.grid.cellH + jOffset, halfW, halfH);
     }
     
     protected abstract renderDynamicElements(minRow: number, maxRow: number, minColumn: number, maxColumn: number, i: number, j: number, onTop: boolean): void;
