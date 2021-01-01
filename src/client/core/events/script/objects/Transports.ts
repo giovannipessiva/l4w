@@ -7,7 +7,7 @@ export class Transports extends AbstractScript {
 
     public forest(): void {
         this.goToMap("1", {
-            i: 15,
+            i: 21,
             j: 1
         });
     };
@@ -15,7 +15,7 @@ export class Transports extends AbstractScript {
     public farm(): void {
         this.goToMap("0", {
             i: 15,
-            j: 17
+            j: 21
         });
         this.hero.movementDirection = DirectionEnum.UP;
     };

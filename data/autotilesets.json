@@ -19,7 +19,12 @@
     },
     {
       "image": "007-G_Undulation01.png",
-      "blocked": false
+      "blocked": true
+    },
+    {
+      "image": "033-Waterfall01.png",
+      "blocked": true,
+      "frequency": "6"
     },
     {
       "image": "erba.png",

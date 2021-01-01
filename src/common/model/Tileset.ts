@@ -30,4 +30,5 @@ export interface IAutoTileset {
     selected?:boolean; // True when this autotileset is selected in AutotilePicker
     frames?: number; // Frames of the autotile (only for animated autotiles)
     animationStartTime?: number; // ms since last animation change
+    frequencyVal?: number; // Animation change speed (frame/milliseconds)
 };

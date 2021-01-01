@@ -333,11 +333,7 @@ export namespace EventManager {
                 }
                 let animationTime = Utils.now() - currentState.animationStartTime!;
                 let position = Math.floor((animationTime * frequency) % 4);
-                switch (position) {
-                    case 1: charaX = charaWidth; break;
-                    case 2: charaX = charaWidth * 2; break;
-                    case 3: charaX = charaWidth * 3; break;
-                }
+                charaX = charaWidth * position;
             } else if (currentState.rotation === RotationEnum.CLOCKWISE || currentState.rotation === RotationEnum.COUNTERCLOCKWISE) {
                 // Rotate
                 if (Utils.isEmpty(currentState.animationStartTime)) {

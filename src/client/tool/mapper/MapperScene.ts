@@ -12,6 +12,7 @@ import { AbstractScene } from "../../core/AbstractScene"
 import { Utils } from "../../../common/Utils"
 import { DataDefaults } from "../../../common/DataDefaults"
 import { ClientUtils } from "../../core/util/ClientUtils"
+import { TilesetManager } from "../../core/manager/TilesetManager"
 
 /**
  * Scene implementation for managing Mapper logics
@@ -120,6 +121,8 @@ export class MapperScene extends AbstractStaticScene {
                             let autotile = DataDefaults.getAutoTileset();
                             autotile.image = this.autotileSelected;
                             this.map.autotilesets[autotileGID + ""] = autotile;
+                            // Load new autotile
+                            TilesetManager.initTransientDataAutotiles([ autotile ]);
                         }
                         // Apply autotile GID to map
                         if (layer.data![changedCell] !== autotileGID) {

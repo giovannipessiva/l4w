@@ -220,5 +220,149 @@
       }
     ],
     "edges": []
+  },
+  "4": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart",
+        "edgeIds": [
+          0
+        ]
+      },
+      {
+        "id": 1,
+        "edgeIds": [
+          2,
+          3,
+          4
+        ],
+        "face": "Fart.png",
+        "name": "Fart"
+      },
+      {
+        "id": 3,
+        "face": "Fart.png",
+        "name": "Fart"
+      },
+      {
+        "id": 4,
+        "face": "Fart.png",
+        "name": "Fart"
+      },
+      {
+        "id": 5,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": [
+      {
+        "id": 0,
+        "nodeId": 1
+      },
+      {
+        "id": 2,
+        "nodeId": 3
+      },
+      {
+        "id": 3,
+        "nodeId": 4
+      },
+      {
+        "id": 4,
+        "nodeId": 5
+      }
+    ]
+  },
+  "5": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart",
+        "message": "It's a well... I can't see the bottom"
+      }
+    ],
+    "edges": []
+  },
+  "6": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": []
+  },
+  "7": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": []
+  },
+  "8": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": []
+  },
+  "9": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": []
+  },
+  "10": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart"
+      }
+    ],
+    "edges": []
+  },
+  "11": {
+    "nodes": [
+      {
+        "id": 0,
+        "name": "Soldier",
+        "edgeIds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Soldier"
+      }
+    ],
+    "edges": [
+      {
+        "id": 3,
+        "nodeId": 5
+      },
+      {
+        "id": 4
+      }
+    ]
   }
 }

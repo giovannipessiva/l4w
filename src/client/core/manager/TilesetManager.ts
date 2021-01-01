@@ -5,6 +5,7 @@ import { ResourceType } from "../../../common/Constants";
 import { Utils } from "../../../common/Utils";
 import { AbstractGrid } from "../AbstractGrid";
 import { ScaleEnum } from "../../../common/Commons";
+import { Constant } from "../util/Constant";
 
 /**
  * Helper class for handling tilesets and autotile
@@ -88,6 +89,46 @@ export namespace TilesetManager {
             if(autotile.frequency === undefined) {
                 autotile.frequency = ScaleEnum.MEDIUM;
             }
+            switch (autotile.frequency) {
+                case ScaleEnum.VERY_LOW:
+                    autotile.frequencyVal = Constant.VERY_LOW_FREQUENCY;
+                    break;
+                case ScaleEnum.LOW:
+                    autotile.frequencyVal = Constant.LOW_FREQUENCY;
+                    break;
+                case ScaleEnum.MEDIUM_LOW:
+                    autotile.frequencyVal = Constant.MEDIUM_LOW_FREQUENCY;
+                    break;
+                case ScaleEnum.MEDIUM:
+                    autotile.frequencyVal = Constant.MEDIUM_FREQUENCY;
+                    break;
+                case ScaleEnum.MEDIUM_HIGH:
+                    autotile.frequencyVal = Constant.MEDIUM_HIGH_FREQUENCY;
+                    break;
+                case ScaleEnum.HIGH:
+                    autotile.frequencyVal = Constant.HIGH_FREQUENCY;
+                    break;
+                case ScaleEnum.VERY_HIGH:
+                    autotile.frequencyVal = Constant.VERY_HIGH_FREQUENCY;
+                    break;
+                default: autotile.frequencyVal = Constant.MEDIUM_FREQUENCY;
+            }
         }
+    }
+
+    /**
+     * 
+     * Return the horizontal offset (in cells) required
+     * for animating this autotileset
+     */
+    export function getAnimatedAutotileFrame(autotile: IAutoTileset): number {
+        if(autotile.frequencyVal === undefined || autotile.frames === undefined) {
+            return 0;
+        }
+        if (autotile.animationStartTime === undefined) {
+            autotile.animationStartTime = Utils.now();
+        }
+        let animationTime = Utils.now() - autotile.animationStartTime!;
+        return Math.floor((animationTime * autotile.frequencyVal) % autotile.frames) * 3;
     }
 }

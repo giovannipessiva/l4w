@@ -3,7 +3,7 @@ import { MapManager } from "./manager/MapManager"
 import {  } from "./AbstractGrid"
 import { IMap } from "../../common/model/Map"
 import { IPoint, ICell, DirectionEnum, IRectangle, CardinalDirection, ISize } from "../../common/Commons"
-import { ITileset } from "../../common/model/Tileset"
+import { IAutoTileset, ITileset } from "../../common/model/Tileset"
 import { Constant } from "./util/Constant"
 import { RenderConfiguration } from "./util/Commons"
 import { ClientUtils } from "./util/ClientUtils"
@@ -368,7 +368,7 @@ export abstract class AbstractScene {
                                 if (!Utils.isEmpty(layer.opacity)) {
                                     context.globalAlpha = layer.opacity!;
                                 }
-                                this.renderAutotile(context, autotile.imageData, gidData, proximityValue, { i: i, j: j});
+                                this.renderAutotile(context, autotile, gidData, proximityValue, { i: i, j: j});
                                 context.globalAlpha = 1;
                                 this.removeLayerCustomizations(layerIndex);
                             }
@@ -451,7 +451,8 @@ export abstract class AbstractScene {
      * - it will never change
      * I think it is preferrable to enumerate as many cases as possible
      */
-    private renderAutotile(context: CanvasRenderingContext2D, autotile: HTMLImageElement, tileGID: number, proximityValue: number, cell: ICell): void {  
+    private renderAutotile(context: CanvasRenderingContext2D, autotileset: IAutoTileset, tileGID: number, proximityValue: number, cell: ICell): void {
+        let autotile = autotileset.imageData!;
         let i, j;
         let drawAngles = false;
         let verticalBottleneck = false;
@@ -605,10 +606,10 @@ export abstract class AbstractScene {
                     }
                 }
         }
-        //TODO animated autotile rendering
+        let animationOffset = TilesetManager.getAnimatedAutotileFrame(autotileset);
         context.drawImage(
             autotile,
-            i * this.grid.cellW, j * this.grid.cellH, this.grid.cellW, this.grid.cellH,
+            (i + animationOffset) * this.grid.cellW, j * this.grid.cellH, this.grid.cellW, this.grid.cellH,
             cell.i * this.grid.cellW, cell.j * this.grid.cellH, this.grid.cellW, this.grid.cellH);
 
         if(drawAngles) {
@@ -620,22 +621,22 @@ export abstract class AbstractScene {
             if((proximityValue & CardinalDirection.NW) === 0 && (proximityValue & (CardinalDirection.N | CardinalDirection.W)) === (CardinalDirection.N | CardinalDirection.W)) {
                 iOffset = 0;
                 jOffset = 0;
-                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+                this.drawAngle(context, autotile, (i + animationOffset), j, halfW, halfH, cell, iOffset, jOffset);
             }
             if((proximityValue & CardinalDirection.NE) === 0 && (proximityValue & (CardinalDirection.N | CardinalDirection.E)) === (CardinalDirection.N | CardinalDirection.E)) {
                 iOffset = halfW;
                 jOffset = 0;
-                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+                this.drawAngle(context, autotile, (i + animationOffset), j, halfW, halfH, cell, iOffset, jOffset);
             }
             if((proximityValue & CardinalDirection.SW) === 0 && (proximityValue & (CardinalDirection.S | CardinalDirection.W)) === (CardinalDirection.S | CardinalDirection.W)) {
                 iOffset = 0;
                 jOffset = halfH;
-                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+                this.drawAngle(context, autotile, (i + animationOffset), j, halfW, halfH, cell, iOffset, jOffset);
             }
             if((proximityValue & CardinalDirection.SE) === 0 && (proximityValue & (CardinalDirection.S | CardinalDirection.E)) === (CardinalDirection.S | CardinalDirection.E)) {
                 iOffset = halfW;
                 jOffset = halfH;
-                this.drawAngle(context, autotile, i, j, halfW, halfH, cell, iOffset, jOffset);
+                this.drawAngle(context, autotile, (i + animationOffset), j, halfW, halfH, cell, iOffset, jOffset);
             }
         }
         if(verticalBottleneck) {
@@ -650,13 +651,13 @@ export abstract class AbstractScene {
                 // W side
                 i = 0;
                 iOffset = 0;
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
             if((proximityValue & CardinalDirection.E) === 0) {
                 // E side
                 i = 2;
                 iOffset = Math.floor(this.grid.cellW / 2);
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
             if((proximityValue & CardinalDirection.N) === 0) {
                 // Dead end on N
@@ -668,7 +669,7 @@ export abstract class AbstractScene {
                     w: this.grid.cellW,
                     h: Math.floor(this.grid.cellH / 2)
                 };
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             } else if((proximityValue & CardinalDirection.S) === 0) {
                 // Dead end on S
                 i = 0;
@@ -679,7 +680,7 @@ export abstract class AbstractScene {
                     w: this.grid.cellW,
                     h: Math.floor(this.grid.cellH / 2)
                 };
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
         } else if(horizontalBottleneck) {
             let size = {
@@ -693,13 +694,13 @@ export abstract class AbstractScene {
                 // N side
                 j = 1;
                 jOffset = 0;
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
             if((proximityValue & CardinalDirection.S) === 0) {
                 // S side
                 j = 3;
                 jOffset = Math.floor(this.grid.cellH / 2);
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
             if((proximityValue & CardinalDirection.E) === 0) {
                 // Dead end on E
@@ -711,7 +712,7 @@ export abstract class AbstractScene {
                     w: Math.floor(this.grid.cellW / 2),
                     h: this.grid.cellH
                 };
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             } else if((proximityValue & CardinalDirection.W) === 0) {
                 // Dead end on W
                 i = 0;
@@ -722,7 +723,7 @@ export abstract class AbstractScene {
                     w: Math.floor(this.grid.cellW / 2),
                     h: this.grid.cellH
                 };
-                this.drawBottleneck(context, autotile, i, j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
             }
         }
     }

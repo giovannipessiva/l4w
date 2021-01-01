@@ -37,5 +37,39 @@
   },
   "D3": {
     "N0M": "Hello dear"
+  },
+  "D5": {
+    "N0M": "It's a well... I can't see the bottom"
+  },
+  "D4": {
+    "N0M": "It's a wood bucket, full of water",
+    "N1M": "It doesn't seem very hygienic to me...",
+    "N3M": "No thank you",
+    "N4M": "I would, but my back hurts... I guess I should work less",
+    "N5M": "I would rather not",
+    "E2M": "Drink",
+    "E3M": "Take",
+    "E4M": "Piss"
+  },
+  "D6": {
+    "N0M": "It's a well... I can't see the bottom"
+  },
+  "D7": {
+    "N0M": "This barrel looks empty"
+  },
+  "D8": {
+    "N0M": "Cool, an hatchet! I could do a lot of things with this"
+  },
+  "D9": {
+    "N0M": "Why is this scarecrow dressed better than me?"
+  },
+  "D10": {
+    "N0M": "This bone fire seems to have gone out for a long time"
+  },
+  "D11": {
+    "N0M": "Alt! The bridge is currently under maintenance. Please step away",
+    "N5M": "It will be ready when it will be ready",
+    "E3M": "When will it be ready?",
+    "E4M": "I could walk on those logs"
   }
 }
