@@ -33,13 +33,13 @@ export abstract class AbstractScript {
 
     protected showSimpleDialog(messageId: string, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showSimpleDialog(this.scene, this.hero, this.event.name, messageId, cfg, callback);
+        DialogManager.showSimpleDialog(this.scene, this.hero, messageId, cfg, callback);
         return true;
     }
 
     protected showComplexDialog(dialogId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showComplexDialog(this.scene, this.hero, this.event.name, dialogId, cfg, callback);
+        DialogManager.showComplexDialog(this.scene, this.hero, dialogId, cfg, callback);
         return true;
     }
     

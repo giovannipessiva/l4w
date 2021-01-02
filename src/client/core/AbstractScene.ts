@@ -91,25 +91,7 @@ export abstract class AbstractScene {
     protected mainGameLoop_post() {
     }
 
-    protected renderPointer(): void {
-        if (this.pointer !== undefined) {
-            let mappedPointer: IPoint = this.grid.mapCellToCanvas(this.pointer);
-            this.context.save();
-            this.context.beginPath();
-            this.context.fillStyle = Constant.Color.YELLOW;
-            this.context.scale(2, 1);
-            this.context.arc(
-                Math.floor((mappedPointer.x + this.grid.cellW / 2) / 2),
-                mappedPointer.y + this.grid.cellH - 4,
-                8,
-                0,
-                Constant.DOUBLE_PI);
-            this.context.closePath();
-            this.context.globalAlpha = 0.4;
-            this.context.fill();
-            this.context.restore();
-        }
-    }
+    protected abstract renderPointer(): void;
 
     protected renderFocus() {
         if (this.focus.x != null && this.focus.y != null && this.renderingConfiguration.showFocus) {
@@ -270,19 +252,19 @@ export abstract class AbstractScene {
     changeMap(map: IMap, callback: { (scene: AbstractScene): void }) {
         // Pause rendering
         this.togglePause(true);
-        let scene: AbstractScene = this;
+        let _this = this;
         if (Utils.isEmpty(map)) {
             console.error("Uninitialized map");
             console.trace();
         }
-        scene.map = map;
-        scene.changeTile(map.tileset.image, function(scene) {
+        _this.map = map;
+        _this.changeTile(map.tileset.image, function(abstractScene) {
             setTimeout(async function() {
-                await MapManager.initTransientData(scene);
+                await MapManager.initTransientData(_this);
                 // Resume rendering
-                scene.togglePause(false);
+                _this.togglePause(false);
             });
-            callback(scene);
+            callback(_this);
         });
     }
 
@@ -645,85 +627,85 @@ export abstract class AbstractScene {
                 h: this.grid.cellH
             };
             j = 2;
-            let iOffset;
-            let jOffset = 0;
+            let iOffset2;
+            let jOffset2 = 0;
             if((proximityValue & CardinalDirection.W) === 0) {
                 // W side
                 i = 0;
-                iOffset = 0;
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                iOffset2 = 0;
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset2, jOffset2, size);
             }
             if((proximityValue & CardinalDirection.E) === 0) {
                 // E side
                 i = 2;
-                iOffset = Math.floor(this.grid.cellW / 2);
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                iOffset2 = Math.floor(this.grid.cellW / 2);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset2, jOffset2, size);
             }
             if((proximityValue & CardinalDirection.N) === 0) {
                 // Dead end on N
                 i = 0;
                 j = 0;
-                iOffset = 0;
-                jOffset = 0;
+                iOffset2 = 0;
+                jOffset2 = 0;
                 size = {
                     w: this.grid.cellW,
                     h: Math.floor(this.grid.cellH / 2)
                 };
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset2, jOffset2, size);
             } else if((proximityValue & CardinalDirection.S) === 0) {
                 // Dead end on S
                 i = 0;
                 j = 0;
-                iOffset = 0;
-                jOffset = Math.floor(this.grid.cellH / 2);
+                iOffset2 = 0;
+                jOffset2 = Math.floor(this.grid.cellH / 2);
                 size = {
                     w: this.grid.cellW,
                     h: Math.floor(this.grid.cellH / 2)
                 };
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset2, jOffset2, size);
             }
         } else if(horizontalBottleneck) {
-            let size = {
+            let size2 = {
                 w: this.grid.cellW,
                 h: Math.floor(this.grid.cellH / 2)
             };
             i = 1;
-            let iOffset = 0;
-            let jOffset;
+            let iOffset3 = 0;
+            let jOffset3;
             if((proximityValue & CardinalDirection.N) === 0) {
                 // N side
                 j = 1;
-                jOffset = 0;
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                jOffset3 = 0;
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset3, jOffset3, size2);
             }
             if((proximityValue & CardinalDirection.S) === 0) {
                 // S side
                 j = 3;
-                jOffset = Math.floor(this.grid.cellH / 2);
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                jOffset3 = Math.floor(this.grid.cellH / 2);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset3, jOffset3, size2);
             }
             if((proximityValue & CardinalDirection.E) === 0) {
                 // Dead end on E
                 i = 0;
                 j = 0;
-                iOffset = Math.floor(this.grid.cellW / 2);
-                jOffset = 0;
-                size = {
+                iOffset3 = Math.floor(this.grid.cellW / 2);
+                jOffset3 = 0;
+                size2 = {
                     w: Math.floor(this.grid.cellW / 2),
                     h: this.grid.cellH
                 };
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset3, jOffset3, size2);
             } else if((proximityValue & CardinalDirection.W) === 0) {
                 // Dead end on W
                 i = 0;
                 j = 0;
-                iOffset = 0;
-                jOffset = 0;
-                size = {
+                iOffset3 = 0;
+                jOffset3 = 0;
+                size2 = {
                     w: Math.floor(this.grid.cellW / 2),
                     h: this.grid.cellH
                 };
-                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset, jOffset, size);
+                this.drawBottleneck(context, autotile, (i + animationOffset), j, cell, iOffset3, jOffset3, size2);
             }
         }
     }

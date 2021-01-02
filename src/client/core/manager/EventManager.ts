@@ -4,7 +4,7 @@ import { Resource } from "../util/Resource"
 import { AbstractGrid } from "../AbstractGrid"
 import { ClientUtils } from "../util/ClientUtils"
 import { IEvent } from "../../../common/model/Event"
-import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum, RelativeDirectionEnum, ICellCallback } from "../../../common/Commons"
+import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum, RelativeDirectionEnum, ICellCallback, IPoint } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { CharacterManager } from "../manager/CharacterManager"
 import { MapManager } from "../manager/MapManager"
@@ -372,7 +372,23 @@ export namespace EventManager {
             if (pointer !== undefined) {
                 let isHighlighted: boolean = pointer.i === e.i && pointer.j === e.j;
                 if (isHighlighted) {
-                    // Add highlight effect 
+                    // Render yellow oval
+                    let mappedPointer: IPoint = grid.mapCellToCanvas(pointer);
+                    context.save();
+                    context.beginPath();
+                    context.fillStyle = Constant.Color.YELLOW;
+                    context.scale(2, 1);
+                    context.arc(
+                        Math.floor((mappedPointer.x + grid.cellW / 2) / 2),
+                        mappedPointer.y + grid.cellH - 4,
+                        8,
+                        0,
+                        Constant.DOUBLE_PI);
+                    context.closePath();
+                    context.globalAlpha = 0.4;
+                    context.fill();
+                    context.restore();
+                    // Add highlight effect to character
                     context.shadowColor = Constant.Color.YELLOW;
                     context.shadowBlur = 8;
                 }

@@ -7,7 +7,7 @@ import { ICharacter } from "./Character"
 export interface IEvent extends ICell {
     // Persistent data
     id: number; // ID of this event (unique in its map)
-    name: string; // String assigned to name field in editor
+    name: string; // String assigned to name field in editor //TODO what's the use?
     states: IEventState[]; // Array of states of this Event
     script: string; // Script Class which contains the methods used by this event
     memory: {}; // Map of generic key -> value pairs

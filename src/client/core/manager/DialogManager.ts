@@ -252,25 +252,25 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(scene: DynamicScene, hero: IEvent, name: string, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
+    export function showComplexDialog(scene: DynamicScene, hero: IEvent, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
         loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
             } else {
-                showDialog(scene, hero, name, dialog, cfg.skin, callback);
+                showDialog(scene, hero, dialog, cfg.skin, callback);
             }
         });
     }
     
-    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, name: string, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
+    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
         loadString(messageId, cfg.lang, function(str) {
             let dialog = DataDefaults.getDialogNode();
             dialog.message = str;
-            showDialog(scene, hero, name, dialog, cfg.skin, callback);
+            showDialog(scene, hero, dialog, cfg.skin, callback);
         });
     }
 
-    function showDialog(scene: DynamicScene, hero: IEvent, name: string, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
+    function showDialog(scene: DynamicScene, hero: IEvent, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
         let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
@@ -306,7 +306,12 @@ export namespace DialogManager {
         } else {
             dlgFace.style.display = "none";
         }
-        dlgName.firstChild.textContent = name;
+        if(dialog.name !== undefined) {
+            dlgName.firstChild.textContent = dialog.name;
+            dlgName.style.visibility = "block";
+        } else {
+            dlgName.style.visibility = "hidden";
+        }
 
         let dialogMessage = getMessage(dialog);
         if(dialogMessage !== undefined) {
@@ -355,7 +360,7 @@ export namespace DialogManager {
                 launchAction(edge, scene, hero, parameter);
             } else if(edge.node !== undefined) {
                 // Follow the edge to next node
-                showDialog(scene, hero, name, edge.node, skin, callback);
+                showDialog(scene, hero, edge.node, skin, callback);
             } else {
                 // Nothing to do here, close the dialog
                 defineClosingCondition(0);

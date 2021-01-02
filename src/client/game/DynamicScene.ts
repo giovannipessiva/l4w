@@ -228,4 +228,13 @@ export class DynamicScene extends AbstractScene {
         this.changeScale();
         this.reapplyTranslation();
     }
+
+    protected renderPointer(): void {
+        /*
+        I decided that highlighting the cell where the pointer is ugly.
+        It is necessary for the editors, but showing it in the game would only
+        make the map look grindy, and buggy around onTop elements.
+        Hence, no impl for you
+        */
+    }
 }
