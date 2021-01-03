@@ -252,25 +252,25 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(scene: DynamicScene, hero: IEvent, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
+    export function showComplexDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
         loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
             } else {
-                showDialog(scene, hero, dialog, cfg.skin, callback);
+                showDialog(event, scene, hero, dialog, cfg.skin, callback);
             }
         });
     }
     
-    export function showSimpleDialog(scene: DynamicScene, hero: IEvent, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
+    export function showSimpleDialog(event: IEvent, scene: DynamicScene, hero: IEvent, messageId: string, cfg: IConfig, callback: IEmptyCallback) {
         loadString(messageId, cfg.lang, function(str) {
             let dialog = DataDefaults.getDialogNode();
             dialog.message = str;
-            showDialog(scene, hero, dialog, cfg.skin, callback);
+            showDialog(event, scene, hero, dialog, cfg.skin, callback);
         });
     }
 
-    function showDialog(scene: DynamicScene, hero: IEvent, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
+    function showDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
         let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
@@ -343,8 +343,7 @@ export namespace DialogManager {
          */
         let selectEdge = function (edge: IDialogEdge) {
             if(edge.action !== undefined) {
-                // Before following the edge to next node,
-                // execute its action
+                // Before following the edge to next node, execute its action
                 let parameter: string | undefined;
                 let input: HTMLElement | null = document.getElementById(DIALOG_USER_INPUT_ID);
                 if(input !== null) {
@@ -357,10 +356,10 @@ export namespace DialogManager {
                     console.warn("Input required");
                     return;
                 }
-                launchAction(edge, scene, hero, parameter);
+                launchEdgeAction(event, edge, scene, hero, parameter);
             } else if(edge.node !== undefined) {
                 // Follow the edge to next node
-                showDialog(scene, hero, edge.node, skin, callback);
+                showDialog(event, scene, hero, edge.node, skin, callback);
             } else {
                 // Nothing to do here, close the dialog
                 defineClosingCondition(0);
@@ -483,7 +482,7 @@ export namespace DialogManager {
     /**
      * Execute an action associated to an edge 
      */
-    export function launchAction(edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): boolean {
+    export function launchEdgeAction(event: IEvent, edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): boolean {
         let scriptClassName = edge.script;
         if(scriptClassName === undefined) {
             return false;

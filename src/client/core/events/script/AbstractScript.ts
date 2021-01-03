@@ -9,13 +9,19 @@ import { IEmptyCallback } from "../../../../common/Commons";
 import { ClientUtils } from "../../util/ClientUtils";
 import { DataDefaults } from "../../../../common/DataDefaults";
 
+/**
+ * In order to create a new script:
+ * - Create a class extending AbstratScript
+ * - Add it to ScriptRegister
+ * - (optional) add a custom "tooltip" field to the class
+ */
 export abstract class AbstractScript {
     
     protected event: IEvent;
     protected hero: IEvent;
     protected scene: DynamicScene;
     
-    public static tooltip: string = "(no description provided)";
+    public static tooltip: string = "no description provided";
     public static STATE_VAR: string = "state"  
     
     public constructor(event: IEvent, hero: IEvent, scene: DynamicScene) {
@@ -33,13 +39,13 @@ export abstract class AbstractScript {
 
     protected showSimpleDialog(messageId: string, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showSimpleDialog(this.scene, this.hero, messageId, cfg, callback);
+        DialogManager.showSimpleDialog(this.event, this.scene, this.hero, messageId, cfg, callback);
         return true;
     }
 
     protected showComplexDialog(dialogId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showComplexDialog(this.scene, this.hero, dialogId, cfg, callback);
+        DialogManager.showComplexDialog(this.event, this.scene, this.hero, dialogId, cfg, callback);
         return true;
     }
     
@@ -62,6 +68,12 @@ export abstract class AbstractScript {
         let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
         direction = ClientUtils.getOpposedDirections(direction);
         return this.stepToDirection(direction, onTargetReached);  
+    }
+
+    protected getEventById(eventId: number) {
+        return this.scene.map.events.find((event: IEvent, index: number, obj: IEvent[]) => {
+            return event.id === eventId;
+        });
     }
     
     /* im sorry */

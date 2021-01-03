@@ -5,7 +5,7 @@ import BugReportingComponent from "../components/BugReporting.vue"
 
 import { DirectionEnum, ICell, LanguageEnum } from "../../common/Commons";
 import { ISave } from "../../common/model/Save";
-import { Launcher } from "../core/events/Launcher";
+import { launchEventAction } from "../core/events/Launcher";
 import { DialogManager } from "../core/manager/DialogManager";
 import { SaveManager } from "../core/manager/SaveManager";
 import { emptyFz } from "../core/util/Commons";
@@ -48,7 +48,7 @@ export namespace Game {
         });
 
         new DynamicGrid(canvas, function(grid) {
-            scene = new DynamicScene(<DynamicGrid> grid, Launcher.launchAction);
+            scene = new DynamicScene(<DynamicGrid> grid, launchEventAction);
             initInput(canvas, scene, <DynamicGrid> grid);
             loadSave(canvas, function(save?: ISave) {                
                 scene.loadSave(save, function(success: boolean) {

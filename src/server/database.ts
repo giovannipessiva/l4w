@@ -20,7 +20,7 @@ import { enumFromValue, Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
 import { security } from "./security";
 import { session } from "./session";
-import { sanitizeMap } from "./sanitizer";
+import { sanitizeDialog, sanitizeMap } from "./sanitizer";
 
 /**
  * This module manage persistency for:
@@ -285,11 +285,7 @@ export namespace database {
                 if (oldTileset.value() !== undefined) {
                     oldTileset.assign(newTileset).write();
                 } else {
-                    gameData.tilesets.get("tilesets")
-                        ["push"]({
-                            id: file,
-                            value: newTileset
-                        })
+                    gameData.tilesets.set(["tilesets", file], newTileset).write();
                 }
                 response.status(HttpStatus.OK).send("");
                 break;
@@ -326,24 +322,20 @@ export namespace database {
                     }
                     dialogId = (maxId + 1);
                 }
-
                 // Save dialog strings
                 let groupdId = getDialogGroupId(dialogId);
                 clearStrings(groupdId);
                 for(let node of nodesList) {
                     if(node.message !== undefined) {
                         setString(groupdId, getNodeMessageStringId(node), node.message);
-                        node.message = undefined;
                     }
-                    utils.cleanDialogNode(node);
                 }
                 for(let edge of edgesList) {
                     if(edge.message !== undefined) {
                         setString(groupdId, getEdgeMessageStringId(edge), edge.message);
-                        edge.message = undefined;
                     }
-                    utils.cleanDialogEdge(edge);
                 }
+                sanitizeDialog(nodesList, edgesList);
 
                 gameData.dialogs.unset(dialogId).write();
                 gameData.dialogs.set([dialogId, "nodes"], nodesList).write();

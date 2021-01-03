@@ -151,6 +151,9 @@ export default Vue.extend({
         }
     },
     mounted: function() {
+        // Register custom event listener
+        this.$root.$on("update-focus", this.updateFocus);
+
         // Populate static comboboxes
         for(let condition of Resource.listEventStateConditions()) {
             this.edgeConditions.push(condition);
@@ -173,36 +176,6 @@ export default Vue.extend({
             }
         });
     },
-
-    updated: function() {
-        let edges = <HTMLSelectElement[]> this.$refs.edges;
-        if(edges !== undefined && edges[0].options !== undefined) {
-            // Reset at the first option (the empty one)
-            edges[0].options[0].selected = true;
-        }
-        let nodes = <HTMLSelectElement[]> this.$refs.nodes;
-        if(nodes !== undefined && edges !== undefined) {
-            for(let edge of edges) {
-                // Reset at the first option (the empty one)
-                if(edge.options !== undefined) {
-                    edge.options[0].selected = true;
-                }
-            }
-        }
-        // Focus node message, or last edge message
-        if(this.node !== undefined) {
-            if(Utils.isEmpty(this.node.edges)) {
-                if(this.$refs.dialogNodeMessage != undefined) {
-                    (<HTMLElement> this.$refs.dialogNodeMessage).focus();
-                }
-            } else {
-                if(this.node.edges![this.node.edges!.length - 1].message === undefined) {
-                    let lastEdge = this.$refs.dialogEdgeMessage[this.node.edges!.length - 1];
-                    lastEdge.focus();
-                }
-            }
-        }
-    },
     methods: {
         addEdge() {
             if(this.node.edgeIds === undefined) {
@@ -215,6 +188,12 @@ export default Vue.extend({
             this.node.edgeIds!.push(edgeId);
             this.node.edges!.push(DataDefaults.getDialogEdge(edgeId));
             this.edgeIds.push(edgeId);
+            // Focus last edge
+            this.$nextTick(() => {
+                if(this.$refs.dialogEdgeMessage !== undefined && this.node.edges![this.node.edges!.length - 1].message === undefined) {
+                    this.$refs.dialogEdgeMessage[this.node.edges!.length - 1].focus();
+                }
+            });
         },
         deleteEdge(edge: IDialogEdge) {
             this.node.edgeIds!.splice(this.node.edgeIds!.indexOf(edge.id), 1);
@@ -271,6 +250,7 @@ export default Vue.extend({
                 Vue.set(edge, "nodeId", nodeId);
                 Vue.set(edge, "node", <IDialogNode> node);
             }
+            this.updateFocus();
         },
         onScriptChange(event: Event, edge: IDialogEdge) {
             loadEdgeScriptActions(edge);
@@ -280,9 +260,29 @@ export default Vue.extend({
                 // Initialize the name for this dialog node with the selected faceset file name
                 node.name = node.face!.replace(".png","").replace(".jpg","");
             }
+        },
+        updateFocus() {
+            let edges = <HTMLSelectElement[]> this.$refs.edges;
+            if(edges !== undefined && edges[0].options !== undefined) {
+                // Reset at the first option (the empty one)
+                edges[0].options[0].selected = true;
+            }
+            let nodes = <HTMLSelectElement[]> this.$refs.nodes;
+            if(nodes !== undefined && edges !== undefined) {
+                for(let edge of edges) {
+                    // Reset at the first option (the empty one)
+                    if(edge.options !== undefined) {
+                        edge.options[0].selected = true;
+                    }
+                }
+            }
+            // Focus node message, or last edge message
+            if(this.node !== undefined && this.$refs.dialogNodeMessage != undefined) {
+                (<HTMLElement> this.$refs.dialogNodeMessage).focus();
+            }
         }
     }
-})
+});
 
 function getNextId(ids: number[]): number {
     let maxId = DataDefaults.DEFAULT_ID;

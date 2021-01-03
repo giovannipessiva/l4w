@@ -2,7 +2,7 @@ import { ResourceType } from "../../../common/Constants";
 import { IResponseCallback, LanguageEnum } from "../../../common/Commons";
 import { Condition } from "../events/Conditions";
 import { AbstractScript } from "../events/script/AbstractScript";
-import * as Script from "../events/script/ScriptsRoot";
+import * as ScriptsRegister from "../events/script/ScriptsRegister";
 import { IPropertiesCallback, IListCallback } from "./Commons";
 import { Constant } from "./Constant";
 import { Utils } from "../../../common/Utils";
@@ -254,10 +254,10 @@ export namespace Resource {
             return scriptClassesCache;
         }
         // Retrieve all Script classes that extends AbstractScript
-        let allVars: string[] = Object.keys(Script);
+        let allVars: string[] = Object.keys(ScriptsRegister);
         let scriptClasses = allVars.filter(function (key) {
             try {
-                let obj = Script[key];
+                let obj = ScriptsRegister[key];
                 return obj.prototype instanceof AbstractScript;
             } catch (e) {
                 return false;
@@ -266,7 +266,7 @@ export namespace Resource {
         // Retrieve the tooltip for every Script class
         let map = new Map<string, string>();
         for(let c of scriptClasses) {
-            map.set(c, (<typeof AbstractScript> Script[c]).tooltip);
+            map.set(c, (<typeof AbstractScript> ScriptsRegister[c]).tooltip);
         }
         scriptClassesCache = map;
         return map;
@@ -281,7 +281,7 @@ export namespace Resource {
             return scriptActionsCache.get(scriptClassName)!;
         }
         // Retrieve all actions of a Script class
-        let classInstance = new Script[scriptClassName](undefined, undefined,undefined);
+        let classInstance = new ScriptsRegister[scriptClassName](undefined, undefined,undefined);
         let allVars: string[] = Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance));
         let actions = allVars.filter(function (key) {
             try {

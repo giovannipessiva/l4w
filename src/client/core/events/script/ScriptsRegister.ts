@@ -3,5 +3,6 @@
  * When importing this, be careful of not introducing circular references
  */
 export * from "./npc/BaseScript";
+export * from "./npc/Ann";
 export * from "./objects/Transports";
 export * from "./test/Script1";

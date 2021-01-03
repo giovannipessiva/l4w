@@ -13,7 +13,7 @@ import { Utils } from "../../common/Utils";
 import { DataDefaults } from "../../common/DataDefaults";
 
 export interface ILauncher {
-    (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean
+    (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): void
 };
 
 /*

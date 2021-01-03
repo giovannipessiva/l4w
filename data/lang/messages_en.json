@@ -57,9 +57,6 @@
   "D7": {
     "N0M": "This barrel looks empty"
   },
-  "D8": {
-    "N0M": "Cool, an hatchet! I could do a lot of things with this"
-  },
   "D9": {
     "N0M": "Why is this scarecrow dressed better than me?"
   },
@@ -71,5 +68,9 @@
     "N5M": "It will be ready when it will be ready",
     "E3M": "When will it be ready?",
     "E4M": "I could walk on those logs"
+  },
+  "D8": {
+    "N0M": "Cool, an hatchet! I could do a lot of things with this",
+    "N1M": "Would you be so kind to avoid touching that?"
   }
 }

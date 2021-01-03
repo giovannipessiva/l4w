@@ -878,6 +878,7 @@ export namespace MapperPage {
         if(elemDisplayEditor !== null) {
             elemDisplayEditor.style.display = "block";
         }
+        dialogEditor.$emit("update-focus");
     }
 
     export function listEventStateConditions() {

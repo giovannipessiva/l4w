@@ -15,7 +15,7 @@
 			</tr>
 			<tr>
 				<td>Script</td>
-				<td><select id="script" style="background-color:#d0ffd0" onchange="L4W_mapper.MapperPage.changeEventScript();"></select></td>
+				<td><select id="script" title="To use a new script, add it to ScriptsRegister.ts" style="background-color:#d0ffd0" onchange="L4W_mapper.MapperPage.changeEventScript();"></select></td>
 			</tr>
 		</table>
 		<div id="scriptTooltip" style="font-style:italic"></div>

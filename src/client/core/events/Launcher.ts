@@ -2,67 +2,63 @@ import { IEvent } from "../../../common/model/Event"
 import { ActionTriggerEnum } from "../../../common/Commons"
 import { ClientUtils } from "../util/ClientUtils"
 import { EventManager } from "../manager/EventManager"
-import { DynamicScene } from "../../game/DynamicScene"
-import * as Script from "../events/script/ScriptsRoot"
+import * as ScriptsRegister from "./script/ScriptsRegister"
 import { Utils } from "../../../common/Utils"
 import { DialogManager } from "../manager/DialogManager"
 import { emptyFz } from "../util/Commons"
 
-export namespace Launcher {
+//TODO move here every instance of launch logic (beware of "Uncaught ReferenceError: Cannot access 'AbstractScript' before initialization" error)
 
-    export function launchAction(event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): boolean {
-        let eventState = event.states[state];
-        // On click  the hero should face the event
-        if (eventState.trigger === ActionTriggerEnum.CLICK) {
-            let heroDirection = ClientUtils.getDirection(event, hero);
-            let heroState = EventManager.getState(hero);
-            if(heroState !== undefined) {
-                heroState.direction = heroDirection;
-            } else {
-                console.error("Hero state undefined");
-            }
-            let eventDirection = ClientUtils.getOpposedDirections(heroDirection);
-            heroState = EventManager.getState(event);
-            if(heroState !== undefined) {
-                heroState.direction = eventDirection;
-            } else {
-                console.error("Event state undefined:" + event);
-            }
-        }
-
-        // Try to launch the action for the script of this event
-        let script = event.script;
-        if(Utils.isEmpty(script)) {
-            // No script associated to the event
+export function launchEventAction(event: IEvent, scene: any, hero: IEvent, state: number, parameters?: any): void {
+    let eventState = event.states[state];
+    // On click  the hero should face the event
+    if (eventState.trigger === ActionTriggerEnum.CLICK) {
+        let heroDirection = ClientUtils.getDirection(event, hero);
+        let heroState = EventManager.getState(hero);
+        if(heroState !== undefined) {
+            heroState.direction = heroDirection;
         } else {
-            let scriptClass = new Script[script](event, hero, scene);
-            if (Utils.isEmpty(scriptClass)) {
-                console.error("Script \"" + script + "\" not found (event: " + event.name + ")");
-                return false;
-            }
-            let action = eventState.action;
-            if(Utils.isEmpty(action)) {
-                // No action to perform
-            } else if (!(action! in scriptClass)) {
-                console.error("Action \"" + action + "\" not found in script \"" + script + "\" (event: " + event.name + ")");
-            } else {
-                try {
-                    if (Utils.isEmpty(parameters)) {
-                        return scriptClass[action]();
-                    } else {
-                        return scriptClass[action](parameters);
-                    }
-                } catch(e) {
-                    console.error(e);
+            console.error("Hero state undefined");
+        }
+        let eventDirection = ClientUtils.getOpposedDirections(heroDirection);
+        heroState = EventManager.getState(event);
+        if(heroState !== undefined) {
+            heroState.direction = eventDirection;
+        } else {
+            console.error("Event state undefined:" + event);
+        }
+    }
+
+    // Try to launch the action for the script of this event
+    let script = event.script;
+    if(Utils.isEmpty(script)) {
+        // No script associated to the event
+    } else {
+        let scriptClass = new ScriptsRegister[script](event, hero, scene);
+        if (Utils.isEmpty(scriptClass)) {
+            console.error("Script \"" + script + "\" not found (event: " + event.name + ")");
+        }
+        let action = eventState.action;
+        if(Utils.isEmpty(action)) {
+            // No action to perform
+        } else if (!(action! in scriptClass)) {
+            console.error("Action \"" + action + "\" not found in script \"" + script + "\" (event: " + event.name + ")");
+        } else {
+            try {
+                if (Utils.isEmpty(parameters)) {
+                    scriptClass[action]();
+                } else {
+                    scriptClass[action](parameters);
                 }
+            } catch(e) {
+                console.error(e);
             }
         }
-        
-        // Try to start the dialog of this event
-        let dialog = eventState.dialog;
-        if(dialog !== undefined) {
-            DialogManager.showComplexDialog(scene, hero, dialog, scene.save.config, emptyFz);
-        }      
-        return false;
-    };
+    }
+    
+    // Try to start the dialog of this event
+    let dialog = eventState.dialog;
+    if(dialog !== undefined) {
+        DialogManager.showComplexDialog(event, scene, hero, dialog, scene.save.config, emptyFz);
+    }
 }

@@ -312,10 +312,25 @@
       {
         "id": 0,
         "face": "Fart.png",
-        "name": "Fart"
+        "name": "Fart",
+        "edgeIds": [
+          0
+        ]
+      },
+      {
+        "id": 1,
+        "face": "Ann.png",
+        "name": "Ann"
       }
     ],
-    "edges": []
+    "edges": [
+      {
+        "id": 0,
+        "nodeId": 1,
+        "script": "Ann",
+        "action": "faceTheHero"
+      }
+    ]
   },
   "9": {
     "nodes": [

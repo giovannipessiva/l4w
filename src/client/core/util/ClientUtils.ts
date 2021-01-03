@@ -220,7 +220,7 @@ export namespace ClientUtils {
     }
 
     /** Return the direction from start to target */
-    export function getDirection(target: ICell, start: ICell) {
+    export function getDirection(target: ICell, start: ICell): DirectionEnum {
         let distI = target.i - start.i;
         let distJ = target.j - start.j;
         let direction: DirectionEnum;
