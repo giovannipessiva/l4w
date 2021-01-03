@@ -73,6 +73,7 @@ module.exports = function(grunt) {
 
         babel: {
             options: {
+                plugins: ["@babel/plugin-transform-runtime"],
                 presets: ["@babel/preset-env"]
             },
             dist: {

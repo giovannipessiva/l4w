@@ -1,3 +1,5 @@
+export const EVENT_STATE_VAR = "state";
+
 export enum HttpStatus {
     OK = 200,
     NO_CONTENT = 204,

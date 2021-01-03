@@ -8,6 +8,7 @@ import { SaveManager } from "../../manager/SaveManager";
 import { IEmptyCallback } from "../../../../common/Commons";
 import { ClientUtils } from "../../util/ClientUtils";
 import { DataDefaults } from "../../../../common/DataDefaults";
+import { EVENT_STATE_VAR } from "../../../../common/Constants";
 
 /**
  * In order to create a new script:
@@ -22,7 +23,6 @@ export abstract class AbstractScript {
     protected scene: DynamicScene;
     
     public static tooltip: string = "no description provided";
-    public static STATE_VAR: string = "state"  
     
     public constructor(event: IEvent, hero: IEvent, scene: DynamicScene) {
         this.event = event;
@@ -117,7 +117,7 @@ export abstract class AbstractScript {
     };
     
     protected incrementStateVar(): number {
-        let stateVar: string | undefined = this.loadMem(AbstractScript.STATE_VAR);
+        let stateVar: string | undefined = this.loadMem(EVENT_STATE_VAR);
         let newStateVar: number = 0;
         if(stateVar !== undefined) {
             newStateVar = Number.parseInt(stateVar);
@@ -126,12 +126,12 @@ export abstract class AbstractScript {
             }
         }
         newStateVar++;
-        this.saveMem(AbstractScript.STATE_VAR, newStateVar + "");
+        this.saveMem(EVENT_STATE_VAR, newStateVar + "");
         return newStateVar;            
     }
     
     protected setStateVar(stateVar: number) {
-        this.saveMem(AbstractScript.STATE_VAR, stateVar + "");    
+        this.saveMem(EVENT_STATE_VAR, stateVar + "");    
     }
     
     protected goToMap(mapId: string, target: ICell) {

@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
+    "@babel/plugin-transform-runtime": "7.12.10",
     "@babel/preset-env": "7.12.11",
     "@types/bcryptjs": "2.4.2",
     "@types/bluebird": "3.5.33",
@@ -66,6 +67,7 @@
   },
   "devDependenciesDocumentation": {
     "@babel/core": "Babel compiler core",
+    "@babel/plugin-transform-runtime": "Babel plugin, required for using async/await. See: https://stackoverflow.com/a/64083314",
     "@babel/preset-env": "Babel preset for each environment",
     "@types/bcryptjs": "TypeScript definitions for bcryptjs",
     "@types/bluebird": "TypeScript definitions for Bluebird implementation of Promise. Required by sequelize",

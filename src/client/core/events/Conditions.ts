@@ -1,5 +1,5 @@
-import { AbstractScript } from "./script/AbstractScript"
 import { IEvent } from "../../../common/model/Event"
+import { EVENT_STATE_VAR } from "../../../common/Constants";
 
 export namespace Condition {
 
@@ -48,7 +48,7 @@ export namespace Condition {
     }
 
     function chechStateVar(event: IEvent, val: number): boolean {
-        let stateVar: string = event.memory[AbstractScript.STATE_VAR];
+        let stateVar: string = event.memory[EVENT_STATE_VAR];
         let stateVarNum: number = Number.parseInt(stateVar);
         if (!Number.isNaN(stateVarNum)) {
             return stateVarNum === val;

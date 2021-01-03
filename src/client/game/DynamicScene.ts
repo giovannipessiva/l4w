@@ -43,8 +43,11 @@ export class DynamicScene extends AbstractScene {
 
     constructor(grid: DynamicGrid, launcher: ILauncher) {
         super(grid);
-        // Launcher method needs to be injected to avoid circular references
-        // (which cause this: "TypeError: Class extends value undefined is not a constructor or null")
+        /*
+        Launcher method needs to be injected to avoid circular references, which cause these errors:
+        - "TypeError: Class extends value undefined is not a constructor or null"
+        - "Uncaught ReferenceError: Cannot access 'AbstractScript' before initialization"
+        */
         this.launcher = launcher;
     }
 
