@@ -73,7 +73,9 @@ module.exports = function(grunt) {
 
         babel: {
             options: {
-                plugins: ["@babel/plugin-transform-runtime"],
+                plugins: ["@babel/plugin-transform-runtime", {
+                    "regenerator": true
+                }],
                 presets: ["@babel/preset-env"]
             },
             dist: {
