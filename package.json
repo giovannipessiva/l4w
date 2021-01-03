@@ -10,6 +10,7 @@
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/src/server/l4w-server.mjs"
   },
   "dependencies": {
+    "@babel/runtime": "7.12.5",
     "bcryptjs": "2.4.3",
     "compression": "1.7.4",
     "connect-session-sequelize": "7.0.4",
@@ -54,6 +55,7 @@
     "webpack": "5.11.1"
   },
   "dependenciesDocumentation": {
+    "@babel/runtime": "Required by using @babel/plugin-transform-runtime",
     "bcryptjs": "required for hashing of emails",
     "compression": "compression middleware for express, required for GZipping of textual responses",
     "connect-session-sequelize": "session store for connect-session using sequelize",
@@ -67,7 +69,7 @@
   },
   "devDependenciesDocumentation": {
     "@babel/core": "Babel compiler core",
-    "@babel/plugin-transform-runtime": "Babel plugin, required for using async/await. See: https://stackoverflow.com/a/64083314",
+    "@babel/plugin-transform-runtime": "Babel plugin, required for using async/await. See: https://stackoverflow.com/a/53736090",
     "@babel/preset-env": "Babel preset for each environment",
     "@types/bcryptjs": "TypeScript definitions for bcryptjs",
     "@types/bluebird": "TypeScript definitions for Bluebird implementation of Promise. Required by sequelize",
