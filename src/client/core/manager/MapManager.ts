@@ -4,7 +4,7 @@ import { ClientUtils } from "../util/ClientUtils"
 import { Errors } from "../util/Errors"
 import { Resource } from "../util/Resource"
 import { IMap, IMapLayer, IVertex } from "../../../common/model/Map"
-import { BlockDirection, CardinalDirection, CardinalDirections, DirectionEnum, ICell, ISize, PathfinderEnum } from "../../../common/Commons"
+import { BlockDirection, CardinalDirection, CardinalDirections, DirectionEnum, ICell, IEmptyCallback, ISize, PathfinderEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { AbstractGrid } from "../AbstractGrid"
 import { AbstractScene } from "../AbstractScene"
@@ -336,7 +336,7 @@ export namespace MapManager {
     /**
      * Will compute the value of every transient field in the Map object
      */
-    export async function initTransientData(scene: AbstractScene) {
+    export function initTransientData(scene: AbstractScene, callback: IEmptyCallback) {
         let hero: IEvent | undefined = undefined;
         let map: IMap = scene.map;
         let grid: AbstractGrid = scene.grid;
@@ -347,49 +347,54 @@ export namespace MapManager {
 
         TilesetManager.initTransientData(map.tileset, grid);
         
-        await loadAutotiles(map);
-        loadBlocks(map);
-        loadDynamicBlocks(hero, map);
+        loadAutotiles(map, () => {
+            loadBlocks(map);
+            loadDynamicBlocks(hero, map);
 
-        if(!Utils.isEmpty(map.events)) {
-            map.maxEventId = 0;
-            for(let event of map.events) {
-                if(event.id > map.maxEventId) {
-                    map.maxEventId = event.id;
+            if(!Utils.isEmpty(map.events)) {
+                map.maxEventId = 0;
+                for(let event of map.events) {
+                    if(event.id > map.maxEventId) {
+                        map.maxEventId = event.id;
+                    }
+                    EventManager.initTransientData(map, grid, <IEvent> event);
                 }
-                EventManager.initTransientData(map, grid, <IEvent> event);    
+            } else {
+                map.events = [];
             }
-        } else {
-            map.events = [];    
-        }
-        // Make sure these values are numeric
-        map.width = parseInt(map.width + "");
-        map.height = parseInt(map.height + "");
+            // Make sure these values are numeric
+            map.width = parseInt(map.width + "");
+            map.height = parseInt(map.height + "");
+
+            callback();
+        }); 
     }
     
     export function updateDynamicData(hero: IEvent, map: IMap) {
         loadDynamicBlocks(hero, map);
     }
 
-    async function loadAutotiles(map: IMap) {
+    function loadAutotiles(map: IMap, callback: IEmptyCallback) {
         if(!Utils.isEmpty(map.autotilesets)) {
-            await TilesetManager.initTransientDataAutotiles(Object.values(map.autotilesets!));
-            // For every autotile cell, compute the value used for rendering
-            // and based on proximity to other cells of the same autotile
-            for (let l = 0; l < map.layers.length; l++) {
-                let layer = map.layers[l];
-                if (layer.data !== undefined) {
-                    layer.autotileData = [];
-                    for (let gid = 0; gid < layer.data!.length; gid++) { 
-                        if(MapManager.isThisAnAutotileCell(gid, layer, map)) {
-                            let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, layer.data[gid]!, layer);
-                            layer.autotileData.push(proximityValue);
-                        } else {
-                            layer.autotileData.push(null);
+            TilesetManager.initTransientDataAutotiles(Object.values(map.autotilesets!)).then(() => {
+                // For every autotile cell, compute the value used for rendering
+                // and based on proximity to other cells of the same autotile
+                for (let l = 0; l < map.layers.length; l++) {
+                    let layer = map.layers[l];
+                    if (layer.data !== undefined) {
+                        layer.autotileData = [];
+                        for (let gid = 0; gid < layer.data!.length; gid++) {
+                            if(MapManager.isThisAnAutotileCell(gid, layer, map)) {
+                                let proximityValue = getAutotileProximityValue(gid, { w: map.width, h: map.height }, layer.data[gid]!, layer);
+                                layer.autotileData.push(proximityValue);
+                            } else {
+                                layer.autotileData.push(null);
+                            }
                         }
                     }
                 }
-            }
+                callback();
+            });
         }
     }
 

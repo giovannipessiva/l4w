@@ -259,12 +259,11 @@ export abstract class AbstractScene {
         }
         _this.map = map;
         _this.changeTile(map.tileset.image, function(abstractScene) {
-            setTimeout(async function() {
-                await MapManager.initTransientData(_this);
+            MapManager.initTransientData(_this, () => {
                 // Resume rendering
                 _this.togglePause(false);
+                callback(_this);
             });
-            callback(_this);
         });
     }
 

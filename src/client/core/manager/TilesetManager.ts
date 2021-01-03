@@ -48,9 +48,9 @@ export namespace TilesetManager {
         }
     }
 
-    export async function initTransientDataAutotiles(autotiles: IAutoTileset[]) {
+    export function initTransientDataAutotiles(autotiles: IAutoTileset[]): Promise<void> {
         // Load autotile metadata
-        await new Promise((resolve) => {
+        return new Promise((resolve) => {
             let promiseResolve = resolve;
             Resource.load("autotilesets", ResourceType.AUTOTILESET, (response) => {
                 if(response === undefined || typeof response !== "string") {
