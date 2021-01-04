@@ -5,11 +5,11 @@ import { EventManager } from "../manager/EventManager"
 import * as ScriptsRegister from "./script/ScriptsRegister"
 import { Utils } from "../../../common/Utils"
 import { DialogManager } from "../manager/DialogManager"
-import { emptyFz } from "../util/Commons"
+import { emptyFz, IDialogScriptLauncher, IEventScriptLauncher } from "../util/Commons"
+import { IDialogEdge } from "../../../common/model/Dialog"
+import { DynamicScene } from "../../game/DynamicScene"
 
-//TODO move here every instance of launch logic (beware of "Uncaught ReferenceError: Cannot access 'AbstractScript' before initialization" error)
-
-export function launchEventAction(event: IEvent, scene: any, hero: IEvent, state: number, parameters?: any): void {
+export let launchEventAction: IEventScriptLauncher = function(event: IEvent, scene: any, hero: IEvent, state: number, parameters?: any): void {
     let eventState = event.states[state];
     // On click  the hero should face the event
     if (eventState.trigger === ActionTriggerEnum.CLICK) {
@@ -59,6 +59,34 @@ export function launchEventAction(event: IEvent, scene: any, hero: IEvent, state
     // Try to start the dialog of this event
     let dialog = eventState.dialog;
     if(dialog !== undefined) {
-        DialogManager.showComplexDialog(event, scene, hero, dialog, scene.save.config, emptyFz);
+        DialogManager.showComplexDialog(event, scene, hero, dialog, scene.save.config, launchDialogAction, emptyFz);
     }
 }
+
+/**
+ * Execute an action associated to an edge 
+ */
+export let launchDialogAction: IDialogScriptLauncher = function(event: IEvent, edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): Promise<void> | void {
+    let scriptClassName = edge.script;
+    if(scriptClassName === undefined) {
+        return;
+    }
+    let scriptClass = new ScriptsRegister[scriptClassName](event, hero, scene);
+    if (Utils.isEmpty(scriptClass)) {
+        console.error("Script \"" + scriptClassName + "\" not found (dialog edge: " + edge.id + ")");
+        return;
+    }
+    let action = edge.action;
+    if(action === undefined) {
+        return;
+    }
+    if (!(action in scriptClass)) {
+        console.error("Action \"" + action + "\" not found in script \"" + scriptClassName + "\" (dialog edge: " + edge.id + ")");
+        return;
+    }
+    try {
+        return scriptClass[action](parameter);
+    } catch(e) {
+        console.error(e);
+    }
+};

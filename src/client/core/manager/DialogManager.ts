@@ -4,7 +4,7 @@ import { IEvent } from "../../../common/model/Event";
 import { ResourceType } from "../../../common/Constants";
 import { DynamicScene } from "../../game/DynamicScene";
 import { Condition } from "../events/Conditions";
-import { INumberCallback } from "../util/Commons";
+import { dialogScriptLauncherStub, IDialogScriptLauncher, INumberCallback } from "../util/Commons";
 import { Input, registerNumericKeyListener } from "../util/Input";
 import { Resource } from "../util/Resource";
 import { ClientUtils } from "../util/ClientUtils";
@@ -252,12 +252,12 @@ export namespace DialogManager {
         });
     }
     
-    export function showComplexDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialogId: number, cfg: IConfig, callback: IEmptyCallback) {
+    export function showComplexDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialogId: number, cfg: IConfig, dialogScriptLauncher: IDialogScriptLauncher, callback: IEmptyCallback) {
         loadDialog(dialogId, cfg.lang, function(dialog?: IDialogNode) {
             if(dialog === undefined) {
                 console.error("Error while loading dialog: " + dialogId);
             } else {
-                showDialog(event, scene, hero, dialog, cfg.skin, callback);
+                showDialog(event, scene, hero, dialog, cfg.skin, dialogScriptLauncher, callback);
             }
         });
     }
@@ -266,11 +266,11 @@ export namespace DialogManager {
         loadString(messageId, cfg.lang, function(str) {
             let dialog = DataDefaults.getDialogNode();
             dialog.message = str;
-            showDialog(event, scene, hero, dialog, cfg.skin, callback);
+            showDialog(event, scene, hero, dialog, cfg.skin, dialogScriptLauncherStub, callback);
         });
     }
 
-    function showDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialog: IDialogNode, skin: string, callback: IEmptyCallback): void {     
+    function showDialog(event: IEvent, scene: DynamicScene, hero: IEvent, dialog: IDialogNode, skin: string, dialogScriptLauncher: IDialogScriptLauncher, callback: IEmptyCallback): void {     
         let dlgFrame: HTMLElement | null = document.getElementById(DIALOG_FRAME_ID);
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
@@ -342,6 +342,7 @@ export namespace DialogManager {
          * Follow a dialog edge
          */
         let selectEdge = function (edge: IDialogEdge) {
+            let actionPromise;
             if(edge.action !== undefined) {
                 // Before following the edge to next node, execute its action
                 let parameter: string | undefined;
@@ -356,10 +357,17 @@ export namespace DialogManager {
                     console.warn("Input required");
                     return;
                 }
-                launchEdgeAction(event, edge, scene, hero, parameter);
-            } else if(edge.node !== undefined) {
+                actionPromise = dialogScriptLauncher(event, edge, scene, hero, parameter);
+            }
+            if(edge.node !== undefined) {
                 // Follow the edge to next node
-                showDialog(event, scene, hero, edge.node, skin, callback);
+                if(actionPromise === undefined) {
+                    showDialog(event, scene, hero, edge.node, skin, dialogScriptLauncher, callback);
+                } else {
+                    actionPromise.then(() => {
+                        showDialog(event, scene, hero, edge.node!, skin, dialogScriptLauncher, callback);
+                    });
+                }
             } else {
                 // Nothing to do here, close the dialog
                 defineClosingCondition(0);
@@ -478,35 +486,6 @@ export namespace DialogManager {
          */
         return message;
     }
-
-    /**
-     * Execute an action associated to an edge 
-     */
-    export function launchEdgeAction(event: IEvent, edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): boolean {
-        let scriptClassName = edge.script;
-        if(scriptClassName === undefined) {
-            return false;
-        }
-        let scriptClass = new scriptClassName[scriptClassName](event, hero, scene);
-        if (Utils.isEmpty(scriptClass)) {
-            console.error("Script \"" + scriptClassName + "\" not found (dialog edge: " + edge.id + ")");
-            return false;
-        }
-        let action = edge.action;
-        if(action === undefined) {
-            return false;
-        }
-        if (!(action in scriptClass)) {
-            console.error("Action \"" + action + "\" not found in script \"" + scriptClassName + "\" (dialog edge: " + edge.id + ")");
-            return false;
-        }
-        try {
-            return scriptClass[action](parameter);
-        } catch(e) {
-            console.error(e);
-        }
-        return false;
-    };
 
     export function search(root: IDialogNode, targetId: number, isTargetEdge?: boolean) {
         return treeSearch(root, targetId, (isTargetEdge !== undefined? isTargetEdge : false), new Map<number, IDialogNode>(), new Map<number, IDialogNode>());

@@ -1,4 +1,7 @@
+import { DynamicScene } from "../../game/DynamicScene";
+import { IEvent } from "../../../common/model/Event";
 import { ICell } from "../../../common/Commons"
+import { IDialogEdge } from "../../../common/model/Dialog";
 
 /**
  * Module for common type structures and function interfaces
@@ -49,3 +52,14 @@ export interface ICoordinatesCallback {
 
 export function emptyFz(): void {
 };
+
+export interface IEventScriptLauncher {
+    (event: IEvent, scene: DynamicScene, hero: IEvent, state: number, parameters?: any): void
+};
+
+export interface IDialogScriptLauncher {
+    (event: IEvent, edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): Promise<void> | void
+};
+
+export let dialogScriptLauncherStub: IDialogScriptLauncher = function (event: IEvent, edge: IDialogEdge, scene: DynamicScene, hero: IEvent, parameter?: string): void {
+}

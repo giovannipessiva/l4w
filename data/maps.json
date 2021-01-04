@@ -3642,7 +3642,7 @@
         {
           "index": 0,
           "j": 11,
-          "name": "Sig. Maiale",
+          "name": "Piggy",
           "script": "Script1",
           "i": 4,
           "charaset": "155-Animal05.png",
@@ -3666,7 +3666,7 @@
             "x": 128,
             "y": 352
           },
-          "id": 1,
+          "id": 11,
           "currentState": 0
         },
         {
@@ -3713,7 +3713,7 @@
             "x": 768,
             "y": 192
           },
-          "id": 2,
+          "id": 10,
           "currentState": 0
         },
         {

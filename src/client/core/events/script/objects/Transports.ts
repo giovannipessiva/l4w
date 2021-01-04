@@ -5,22 +5,22 @@ export class Transports extends AbstractScript {
 
     public static tooltip: string = "Provide transportation from one map to another";
 
-    public forest(): void {
+    public forest() {
         this.goToMap("1", {
             i: 21,
             j: 1
         });
     };
     
-    public farm(): void {
+    public farm() {
         this.goToMap("0", {
             i: 15,
-            j: 21
+            j: 20
         });
         this.hero.movementDirection = DirectionEnum.UP;
     };
 
-    public farmOutsideHouse(): void {
+    public farmOutsideHouse() {
         this.goToMap("0", {
             i: 13,
             j: 16
@@ -28,7 +28,7 @@ export class Transports extends AbstractScript {
         this.hero.movementDirection = DirectionEnum.DOWN;
     };
 
-    public house(): void {
+    public house() {
         this.goToMap("3", {
             i: 13,
             j: 12

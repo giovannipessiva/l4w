@@ -6,7 +6,7 @@ import { AbstractScene } from "../core/AbstractScene";
 import { EventManager } from "../core/manager/EventManager";
 import { MapManager } from "../core/manager/MapManager";
 import { SaveManager } from "../core/manager/SaveManager";
-import { emptyFz } from "../core/util/Commons";
+import { emptyFz, IDialogScriptLauncher, IEventScriptLauncher } from "../core/util/Commons";
 import { Constant } from "../core/util/Constant";
 import { DynamicGrid } from "./DynamicGrid";
 import { Utils } from "../../common/Utils";
@@ -34,21 +34,23 @@ export class DynamicScene extends AbstractScene {
     action: ICell | undefined;
     save: ISave;
 
-    launcher: ILauncher;
+    eventScriptLauncher: IEventScriptLauncher;
+    dialogScriptLauncher: IDialogScriptLauncher;
     
     dialogName: string;
     dialogText: string;
     dialogSkin: HTMLImageElement;
     dialogAction: (input?: string)=>void;
 
-    constructor(grid: DynamicGrid, launcher: ILauncher) {
+    constructor(grid: DynamicGrid, eventScriptLauncher: IEventScriptLauncher, dialogScriptLauncher: IDialogScriptLauncher) {
         super(grid);
         /*
-        Launcher method needs to be injected to avoid circular references, which cause these errors:
+        Launchers method needs to be injected to avoid circular references, which cause these errors:
         - "TypeError: Class extends value undefined is not a constructor or null"
         - "Uncaught ReferenceError: Cannot access 'AbstractScript' before initialization"
         */
-        this.launcher = launcher;
+        this.eventScriptLauncher = eventScriptLauncher;
+        this.dialogScriptLauncher = dialogScriptLauncher;
     }
 
     protected mainGameLoop_pre() {
@@ -62,7 +64,7 @@ export class DynamicScene extends AbstractScene {
         if (!Utils.isEmpty(this.hero)) {
             let launchableState = EventManager.update(this.hero, this, this.hero, this.action, time, this.pauseDuration);
             if(launchableState !== undefined) {
-                this.launcher(this.hero, this, this.hero, launchableState);
+                this.eventScriptLauncher(this.hero, this, this.hero, launchableState);
             }
             movements = EventManager.manageMovements(this.map, this.grid, this.hero, function(w: number, h: number) {
                 // Move the focus
@@ -77,7 +79,7 @@ export class DynamicScene extends AbstractScene {
             for (let event of this.map.events) {
                 let launchableState = EventManager.update(<IEvent> event, this, this.hero, this.action, time, this.pauseDuration);
                 if(launchableState !== undefined) {
-                    this.launcher(<IEvent> event, this, this.hero, launchableState);
+                    this.eventScriptLauncher(<IEvent> event, this, this.hero, launchableState);
                 }
                 movements = movements || EventManager.manageMovements(this.map, this.grid, <IEvent> event, emptyFz, emptyFz);
             }

@@ -15,6 +15,9 @@ import { EVENT_STATE_VAR } from "../../../../common/Constants";
  * - Create a class extending AbstratScript
  * - Add it to ScriptRegister
  * - (optional) add a custom "tooltip" field to the class
+ * In order to create a new action:
+ * - Add a new public method
+ * - It can return a Promise if it is necessary to wait for it
  */
 export abstract class AbstractScript {
     
@@ -45,7 +48,7 @@ export abstract class AbstractScript {
 
     protected showComplexDialog(dialogId: number, callback: IEmptyCallback): boolean {
         let cfg = this.getConfig();
-        DialogManager.showComplexDialog(this.event, this.scene, this.hero, dialogId, cfg, callback);
+        DialogManager.showComplexDialog(this.event, this.scene, this.hero, dialogId, cfg, this.scene.dialogScriptLauncher, callback);
         return true;
     }
     
