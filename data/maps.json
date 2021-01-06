@@ -1254,8 +1254,8 @@
             96,
             80,
             81,
-            81,
-            81,
+            null,
+            null,
             81,
             81,
             81,
@@ -1292,8 +1292,8 @@
             75,
             96,
             97,
-            97,
-            97,
+            null,
+            null,
             97,
             97,
             97,
@@ -1697,9 +1697,9 @@
             null,
             null,
             null,
-            null,
-            null,
-            null,
+            258,
+            258,
+            258,
             null,
             null,
             null,
@@ -1727,15 +1727,15 @@
             258,
             258,
             null,
+            258,
+            258,
+            258,
             null,
+            258,
+            258,
             null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
+            258,
+            258,
             258,
             258,
             258,
@@ -3735,7 +3735,7 @@
           "charaset": "155-Animal05.png",
           "states": [
             {
-              "direction": 1,
+              "direction": 2,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085484700,
               "mSpeed": 0.1024,
@@ -3812,7 +3812,7 @@
           "j": 19,
           "states": [
             {
-              "direction": 1,
+              "direction": 3,
               "charaset": "155-Animal05.png",
               "animationStartTime": 1515085494758,
               "mSpeed": 0.1536,
@@ -3837,7 +3837,7 @@
           "name": "Teleport",
           "script": "Transports",
           "i": 15,
-          "j": 21,
+          "j": 22,
           "states": [
             {
               "direction": 2,
@@ -3854,7 +3854,7 @@
           "memory": {},
           "position": {
             "x": 480,
-            "y": 672
+            "y": 704
           },
           "id": 1,
           "currentState": 0
@@ -9162,6 +9162,14 @@
               "direction": 2,
               "mSpeed": 0.128,
               "frequencyVal": 0.006
+            },
+            {
+              "direction": 2,
+              "condition": "isStateVar1",
+              "trigger": 0,
+              "dialog": 16,
+              "action": "",
+              "charaset": "asgan.png"
             }
           ],
           "memory": {},
@@ -9220,6 +9228,56 @@
           "position": {
             "x": 1440,
             "y": 224
+          }
+        },
+        {
+          "id": 4,
+          "name": "NPC",
+          "i": 6,
+          "j": 16,
+          "states": [
+            {
+              "direction": 2,
+              "condition": "always",
+              "trigger": 1,
+              "dialog": 14,
+              "action": "",
+              "charaset": "",
+              "mSpeed": 0.128,
+              "frequencyVal": 0.006
+            }
+          ],
+          "memory": {},
+          "script": "",
+          "currentState": 0,
+          "position": {
+            "x": 192,
+            "y": 512
+          }
+        },
+        {
+          "id": 5,
+          "name": "NPC",
+          "i": 6,
+          "j": 17,
+          "states": [
+            {
+              "direction": 2,
+              "condition": "always",
+              "trigger": 1,
+              "dialog": 15,
+              "action": "",
+              "charaset": "",
+              "mSpeed": 0.128,
+              "frequencyVal": 0.006
+            }
+          ],
+          "memory": {},
+          "script": "",
+          "currentState": 0,
+          "position": {
+            "x": 192,
+            "y": 544
           }
         }
       ],

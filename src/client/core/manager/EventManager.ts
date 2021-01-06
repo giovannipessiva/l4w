@@ -3,7 +3,7 @@ import { Constant } from "../util/Constant"
 import { Resource } from "../util/Resource"
 import { AbstractGrid } from "../AbstractGrid"
 import { ClientUtils } from "../util/ClientUtils"
-import { IEvent } from "../../../common/model/Event"
+import { IEvent, IEventState } from "../../../common/model/Event"
 import { ICell, ActionTriggerEnum, BlockDirection, DirectionEnum, RotationEnum, RelativeDirectionEnum, ICellCallback, IPoint } from "../../../common/Commons"
 import { IMap } from "../../../common/model/Map"
 import { CharacterManager } from "../manager/CharacterManager"
@@ -64,27 +64,52 @@ export namespace EventManager {
         }
         return Condition[condition](event);
     }
+
+    function manageActionAlreadyTriggered(state: IEventState, isActionTriggered: boolean): boolean {
+        if(state.trigger === ActionTriggerEnum.TOUCH || state.trigger === ActionTriggerEnum.OVER) {
+            if(isActionTriggered) {
+                if(state.alreadyTriggered) {  
+                    // Avoid triggering it again
+                    isActionTriggered = false;
+                } else {
+                    // Set te flag to avoid immediate other triggers
+                    state.alreadyTriggered = true;
+                }
+            } else {
+                // Reset the alreadyTriggered flag
+                state.alreadyTriggered = false;
+            }
+        }        
+        return isActionTriggered;
+    }
     
-    function isActionTriggered(event: IEvent, s: number, hero: IEvent, actionCell?: ICell) {
+    function isActionTriggered(event: IEvent, s: number, hero: IEvent, actionCell?: ICell): boolean {
+        let isActionTriggered: boolean;
         switch(event.states[s].trigger) {
             case ActionTriggerEnum.CLICK:
                 // If action is not on the event, exit
                 if(actionCell === undefined || actionCell.i !== event.i || actionCell.j !== event.j) {
-                    return false;
+                    isActionTriggered = false;
+                    break;
                 }
                 // else, continue as "TOUCH" case
             case ActionTriggerEnum.TOUCH:
                 let i_diff = Math.abs(event.i - hero.i);
                 let j_diff = Math.abs(event.j - hero.j);
-                return (i_diff === 0 && j_diff <= 1) || (i_diff <= 1 && j_diff === 0);
+                isActionTriggered = (i_diff === 0 && j_diff <= 1) || (i_diff <= 1 && j_diff === 0);
+                break;
             case ActionTriggerEnum.OVER:
-                return event.i === hero.i && event.j === hero.j;                     
+                isActionTriggered = event.i === hero.i && event.j === hero.j;
+                break;                   
             case ActionTriggerEnum.AUTO:
-                return true;
+                isActionTriggered = true;
+                break;
             default:
                 console.error("Unexpected case: " + event.states[s].trigger);
-                return false;
+                isActionTriggered = false;
         }
+        isActionTriggered = manageActionAlreadyTriggered(event.states[s], isActionTriggered);
+        return isActionTriggered;
     }
     
     export function startMovement(e: IEvent, i: number, j: number, onTargetReached?: ICellCallback): boolean {

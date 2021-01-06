@@ -1,5 +1,5 @@
 /**
- * Module for constants values
+ * Module for client-side constants values
  */
 export namespace Constant {
 

@@ -31,8 +31,6 @@ export namespace DialogManager {
 
     let genericMessages: Map<number, IGenericMessage>;
 
-    let onDialogClose: IEmptyCallback | undefined;
-
     /**
      * Method called when the dialog is to be opened
      */
@@ -52,7 +50,7 @@ export namespace DialogManager {
     /**
      * Method called when the dialog is to be closed
      */
-    export function closeDialog(stopIt: boolean = false) {
+    export function closeDialog() {
         Input.enableActionEvents();
         let dlgContainer: HTMLElement | null = document.getElementById(DIALOG_CONTAINER_ID); 
         if(dlgContainer === null) {
@@ -64,28 +62,28 @@ export namespace DialogManager {
         setTimeout(function() {
             dlgContainer!.style.display = "none";
         }, FADING_TIME);
-        if(onDialogClose !== undefined && !stopIt) {
-            onDialogClose();
-        }
     };
 
     /**
-     * Defines how the dialog will be closed
+     * Defines how current dialog will be closed:
+     * - Automatically on timeout, if param "closingTimeout" is defined (even if it's 0)
+     * - On user action, if param "closingTimeout" is undefined
+     * Return a Promise that will be resolved when the current dialog is closed
      */
-    function defineClosingCondition(closingTimeout?: number): void {
-        if(closingTimeout !== undefined) {
-            // Close on timeout
-            setTimeout(function() {
-                closeDialog();
-            }, closingTimeout);
-        } else {
-            // Close on user action, not less than "MIN_TIME_BEFORE_MANUAL_CLOSE" ms after showing it
-            setTimeout(function() {
-                Input.addActionCallback(function() {
-                    closeDialog();
-                })
-            }, MIN_TIME_BEFORE_MANUAL_CLOSE);
-        }
+    function defineClosingCondition(closingTimeout?: number): Promise<void> {
+        return new Promise<void>((resolve) => {
+            if(closingTimeout !== undefined) {
+                // Close on timeout
+                setTimeout(() => {
+                    resolve();
+                }, closingTimeout);
+            } else {
+                // Close on user action, not less than "MIN_TIME_BEFORE_MANUAL_CLOSE" ms after showing it
+                setTimeout(() =>  {
+                    Input.addActionCallback(resolve);
+                }, MIN_TIME_BEFORE_MANUAL_CLOSE);
+            }
+        });
     }
 
     export function loadString(stringId: string, language: LanguageEnum, callback: (str?: string) => void): void {
@@ -275,7 +273,6 @@ export namespace DialogManager {
         let dlgFace: HTMLElement | null = document.getElementById(DIALOG_FACE_ID);
         let dlgName: HTMLElement | null = document.getElementById(DIALOG_NAME_ID);
         let dlgArea: HTMLElement | null = document.getElementById(DIALOG_AREA_ID);
-        
         if(dlgFace === null) {
             console.error("Element not foud: " + DIALOG_FACE_ID);
             return;
@@ -292,6 +289,7 @@ export namespace DialogManager {
             console.error("Element not foud: " + DIALOG_FRAME_ID);
             return;
         }
+        
         openDialog();
         if(Utils.isEmpty(skin)) {
             console.error("skin is not defined!");
@@ -319,7 +317,7 @@ export namespace DialogManager {
         } else {
             dlgArea.innerText = "";
         }
-        let dialogEdgeArea: HTMLElement | null = document.getElementById(DIALOG_EDGE_AREA_ID);
+        let dialogEdgeArea = document.getElementById(DIALOG_EDGE_AREA_ID);
         if(dialogEdgeArea === null) {
             console.error("Element not foud: " + DIALOG_EDGE_AREA_ID);
             return;
@@ -328,7 +326,6 @@ export namespace DialogManager {
         while (dialogEdgeArea.firstChild) {
             dialogEdgeArea.removeChild(dialogEdgeArea.firstChild);
         }
-        onDialogClose = undefined;
         let activeEdges: IDialogEdge[] = [];
         if(dialog.edges !== undefined) {
             for(let edge of dialog.edges) {
@@ -341,12 +338,12 @@ export namespace DialogManager {
         /**
          * Follow a dialog edge
          */
-        let selectEdge = function (edge: IDialogEdge) {
+        let selectEdge = function(edge: IDialogEdge) {
             let actionPromise;
             if(edge.action !== undefined) {
                 // Before following the edge to next node, execute its action
                 let parameter: string | undefined;
-                let input: HTMLElement | null = document.getElementById(DIALOG_USER_INPUT_ID);
+                let input = document.getElementById(DIALOG_USER_INPUT_ID);
                 if(input !== null) {
                     // Read user input, sanitize it and use it
                     parameter = (<HTMLInputElement> input).value;
@@ -364,61 +361,68 @@ export namespace DialogManager {
                 if(actionPromise === undefined) {
                     showDialog(event, scene, hero, edge.node, skin, dialogScriptLauncher, callback);
                 } else {
+                    // If the script returned a Promise, wait for it before following the edge
                     actionPromise.then(() => {
                         showDialog(event, scene, hero, edge.node!, skin, dialogScriptLauncher, callback);
                     });
                 }
             } else {
-                // Nothing to do here, close the dialog
-                defineClosingCondition(0);
+                // Nothing to do here, close the dialog now
+                defineClosingCondition(0)
+                    .then(closeDialog);
             }
         };
 
         if(activeEdges.length === 0) {
             // No edges to follow, the dialog will be closed
-            defineClosingCondition(dialog.closingTimeout);
-        } else {
-            if(activeEdges.length === 1 && activeEdges[0].message === undefined) {
-                if(activeEdges[0].inputType === undefined) {
-                    // Nothing to show, will follow edge when the dialog is closed
-                    onDialogClose = function() {
+            defineClosingCondition(dialog.closingTimeout)
+                .then(closeDialog);
+        } else if(activeEdges.length === 1 && activeEdges[0].message === undefined) {
+            // A single edge to follow, without any message to show
+            if(activeEdges[0].inputType === undefined) {
+                // No input required, will follow edge when the dialog is closed
+                defineClosingCondition(dialog.closingTimeout)
+                    .then(() => {
                         selectEdge(activeEdges[0]);
-                    }
-                    defineClosingCondition(dialog.closingTimeout);
-                } else {
-                    // Request input
-                    let input = document.createElement("input");
-                    switch(activeEdges[0].inputType) {
-                        case DialogInputTypeEnum.INTEGER:
-                            input.type = "number";
-                            break;
-                        case DialogInputTypeEnum.TEXT:
-                            input.type = "text";
-                            break;
-                        default:
-                            console.error("Unexpected DialogInputType for edge: " + activeEdges[0].id);
-                    }
-                    input.id = DIALOG_USER_INPUT_ID;
-                    dialogEdgeArea.appendChild(input);   
-                }
+                    });
             } else {
-                // Display active edges messages
-                let i = 1;
-                for(let edge of activeEdges) {
-                    let div = document.createElement("div");
-                    div.classList.add("l4wDialogEdge");
-                    dialogEdgeArea.appendChild(div);
-                    if(edge.message !== undefined) {
-                        div.innerText = edge.message; 
-                    }
-                    let selectionCallbacK = function(e: Event) {
-                        div.classList.add("l4wDialogEdgeSelected");
-                        setTimeout(() => { selectEdge(edge); }, EDGE_ACTIVATION_DELAY);
-                    }
-                    div.onclick = selectionCallbacK;
-                    registerNumericKeyListener(i, selectionCallbacK);
-                    i++;
+                // Request input
+                let inputArea = document.getElementById("inputArea");
+                let input = <HTMLInputElement | null> document.getElementById("input");
+                if(inputArea === null || input === null) {
+                    console.error("Cannot find input elements");
+                    return;
                 }
+                switch(activeEdges[0].inputType) {
+                    case DialogInputTypeEnum.INTEGER:
+                        input.type = "number";
+                        break;
+                    case DialogInputTypeEnum.TEXT:
+                        input.type = "text";
+                        break;
+                    default:
+                        console.error("Unexpected DialogInputType for edge: " + activeEdges[0].id);
+                }
+                inputArea.style.display = "block";
+                //TODO define closingCondition with input processing
+            }
+        } else {
+            // Display active edges messages
+            let i = 1;
+            for(let edge of activeEdges) {
+                let div = document.createElement("div");
+                div.classList.add("l4wDialogEdge");
+                dialogEdgeArea.appendChild(div);
+                if(edge.message !== undefined) {
+                    div.innerText = edge.message; 
+                }
+                let selectionCallbacK = function(e: Event) {
+                    div.classList.add("l4wDialogEdgeSelected");
+                    setTimeout(() => { selectEdge(edge); }, EDGE_ACTIVATION_DELAY);
+                }
+                div.onclick = selectionCallbacK;
+                registerNumericKeyListener(i, selectionCallbacK);
+                i++;
             }
         }
     }

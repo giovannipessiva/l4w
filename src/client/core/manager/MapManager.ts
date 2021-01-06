@@ -499,8 +499,6 @@ export namespace MapManager {
         return ClientUtils.isMovementBlocked(map, i, j, direction, ignoreDynamicBlocks);            
     }
 
-
-
     /**
      * Return whether the cell contains an autotile value
      */

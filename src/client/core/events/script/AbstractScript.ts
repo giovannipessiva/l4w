@@ -52,25 +52,24 @@ export abstract class AbstractScript {
         return true;
     }
     
-    protected moveToTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
-        EventManager.startMovement(this.event, target.i, target.j, onTargetReached);
-        return true;  
+    protected moveToTarget(evt: IEvent, target: ICell, onTargetReached?: ICellCallback) {
+        EventManager.startMovement(evt, target.i, target.j, onTargetReached);
     }
     
-    protected stepToTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
+    protected stepToTarget(evt: IEvent, target: ICell, onTargetReached?: ICellCallback) {
         let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
-        return this.stepToDirection(direction, onTargetReached);  
+        this.stepToDirection(evt, direction, onTargetReached);  
     }
     
-    protected stepToDirection(direction: DirectionEnum, onTargetReached?: ICellCallback): boolean {
-        let target: ICell = ClientUtils.moveToDirection(this.event, direction);
-        return this.moveToTarget(target, onTargetReached);
+    protected stepToDirection(evt: IEvent, direction: DirectionEnum, onTargetReached?: ICellCallback) {
+        let target: ICell = ClientUtils.moveToDirection(evt, direction);
+        this.moveToTarget(evt, target, onTargetReached);
     }
     
-    protected stepFromTarget(target: ICell, onTargetReached?: ICellCallback): boolean {
-        let direction: DirectionEnum = ClientUtils.getDirection(target, this.event);
+    protected stepFromTarget(evt: IEvent, target: ICell, onTargetReached?: ICellCallback) {
+        let direction: DirectionEnum = ClientUtils.getDirection(target, evt);
         direction = ClientUtils.getOpposedDirections(direction);
-        return this.stepToDirection(direction, onTargetReached);  
+        this.stepToDirection(evt, direction, onTargetReached);  
     }
 
     protected getEventById(eventId: number) {

@@ -15,7 +15,7 @@ export class Transports extends AbstractScript {
     public farm() {
         this.goToMap("0", {
             i: 15,
-            j: 20
+            j: 21
         });
         this.hero.movementDirection = DirectionEnum.UP;
     };

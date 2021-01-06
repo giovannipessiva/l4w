@@ -4,5 +4,6 @@
  */
 export * from "./npc/BaseScript";
 export * from "./npc/Ann";
+export * from "./npc/Asgan";
 export * from "./objects/Transports";
 export * from "./test/Script1";

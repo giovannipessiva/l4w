@@ -298,8 +298,14 @@ export namespace MapperPage {
         } else {
             document.title = PAGE_TITLE;
         }
-        (<HTMLButtonElement>$("#saveButton")[0]).disabled = !edited;
-        (<HTMLButtonElement>$("#reloadButton")[0]).disabled = !edited;
+        let saveButton = <HTMLButtonElement | undefined> $("#saveButton")[0];
+        if(saveButton !== undefined) {
+            saveButton.disabled = !edited;
+        }
+        let reloadButton = <HTMLButtonElement | undefined> $("#reloadButton")[0];
+        if(reloadButton !== undefined) {
+            reloadButton.disabled = !edited;
+        }
 
         let jsTree = $("#mapPanel").jstree(true);
         // Disable maps selection

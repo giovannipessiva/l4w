@@ -101,7 +101,7 @@ export namespace Game {
     }
 
     export function load() {
-        DialogManager.closeDialog(true);
+        DialogManager.closeDialog();
         let canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("canvas1");
         loadSave(canvas, function(save?: ISave) {
             scene.loadSave(save, function(success: boolean) {

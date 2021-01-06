@@ -114,7 +114,7 @@ export namespace DataDefaults {
             j: 0,
             states: [getEventState()],
             memory: {},
-            script: "BaseScript",
+            script: "",
             currentState: 0
         };
         return event;

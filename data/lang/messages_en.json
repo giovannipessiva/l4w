@@ -74,5 +74,17 @@
     "E0M": "Drink",
     "E1M": "Take",
     "E5M": "Piss in it"
+  },
+  "D13": {
+    "N0M": "This road lead to the capital. It's a long journey, I am not ready to go"
+  },
+  "D14": {
+    "N0M": "This road leads to the capital. It's a long journey, I'm not ready to go"
+  },
+  "D15": {
+    "N0M": "This road leads to the capital. It's a long journey, I'm not ready to go"
+  },
+  "D16": {
+    "N0M": "Have you found any means of transport?"
   }
 }

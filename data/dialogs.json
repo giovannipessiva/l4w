@@ -330,7 +330,8 @@
       {
         "id": 0,
         "face": "Fart.png",
-        "name": "Fart"
+        "name": "Fart",
+        "message": "Why is this scarecrow dressed better than me?"
       }
     ],
     "edges": []
@@ -379,6 +380,76 @@
         "id": 0,
         "name": "Piggy",
         "message": "Oink oink"
+      }
+    ],
+    "edges": []
+  },
+  "13": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart",
+        "edgeIds": [
+          0
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": 0,
+        "script": "BaseScript",
+        "action": "speak"
+      }
+    ]
+  },
+  "14": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Fart.png",
+        "name": "Fart",
+        "edgeIds": [
+          0
+        ],
+        "message": "This road leads to the capital. It's a long journey, I'm not ready to go"
+      }
+    ],
+    "edges": [
+      {
+        "id": 0,
+        "script": "BaseScript",
+        "action": "flee"
+      }
+    ]
+  },
+  "15": {
+    "nodes": [
+      {
+        "id": 0,
+        "edgeIds": [
+          3
+        ],
+        "face": "Fart.png",
+        "name": "Fart",
+        "message": "This road leads to the capital. It's a long journey, I'm not ready to go"
+      }
+    ],
+    "edges": [
+      {
+        "id": 3,
+        "script": "BaseScript",
+        "action": "flee"
+      }
+    ]
+  },
+  "16": {
+    "nodes": [
+      {
+        "id": 0,
+        "face": "Asgan.png",
+        "name": "Asgan",
+        "edgeIds": []
       }
     ],
     "edges": []

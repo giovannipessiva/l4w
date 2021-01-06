@@ -1,4 +1,4 @@
-import { ICell, IPoint, DirectionEnum, PathfinderEnum, ICellCallback } from "../Commons"
+import { ICell, IPoint, DirectionEnum, PathfinderEnum, ICellCallback, ActionTriggerEnum } from "../Commons"
 import { ICharacter } from "./Character"
 
 /**
@@ -26,11 +26,15 @@ export interface IEvent extends ICell {
 }
 
 export interface IEventState extends ICharacter {
+    // Persistent data
     condition: string; // Name of function that returns true if this state can be active (see Conditions.ts)
-    trigger?: number; // Type of interaction which will start the action
+    trigger?: ActionTriggerEnum; // Type of interaction which will start the action
     action?: string; // Method of the script that will be invoked by the trigger
     dialog?: number; // Id of the dialog for this state
     movement?: IMovement; // Details of a predetermined movement associated to this event state
+
+    // Transient data
+    alreadyTriggered?: boolean; // Used to mark OVER and TOUCH event that have just been triggered
 }
 
 export interface ISentientBeingData {

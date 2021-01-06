@@ -3,6 +3,7 @@ import { emptyFz } from "../../../util/Commons";
 import { IEvent } from "../../../../../common/model/Event"
 import { DynamicScene } from "../../../../game/DynamicScene"
 import { Utils } from "../../../../../common/Utils";
+import { ICell } from "../../../../../common/Commons";
 
 export const DEFAULT_MESSAGE = "msg";
 export const DEFAULT_DIALOG = "dlg";
@@ -37,5 +38,12 @@ export class BaseScript extends AbstractScript {
         if(currentEventState.dialog !== undefined) {
             this.showComplexDialog(currentEventState.dialog, emptyFz);
         }
+    }
+
+    public flee(): Promise<ICell> {
+        let _this = this;
+        return new Promise<ICell>(function(resolve, reject) {
+            _this.stepFromTarget(_this.hero, _this.event, resolve);
+        });
     }
 };

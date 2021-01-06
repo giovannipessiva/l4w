@@ -270,10 +270,6 @@ export namespace ClientUtils {
         return dx + dy;        
     }
 
-    export function getRandomBoolean(): boolean {
-        return Math.random() >= 0.5;
-    }
-
     /**
      * Returns a random integer between min (inclusive) and max (inclusive)
      */
