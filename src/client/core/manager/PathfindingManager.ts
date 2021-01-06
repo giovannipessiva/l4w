@@ -398,7 +398,7 @@ function dStarLite(map: IMap, current: ICell, target: ICell): DirectionEnum {
 
 /**
  * Decide next step considering only the path from current to target as the crow flies.
- * Will not try to side step blocks, because it would result in a less predictable
+ * Will not try to sidestep blocks, because it would result in a less predictable
  * movement for the user; it's better to fail in a consistent way
  */
 function basicPathfinding(map: IMap, current: ICell, target: ICell): DirectionEnum {
@@ -412,7 +412,7 @@ function basicPathfinding(map: IMap, current: ICell, target: ICell): DirectionEn
         } else if(distI < 0) {
             direction = DirectionEnum.LEFT;
         } else {
-            // Will not try to side step
+            // Will not try to sidestep
         }
         // If first direction is blocked, try second
         if (MapManager.isMovementTowardsTargetBlocked(map, current.i, current.j, direction, target)) {
@@ -421,7 +421,7 @@ function basicPathfinding(map: IMap, current: ICell, target: ICell): DirectionEn
             } else if(distJ < 0) {
                 direction = DirectionEnum.UP;
             } else {
-                // Will not try to side step
+                // Will not try to sidestep
             }
         }
     } else {
@@ -430,7 +430,7 @@ function basicPathfinding(map: IMap, current: ICell, target: ICell): DirectionEn
         } else if(distJ < 0) {
             direction = DirectionEnum.UP;
         } else {
-            // Will not try to side step
+            // Will not try to sidestep
         }
         // If first direction is blocked, try second
         if (MapManager.isMovementTowardsTargetBlocked(map, current.i, current.j, direction, target)) {
@@ -439,7 +439,7 @@ function basicPathfinding(map: IMap, current: ICell, target: ICell): DirectionEn
             } else if(distI < 0) {
                 direction = DirectionEnum.LEFT;
             } else {
-                // Will not try to side step
+                // Will not try to sidestep
             }
         }
     }

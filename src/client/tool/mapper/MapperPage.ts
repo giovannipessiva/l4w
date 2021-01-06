@@ -404,6 +404,10 @@ export namespace MapperPage {
         }
         
         loadActions();
+
+        let dialogEditorCheckbox = (<HTMLInputElement>document.getElementById("dialogEditorCheckbox"));
+        dialogEditorCheckbox.checked = state.dialog !== undefined;
+        toggleDialogEditor();
         
         // Update total states count
         (<HTMLElement>document.getElementById("tot")).innerText = currentEvent.states.length + "";
@@ -838,11 +842,18 @@ export namespace MapperPage {
         }
     }
 
-    export function toggleDialogEditor() {
-        let dialogPanelStyle = document.getElementById("dialogPanel")!.style;
-        let checkBox = <HTMLInputElement> document.getElementById("toggleDialogEditor");
-        if (checkBox.checked){
-            dialogPanelStyle.display = "block";
+    export function toggleDialogEditor(open?: boolean) {
+        let dialogPanel = document.getElementById("dialogPanel");
+        if(dialogPanel === null) {
+            console.error("Canont find element with id: dialogPanel");
+            return;
+        }
+        let checkBox = <HTMLInputElement> document.getElementById("dialogEditorCheckbox");
+        if(open !== undefined) {
+            // Force it
+            checkBox.checked = open;
+        }
+        if (checkBox.checked) {
             let dialogId = currentState.dialog;
             if(dialogId === undefined) {
                 dialogId = DataDefaults.DEFAULT_ID;
@@ -852,13 +863,29 @@ export namespace MapperPage {
             }
             DialogManager.loadDialog(dialogId, gameConfig.ui.lang, function(node) {
                 if(node !== undefined) {
+                    // Load the dialog summary
                     dialogSummary.$data.root = node;
                     currentState.dialog = dialogId;
                     currentDialogId = dialogId;
+                    dialogPanel!.style.display = "block";
+                    // Hide the dialog editor
+                    let dialogEditPanel = document.getElementById("dialogEditPanel");
+                    if(dialogEditPanel === null) {
+                        console.error("Canont find element with id: dialogEditPanel");
+                        return;
+                    }
+                    dialogEditPanel.style.display = "none";
                 }
             });
+            // Position the panel adiacent to the event editor
+            let eventEditorVue = document.getElementById("eventEditorVue");
+            if(eventEditorVue === null) {
+                console.error("Canont find element with id: eventEditorVue");
+                return;
+            }
+            dialogPanel.style.top = (eventEditorVue.getBoundingClientRect().top + window.pageYOffset) + "px";
         } else {
-            dialogPanelStyle.display = "none";
+            dialogPanel.style.display = "none";
         }
     }
 

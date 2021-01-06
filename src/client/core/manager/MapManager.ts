@@ -395,6 +395,8 @@ export namespace MapManager {
                 }
                 callback();
             });
+        } else {
+            callback();
         }
     }
 

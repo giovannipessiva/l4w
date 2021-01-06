@@ -187,10 +187,13 @@ export namespace Mapper {
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "1")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + "2")).disabled = false;
         (<HTMLButtonElement>document.getElementById(MapperPage.BUTTON_ID_MODE + editMode)).disabled = true;
-        (<HTMLButtonElement>document.getElementById("layersPanel")).hidden = isEditEvents;
-        (<HTMLButtonElement>document.getElementById("tilePanel")).hidden = isEditEvents;
-        (<HTMLButtonElement>document.getElementById("autotilePickerVue")).hidden = isEditEvents;
-        (<HTMLButtonElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
+        (<HTMLDivElement>document.getElementById("layersPanel")).hidden = isEditEvents;
+        (<HTMLDivElement>document.getElementById("tilePanel")).hidden = isEditEvents;
+        (<HTMLDivElement>document.getElementById("autotilePickerVue")).hidden = isEditEvents;
+        (<HTMLDivElement>document.getElementById("eventPanel")).hidden = !isEditEvents;
+        if(!isEditEvents) {
+            (<HTMLDivElement>document.getElementById("dialogPanel")).style.display = "none";
+        }
     };
     
     export function changeEventPosition(event: IEvent, i: number, j: number) {

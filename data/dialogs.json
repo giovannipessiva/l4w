@@ -180,36 +180,43 @@
           0,
           1,
           2
-        ]
+        ],
+        "message": "Greetings, what are you looking for?"
       },
       {
         "id": 1,
         "face": "Ann.png",
-        "name": "Ann"
+        "name": "Ann",
+        "message": "Not right now"
       },
       {
         "id": 2,
         "face": "Ann.png",
-        "name": "Ann"
+        "name": "Ann",
+        "message": "You mean the old Jack? He wouldn't hurt a fly"
       },
       {
         "id": 3,
         "face": "Ann.png",
-        "name": "Ann"
+        "name": "Ann",
+        "message": "I am not selling them, sorry"
       }
     ],
     "edges": [
       {
         "id": 0,
-        "nodeId": 1
+        "nodeId": 1,
+        "message": "Do you have any work for me?"
       },
       {
         "id": 1,
-        "nodeId": 2
+        "nodeId": 2,
+        "message": "Please hide me, a big giant is coming to get me!"
       },
       {
         "id": 2,
-        "nodeId": 3
+        "nodeId": 3,
+        "message": "How much for a pig?"
       }
     ]
   },
@@ -228,31 +235,19 @@
         "face": "Fart.png",
         "name": "Fart",
         "edgeIds": [
-          0
+          0,
+          1,
+          5
         ]
       },
       {
-        "id": 1,
-        "edgeIds": [
-          2,
-          3,
-          4
-        ],
-        "face": "Fart.png",
-        "name": "Fart"
+        "id": 4
       },
       {
-        "id": 3,
-        "face": "Fart.png",
-        "name": "Fart"
+        "id": 5
       },
       {
-        "id": 4,
-        "face": "Fart.png",
-        "name": "Fart"
-      },
-      {
-        "id": 5,
+        "id": 6,
         "face": "Fart.png",
         "name": "Fart"
       }
@@ -260,19 +255,15 @@
     "edges": [
       {
         "id": 0,
-        "nodeId": 1
-      },
-      {
-        "id": 2,
-        "nodeId": 3
-      },
-      {
-        "id": 3,
         "nodeId": 4
       },
       {
-        "id": 4,
+        "id": 1,
         "nodeId": 5
+      },
+      {
+        "id": 5,
+        "nodeId": 6
       }
     ]
   },
@@ -315,12 +306,14 @@
         "name": "Fart",
         "edgeIds": [
           0
-        ]
+        ],
+        "message": "Cool, an hatchet! I could do a lot of things with this"
       },
       {
         "id": 1,
         "face": "Ann.png",
-        "name": "Ann"
+        "name": "Ann",
+        "message": "Would you be so kind to avoid touching that?"
       }
     ],
     "edges": [
@@ -379,5 +372,15 @@
         "id": 4
       }
     ]
+  },
+  "12": {
+    "nodes": [
+      {
+        "id": 0,
+        "name": "Piggy",
+        "message": "Oink oink"
+      }
+    ],
+    "edges": []
   }
 }

@@ -41,16 +41,6 @@
   "D5": {
     "N0M": "It's a well... I can't see the bottom"
   },
-  "D4": {
-    "N0M": "It's a wood bucket, full of water",
-    "N1M": "It doesn't seem very hygienic to me...",
-    "N3M": "No thank you",
-    "N4M": "I would, but my back hurts... I guess I should work less",
-    "N5M": "I would rather not",
-    "E2M": "Drink",
-    "E3M": "Take",
-    "E4M": "Piss"
-  },
   "D6": {
     "N0M": "It's a well... I can't see the bottom"
   },
@@ -72,5 +62,17 @@
   "D8": {
     "N0M": "Cool, an hatchet! I could do a lot of things with this",
     "N1M": "Would you be so kind to avoid touching that?"
+  },
+  "D12": {
+    "N0M": "Oink oink"
+  },
+  "D4": {
+    "N0M": "It's a wood bucket, full of water",
+    "N4M": "No thank you",
+    "N5M": "I would, but my back hurts... I guess I should work less",
+    "N6M": "I would rather not",
+    "E0M": "Drink",
+    "E1M": "Take",
+    "E5M": "Piss in it"
   }
 }

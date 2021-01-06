@@ -5,7 +5,7 @@
 			<tr><td>Condition</td>		<td><select id="condition"></select></td></tr>
 			<tr><td>Trigger</td>		<td><select id="trigger"></select></td></tr>
 			<tr><td>Action</td>			<td><select id="action" style="background-color:#d0ffd0"></select></td></tr>
-			<tr><td>Dialog</td>			<td><input id="toggleDialogEditor" type="checkbox" onclick="L4W_mapper.MapperPage.toggleDialogEditor()"/></td></tr>
+			<tr><td>Dialog</td>			<td><input id="dialogEditorCheckbox" type="checkbox" onclick="L4W_mapper.MapperPage.toggleDialogEditor()"/></td></tr>
 			<tr><td>&nbsp;</td>			<td></td></tr>
 			<tr><td>Charaset</td>		<td><select id="charasets"></select></td></tr>
 			<tr><td>Visible</td>		<td><input id="visible" type="checkbox" checked /></td></tr>

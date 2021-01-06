@@ -242,15 +242,15 @@ export default Vue.extend({
                     if(disconnectedNode.id === nodeId) {
                         node = disconnectedNode;
                         isNodeReferenced = false;
+                        break;
                     }
                 }
             }
             if(node !== undefined) {
                 Vue.set(edge, "nodeReferenced", isNodeReferenced);
                 Vue.set(edge, "nodeId", nodeId);
-                Vue.set(edge, "node", <IDialogNode> node);
+                Vue.set(edge, "node", node);
             }
-            this.updateFocus();
         },
         onScriptChange(event: Event, edge: IDialogEdge) {
             loadEdgeScriptActions(edge);
@@ -276,7 +276,7 @@ export default Vue.extend({
                     }
                 }
             }
-            // Focus node message, or last edge message
+            // Focus node message
             if(this.node !== undefined && this.$refs.dialogNodeMessage != undefined) {
                 (<HTMLElement> this.$refs.dialogNodeMessage).focus();
             }
