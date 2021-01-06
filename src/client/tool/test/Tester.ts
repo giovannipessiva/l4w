@@ -1,13 +1,13 @@
+import Vue from "vue"
+
 import { ICell, DirectionEnum, PathfinderEnum } from "../../../common/Commons"
 import { IEvent } from "../../../common/model/Event"
 import { ClientUtils } from "../../core/util/ClientUtils"
-import { MapManager } from "../../core/manager/MapManager"
 import { DataDefaults } from "../../../common/DataDefaults"
-
-import Vue from "vue"
-// @ts-ignore https://github.com/vuejs/vue-cli/issues/1198
-import LoginComponent from "../../components/Login.vue"
 import BugReportingComponent from "../../components/BugReporting.vue"
+import { pathFinder } from "../../../client/core/manager/PathfindingManager"
+
+import LoginComponent from "../../components/Login.vue"
 
 export namespace Tester {
 
@@ -64,7 +64,7 @@ export namespace Tester {
         let direction: DirectionEnum;
         let guard = 0;
         do {
-            direction = MapManager.pathFinder(map, event, target, pathfinder);
+            direction = pathFinder(map, event, target, pathfinder);
             if(direction !== DirectionEnum.NONE) {
                 event = <IEvent> ClientUtils.moveToDirection(event, direction);
                 result.push({

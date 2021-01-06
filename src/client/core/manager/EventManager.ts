@@ -12,6 +12,7 @@ import { Condition } from "../events/Conditions"
 import { DynamicScene } from "../../game/DynamicScene"
 import { ResourceType } from "../../../common/Constants";
 import { Utils } from "../../../common/Utils"
+import { pathFinder } from "./PathfindingManager"
 
 /**
  * Module to handle events
@@ -229,7 +230,7 @@ export namespace EventManager {
                 direction = e.movementDirection!;
             } else {
                 try {
-                    direction = MapManager.pathFinder(map, e, target)
+                    direction = pathFinder(map, e, target)
                 } catch (e) {
                     console.error(e)
                 }
@@ -486,11 +487,11 @@ export namespace EventManager {
                     console.error("Cannot find event: " + movement.eventId);
                     return;
                 }
-                let newDirection = MapManager.pathFinder(map, event, targetEvent, movement.pathfinder);
+                let newDirection = pathFinder(map, event, targetEvent, movement.pathfinder);
                 target = ClientUtils.getDirectionTarget(event, newDirection);
                 onTargetReached = function(cell) {
                     // Keep doing steps towards the event, if reached then pause
-                    let newDirection = MapManager.pathFinder(map, event, targetEvent!, movement.pathfinder);
+                    let newDirection = pathFinder(map, event, targetEvent!, movement.pathfinder);
                     if(newDirection !== DirectionEnum.NONE) {
                         let nextTarget = ClientUtils.getDirectionTarget(event, newDirection);
                         startMovement(event, nextTarget.i, nextTarget.j, onTargetReached);
