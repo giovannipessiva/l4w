@@ -80,7 +80,20 @@ export namespace DialogManager {
             } else {
                 // Close on user action, not less than "MIN_TIME_BEFORE_MANUAL_CLOSE" ms after showing it
                 setTimeout(() =>  {
-                    Input.addActionCallback(resolve);
+                    let dialogFrameElement = document.getElementById("dialogFrame");
+                    if(dialogFrameElement === null) {
+                        console.error("element undefined: dialogFrame");
+                        return;
+                    }
+                    let closeDialog = () => {
+                        resolve();
+                        dialogFrameElement!.onclick = null;
+                        dialogFrameElement!.style.removeProperty("cursor");
+                    };
+                    // Dialog can also be closed with input action, or by clicking on it
+                    Input.addActionCallback(closeDialog);
+                    dialogFrameElement.onclick = closeDialog;
+                    dialogFrameElement.style.cursor = "pointer";
                 }, MIN_TIME_BEFORE_MANUAL_CLOSE);
             }
         });
