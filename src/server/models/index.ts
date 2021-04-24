@@ -15,12 +15,18 @@ if (process.env.DATABASE_URL === undefined) {
 }
 
 function initSequelizeModules() {
+    let ssl: any = false;
+    if(useSSLDatabaseConnection()) {
+        ssl = {
+            require: true,
+            rejectUnauthorized: false // https://stackoverflow.com/a/61350416/2700039
+        };
+    }
     let sequelizeOptions: Options = {
         dialect: "postgres",
         protocol: "postgres",
         dialectOptions: {
-            ssl: useSSLDatabaseConnection(),
-            rejectUnauthorized: false // https://stackoverflow.com/a/61350416/2700039
+            ssl: ssl
         },
         define: {
             timestamps: false
