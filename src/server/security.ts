@@ -12,21 +12,6 @@ import { Utils } from "../common/Utils"
 import { gameConfig } from "../common/GameConfig";
 
 export namespace security {
-
-    let flagAlertNoEndVar = false;
-
-    export function isDevEnv() {
-        if(process.env.NODE_ENV === undefined) {
-            if(flagAlertNoEndVar) {
-                flagAlertNoEndVar = true;
-                console.warn("No ENV defined, defaulting to development");
-            }
-            // This is a bad practice, but necessary in order to
-            // being able to run the node server locally without any config
-            return true;
-        }
-        return "development" === process.env.NODE_ENV;
-    }
     
     export function isAuthenticationDisabled() {
         return isDevEnv() && "true" === process.env.DISABLE_AUTHENTICATION;
@@ -213,4 +198,23 @@ export namespace security {
         description = description.split("javascript").join("javascri#t");
         return description;
     }
+}
+
+let flagAlertNoEndVar = false;
+
+export function isDevEnv() {
+    if(process.env.NODE_ENV === undefined) {
+        if(flagAlertNoEndVar) {
+            flagAlertNoEndVar = true;
+            console.warn("No ENV defined, defaulting to development");
+        }
+        // This is a bad practice, but necessary in order to
+        // being able to run the node server locally without any config
+        return true;
+    }
+    return "development" === process.env.NODE_ENV;
+}
+
+export function useSSLDatabaseConnection() {
+    return !isDevEnv();
 }

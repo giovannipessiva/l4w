@@ -3,6 +3,8 @@ import { join } from "path"
 import { Options } from "sequelize"
 import * as SequelizeModule from "sequelize"
 
+import { useSSLDatabaseConnection } from "../security"
+
 export let models: Map<String, SequelizeModule.Model> = new Map();
 export let sequelizeInstance: SequelizeModule.Sequelize; 
 
@@ -16,11 +18,15 @@ function initSequelizeModules() {
     let sequelizeOptions: Options = {
         dialect: "postgres",
         protocol: "postgres",
+        dialectOptions: {
+            ssl: useSSLDatabaseConnection()
+        },
         define: {
             timestamps: false
         },
         logging: false
     };
+
     sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
     const dirname = join("dist", "server", "src", "server", "models");

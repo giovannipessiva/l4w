@@ -12,7 +12,7 @@ import { HttpStatus, ResourceType } from "../common/Constants"
 import { Utils } from "../common/Utils"
 import { session } from "./session"
 import * as utils from "./utils"
-import { security } from "./security"
+import { isDevEnv, security } from "./security"
 import { database } from "./database"
 import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
 import { services } from "./services"
@@ -67,7 +67,7 @@ function onDatabaseInit(flagDBAvailable: boolean) {
     const jsPath = resolve(join("dist", "client"));
     app.get("/js/:script", function(request: ExpressRequest, response: ExpressResponse) {
         let file: string = request.params.script;
-        if(security.isDevEnv()) {
+        if(isDevEnv()) {
             // In development, use files with sourcemaps
             file = file.replace(".min.",".");
         }
@@ -210,7 +210,7 @@ function onDatabaseInit(flagDBAvailable: boolean) {
 
     let server;
     let port = app.get("port");
-    if(!security.isDevEnv()) {
+    if(!isDevEnv()) {
         // Heroku will take care of HTTPS
         server = app.listen(port);
     } else {

@@ -18,7 +18,7 @@ import { IMap } from "../common/model/Map";
 import { IAutoTileset, ITileset } from "../common/model/Tileset";
 import { enumFromValue, Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
-import { security } from "./security";
+import { isDevEnv, security } from "./security";
 import { session } from "./session";
 import { sanitizeDialog, sanitizeMap } from "./sanitizer";
 
@@ -152,7 +152,7 @@ export namespace database {
                 }
             }
             // Manage database connection fail
-            if(security.isDevEnv()) {
+            if(isDevEnv()) {
                 console.info("PostgreSQL database not available, functionalities will be limitated");
                 flagPostgresUnavailable = true;
                 resolve(false);
