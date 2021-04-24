@@ -31,6 +31,7 @@
 import Vue from "vue"
 import { Resource } from "../core/util/Resource"
 import { AuthService, IAuthRequest, IAuthResponse } from "../../common/ServerAPI"
+import { Utils } from "../../common/Utils";
 
 declare let FB: any; // Loaded from Facebook script
 declare let gapi: any; // Loaded from Google script
@@ -176,21 +177,21 @@ export default Vue.extend({
         doLogin(request: IAuthRequest) {
             let vueScope = this;
             Resource.sendPOSTRequest("/auth", JSON.stringify(request), function(response?: string) {
-                if(response !== undefined) {
+                if(!Utils.isEmpty(response)) {
                     try {
-                        let authResponse: IAuthResponse = JSON.parse(response);
+                        let authResponse: IAuthResponse = JSON.parse(response!);
                         if(authResponse.result) {
                             Vue.set(vueScope, "loginStatus", true);
                             Vue.set(vueScope, "loginService", request.service);
                             return;
                         }
                     } catch(e) {
-                        console.error(response);
+                        console.error(e);
                     }
                 }
                 Vue.set(vueScope, "loginStatus", false);
                 Vue.set(vueScope, "loginService", undefined);
-                console.error("Logged with " + request.service + " failed");
+                console.warn("Login with " + request.service + " failed");
             });
         }
     }

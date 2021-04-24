@@ -10,7 +10,7 @@ export const DEFAULT_DIALOG = "dlg";
 
 export class BaseScript extends AbstractScript {
 
-    public static tooltip: string = "Basic script with simple actions, mainly for generic NPCs";    
+    public static tooltip: string = "Basic script with simple actions";    
 
     public constructor(event: IEvent, hero: IEvent, scene: DynamicScene) {
         super(event, hero, scene);

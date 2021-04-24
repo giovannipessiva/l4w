@@ -11,6 +11,7 @@ export interface ISave {
     hero: IEvent; // Hero state
     currentMap: string; // Id of the current map
     maps: IMapSave[]; // List of customized maps, indexed by map.id
+    variables: { [ key: number ] : number }; // Numerical variables used by scripts
     config: IConfig; // User configuration
 }
 

@@ -156,32 +156,34 @@ function onDatabaseInit(flagDBAvailable: boolean) {
     });
     app.post("/auth", function(request: ExpressRequest, response: ExpressResponse) {
         let authResponse: IAuthResponse;
-        session.doLogin(request, response, function() {
-            authResponse = {
-                result: true
-            }
-            try {
+        session.doLogin(request, response,
+            () => {
+                authResponse = {
+                    result: true
+                }
+                try {
+                    response.json(authResponse);
+                } catch(e) {
+                    console.warn("Exception catched on response.json(): ");
+                    console.trace(e);
+                }
+            },
+            () => {
+                console.error("Login failed");
+                authResponse = {
+                    result: false
+                }
                 response.json(authResponse);
-            } catch(e) {
-                console.warn("Exception catched on response.json(): ");
-                console.trace(e);
             }
-        },
-        function() {
-            console.error("Login failed");
-            authResponse = {
-                result: false
-            }
-            response.json(authResponse);
-        });
+        );
     });
     app.get("/logout", function(request: ExpressRequest, response: ExpressResponse) {
-        session.doLogout(request, response, function() {
+        session.doLogout(request, response, () => {
             response.send("");
         });
     });
     app.post("/issue", function(request: ExpressRequest, response: ExpressResponse) {
-        security.getBodyData(request, response, function(data: any){
+        security.getBodyData(request, response, (data: any) => {
             let req: IIssueRequest;
             try {
                 req = JSON.parse(data);

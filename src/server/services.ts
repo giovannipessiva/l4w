@@ -8,17 +8,15 @@ import { IIssueRequest, IIssueResponse } from "../common/ServerAPI";
 import { session } from "./session";
 import { HttpStatus } from "../common/Constants";
 import { Utils } from "../common/Utils";
+import { gameConfig } from "../common/GameConfig";
 
 /**
  * This module manage invocation of external services
  */
 export namespace services {
 
-    export const FACEBOOK_APPLICATION_ID = "1885551381575204";
-    export const GOOGLE_APPLICATION_ID = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
-
     export function validateGoogleToken(request: ExpressRequest, response: ExpressResponse, onSuccess: IResponseCallback, onFailure: IEmptyCallback, token: string) {
-        get("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token, function(res: IncomingMessage) {
+        get(gameConfig.services.google.oauth.url + "/oauth2/v3/tokeninfo?id_token=" + token, function(res: IncomingMessage) {
             let authResponse: string = "";
             res.on("data", function(buffer: string) {
                 authResponse += buffer;
@@ -51,8 +49,8 @@ export namespace services {
             onFailure();
             return;
         }
-        let access_token = FACEBOOK_APPLICATION_ID + "|" + process.env.FACEBOOK_SECRET;
-        get("https://graph.facebook.com/debug_token?input_token=" + token + "&access_token=" + access_token, function(res: IncomingMessage) {
+        let access_token = gameConfig.services.facebook.applicationId + "|" + process.env.FACEBOOK_SECRET;
+        get(gameConfig.services.facebook.url + "/debug_token?input_token=" + token + "&access_token=" + access_token, function(res: IncomingMessage) {
             let authResponse: string = "";
             res.on("data", function(buffer: string) {
                 authResponse += buffer;
@@ -61,7 +59,7 @@ export namespace services {
                 try {
                     let auth = JSON.parse(authResponse);
                     if(security.validateFacebookTokeninfoResponse(auth.data, userId)) {
-                        get("https://graph.facebook.com/" + userId + "?fields=email&access_token=" + token, function(res: IncomingMessage) {
+                        get(gameConfig.services.facebook.url + "/" + userId + "?fields=email&access_token=" + token, function(res: IncomingMessage) {
                             let graphResponse: string = "";
                             res.on("data", function(buffer: string) {
                                 graphResponse += buffer;
@@ -104,7 +102,7 @@ export namespace services {
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded"
         }
-        post("www.google.com", "/recaptcha/api/siteverify", body, headers, function(responseBody?: string) {
+        post(gameConfig.services.google.recaptcha.url, "/recaptcha/api/siteverify", body, headers, function(responseBody?: string) {
             try {
                 if(responseBody === undefined) {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");
@@ -151,7 +149,7 @@ export namespace services {
             "Authorization": "token " + process.env.GITHUB_TOKEN, // https://developer.github.com/v3/auth/#basic-authentication
             "User-Agent": "giovannipessiva" // https://developer.github.com/v3/#user-agent-required
         }
-        post("api.github.com", "/repos/giovannipessiva/l4w/issues", JSON.stringify(body), headers, function(responseBody?: string) {
+        post(gameConfig.services.github.url, "/repos/giovannipessiva/l4w/issues", JSON.stringify(body), headers, function(responseBody?: string) {
             try {
                 if(responseBody === undefined) {
                     response.status(HttpStatus.INTERNAL_SERVER_ERROR).send("");

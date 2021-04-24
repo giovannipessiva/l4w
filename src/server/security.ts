@@ -8,8 +8,8 @@ import { SessionOptions } from "express-session"
 
 import { registerSecurityEvent } from "./database"
 import { HttpStatus } from "../common/Constants"
-import { services } from "./services"
 import { Utils } from "../common/Utils"
+import { gameConfig } from "../common/GameConfig";
 
 export namespace security {
 
@@ -69,7 +69,7 @@ export namespace security {
 
         //The value of aud in the ID token is equal to one of your app's client IDs.
         //This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
-        if(data.aud !== services.GOOGLE_APPLICATION_ID) {
+        if(data.aud !== gameConfig.services.google.oauth.applicationId) {
             logSecurityEvent("Login.aud", data.aud);
             console.warn("Access token is invalid for this application");
             return false;
@@ -99,7 +99,7 @@ export namespace security {
         //see: https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#checktoken
 
         // Check that access token is valid for this application
-        if(data.app_id !== services.FACEBOOK_APPLICATION_ID) {
+        if(data.app_id !== gameConfig.services.facebook.applicationId) {
             logSecurityEvent("Login.aud", data.app_id);
             console.warn("Access token is invalid for this application");
             return false;

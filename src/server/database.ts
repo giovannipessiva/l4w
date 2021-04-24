@@ -148,7 +148,7 @@ export namespace database {
                     resolve(true);
                     return;
                 } catch(e) {
-                    console.trace(e);
+                    console.error(e);
                 }
             }
             // Manage database connection fail

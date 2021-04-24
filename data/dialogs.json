@@ -59,7 +59,8 @@
           4
         ],
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "I don't want any trouble. I'm just resting, I'll be on my way soon"
       },
       {
         "id": 1,
@@ -69,7 +70,8 @@
           7
         ],
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "My name is Asgar, I am headed to the capital."
       },
       {
         "id": 5,
@@ -77,17 +79,20 @@
         "name": "Asgan",
         "edgeIds": [
           12
-        ]
+        ],
+        "message": "Tell you what, if you can find me a mount I will pay you 50 golds"
       },
       {
         "id": 6,
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "I'm not sure about it..."
       },
       {
         "id": 7,
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "Mmh... Interesting... I guess?"
       },
       {
         "id": 2,
@@ -97,12 +102,14 @@
           10
         ],
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "I'm afraid not, it would surely help me on my journey"
       },
       {
         "id": 8,
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "Now leave me alone, please"
       },
       {
         "id": 4,
@@ -110,17 +117,20 @@
           11
         ],
         "face": "Asgan.png",
-        "name": "Asgan"
+        "name": "Asgan",
+        "message": "As you can see for yourself, it is not lit"
       }
     ],
     "edges": [
       {
         "id": 0,
-        "nodeId": 1
+        "nodeId": 1,
+        "message": "Who are you?"
       },
       {
         "id": 5,
-        "nodeId": 5
+        "nodeId": 5,
+        "message": "The capital? It's still a long journey from here"
       },
       {
         "id": 12,
@@ -129,31 +139,38 @@
       },
       {
         "id": 6,
-        "nodeId": 6
+        "nodeId": 6,
+        "message": "Are you going to start a revolution?"
       },
       {
         "id": 7,
-        "nodeId": 7
+        "nodeId": 7,
+        "message": "Oh, the capital. I know everything about it. They call me the biggest expert of capitals around here"
       },
       {
         "id": 1,
-        "nodeId": 2
+        "nodeId": 2,
+        "message": "Don't you have an horse or something?"
       },
       {
         "id": 8,
-        "nodeId": 6
+        "nodeId": 6,
+        "message": "Well, walking is better anyway, it's good for your legs. Expecially walking with an armor on"
       },
       {
         "id": 9,
-        "nodeId": 5
+        "nodeId": 5,
+        "message": "How much are you willing to pay for a mean of transport?"
       },
       {
         "id": 10,
-        "nodeId": 8
+        "nodeId": 8,
+        "message": "Oh well, sucks to be you"
       },
       {
         "id": 4,
-        "nodeId": 4
+        "nodeId": 4,
+        "message": "Do you have a permit for that bonfire, sir?"
       },
       {
         "id": 11,
@@ -214,10 +231,26 @@
   "3": {
     "nodes": [
       {
-        "id": 0
+        "id": 0,
+        "edgeIds": [
+          0,
+          1,
+          2
+        ],
+        "name": "Old hag"
       }
     ],
-    "edges": []
+    "edges": [
+      {
+        "id": 0
+      },
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      }
+    ]
   },
   "4": {
     "nodes": [

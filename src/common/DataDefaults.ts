@@ -92,7 +92,8 @@ export namespace DataDefaults {
             currentMap: gameConfig.maps.start.map,
             hero: getHero(),
             maps: [],
-            config: getConfig()
+            config: getConfig(),
+            variables: {}
         };
     }
 

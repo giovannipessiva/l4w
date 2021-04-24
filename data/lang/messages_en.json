@@ -16,9 +16,6 @@
     "E1M": "Please hide me, a big giant is coming to get me!",
     "E2M": "How much for a pig?"
   },
-  "D3": {
-    "N0M": "Hello dear"
-  },
   "D5": {
     "N0M": "It's a well... I can't see the bottom"
   },
@@ -86,5 +83,11 @@
     "E9M": "How much are you willing to pay for a mean of transport?",
     "E10M": "Oh well, sucks to be you",
     "E4M": "Do you have a permit for that bonfire, sir?"
+  },
+  "D3": {
+    "N0M": "Hello dear",
+    "E0M": "Can you cook me something?",
+    "E1M": "Are you my mommy?",
+    "E2M": "Do you need help?"
   }
 }

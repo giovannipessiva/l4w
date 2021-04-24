@@ -14,8 +14,15 @@ import { IEmptyCallback } from "../common/Commons";
 import { IAuthRequest } from "../common/ServerAPI";
 import { Utils } from "../common/Utils";
 
+// Declaration merging of express-session's SessionData interface, for adding custom fields
+declare module "express-session" {
+    interface SessionData {
+        user: string;
+    }
+}
+
 export namespace session {
-        
+     
     export let cookieName = "l4w.session";
     
     export function init() {
