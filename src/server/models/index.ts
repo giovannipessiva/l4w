@@ -19,7 +19,8 @@ function initSequelizeModules() {
         dialect: "postgres",
         protocol: "postgres",
         dialectOptions: {
-            ssl: useSSLDatabaseConnection()
+            ssl: useSSLDatabaseConnection(),
+            rejectUnauthorized: false // https://stackoverflow.com/a/61350416/2700039
         },
         define: {
             timestamps: false
