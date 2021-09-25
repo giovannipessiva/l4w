@@ -117,8 +117,8 @@ export namespace Game {
     }
 
     export function save() {
-        //TODO should manage more than one save, maybe with a custom name
-        let saveId: number = DataDefaults.FIRST_ELEM_ID;
+        //TODO should manage more than one save slot, maybe with a custom names
+        let saveId: number = 0;
         let currentState: ISave | undefined = SaveManager.getSave(scene.map, scene.hero);
         if (currentState !== undefined && Utils.isNumeric(currentState.id)) {
             saveId = currentState.id;
@@ -137,7 +137,7 @@ export namespace Game {
     }
 
     function loadSave(canvas: HTMLCanvasElement, callback: (save?: ISave) => void) {
-        //TODO l'id del salvataggio va selezionato dal giocatore
+        //TODO save slot should be inputed by player
         let saveId: string = "0";
         Resource.load(saveId, ResourceType.SAVE, function(resourceText) {
             if (Utils.isEmpty(resourceText)) {
