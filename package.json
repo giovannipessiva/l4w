@@ -89,14 +89,14 @@
     "grunt-ts": "Grun plugin for TypeScript compiler",
     "grunt-webpack": "Grunt plugin for WebPack",
     "ts-loader": "TypeScript loader for webpack",
-    "typescript": "TypeScript language // Check enhancements v4.2 --> v4.4",
+    "typescript": "TypeScript language",
     "vue-loader": "Vue single-file component loader for Webpack",
     "vue-style-loader": "Vue.js style loader module for Webpack",
     "vue-template-compiler": "template compiler for Vue 2.0",
     "webpack": "Javascript modules bundler"
   },
   "engines": {
-    "node": "16.9"
+    "node": "16"
   },
   "repository": {
     "type": "git",

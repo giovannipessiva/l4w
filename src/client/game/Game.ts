@@ -20,7 +20,6 @@ import { DynamicScene } from "./DynamicScene";
 import { ResourceType, ScreenSize } from "../../common/Constants";
 import { Utils } from "../../common/Utils";
 import { CLI } from "../core/util/CLI";
-import { DataDefaults } from "../../common/DataDefaults";
 
 /**
  * Module for initializing and launching a game

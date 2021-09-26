@@ -119,22 +119,25 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-webpack");
 
-    // Default L4W build task (linter, client and server)
+    // Build sub-tasks (linter, client and server)
     grunt.registerTask("task_lint", "Clean the dist folders and execute eslint (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["clean:client","clean:server","eslint"]);
     });
-    grunt.registerTask("task_compile", "Execute ts (cannot fail)", ["ts:server","copy","webpack:prod","clean:post"]);
+    grunt.registerTask("task_compile", "Execute ts (cannot fail)", function () {
+        grunt.option("force", false);
+        grunt.task.run(["ts:server","copy","webpack:prod","clean:post"]);
+    });
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["babel","uglify"]);
     });
-    grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
 
-    // Fast L4W build tasks (no linter, only client or server)
+    // Production task (default)
+    grunt.registerTask("l4w-build-pipeline", ["task_lint","task_compile","task_minify"]);
+    grunt.registerTask("default","l4w-build-pipeline");
+
+    // Dev tasks (faster, no linter, only client or server)
     grunt.registerTask("l4w-build-client", ["clean:client","webpack:dev"]);
     grunt.registerTask("l4w-build-server", ["clean:server","ts:server","copy","clean:post"]);
-
-    // Default task
-    grunt.registerTask("default","l4w-build-pipeline");
 };

@@ -7,7 +7,7 @@
 
 A game engine & editor for tile-based web games, check it out: [l4w.herokuapp.com](https://l4w.herokuapp.com)
 
-![Preview](/style/logo/preview.apng?raw=true "L4W preview")
+<kbd>![Preview](/style/logo/preview.apng?raw=true "L4W preview")</kbd>
 
 Download the project with [Git](https://git-scm.com/downloads):
 
