@@ -1,4 +1,5 @@
-const webpackConfig = require("./webpack.config.cjs");
+const webpackConfigClient = require("./webpack.client.cjs");
+const webpackConfigServer = require("./webpack.server.cjs");
 const path = require("path");
 
 module.exports = function(grunt) {
@@ -19,32 +20,10 @@ module.exports = function(grunt) {
             }
         },
 
-        ts: {
-            server: {
-                tsconfig: "./src/tsconfig-server.json"
-            }
-        },
-
-        copy: {
-            main: {
-                files: [{
-                    expand: true,
-                    cwd: ".",
-                    src: [
-                        "./dist/server/**/*.js"
-                    ],
-
-                    dest: ".",
-                    rename: function(dest, src) {
-                        return dest + "/" + src.replace(".js",".mjs");
-                    }
-                }]
-            }
-        },
-
         webpack: {
-            dev: webpackConfig("development"),
-            prod: webpackConfig("production")
+            server: webpackConfigServer(),
+            client_dev: webpackConfigClient("development"),
+            client_prod: webpackConfigClient("production")
         },
 
         clean: {
@@ -62,11 +41,8 @@ module.exports = function(grunt) {
                 ]
             },
             post: {
-                // This is important for the server, in order to remove .js modules
-                // and make it use the .mjs modules
                 src: [
-                    "./dist/client/l4w",
-                    "./dist/server/**/*.js"
+                    "./dist/client/l4w"
                 ]
             }
         },
@@ -112,21 +88,19 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks("grunt-eslint");
-    grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-webpack");
 
-    // Build sub-tasks (linter, client and server)
+    // Build sub-tasks
     grunt.registerTask("task_lint", "Clean the dist folders and execute eslint (can fail)", function () {
         grunt.option("force", true);
         grunt.task.run(["clean:client","clean:server","eslint"]);
     });
     grunt.registerTask("task_compile", "Execute ts (cannot fail)", function () {
         grunt.option("force", false);
-        grunt.task.run(["ts:server","copy","webpack:prod","clean:post"]);
+        grunt.task.run(["webpack:server","webpack:client_prod","clean:post"]);
     });
     grunt.registerTask("task_minify", "Execute babel and uglify (can fail)", function () {
         grunt.option("force", true);
@@ -138,6 +112,6 @@ module.exports = function(grunt) {
     grunt.registerTask("default","l4w-build-pipeline");
 
     // Dev tasks (faster, no linter, only client or server)
-    grunt.registerTask("l4w-build-client", ["clean:client","webpack:dev"]);
-    grunt.registerTask("l4w-build-server", ["clean:server","ts:server","copy","clean:post"]);
+    grunt.registerTask("l4w-build-client", ["clean:client","webpack:client_dev"]);
+    grunt.registerTask("l4w-build-server", ["clean:server","webpack:server"]);
 };

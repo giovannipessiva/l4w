@@ -1,5 +1,3 @@
-import { readdirSync } from "fs"
-import { join } from "path"
 import { Options } from "sequelize"
 import * as SequelizeModule from "sequelize"
 
@@ -14,6 +12,7 @@ if (process.env.DATABASE_URL === undefined) {
     initSequelizeModules();
 }
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 function initSequelizeModules() {
     let ssl: any = false;
     if(useSSLDatabaseConnection()) {
@@ -36,17 +35,33 @@ function initSequelizeModules() {
 
     sequelizeInstance = new SequelizeModule.Sequelize(process.env.DATABASE_URL!, sequelizeOptions);
 
-    const dirname = join("dist", "server", "src", "server", "models");
-    readdirSync(dirname).filter(function(file: string) {
-        return file.indexOf(".") !== 0 && file !== "index.mjs" && file !== "init-models.mjs" && file.indexOf(".mjs") !== 0 ;
-    }).forEach(function(file: string) {
-        let modulePath = "./" + file.replace(".mjs",""); 
-        import(modulePath).then(importedModelModule => {
-            let model = importedModelModule.default.init(sequelizeInstance, SequelizeModule.Sequelize);
-            models.set(model.name, model);
-        }).catch(e => {
-            console.trace(e);
-            process.exit();
-        });
-    });
+    // Ugly but safer then dynamic module import
+    // Need to use "require" instead of "import" since there are no TS definitions
+    let sequelizeModelModule: any;
+    sequelizeModelModule = require("./log_access.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./log_security.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./lst_event.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./lst_role.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./usr_event.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./usr_list.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./usr_role.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+    sequelizeModelModule = require("./usr_save.js");
+    onSequelizeModuleImport(sequelizeModelModule);
+}
+
+function onSequelizeModuleImport(importedModelModule: any) {
+    try {
+        let model = importedModelModule.default.init(sequelizeInstance, SequelizeModule.Sequelize);
+        models.set(model.name, model);
+    } catch(e) {
+        console.trace(e);
+        process.exit();
+    };
 }

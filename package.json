@@ -18,6 +18,7 @@
     "lowdb": "1.0.0",
     "npm": "8.1.2",
     "pg": "8.7.1",
+    "pg-hstore": "2.3.2",
     "sequelize": "6.8.0",
     "vue": "2.6.14"
   },
@@ -40,17 +41,16 @@
     "grunt": "1.4.1",
     "grunt-babel": "8.0.0",
     "grunt-contrib-clean": "2.0.0",
-    "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-uglify": "5.0.1",
     "grunt-eslint": "24.0.0",
-    "grunt-ts": "6.0.0-beta.22",
     "grunt-webpack": "4.0.3",
     "ts-loader": "9.2.6",
     "typescript": "4.4.4",
     "vue-loader": "15.9.8",
     "vue-style-loader": "4.1.3",
     "vue-template-compiler": "2.6.14",
-    "webpack": "5.61.0"
+    "webpack": "5.61.0",
+    "webpack-node-externals": "3.0.0"
   },
   "dependenciesDocumentation": {
     "bcryptjs": "required for hashing of emails",
@@ -61,6 +61,7 @@
     "lowdb": "JSON database",
     "npm": "dependency manager for Javascript",
     "pg": "PostgreSQL DB client",
+    "pg-hstore": "Required by sequelize/lib/dialects/postgres",
     "sequelize": "ORM framework for Node.js. It is a CommonJS module, so importing can be tricky",
     "vue": "FE framework"
   },
@@ -83,17 +84,16 @@
     "grunt": "Task runner for build process",
     "grunt-babel": "Grunt Plugin for Babel, a Javascript compilator to backward-compatible code",
     "grunt-contrib-clean": "Grunt plugin for deleting files",
-    "grunt-contrib-copy": "Grunt plugin for copying files",
     "grunt-contrib-uglify": "Grunt plugin for UglifyJS, a Javascript minimizer",
     "grunt-eslint": "Grunt plugin for ESLint",
-    "grunt-ts": "Grun plugin for TypeScript compiler. Sholud remove this (no longer mantained) and switch to Webpack only",
     "grunt-webpack": "Grunt plugin for WebPack",
     "ts-loader": "TypeScript loader for webpack",
     "typescript": "TypeScript language",
     "vue-loader": "Vue single-file component loader for Webpack",
     "vue-style-loader": "Vue.js style loader module for Webpack",
     "vue-template-compiler": "template compiler for Vue 2.0",
-    "webpack": "Javascript modules bundler"
+    "webpack": "Javascript modules bundler",
+    "webpack-node-externals": "Required for compiling server with Webpack and avoid bundling all node modules"
   },
   "engines": {
     "node": "16"

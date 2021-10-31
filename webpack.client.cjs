@@ -7,6 +7,7 @@ module.exports = function(mode) {
 	}
 	return {
 		mode: mode,
+		target: "web",
 		entry: {
 			game: "./src/client/game/Game.ts",
 			mapper: "./src/client/tool/mapper/MapperPage.ts",
