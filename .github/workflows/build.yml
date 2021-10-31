@@ -48,7 +48,6 @@ jobs:
         npm add grunt
         npm add grunt-cli
         npm add typescript
-        npm add grunt-ts
         npm install
 
     # Build the application
@@ -78,7 +77,8 @@ jobs:
         rm *.md
         rm *.bat
         rm tsconfig.json
-        rm webpack.config.cjs
+        rm webpack.client.cjs
+        rm webpack.server.cjs
     - name: Commit to branch "deploy"
       run: |
         git config --global user.email "rpt@altervista.org"
