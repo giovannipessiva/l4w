@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                 ]
             },
             options: {
-                configFile: path.resolve(__dirname, ".eslintrc.cjs")
+                overrideConfigFile: path.resolve(__dirname, ".eslintrc.cjs")
             }
         },
 

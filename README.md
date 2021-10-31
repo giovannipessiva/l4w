@@ -19,9 +19,9 @@ Install its dependencies, build the sources and run it with [npm, Node.js](https
     npm run build
     npm start
 
-With the default configuration it will be reachable on [https://localhost:5000](https://localhost:5000)
+It will be reachable at: [https://localhost:5000](https://localhost:5000)
 
-More stuff:
-* [Online game editors](https://l4w.herokuapp.com/edit)
-* [Local install instruction (for developers)](https://github.com/giovannipessiva/l4w/wiki/Local-install)
-* [About](https://rpt.altervista.org/blog/l4w-for-real/)
+Want more?
+* [Game editors](https://l4w.herokuapp.com/edit)
+* [Local configuration](https://github.com/giovannipessiva/l4w/wiki/Local-install)
+* [L4W's story](https://rpt.altervista.org/blog/l4w-for-real/)
