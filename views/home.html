@@ -137,25 +137,6 @@ ctx.fillStyle='#000000';
 ctx.font='38px Arial';
 ctx.fillText("Loading...",10,40);
 
-// Manage dialog resiziong
-let observer = new MutationObserver(function(mutations) {
-  if(mutations !== undefined) {
-	for(let mutation of mutations) {
-		if(mutation.oldValue !== null && mutation.oldValue.indexOf("width") !== 0) {
-			// Remove this property, it is  required only for the first positioning
-			// and must be changed when the dialogFrame is resized
-			document.getElementById("dialogContainer").style.width = "0px";
-			observer.disconnect();
-		}
-	}
-  }
-});
-observer.observe(document.getElementById("dialogFrame"), { 
-	attributes: true,
-	attributeOldValue: true,
-	attributeFilter: [ "style" ]
-});
-
 // Make the dialogContainer draggagle:
 dragElement(document.getElementById("dialogContainer"));
 
@@ -194,7 +175,7 @@ function dragElement(elmnt) {
 		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
 		// Secret sauce fox fixing my use case
 		elmnt.style.margin="0px";
-		// Remove this property, it is  required only for the first positioning
+		// Remove this property, it is required only for the first positioning
 		// and must be changed when the dialog is dragged
 		document.getElementById("dialogContainer").style.bottom = "initial";
 	}
