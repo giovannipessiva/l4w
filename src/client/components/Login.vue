@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-        <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v6.0&appId=1885551381575204"></script>
+        <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0&appId=1885551381575204"></script>
         <script type="application/javascript" async defer src="https://apis.google.com/js/platform.js?onload=gAsyncInit"></script>
         <div v-show="!loginStatus">
             <!-- <img class="statusIcon unloggedIcon" src="/style/ui/unlogged.png" alt="Unlogged icon" title="You are not currently logged in"> -->
@@ -88,7 +88,7 @@ export default Vue.extend({
                 autoLogAppEvents: false,
                 cookie: true,
                 xfbml: false,
-                version : "v6.0"
+                version : "v12.0"
             });
             FB.Event.subscribe("auth.statusChange", function(response: FBLoginResponse) {
                 vueScope.fbLoginStatusChangeCallback(response);
