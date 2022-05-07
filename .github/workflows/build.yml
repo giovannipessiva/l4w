@@ -81,11 +81,9 @@ jobs:
         rm webpack.server.cjs
     - name: Commit to branch "deploy"
       run: |
-        git remote set-url origin "https://x-access-token:$github_token@github.com/$GITHUB_REPOSITORY.git"
+        git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git config --global user.email "rpt@altervista.org"
         git config --global user.name "GitHub Action"
         git add .
         git commit -m "GitHub Action build"
         git push --set-upstream origin deploy -f
-      with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
