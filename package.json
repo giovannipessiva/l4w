@@ -7,7 +7,7 @@
   "scripts": {
     "build": "grunt l4w-build-pipeline --gruntfile Gruntfile.cjs",
     "heroku-postbuild": "echo Skip build on Heroku",
-    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/src/server/l4w-server.mjs"
+    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w-server.cjs"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
@@ -96,7 +96,7 @@
     "webpack-node-externals": "Required for compiling server with Webpack and avoid bundling all node modules"
   },
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "repository": {
     "type": "git",
