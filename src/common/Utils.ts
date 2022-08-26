@@ -1,3 +1,5 @@
+import { gameConfig } from "./GameConfig";
+
 export namespace Utils {
 
     export function isEmpty(obj: any): boolean {
@@ -108,5 +110,24 @@ export const enumFromValue = <T extends Record<string, string>>(_enum: T, val?: 
         return undefined;
     } else {
         return _enum[enumName];
+    }
+}
+
+let lastTracedTimestamp = new Date().getTime();
+
+/**
+ * Logs the message if a certain delay has passed from last call
+ * @param message Leave undefined for start counting time
+ */
+export function trace(message?: string) {
+    if(gameConfig.development.tracing.enabled) {
+        let newTimestamp = new Date().getTime();
+        if(message !== undefined) {
+            let delta = newTimestamp - lastTracedTimestamp;
+            if(delta >= gameConfig.development.tracing.threshold) {
+                console.warn(newTimestamp + " (+ " + delta + ")\t" + message);
+            }
+        }
+        lastTracedTimestamp = newTimestamp;
     }
 }

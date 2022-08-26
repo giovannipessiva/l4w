@@ -2,6 +2,7 @@ import { AbstractGrid, GridTypeEnum } from "../core/AbstractGrid"
 import { IRange } from "../core/util/Commons"
 import { ICell, IRectangle } from "../../common/Commons";
 import { Utils } from "../../common/Utils";
+import { gameConfig } from "../../common/GameConfig";
 
 /**
  * Module for managing canvas autosizing
@@ -10,7 +11,6 @@ export class StaticGrid extends AbstractGrid {
 
     private rowsList: number[];
     private columnsList: number[];
-    private canvasScales: number[];
     private overriddenProps: Map<string, number>;
 
     constructor(
@@ -36,20 +36,14 @@ export class StaticGrid extends AbstractGrid {
 
         switch (this.gridType) {
             case GridTypeEnum.mapper:
-                this.canvasScales = [];
-                this.canvasScales.push(props.get("canvasScaleD")!);
-                this.canvasScales.push(props.get("canvasScaleC")!);
-                this.canvasScales.push(props.get("canvasScaleB")!);
-                this.canvasScales.push(props.get("canvasScaleA")!);
-
-                let totCanvasScales = this.canvasScales.length;
+                let totCanvasScales = gameConfig.ui.mapper.scales.length;
                 this.rowsList = new Array(totCanvasScales);
                 this.columnsList = new Array(totCanvasScales);
 
                 let selectedScaleId = totCanvasScales - 1;
                 for (let i = 0; i < totCanvasScales; i++) {
-                    this.rowsList[i] = Math.floor(this.rows / this.canvasScales[i]);
-                    this.columnsList[i] = Math.floor(this.columns / this.canvasScales[i]);
+                    this.rowsList[i] = Math.floor(this.rows / gameConfig.ui.mapper.scales[i]);
+                    this.columnsList[i] = Math.floor(this.columns / gameConfig.ui.mapper.scales[i]);
                 }
                 this.selectScale(selectedScaleId);
                 break;
@@ -66,8 +60,8 @@ export class StaticGrid extends AbstractGrid {
      * Should be called on scale changes (only Mapper)
      */
     selectScale(scaleId: number) {
-        this.scaleX = this.canvasScales[scaleId];
-        this.scaleY = this.canvasScales[scaleId];
+        this.scaleX = gameConfig.ui.mapper.scales[scaleId];
+        this.scaleY = gameConfig.ui.mapper.scales[scaleId];
         this.refreshCanvasSize();
     }
     

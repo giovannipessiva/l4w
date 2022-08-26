@@ -7,7 +7,7 @@ import { LanguageEnum } from "./Commons"
  * 
  * Having these constant values in the code instead of a resource file
  * is preferrable in order to enable compiler optimizations.
- * (Is it? Perhaps... may be true for numerical values...)
+ * (Is it? Perhaps... may be true for numerical and boolean values...)
  * 
  * This is ok as long as there is no need for:
  * - different profiles for the same fork/branch
@@ -57,7 +57,10 @@ export const gameConfig = {
         /**
          * Enable or disable L4W command line interface
          */
-        enableCLI: true
+        enableCLI: true,
+        mapper: {
+            scales: [ 0.2, 0.4, 0.6, 0.94 ]
+        }
     },
     services: {
         facebook: {
@@ -75,6 +78,12 @@ export const gameConfig = {
         },
         github: {
             url: "api.github.com"
+        }
+    },
+    development: {
+        tracing: {
+            enabled: true,
+            threshold: 800
         }
     }
 }
