@@ -204,6 +204,9 @@ function onDatabaseInit(flagDBAvailable: boolean) {
             services.validateReCaptchaToken(request, response, reCaptchaCallback, req.captchaToken, request.ip);
         });
     });
+    app.get("/health", function(request: ExpressRequest, response: ExpressResponse) {
+        response.status(HttpStatus.OK).send("");
+    });
     app.all("/teapot", function(request: ExpressRequest, response: ExpressResponse) {
         response.status(HttpStatus.IM_A_TEAPOT).send("🫖");
     });
