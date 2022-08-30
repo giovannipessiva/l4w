@@ -5,6 +5,7 @@
   "main": "l4w-server",
   "type": "module",
   "scripts": {
+    "install": "npm install grunt-cli -g",
     "build": "grunt l4w-build-pipeline --gruntfile Gruntfile.cjs",
     "heroku-postbuild": "echo Skip build on Heroku",
     "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w-server.cjs"
