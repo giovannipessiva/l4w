@@ -152,14 +152,9 @@ export namespace database {
                 }
             }
             // Manage database connection fail
-            if(isDevEnv()) {
-                console.info("PostgreSQL database not available, functionalities will be limitated");
-                flagPostgresUnavailable = true;
-                resolve(false);
-            } else {
-                console.error("Authentication on PostgreSQL failed");
-                process.exit();
-            }
+            console.info("PostgreSQL database not available, functionalities will be limitated");
+            flagPostgresUnavailable = true;
+            resolve(false);
         });
     }
 
