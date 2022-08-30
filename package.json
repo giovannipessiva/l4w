@@ -17,7 +17,7 @@
     "express": "4.17.1",
     "express-session": "1.17.2",
     "lowdb": "1.0.0",
-    "npm": "8.1.2",
+    "npm": "8.11.0",
     "pg": "8.7.1",
     "pg-hstore": "2.3.2",
     "sequelize": "6.8.0",
