@@ -117,6 +117,7 @@ let lastTracedTimestamp = new Date().getTime();
 
 /**
  * Logs the message if a certain delay has passed from last call
+ * 
  * @param message Leave undefined for start counting time
  */
 export function trace(message?: string) {
