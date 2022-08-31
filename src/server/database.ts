@@ -18,7 +18,7 @@ import { IMap } from "../common/model/Map";
 import { IAutoTileset, ITileset } from "../common/model/Tileset";
 import { enumFromValue, Utils } from "../common/Utils";
 import { GLOBAL_GROUP_ID } from "../common/StringsConstants";
-import { isDevEnv, security } from "./security";
+import { security } from "./security";
 import { session } from "./session";
 import { sanitizeDialog, sanitizeMap } from "./sanitizer";
 
