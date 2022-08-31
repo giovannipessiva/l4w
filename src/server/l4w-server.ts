@@ -14,7 +14,7 @@ import { session } from "./session"
 import * as utils from "./utils"
 import { isDevEnv, security } from "./security"
 import { database } from "./database"
-import { IAuthResponse, IIssueRequest } from "../common/ServerAPI"
+import { IAuthResponse, IHealthResponse, IIssueRequest } from "../common/ServerAPI"
 import { services } from "./services"
 
 // Database initialization
@@ -205,7 +205,10 @@ function onDatabaseInit(flagDBAvailable: boolean) {
         });
     });
     app.get("/health", function(request: ExpressRequest, response: ExpressResponse) {
-        response.status(HttpStatus.OK).send("");
+        let healthResponse: IHealthResponse = {
+            database: flagDBAvailable
+        }
+        response.status(HttpStatus.OK).send(healthResponse);
     });
     app.all("/teapot", function(request: ExpressRequest, response: ExpressResponse) {
         response.status(HttpStatus.IM_A_TEAPOT).send("🫖");
@@ -214,7 +217,7 @@ function onDatabaseInit(flagDBAvailable: boolean) {
     let server;
     let port = app.get("port");
     if(!isDevEnv()) {
-        // Heroku will take care of HTTPS
+        // Hosting provider will take care of HTTPS
         server = app.listen(port);
     } else {
         // Setup HTTPS with self-signed cert for local dev

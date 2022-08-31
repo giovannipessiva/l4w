@@ -19,3 +19,7 @@ export interface IIssueRequest {
 export interface IIssueResponse {
     url?: string
 }
+
+export interface IHealthResponse {
+    database: boolean
+}

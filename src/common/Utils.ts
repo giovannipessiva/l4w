@@ -126,7 +126,7 @@ export function trace(message?: string) {
         if(message !== undefined) {
             let delta = newTimestamp - lastTracedTimestamp;
             if(delta >= gameConfig.development.tracing.threshold) {
-                console.warn(newTimestamp + " (+ " + delta + ")\t" + message);
+                console.log(" (+ " + delta + ")\t" + message);
             }
         }
         lastTracedTimestamp = newTimestamp;

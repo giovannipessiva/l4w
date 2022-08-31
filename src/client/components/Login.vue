@@ -2,7 +2,7 @@
     <div class="root">
         <script type="application/javascript" async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0&appId=1885551381575204"></script>
         <script type="application/javascript" async defer src="https://apis.google.com/js/platform.js?onload=gAsyncInit"></script>
-        <div v-show="!loginStatus">
+        <div v-show="!loginStatus && loginEnabled">
             <!-- <img class="statusIcon unloggedIcon" src="/style/ui/unlogged.png" alt="Unlogged icon" title="You are not currently logged in"> -->
             <!-- Google login -->
             <div class="g-signin2" data-onsuccess="gLoginCallback" data-theme="dark"></div>
@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from "vue"
 import { Resource } from "../core/util/Resource"
-import { AuthService, IAuthRequest, IAuthResponse } from "../../common/ServerAPI"
+import { AuthService, IAuthRequest, IAuthResponse, IHealthResponse } from "../../common/ServerAPI"
 import { Utils } from "../../common/Utils";
 
 declare let FB: any; // Loaded from Facebook script
@@ -56,12 +56,14 @@ export default Vue.extend({
         }
     },
     data: function (): {
+        loginEnabled: boolean,
         loginStatus: boolean,
         loginService?: AuthService,
         fbToken?: string,
         flagLoggingOut: boolean
     } {
         return {
+            loginEnabled: false,
             loginStatus: false,
             loginService: undefined,
             fbToken: undefined,
@@ -69,46 +71,60 @@ export default Vue.extend({
        }
     },
     created: function() {
-        // Add Google login meta tags
-        let meta = document.createElement("meta");
-        meta.name = "google-signin-scope";
-        meta.content = "profile email";
-        document.head.appendChild(meta);
+        // Check if database is available
+        Resource.sendGETRequest("/health", (response?: string) => {
+            if(response === undefined) {
+                console.error("No response from health endpoint");
+            } else {
+                let resp: IHealthResponse = JSON.parse(response);
+                if(!resp.database) {
+                    console.warn("Database unavailable, will not enable Social Login");
+                } else {
+                    this.loginEnabled = true; 
 
-        meta = document.createElement("meta");
-        meta.name = "google-signin-client_id";
-        meta.content = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
-        document.head.appendChild(meta);
+                    // Add Google login meta tags
+                    let meta = document.createElement("meta");
+                    meta.name = "google-signin-scope";
+                    meta.content = "profile email";
+                    document.head.appendChild(meta);
 
-        // Init Facebook login
-        let vueScope = this;
-        window["fbAsyncInit"] = function() {
-            FB.init({
-                appId: "1885551381575204",
-                autoLogAppEvents: false,
-                cookie: true,
-                xfbml: false,
-                version : "v12.0"
-            });
-            FB.Event.subscribe("auth.statusChange", function(response: FBLoginResponse) {
-                vueScope.fbLoginStatusChangeCallback(response);
-            });
-            FB.getLoginStatus(function(response: FBLoginResponse) {
-                vueScope.fbLoginStatusChangeCallback(response);
-            });
-        };
+                    meta = document.createElement("meta");
+                    meta.name = "google-signin-client_id";
+                    meta.content = "106250700124-f3tm8cc2l6raccir6e5fi9osccuvhaj0.apps.googleusercontent.com";
+                    document.head.appendChild(meta);
 
-        // Init Google login
-        window["gAsyncInit"] = function() {
-            gapi.load("auth2", function() {
-                const authInstance = gapi.auth2.getAuthInstance();
-                if(authInstance.isSignedIn.get()) {
-                    Vue.set(vueScope, "loginStatus", true);
-                    Vue.set(vueScope, "loginService", "google");
+                    // Init Facebook login
+                    let vueScope = this;
+                    window["fbAsyncInit"] = function() {
+                        FB.init({
+                            appId: "1885551381575204",
+                            autoLogAppEvents: false,
+                            cookie: true,
+                            xfbml: false,
+                            version : "v12.0"
+                        });
+                        FB.Event.subscribe("auth.statusChange", function(response: FBLoginResponse) {
+                            vueScope.fbLoginStatusChangeCallback(response);
+                        });
+                        FB.getLoginStatus(function(response: FBLoginResponse) {
+                            vueScope.fbLoginStatusChangeCallback(response);
+                        });
+                    };
+
+                    // Init Google login
+                    window["gAsyncInit"] = function() {
+                        gapi.load("auth2", function() {
+                            const authInstance = gapi.auth2.getAuthInstance();
+                            if(authInstance.isSignedIn.get()) {
+                                Vue.set(vueScope, "loginStatus", true);
+                                Vue.set(vueScope, "loginService", "google");
+                            }
+                        });
+                    };
+                    window["gLoginCallback"] = this.gLoginCallback;
                 }
-            });
-        };
-        window["gLoginCallback"] = this.gLoginCallback;
+            }
+        });
     },
     methods: {
         logoutCallback: function() {

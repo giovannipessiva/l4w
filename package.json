@@ -5,10 +5,9 @@
   "main": "l4w-server",
   "type": "module",
   "scripts": {
-    "postinstall": "npm install grunt-cli -g",
     "build": "grunt l4w-build-pipeline --gruntfile Gruntfile.cjs",
-    "heroku-postbuild": "echo Skip build on Heroku",
-    "start": "node --experimental-modules --es-module-specifier-resolution=node dist/server/l4w-server.cjs"
+    "start": "node dist/server/l4w-server.cjs", 
+    "start-dev": "node --require=dotenv/config --inspect dist/server/l4w-server.cjs"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
@@ -37,6 +36,7 @@
     "@typescript-eslint/eslint-plugin": "5.2.0",
     "@typescript-eslint/parser": "5.2.0",
     "css-loader": "6.5.0",
+    "dotenv": "16.0.2",
     "eslint": "8.1.0",
     "eslint-plugin-jsdoc": "37.0.3",
     "grunt": "1.4.1",
@@ -80,6 +80,7 @@
     "@typescript-eslint/eslint-plugin": "TypeScript-specific rules for ESLint",
     "@typescript-eslint/parser": "TypeScript parser for ESLint",
     "css-loader": "CSS loader module for Webpack",
+    "dotenv": "Load env properties from .env file",
     "eslint": "Linter for TypeScript code",
     "eslint-plugin-jsdoc": "JSDoc linting rules for ESLint",
     "grunt": "Task runner for build process",
