@@ -73,7 +73,6 @@ jobs:
         rm CONTRIBUTING.md
         rm Gruntfile.cjs
         rm LICENSE
-        rm Procfile_inspect
         rm *.md
         rm *.bat
         rm tsconfig.json
